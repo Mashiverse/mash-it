@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "792168889426",
+    "project_id": "mash-it-a391a",
+    "storage_bucket": "mash-it-a391a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792168889426:android:ff83fdf5ced35feeba738b",
+        "android_client_info": {
+          "package_name": "dev.tymoshenko.mashit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "792168889426-9dbgrfgp1p1c8ghh68bkp1nc1gm68pco.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJL7SWRlZMbeXJgZe2hEG1pQ-x6kPbssU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "792168889426-9dbgrfgp1p1c8ghh68bkp1nc1gm68pco.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

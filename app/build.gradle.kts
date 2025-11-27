@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -21,6 +24,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties()
+        val localPropertiesFile = File(rootDir, "gradle.properties")
+        if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
+            localPropertiesFile.inputStream().use {
+                localProperties.load(it)
+            }
+        }
+        buildConfigField("String", "WEB_CLIENT_ID", localProperties.getProperty("WEB_CLIENT_ID"))
+        buildConfigField("String", "WEB3_AUTH_CLIENT_ID", localProperties.getProperty("WEB3_AUTH_CLIENT_ID"))
+        buildConfigField("String", "WEB3_AUTH_CLIENT_SECRET", localProperties.getProperty("WEB3_AUTH_CLIENT_SECRET"))
     }
 
     buildTypes {
@@ -41,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -68,6 +83,18 @@ dependencies {
     implementation(libs.web3auth.android.sdk)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.57.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    // Auth
+    implementation("com.google.firebase:firebase-auth")
+
+    // Credential Manager
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 }

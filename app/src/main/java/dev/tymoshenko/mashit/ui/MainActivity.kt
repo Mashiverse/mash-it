@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit
+package dev.tymoshenko.mashit.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
