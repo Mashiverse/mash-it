@@ -86,6 +86,15 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
+    // MetaMask
+    implementation(libs.metamask.android.sdk)
+
+    // Coinbase
+    implementation(libs.coinbase.wallet.sdk)
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
+
     // Auth
     implementation(libs.firebase.auth)
 
