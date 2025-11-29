@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "792168889426-1osbifin5llilm9g1hrfn19jbhj3lsdg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.tymoshenko.mashit",
+            "certificate_hash": "2f62edf9ed7f76d0372d0ee2849db65f3424c3e9"
+          }
+        },
+        {
           "client_id": "792168889426-9dbgrfgp1p1c8ghh68bkp1nc1gm68pco.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -33,8 +33,6 @@ android {
             }
         }
         buildConfigField("String", "WEB_CLIENT_ID", localProperties.getProperty("WEB_CLIENT_ID"))
-        buildConfigField("String", "WEB3_AUTH_CLIENT_ID", localProperties.getProperty("WEB3_AUTH_CLIENT_ID"))
-        buildConfigField("String", "WEB3_AUTH_CLIENT_SECRET", localProperties.getProperty("WEB3_AUTH_CLIENT_SECRET"))
     }
 
     buildTypes {
@@ -79,19 +77,17 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
-    // Web3 SDK
-    implementation(libs.web3auth.android.sdk)
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
     // Auth
-    implementation("com.google.firebase:firebase-auth")
+    implementation(libs.firebase.auth)
 
     // Credential Manager
     implementation(libs.androidx.credentials)
