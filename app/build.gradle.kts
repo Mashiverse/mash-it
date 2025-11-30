@@ -33,6 +33,7 @@ android {
             }
         }
         buildConfigField("String", "WEB_CLIENT_ID", localProperties.getProperty("WEB_CLIENT_ID"))
+        buildConfigField("String", "INFURA_API_KEY", localProperties.getProperty("INFURA_API_KEY"))
     }
 
     buildTypes {
@@ -93,7 +94,7 @@ dependencies {
     implementation(libs.coinbase.wallet.sdk)
 
     // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.2.0")
+    implementation(libs.androidx.datastore.preferences)
 
     // Auth
     implementation(libs.firebase.auth)

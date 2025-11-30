@@ -1,5 +1,6 @@
 package dev.tymoshenko.mashit.data.repos
 
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -25,10 +26,17 @@ class DataStoreRepo @Inject constructor(
             WalletPreferences(walletType, wallet)
         }
 
-    suspend fun updateWalletPreferences(walletType: WalletType, wallet: String) {
+    suspend fun updateWallet(walletType: WalletType, wallet: String) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.WALLET_TYPE] = walletType.name
             preferences[PreferencesKeys.WALLET] = wallet
+        }
+    }
+
+    suspend fun removeWallet() {
+        dataStore.edit { preferences ->
+            preferences.remove(PreferencesKeys.WALLET)
+            preferences.remove(PreferencesKeys.WALLET_TYPE)
         }
     }
 }
