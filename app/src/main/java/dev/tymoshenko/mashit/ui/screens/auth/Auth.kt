@@ -1,11 +1,19 @@
 package dev.tymoshenko.mashit.ui.screens.auth
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.WalletPreferences
@@ -26,11 +34,19 @@ fun Auth(navigateToApp: () -> Unit) {
         navigateToApp.invoke()
     }
 
-    Button(onClick = { viewModel.connectMetamask() }) {
-        Text("Connect MetaMask")
-    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+    ) {
+        Column {
+            Button(onClick = navigateToApp) {
+                Text("Connect MetaMask")
+            }
 
-    Button(onClick = {viewModel.connectCoinbase() }) {
-        Text("Connect Coinbase")
+            Button(onClick = navigateToApp) {
+                Text("Connect Coinbase")
+            }
+        }
     }
 }

@@ -1,9 +1,24 @@
 package dev.tymoshenko.mashit.ui.screens.main
 
-import androidx.compose.material3.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.compose.rememberNavController
+import dev.tymoshenko.mashit.ui.screens.main.components.BottomNavBar
 
 @Composable
 fun Main() {
-    Text("It works!")
+    val navController = rememberNavController()
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+        bottomBar = { BottomNavBar() }
+    ) { paddingValues ->
+
+    }
 }

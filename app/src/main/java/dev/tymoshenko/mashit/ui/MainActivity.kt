@@ -4,10 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,14 +25,17 @@ class MainActivity : ComponentActivity() {
             MashItTheme {
                 val navController = rememberNavController()
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(
-                        modifier = Modifier.padding(innerPadding),
-                        navController = navController,
-                        startDestination = AppRoutes.Auth
-                    ) {
-                        appGraph(navController)
-                    }
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(color = Color(16, 16, 16))
+                )
+
+                NavHost(
+                    navController = navController,
+                    startDestination = AppRoutes.Auth
+                ) {
+                    appGraph(navController)
                 }
             }
         }
