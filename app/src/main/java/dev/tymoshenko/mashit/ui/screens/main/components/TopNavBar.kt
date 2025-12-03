@@ -1,25 +1,16 @@
 package dev.tymoshenko.mashit.ui.screens.main.components
 
-import android.text.Layout
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.SnapPosition.Center
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -59,7 +50,7 @@ fun TopNavBar() {
         } else {
             1F
         },
-        tween()
+        tween(delayMillis = 300)
     )
 
     val searchWidth = animateDpAsState(
@@ -68,34 +59,49 @@ fun TopNavBar() {
         } else {
             48.dp
         },
-        tween()
+        tween(delayMillis = 300)
     )
 
     Box(Modifier.fillMaxWidth()) {
         Row {
             Spacer(Modifier.weight(1F))
 
-            AnimatedVisibility(visible = !isSearch, enter = slideInHorizontally() + expandHorizontally(expandFrom = Alignment.Start), exit = slideOutHorizontally() + shrinkHorizontally(shrinkTowards = Alignment.Start)) {
+            AnimatedVisibility(
+                visible = !isSearch,
+                enter = slideInHorizontally() + expandHorizontally(
+                    expandFrom = Alignment.Start,
+                    animationSpec = tween(delayMillis = 300)
+                ),
+                exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + slideOutHorizontally(
+                    targetOffsetX = { it })
+            ) {
                 Button(onClick = {}) {
                     Text("Wallet")
                 }
             }
 
-            Row(modifier = Modifier
-                .height(48.dp)
-                .width(searchWidth.value)
-                .background(Color.Red)
-                .clickable {
-                    isSearch = !isSearch
-                }
-                .clipToBounds(),
+            Row(
+                modifier = Modifier
+                    .height(48.dp)
+                    .width(searchWidth.value)
+                    .background(Color.Red)
+                    .clickable {
+                        isSearch = !isSearch
+                    }
+                    .clipToBounds(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
             ) {
-                Text ("*icon*   fsadgsdgsd42", modifier = Modifier.wrapContentSize(align = Alignment.CenterStart, unbounded = true))
+                Text(
+                    "*icon*   fsadgsdgsd42",
+                    modifier = Modifier.wrapContentSize(
+                        align = Alignment.CenterStart,
+                        unbounded = true
+                    )
+                )
             }
 
-            if(endSpacerWeight.value != 0F) {
+            if (endSpacerWeight.value != 0F) {
                 Spacer(Modifier.weight(endSpacerWeight.value))
             }
         }
@@ -113,8 +119,10 @@ fun TopNavBar() {
 @Preview
 @Composable
 private fun TopNavBarPreview() {
-    MashItTheme(darkTheme = true){
-        Box(modifier = Modifier.systemBarsPadding().background(Color(16,16, 16))) {
+    MashItTheme(darkTheme = true) {
+        Box(modifier = Modifier
+            .systemBarsPadding()
+            .background(Color(16, 16, 16))) {
             TopNavBar()
         }
     }
