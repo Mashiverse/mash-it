@@ -1,0 +1,121 @@
+package dev.tymoshenko.mashit.ui.screens.main.components
+
+import android.text.Layout
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.SnapPosition.Center
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.R
+import dev.tymoshenko.mashit.ui.theme.MashItTheme
+
+@Composable
+fun TopNavBar() {
+    var isSearch by remember {
+        mutableStateOf(false)
+    }
+
+    val endSpacerWeight = animateFloatAsState(
+        targetValue = if (!isSearch) {
+            0F
+        } else {
+            1F
+        },
+        tween()
+    )
+
+    val searchWidth = animateDpAsState(
+        targetValue = if (isSearch) {
+            256.dp
+        } else {
+            48.dp
+        },
+        tween()
+    )
+
+    Box(Modifier.fillMaxWidth()) {
+        Row {
+            Spacer(Modifier.weight(1F))
+
+            AnimatedVisibility(visible = !isSearch, enter = slideInHorizontally() + expandHorizontally(expandFrom = Alignment.Start), exit = slideOutHorizontally() + shrinkHorizontally(shrinkTowards = Alignment.Start)) {
+                Button(onClick = {}) {
+                    Text("Wallet")
+                }
+            }
+
+            Row(modifier = Modifier
+                .height(48.dp)
+                .width(searchWidth.value)
+                .background(Color.Red)
+                .clickable {
+                    isSearch = !isSearch
+                }
+                .clipToBounds(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Text ("*icon*   fsadgsdgsd42", modifier = Modifier.wrapContentSize(align = Alignment.CenterStart, unbounded = true))
+            }
+
+            if(endSpacerWeight.value != 0F) {
+                Spacer(Modifier.weight(endSpacerWeight.value))
+            }
+        }
+
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_foreground),
+            modifier = Modifier
+                .size(48.dp)
+                .background(Color.Cyan),
+            contentDescription = "logo"
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TopNavBarPreview() {
+    MashItTheme(darkTheme = true){
+        Box(modifier = Modifier.systemBarsPadding().background(Color(16,16, 16))) {
+            TopNavBar()
+        }
+    }
+}

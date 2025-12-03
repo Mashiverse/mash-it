@@ -15,9 +15,8 @@ fun BottomNavBar(navController: NavHostController) {
         navItems.forEach { navItem ->
             NavigationBarItem(
                 onClick = { navController.navigate(route = navItem.route) },
-                label = { Text(navItem.label) },
                 selected = false,
-                icon = {}
+                icon = { Text(navItem.label) }
             )
         }
     }
