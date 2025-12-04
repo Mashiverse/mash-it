@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -78,7 +79,7 @@ fun SearchBar(
             delay(300)
             isIcon = true
         } else {
-            delay(300)
+            delay(600)
             isIcon = false
         }
     }
@@ -97,6 +98,7 @@ fun SearchBar(
         Spacer(modifier = Modifier.width(startPadding.value))
 
         if (isIcon) {
+            Spacer(modifier = Modifier.width(startPadding.value + startPadding.value / 2 ))
             Icon(
                 modifier = Modifier
                     .size(24.dp)
@@ -107,13 +109,13 @@ fun SearchBar(
             )
         } else {
             TextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = searchQuery,
                 onValueChange = { input -> onSearchQueryChange.invoke(input) },
                 leadingIcon = {
                     Icon(
                         modifier = Modifier
                             .size(24.dp)
-                            .clip(RoundedCornerShape(8.dp))
                             .clickable {
                                 onIsSearchChange.invoke()
                                 onSearchQueryChange.invoke("")

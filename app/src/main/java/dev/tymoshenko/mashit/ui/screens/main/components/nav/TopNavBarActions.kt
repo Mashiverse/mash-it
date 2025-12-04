@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,10 +42,7 @@ fun TopNavBarActions(
 
         AnimatedVisibility(
             visible = !isSearch,
-            enter = slideInHorizontally() + expandHorizontally(
-                expandFrom = Alignment.Start,
-                animationSpec = tween(delayMillis = 300)
-            ),
+            enter = expandHorizontally() + fadeIn(tween(delayMillis = 600)),
             exit = fadeOut() //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
         ) {
             Row {
