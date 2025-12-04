@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tymoshenko.mashit.nav.graphs.appGraph
 import dev.tymoshenko.mashit.nav.routes.AppRoutes
 import dev.tymoshenko.mashit.ui.theme.MashItTheme
+import dev.tymoshenko.mashit.utils.helpers.changeStatusBarColor
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -23,6 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MashItTheme {
+                LocalView.current.changeStatusBarColor()
                 val navController = rememberNavController()
 
                 Box(
