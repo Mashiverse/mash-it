@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.WalletPreferences
 
 @Composable
-fun Auth(navigateToApp: () -> Unit) {
+fun Auth(onConnect: () -> Unit) {
     val ctx = LocalContext.current
 
     val viewModel = hiltViewModel<AuthViewModel>()
@@ -31,7 +31,7 @@ fun Auth(navigateToApp: () -> Unit) {
     }
 
     if (wallet.wallet != null && wallet.walletType != null) {
-        navigateToApp.invoke()
+        onConnect.invoke()
     }
 
     Box(
@@ -40,11 +40,11 @@ fun Auth(navigateToApp: () -> Unit) {
             .systemBarsPadding()
     ) {
         Column {
-            Button(onClick = navigateToApp) {
+            Button(onClick = onConnect) {
                 Text("Connect MetaMask")
             }
 
-            Button(onClick = navigateToApp) {
+            Button(onClick = onConnect) {
                 Text("Connect Coinbase")
             }
         }

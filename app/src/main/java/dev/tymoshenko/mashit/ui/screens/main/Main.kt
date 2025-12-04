@@ -13,14 +13,17 @@ import dev.tymoshenko.mashit.ui.screens.main.components.nav.BottomNavBar
 import dev.tymoshenko.mashit.ui.screens.main.components.nav.TopNavBar
 
 @Composable
-fun Main() {
+fun Main(onDisconnect: () -> Unit) {
     val navController = rememberNavController()
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         bottomBar = { BottomNavBar(navController) },
-        topBar = { TopNavBar() }
+        topBar = { TopNavBar(
+            wallet = "0xd659688366e5a5a6190409dcd4834b3a5b7c88ba",
+            onDisconnect = onDisconnect
+        ) }
     ) { paddingValues ->
         NavHost(
             navController = navController,

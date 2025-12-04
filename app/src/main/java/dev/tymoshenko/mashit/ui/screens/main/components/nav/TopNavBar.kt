@@ -26,7 +26,10 @@ import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.ui.theme.MashItTheme
 
 @Composable
-fun TopNavBar() {
+fun TopNavBar(
+    wallet: String,
+    onDisconnect: () -> Unit
+) {
     var isSearch by remember {
         mutableStateOf(false)
     }
@@ -56,13 +59,15 @@ fun TopNavBar() {
                 isSearch = isSearch,
                 onIsSearchChange = onIsSearchChange,
                 searchQuery = searchQuery,
-                onSearchQueryChange = onSearchQueryChange
+                onSearchQueryChange = onSearchQueryChange,
+                wallet = wallet,
+                onDisconnect = onDisconnect
             )
 
             Image(
                 painter = painterResource(R.drawable.logo),
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(32.dp)
                     .align(Alignment.CenterStart),
                 contentDescription = "logo"
             )
@@ -75,19 +80,5 @@ fun TopNavBar() {
                 .fillMaxWidth()
                 .background(Color.Gray)
         )
-    }
-}
-
-@Preview
-@Composable
-private fun TopNavBarPreview() {
-    MashItTheme(darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .systemBarsPadding()
-                .background(Color(16, 16, 16))
-        ) {
-            TopNavBar()
-        }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -26,7 +27,9 @@ fun TopNavBarActions(
     isSearch: Boolean,
     onIsSearchChange: () -> Unit,
     searchQuery: String,
-    onSearchQueryChange: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    wallet: String,
+    onDisconnect: () -> Unit
 ) {
     val endPadding = animateFloatAsState(
         targetValue = if (!isSearch) {
@@ -53,10 +56,11 @@ fun TopNavBarActions(
                         containerColor = Color.Transparent,
                         contentColor = Color.Red
                     ),
+                    shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(8.dp),
-                    onClick = {}
+                    onClick = onDisconnect
                 ) {
-                    Text("Wallet")
+                    Text( "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}")
                 }
 
                 Spacer(Modifier.width(16.dp))
