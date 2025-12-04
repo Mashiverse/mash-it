@@ -114,7 +114,7 @@ fun TopNavBar() {
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
         Box(
             modifier = Modifier
@@ -213,7 +213,7 @@ fun TopNavBar() {
             Image(
                 painter = painterResource(R.drawable.logo),
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(48.dp)
                     .align(Alignment.CenterStart),
                 contentDescription = "logo"
             )
