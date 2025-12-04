@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.components
+package dev.tymoshenko.mashit.ui.screens.main.components.nav
 
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
