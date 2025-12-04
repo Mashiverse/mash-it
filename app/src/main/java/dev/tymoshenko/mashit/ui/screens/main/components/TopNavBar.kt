@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -72,8 +73,7 @@ fun TopNavBar() {
                     expandFrom = Alignment.Start,
                     animationSpec = tween(delayMillis = 300)
                 ),
-                exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + slideOutHorizontally(
-                    targetOffsetX = { it })
+                exit = fadeOut() //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
             ) {
                 Button(onClick = {}) {
                     Text("Wallet")
