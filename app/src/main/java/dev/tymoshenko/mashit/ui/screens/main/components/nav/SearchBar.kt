@@ -79,7 +79,7 @@ fun SearchBar(
             delay(300)
             isIcon = true
         } else {
-            delay(300)
+            delay(600)
             isIcon = false
         }
     }
