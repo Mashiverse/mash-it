@@ -1,12 +1,9 @@
 [versions]
-agp = "8.13.1"
+agp = "8.13.2"
 coilCompose = "3.3.0"
 coinbaseWalletSdk = "1.2.0"
 converterGson = "3.0.0"
-credentials = "1.5.0"
 datastorePreferences = "1.2.0"
-firebaseBom = "34.6.0"
-googleid = "1.1.1"
 hiltAndroid = "2.57.2"
 hiltNavigationCompose = "1.3.0"
 kotlin = "2.2.21"
@@ -15,16 +12,16 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.0"
-composeBom = "2025.11.01"
+activityCompose = "1.12.1"
+composeBom = "2025.12.00"
+materialIconsExtended = "1.7.8"
 metamaskAndroidSdk = "0.6.6"
 navigationCompose = "2.9.6"
 retrofit = "3.0.0"
 
 [libraries]
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
-androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -32,10 +29,6 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCo
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 coinbase-wallet-sdk = { module = "com.coinbase:coinbase-wallet-sdk", version.ref = "coinbaseWalletSdk" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
-firebase-auth = { module = "com.google.firebase:firebase-auth" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

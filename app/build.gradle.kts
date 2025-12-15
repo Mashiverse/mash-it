@@ -7,7 +7,6 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -26,13 +25,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val localProperties = Properties()
-        val localPropertiesFile = File(rootDir, "gradle.properties")
+        val localPropertiesFile = File(rootDir, "keys.properties")
         if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
             localPropertiesFile.inputStream().use {
                 localProperties.load(it)
             }
         }
-        buildConfigField("String", "WEB_CLIENT_ID", localProperties.getProperty("WEB_CLIENT_ID"))
+
         buildConfigField("String", "INFURA_API_KEY", localProperties.getProperty("INFURA_API_KEY"))
     }
 
@@ -83,10 +82,6 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-
     // MetaMask
     implementation(libs.metamask.android.sdk)
 
@@ -95,14 +90,6 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
-
-    // Auth
-    implementation(libs.firebase.auth)
-
-    // Credential Manager
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -113,5 +100,5 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     // Icons
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation(libs.androidx.compose.material.icons.extended)
 }

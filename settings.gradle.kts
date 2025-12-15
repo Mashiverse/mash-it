@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mash It"
+rootProject.name = "mash-it"
 include(":app")

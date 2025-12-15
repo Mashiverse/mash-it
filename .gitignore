@@ -17,3 +17,4 @@ local.properties
 .idea
 /gradle.properties
 gradle.properties
+/keys.properties
