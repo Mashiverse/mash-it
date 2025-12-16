@@ -34,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.R
+import dev.tymoshenko.mashit.ui.theme.SearchBarBackground
 import kotlinx.coroutines.delay
 
 @Composable
@@ -58,7 +59,7 @@ fun SearchBar(
 
     val background = animateColorAsState(
         targetValue = if (isSearch) {
-            Color(63, 63, 63)
+            SearchBarBackground
         } else {
             Color.Transparent
         },

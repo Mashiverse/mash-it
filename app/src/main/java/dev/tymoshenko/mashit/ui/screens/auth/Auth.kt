@@ -1,5 +1,6 @@
 package dev.tymoshenko.mashit.ui.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,11 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.WalletPreferences
+import dev.tymoshenko.mashit.ui.theme.Background
 
 @Composable
 fun Auth(onConnect: () -> Unit) {
-    LocalContext.current
-
     val viewModel = hiltViewModel<AuthViewModel>()
     val walletPreferences = viewModel.walletPreferences.collectAsState(
         WalletPreferences(null, null)

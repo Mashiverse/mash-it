@@ -1,5 +1,7 @@
 package dev.tymoshenko.mashit.ui.screens.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,6 +13,7 @@ import dev.tymoshenko.mashit.nav.graphs.mainGraph
 import dev.tymoshenko.mashit.nav.routes.MainRoutes
 import dev.tymoshenko.mashit.ui.screens.main.components.nav.BottomNavBar
 import dev.tymoshenko.mashit.ui.screens.main.components.nav.TopNavBar
+import dev.tymoshenko.mashit.ui.theme.Background
 
 @Composable
 fun Main(onDisconnect: () -> Unit) {
@@ -18,13 +21,20 @@ fun Main(onDisconnect: () -> Unit) {
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(Background),
         bottomBar = { BottomNavBar(navController) },
         topBar = { TopNavBar(
             wallet = "0xd659688366e5a5a6190409dcd4834b3a5b7c88ba",
             onDisconnect = onDisconnect
         ) }
     ) { paddingValues ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Background)
+        )
+
         NavHost(
             navController = navController,
             startDestination = MainRoutes.Shop,

@@ -9,22 +9,22 @@ import dev.tymoshenko.mashit.ui.screens.main.Main
 
 fun NavGraphBuilder.appGraph(navController: NavHostController) {
     composable<AppRoutes.Auth> {
-        Auth(onConnect = {
-            navController.navigate(AppRoutes.Main) {
-                popUpTo<AppRoutes.Auth> {
-                    inclusive = true
-                }
-            }
-        })
+        Auth(onConnect = { navController.onConnect() })
     }
 
     composable<AppRoutes.Main> {
-        Main(onDisconnect = {
-            navController.navigate(AppRoutes.Auth) {
-                popUpTo<AppRoutes.Main> {
-                    inclusive = true
-                }
-            }
-        })
+        Main(onDisconnect = { navController.onDisconnect() })
+    }
+}
+
+fun NavHostController.onConnect() = this.navigate(AppRoutes.Main) {
+    popUpTo<AppRoutes.Auth> {
+        inclusive = true
+    }
+}
+
+fun NavHostController.onDisconnect() = this.navigate(AppRoutes.Auth) {
+    popUpTo<AppRoutes.Main> {
+        inclusive = true
     }
 }

@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.tymoshenko.mashit.nav.graphs.appGraph
 import dev.tymoshenko.mashit.nav.routes.AppRoutes
+import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.MashItTheme
 import dev.tymoshenko.mashit.utils.helpers.changeStatusBarColor
 
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .background(color = Color(16, 16, 16))
+                        .background(Background)
                 )
 
                 NavHost(
