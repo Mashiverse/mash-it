@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import dev.tymoshenko.mashit.data.models.navItems
+import dev.tymoshenko.mashit.ui.theme.Geist
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
@@ -26,7 +27,7 @@ fun BottomNavBar(navController: NavHostController) {
                     selectedDest = i
                 },
                 selected = i == selectedDest,
-                icon = { Text(navItem.label) }
+                icon = { Text(navItem.label, fontFamily = Geist) }
             )
         }
     }

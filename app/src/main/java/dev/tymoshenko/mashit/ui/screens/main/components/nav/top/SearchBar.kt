@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.SearchHeight
 import dev.tymoshenko.mashit.ui.theme.SearchShape
 import dev.tymoshenko.mashit.ui.theme.SmallIconSize
@@ -121,7 +122,7 @@ fun SearchBar(
                 ),
                 singleLine = true,
                 textStyle = TextStyle(fontSize = ContentTextSize),
-                placeholder = { Text("Search Mash It", fontSize = ContentTextSize) }
+                placeholder = { Text("Search Mash It", fontSize = ContentTextSize, fontFamily = Geist) }
             )
         }
     }

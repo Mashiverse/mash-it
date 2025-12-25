@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.SearchBarBackground
 
@@ -25,6 +26,6 @@ fun ShopBanner(i: Int) {
             .background(SearchBarBackground),
         contentAlignment = Alignment.Center
     ) {
-        Text("${i}")
+        Text("${i}", fontFamily = Geist)
     }
 }

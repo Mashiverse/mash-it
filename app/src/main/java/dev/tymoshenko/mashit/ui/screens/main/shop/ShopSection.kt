@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
@@ -19,7 +20,7 @@ fun ShopSection(
 ) {
     Column{
         Row(modifier = Modifier.fillMaxWidth()) {
-            Text(sectionName)
+            Text(sectionName, fontFamily = Geist)
         }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),

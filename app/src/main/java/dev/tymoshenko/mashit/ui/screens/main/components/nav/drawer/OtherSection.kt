@@ -19,6 +19,7 @@ import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 @Composable
@@ -44,7 +45,7 @@ private fun OtherSectionButton(
                 .offset(x = (-6).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = text, fontSize = ContentTextSize, fontWeight = FontWeight.Normal)
+            Text(text = text, fontSize = ContentTextSize, fontWeight = FontWeight.Normal, fontFamily = Geist)
         }
     }
 }

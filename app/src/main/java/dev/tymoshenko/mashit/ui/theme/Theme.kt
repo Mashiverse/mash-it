@@ -52,7 +52,7 @@ fun MashItTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = GeistTypography,
         content = content
     )
 }

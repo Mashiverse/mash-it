@@ -28,6 +28,7 @@ import dev.tymoshenko.mashit.ui.theme.AccountInfoShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
 import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.SearchHeight
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
@@ -75,7 +76,8 @@ fun TopNavBarActions(
                 ) {
                     Text(
                         text = "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}",
-                        fontSize = ContentTextSize
+                        fontSize = ContentTextSize,
+                        fontFamily = Geist
                     )
                 }
 

@@ -27,6 +27,7 @@ import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
@@ -62,7 +63,7 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.width(6.dp))
 
-            Text(text = "Create a post", fontSize = ContentTextSize, fontWeight = FontWeight.Normal)
+            Text(text = "Create a post", fontSize = ContentTextSize, fontFamily = Geist, fontWeight = FontWeight.Normal)
         }
     }
 }

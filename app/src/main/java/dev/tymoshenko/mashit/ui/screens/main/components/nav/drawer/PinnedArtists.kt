@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.IconsShape
 import dev.tymoshenko.mashit.ui.theme.LargePaddingSize
@@ -64,7 +65,8 @@ private fun PinnedArtist() {
             "Ervindas rocks!",
             fontSize = ContentTextSize,
             color = ContentColor,
-            fontWeight = FontWeight.Normal
+            fontWeight = FontWeight.Normal,
+            fontFamily = Geist
         )
 
         Spacer(modifier = Modifier.weight(1F))
@@ -103,7 +105,8 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                 "Pinned Artists",
                 fontSize = ContentTextSize,
                 color = Color.White,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontFamily = Geist
             )
 
             Spacer(modifier = Modifier.weight(1F))

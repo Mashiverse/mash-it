@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,8 @@ import dev.tymoshenko.mashit.ui.screens.main.components.MashiHolder
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
+import dev.tymoshenko.mashit.ui.theme.Geist
+import dev.tymoshenko.mashit.ui.theme.GeistTypography
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
@@ -88,7 +91,8 @@ fun InactiveButton(
                 FontWeight.SemiBold
             } else {
                 FontWeight.Normal
-            }
+            },
+            fontFamily = Geist
         )
     }
 }
@@ -110,15 +114,15 @@ fun ShopItem(
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = avatarName, fontSize = 14.sp, color = Color.White)
+        Text(text = avatarName, fontSize = 14.sp, color = Color.White, fontFamily = Geist)
 
-        Text(text = "by $authorName", fontSize = 12.sp, color = ContentColor)
+        Text(text = "by $authorName", fontSize = 12.sp, color = ContentColor, fontFamily = Geist)
 
-        Text(text = "$soldQuantity of $quantity sold", fontSize = 12.sp, color = ContentColor)
+        Text(text = "$soldQuantity of $quantity sold", fontSize = 12.sp, color = ContentColor, fontFamily = Geist)
 
         InactiveButton(
             text = if (isSoldOut) "Sold out" else "$price USDC",
-            enabled = !isSoldOut
+            enabled = !isSoldOut,
         )
     }
 }
