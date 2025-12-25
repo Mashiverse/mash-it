@@ -16,6 +16,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tymoshenko.mashit.ui.theme.Background
+import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
+import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -27,27 +29,27 @@ fun NavDrawer(modifier: Modifier = Modifier, navController: NavHostController) {
         drawerShape = RectangleShape,
         modifier = modifier.width((config.screenWidthDp * 0.80).dp),
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(PaddingSize))
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(PaddingSize)
         ) {
-            CreatePostButton(modifier = Modifier.padding(horizontal = 12.dp))
+            CreatePostButton(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
 
             HorizontalDivider()
 
             DrawerNav(
-                modifier = Modifier.padding(horizontal = 12.dp),
+                modifier = Modifier.padding(horizontal = DrawerPaddingSize),
                 navController = navController
             )
 
             HorizontalDivider()
 
-            PinnedArtists(modifier = Modifier.padding(horizontal = 12.dp))
+            PinnedArtists(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
 
             HorizontalDivider()
 
-            OtherSection(modifier = Modifier.padding(horizontal = 12.dp))
+            OtherSection(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
         }
     }
 }

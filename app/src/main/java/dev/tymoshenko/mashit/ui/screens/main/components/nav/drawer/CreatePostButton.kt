@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -23,9 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
+import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
+import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.IconSize
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
 fun CreatePostButton(modifier: Modifier = Modifier) {
@@ -34,7 +37,7 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .height(40.dp),
+            .height(ContentContainerHeight),
         onClick = {
             Toast.makeText(ctx, "Creates post", Toast.LENGTH_SHORT).show()
         },
@@ -42,17 +45,16 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
             containerColor = ContainerColor,
             contentColor = ContentColor
         ),
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        shape = RoundedCornerShape(25)
+        contentPadding = PaddingValues(horizontal = SmallPaddingSize),
+        shape = ContentContainerShape
     ) {
         Row(
-            Modifier
-                .fillMaxWidth(),
+            Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier
-                    .size(32.dp),
+                    .size(IconSize),
                 imageVector = Icons.Default.Add,
                 contentDescription = "add icon",
                 tint = Color.Red
@@ -60,7 +62,7 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.width(6.dp))
 
-            Text(text = "Create a post", fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            Text(text = "Create a post", fontSize = ContentTextSize, fontWeight = FontWeight.Normal)
         }
     }
 }

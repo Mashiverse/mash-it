@@ -24,7 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.ui.theme.AccountInfoShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
+import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
+import dev.tymoshenko.mashit.ui.theme.SearchHeight
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
 fun TopNavBarActions(
@@ -45,7 +50,7 @@ fun TopNavBarActions(
 
     Row(
         modifier = Modifier
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = SmallPaddingSize),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.weight(1F))
@@ -58,23 +63,23 @@ fun TopNavBarActions(
             Row {
                 OutlinedButton(
                     modifier = Modifier
-                        .height(32.dp),
+                        .height(SearchHeight),
                     colors = ButtonDefaults.outlinedButtonColors().copy(
                         containerColor = Color.Transparent,
                         contentColor = Color.Red,
                     ),
                     border = BorderStroke(width = (1.3).dp, color = ContainerColor),
-                    shape = RoundedCornerShape(42),
-                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    shape = AccountInfoShape,
+                    contentPadding = PaddingValues(horizontal = SmallPaddingSize),
                     onClick = onDisconnect
                 ) {
                     Text(
                         text = "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}",
-                        fontSize = 16.sp
+                        fontSize = ContentTextSize
                     )
                 }
 
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(DrawerPaddingSize))
             }
         }
 

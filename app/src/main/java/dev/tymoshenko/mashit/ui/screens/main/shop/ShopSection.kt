@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
 fun ShopSection(
@@ -22,7 +23,7 @@ fun ShopSection(
         }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
         ) {
             items(sectionItems.size) { index ->
                 sectionItems[index].invoke()

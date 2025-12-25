@@ -34,6 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.R
+import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
+import dev.tymoshenko.mashit.ui.theme.IconSize
+import dev.tymoshenko.mashit.ui.theme.NavBarHeight
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -63,12 +67,12 @@ fun TopNavBar(
             .fillMaxWidth()
             .statusBarsPadding()
     ) {
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(DrawerPaddingSize))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(NavBarHeight),
             contentAlignment = Alignment.Center
         ) {
             TopNavBarActions(
@@ -83,18 +87,18 @@ fun TopNavBar(
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(horizontal = 12.dp),
+                    .padding(horizontal = DrawerPaddingSize),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(IconSize)
                         .clip(CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Menu,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(IconSize)
                             .clickable(onClick = {
                                 scope.launch {
                                     drawerState.apply {
@@ -107,7 +111,7 @@ fun TopNavBar(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(SmallPaddingSize))
 
                 AnimatedVisibility(
                     visible = !isSearch,
@@ -117,7 +121,7 @@ fun TopNavBar(
                     Image(
                         painter = painterResource(R.drawable.logo),
                         modifier = Modifier
-                            .size(48.dp),
+                            .size(NavBarHeight),
                         contentDescription = "logo"
                     )
                 }

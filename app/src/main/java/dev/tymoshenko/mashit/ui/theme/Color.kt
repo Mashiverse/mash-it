@@ -8,6 +8,8 @@ val SearchBarBackground = Color(63, 63, 63)
 val ContainerColor = Color(45, 45, 45)
 val ContentColor = Color(197, 197, 197)
 
+val MashiBackground = Color(185, 185, 185)
+
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)

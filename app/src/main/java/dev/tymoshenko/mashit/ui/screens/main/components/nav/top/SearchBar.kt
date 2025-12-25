@@ -7,7 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -30,6 +29,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.R
+import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.SearchHeight
+import dev.tymoshenko.mashit.ui.theme.SearchShape
+import dev.tymoshenko.mashit.ui.theme.SmallIconSize
 
 @Composable
 fun SearchBar(
@@ -42,7 +45,7 @@ fun SearchBar(
         targetValue = if (isSearch) {
             272.dp
         } else {
-            32.dp
+            SearchHeight
         }
     )
 
@@ -69,22 +72,22 @@ fun SearchBar(
 
     Row(
         modifier = Modifier
-            .height(32.dp)
+            .height(SearchHeight)
             .width(width.value)
-            .clip(shape = RoundedCornerShape(56))
+            .clip(shape = SearchShape)
             .border(
                 border = BorderStroke(width = 1.dp, color = borderColor.value),
-                shape = RoundedCornerShape(56)
+                shape = SearchShape
             )
             .wrapContentSize(unbounded = true, align = Alignment.CenterStart)
             .clipToBounds(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        if (width.value <= 32.dp) {
+        if (width.value <= SearchHeight) {
             Icon(
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(SmallIconSize)
                     .clickable { onIsSearchChange.invoke() },
                 painter = painterResource(R.drawable.search_icon),
                 contentDescription = "Search icon",
@@ -101,7 +104,7 @@ fun SearchBar(
                 leadingIcon = {
                     Icon(
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(SmallIconSize)
                             .offset(x = iconOffset.value)
                             .clickable {
                                 onIsSearchChange.invoke()
@@ -117,8 +120,8 @@ fun SearchBar(
                     focusedContainerColor = Color.Transparent
                 ),
                 singleLine = true,
-                textStyle = TextStyle(fontSize = 16.sp),
-                placeholder = { Text("Search Mash It", fontSize = 16.sp) }
+                textStyle = TextStyle(fontSize = ContentTextSize),
+                placeholder = { Text("Search Mash It", fontSize = ContentTextSize) }
             )
         }
     }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
@@ -14,12 +13,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tymoshenko.mashit.data.models.navItems
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
+import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
+import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 
 @Composable
@@ -31,12 +32,12 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(PaddingSize),
     ) {
         navItems.forEachIndexed { i, navItem ->
             NavigationDrawerItem(
                 modifier = Modifier
-                    .height(40.dp),
+                    .height(ContentContainerHeight),
                 onClick = {
                     navController.navigate(route = navItem.route)
                     selectedDest = i
@@ -51,7 +52,7 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
                     selectedTextColor = ContentColor,
                     unselectedTextColor = ContentColor
                 ),
-                shape = RoundedCornerShape(25)
+                shape = ContentContainerShape
             )
         }
     }

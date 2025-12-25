@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,31 +31,38 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
+import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.IconSize
+import dev.tymoshenko.mashit.ui.theme.IconsShape
+import dev.tymoshenko.mashit.ui.theme.LargePaddingSize
+import dev.tymoshenko.mashit.ui.theme.PaddingSize
+import dev.tymoshenko.mashit.ui.theme.SmallIconSize
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
 private fun PinnedArtist() {
     Row(
         modifier = Modifier
-            .height(40.dp)
+            .height(ContentContainerHeight)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(PaddingSize))
 
         Box(
             modifier = Modifier
-                .size(24.dp)
-                .clip(RoundedCornerShape(90))
+                .size(SmallIconSize)
+                .clip(IconsShape)
                 .background(Color.White)
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(SmallPaddingSize))
 
         Text(
             "Ervindas rocks!",
-            fontSize = 16.sp,
+            fontSize = ContentTextSize,
             color = ContentColor,
             fontWeight = FontWeight.Normal
         )
@@ -67,14 +72,14 @@ private fun PinnedArtist() {
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
                 modifier = Modifier
-                    .size(24.dp),
+                    .size(SmallIconSize),
                 imageVector = Icons.Default.PushPin,
                 contentDescription = "unpin",
                 tint = ContentColor
             )
         }
 
-        Spacer(modifier = Modifier.width(32.dp))
+        Spacer(modifier = Modifier.width(LargePaddingSize))
     }
 }
 
@@ -92,11 +97,11 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(PaddingSize))
 
             Text(
                 "Pinned Artists",
-                fontSize = 16.sp,
+                fontSize = ContentTextSize,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
@@ -106,7 +111,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
             IconButton(onClick = { isOpened = !isOpened }) {
                 Icon(
                     modifier = Modifier
-                        .size(32.dp),
+                        .size(IconSize),
                     imageVector = if (!isOpened) {
                         Icons.Default.ArrowDropDown
                     } else {
@@ -124,7 +129,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
             exit = shrinkVertically()
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(PaddingSize)
             ) {
                 repeat(6) {
                     PinnedArtist()

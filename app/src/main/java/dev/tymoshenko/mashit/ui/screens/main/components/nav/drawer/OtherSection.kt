@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -16,8 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
+import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
+import dev.tymoshenko.mashit.ui.theme.ContentTextSize
+import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 @Composable
 private fun OtherSectionButton(
@@ -28,9 +30,9 @@ private fun OtherSectionButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
+            .height(ContentContainerHeight),
         onClick = onClick,
-        shape = RoundedCornerShape(25),
+        shape = ContentContainerShape,
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = Color.Transparent,
             contentColor = contentColor
@@ -42,7 +44,7 @@ private fun OtherSectionButton(
                 .offset(x = (-6).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = text, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            Text(text = text, fontSize = ContentTextSize, fontWeight = FontWeight.Normal)
         }
     }
 }
@@ -51,7 +53,7 @@ private fun OtherSectionButton(
 fun OtherSection(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(PaddingSize)
     ) {
         OtherSectionButton(
             onClick = {},

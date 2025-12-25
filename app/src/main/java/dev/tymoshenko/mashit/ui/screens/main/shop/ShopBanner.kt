@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.SearchBarBackground
 
 @Composable
@@ -20,7 +21,7 @@ fun ShopBanner(i: Int) {
         modifier = Modifier
             .width(200.dp)
             .height(100.dp)
-            .clip(RoundedCornerShape(45))
+            .clip(MashiHolderShape)
             .background(SearchBarBackground),
         contentAlignment = Alignment.Center
     ) {
