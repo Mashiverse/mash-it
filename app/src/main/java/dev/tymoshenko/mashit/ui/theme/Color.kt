@@ -3,8 +3,10 @@ package dev.tymoshenko.mashit.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Custom colors
-val Background = Color(16, 16, 16)
+val Background = Color(22, 22, 22)
 val SearchBarBackground = Color(63, 63, 63)
+val ButtonContainerColor = Color(45, 45, 45)
+val TextColor = Color(197, 197, 197)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)

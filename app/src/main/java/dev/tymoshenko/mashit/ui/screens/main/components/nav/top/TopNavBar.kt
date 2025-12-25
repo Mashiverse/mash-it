@@ -1,5 +1,10 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav
+package dev.tymoshenko.mashit.ui.screens.main.components.nav.top
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.R
@@ -59,11 +63,13 @@ fun TopNavBar(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
+        Spacer(modifier = Modifier.height(12.dp))
+
         Box(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(32.dp),
             contentAlignment = Alignment.Center
         ) {
             TopNavBarActions(
@@ -76,13 +82,18 @@ fun TopNavBar(
             )
 
             Row(
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.size(32.dp).clip(CircleShape)) {
+                Box(modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)) {
                     Icon(
                         imageVector = Icons.Default.Menu,
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(24.dp)
                             .clickable(onClick = {
                                 scope.launch {
                                     drawerState.apply {
@@ -97,13 +108,19 @@ fun TopNavBar(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Box(modifier = Modifier.size(32.dp)) {
-                    Image(
-                        painter = painterResource(R.drawable.logo),
-                        modifier = Modifier
-                            .size(32.dp),
-                        contentDescription = "logo"
-                    )
+                AnimatedVisibility(
+                    visible = !isSearch,
+                    enter = expandHorizontally() + fadeIn(tween(delayMillis = 300)),
+                    exit = fadeOut(tween(durationMillis = 0)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
+                ) {
+                    Box(modifier = Modifier.size(32.dp)) {
+                        Image(
+                            painter = painterResource(R.drawable.logo),
+                            modifier = Modifier
+                                .size(32.dp),
+                            contentDescription = "logo"
+                        )
+                    }
                 }
             }
 
@@ -111,10 +128,11 @@ fun TopNavBar(
 
         Spacer(
             modifier = Modifier
-                .padding(top = 8.dp)
-                .height(1.dp)
                 .fillMaxWidth()
-                .background(Color.Gray)
+                .height((1.3).dp)
+                .background(Color.DarkGray)
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }

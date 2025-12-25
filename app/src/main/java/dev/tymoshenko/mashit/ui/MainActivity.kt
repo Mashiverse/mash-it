@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = AppRoutes.Auth
+                    startDestination = AppRoutes.Main
                 ) {
                     appGraph(navController)
                 }

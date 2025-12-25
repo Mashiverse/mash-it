@@ -1,6 +1,8 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav
+package dev.tymoshenko.mashit.ui.screens.main.components.nav.drawer
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DismissibleDrawerSheet
@@ -23,10 +25,17 @@ fun NavDrawer(modifier: Modifier = Modifier) {
     DismissibleDrawerSheet(
         drawerContainerColor = Background,
         drawerShape = RectangleShape,
-        modifier = modifier.width((config.screenWidthDp * 0.80).dp)
+        modifier = modifier.width((config.screenWidthDp * 0.85).dp),
     ) {
-        Text("Drawer title", modifier = Modifier.padding(16.dp), color = Color.White)
+        Spacer(modifier = Modifier.height(6.dp))
+
+        CreatePostButton(modifier = Modifier.padding(12.dp))
+
+        Spacer(modifier = Modifier.height(6.dp))
+
         HorizontalDivider()
+        Text("Drawer title", modifier = Modifier.padding(16.dp), color = Color.White)
+
         NavigationDrawerItem(
             label = { Text(text = "Drawer Item") },
             selected = false,
