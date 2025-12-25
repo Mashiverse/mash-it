@@ -6,11 +6,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -42,18 +44,22 @@ fun TopNavBarActions(
         }
     )
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Spacer(Modifier.weight(1F))
 
         AnimatedVisibility(
             visible = !isSearch,
-            enter = expandHorizontally() + fadeIn(tween(delayMillis = 300)),
-            exit = fadeOut(tween(durationMillis = 0)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
+            enter = expandHorizontally() + fadeIn(tween(delayMillis = 300, durationMillis = 150)),
+            exit = shrinkOut() + fadeOut(tween(durationMillis = 0)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
         ) {
             Row {
                 OutlinedButton(
                     modifier = Modifier
-                        .height(24.dp),
+                        .height(32.dp),
                     colors = ButtonDefaults.outlinedButtonColors().copy(
                         containerColor = Color.Transparent,
                         contentColor = Color.Red,
@@ -65,11 +71,11 @@ fun TopNavBarActions(
                 ) {
                     Text(
                         text = "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}",
-                        fontSize = 12.sp
+                        fontSize = 16.sp
                     )
                 }
 
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(12.dp))
             }
         }
 

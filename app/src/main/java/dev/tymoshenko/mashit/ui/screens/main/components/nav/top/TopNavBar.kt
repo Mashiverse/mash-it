@@ -2,7 +2,6 @@ package dev.tymoshenko.mashit.ui.screens.main.components.nav.top
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -69,7 +68,7 @@ fun TopNavBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(32.dp),
+                .height(48.dp),
             contentAlignment = Alignment.Center
         ) {
             TopNavBarActions(
@@ -87,13 +86,15 @@ fun TopNavBar(
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                ) {
                     Icon(
                         imageVector = Icons.Default.Menu,
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(32.dp)
                             .clickable(onClick = {
                                 scope.launch {
                                     drawerState.apply {
@@ -110,17 +111,15 @@ fun TopNavBar(
 
                 AnimatedVisibility(
                     visible = !isSearch,
-                    enter = expandHorizontally() + fadeIn(tween(delayMillis = 300)),
-                    exit = fadeOut(tween(durationMillis = 0)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
+                    enter = fadeIn(tween(durationMillis = 150)),
+                    exit = fadeOut(tween(durationMillis = 75)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
                 ) {
-                    Box(modifier = Modifier.size(32.dp)) {
-                        Image(
-                            painter = painterResource(R.drawable.logo),
-                            modifier = Modifier
-                                .size(32.dp),
-                            contentDescription = "logo"
-                        )
-                    }
+                    Image(
+                        painter = painterResource(R.drawable.logo),
+                        modifier = Modifier
+                            .size(48.dp),
+                        contentDescription = "logo"
+                    )
                 }
             }
 

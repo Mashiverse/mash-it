@@ -40,9 +40,9 @@ fun SearchBar(
 ) {
     val width = animateDpAsState(
         targetValue = if (isSearch) {
-            224.dp
+            272.dp
         } else {
-            24.dp
+            32.dp
         }
     )
 
@@ -63,13 +63,13 @@ fun SearchBar(
         targetValue = if (isSearch) {
             0.dp
         } else {
-            (-15).dp
+            (-12).dp
         },
     )
 
     Row(
         modifier = Modifier
-            .height(24.dp)
+            .height(32.dp)
             .width(width.value)
             .clip(shape = RoundedCornerShape(56))
             .border(
@@ -81,10 +81,10 @@ fun SearchBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        if (width.value <= 24.dp) {
+        if (width.value <= 32.dp) {
             Icon(
                 modifier = Modifier
-                    .size(18.dp)
+                    .size(24.dp)
                     .clickable { onIsSearchChange.invoke() },
                 painter = painterResource(R.drawable.search_icon),
                 contentDescription = "Search icon",
@@ -101,7 +101,7 @@ fun SearchBar(
                 leadingIcon = {
                     Icon(
                         modifier = Modifier
-                            .size(18.dp)
+                            .size(24.dp)
                             .offset(x = iconOffset.value)
                             .clickable {
                                 onIsSearchChange.invoke()
@@ -117,8 +117,8 @@ fun SearchBar(
                     focusedContainerColor = Color.Transparent
                 ),
                 singleLine = true,
-                textStyle = TextStyle(fontSize = 10.sp),
-                placeholder = { Text("Search Mash It", fontSize = 14.sp) }
+                textStyle = TextStyle(fontSize = 16.sp),
+                placeholder = { Text("Search Mash It", fontSize = 16.sp) }
             )
         }
     }

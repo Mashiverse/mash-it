@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,13 +28,13 @@ import dev.tymoshenko.mashit.ui.theme.ButtonContainerColor
 import dev.tymoshenko.mashit.ui.theme.TextColor
 
 @Composable
-fun CreatePostButton(modifier: Modifier) {
+fun CreatePostButton(modifier: Modifier = Modifier) {
     val ctx = LocalContext.current
 
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .height(32.dp),
+            .height(40.dp),
         onClick = {
             Toast.makeText(ctx, "Creates post", Toast.LENGTH_SHORT).show()
         },
@@ -41,7 +42,7 @@ fun CreatePostButton(modifier: Modifier) {
             containerColor = ButtonContainerColor,
             contentColor = TextColor
         ),
-        contentPadding = PaddingValues(horizontal = 4.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp),
         shape = RoundedCornerShape(25)
     ) {
         Row(
@@ -59,7 +60,7 @@ fun CreatePostButton(modifier: Modifier) {
 
             Spacer(modifier = Modifier.width(6.dp))
 
-            Text(text = "Create a post", fontSize = 14.sp)
+            Text(text = "Create a post", fontSize = 16.sp, fontWeight = FontWeight.Normal)
         }
     }
 }
