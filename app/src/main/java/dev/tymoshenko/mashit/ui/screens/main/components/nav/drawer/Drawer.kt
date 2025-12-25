@@ -37,13 +37,13 @@ fun NavDrawer(modifier: Modifier = Modifier, navController: NavHostController) {
             HorizontalDivider()
 
             DrawerNav(
-                modifier = Modifier.padding(horizontal = 6.dp),
+                modifier = Modifier.padding(horizontal = 12.dp),
                 navController = navController
             )
 
             HorizontalDivider()
 
-            PinnedArtists(modifier = Modifier.padding(horizontal = 6.dp))
+            PinnedArtists(modifier = Modifier.padding(horizontal = 12.dp))
 
             HorizontalDivider()
 

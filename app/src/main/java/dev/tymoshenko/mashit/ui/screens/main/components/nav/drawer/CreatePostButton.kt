@@ -24,8 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.ui.theme.ButtonContainerColor
-import dev.tymoshenko.mashit.ui.theme.TextColor
+import dev.tymoshenko.mashit.ui.theme.ContainerColor
+import dev.tymoshenko.mashit.ui.theme.ContentColor
 
 @Composable
 fun CreatePostButton(modifier: Modifier = Modifier) {
@@ -39,8 +39,8 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
             Toast.makeText(ctx, "Creates post", Toast.LENGTH_SHORT).show()
         },
         colors = ButtonDefaults.buttonColors().copy(
-            containerColor = ButtonContainerColor,
-            contentColor = TextColor
+            containerColor = ContainerColor,
+            contentColor = ContentColor
         ),
         contentPadding = PaddingValues(horizontal = 8.dp),
         shape = RoundedCornerShape(25)

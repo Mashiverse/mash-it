@@ -18,14 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.ui.theme.ButtonContainerColor
+import dev.tymoshenko.mashit.ui.theme.ContainerColor
 
 @Composable
 fun TopNavBarActions(
@@ -64,7 +63,7 @@ fun TopNavBarActions(
                         containerColor = Color.Transparent,
                         contentColor = Color.Red,
                     ),
-                    border = BorderStroke(width = (1.3).dp, color = ButtonContainerColor),
+                    border = BorderStroke(width = (1.3).dp, color = ContainerColor),
                     shape = RoundedCornerShape(42),
                     contentPadding = PaddingValues(horizontal = 8.dp),
                     onClick = onDisconnect

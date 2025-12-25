@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.tymoshenko.mashit.data.models.navItems
 import dev.tymoshenko.mashit.ui.theme.Background
-import dev.tymoshenko.mashit.ui.theme.ButtonContainerColor
-import dev.tymoshenko.mashit.ui.theme.TextColor
+import dev.tymoshenko.mashit.ui.theme.ContainerColor
+import dev.tymoshenko.mashit.ui.theme.ContentColor
+
 
 @Composable
 fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
@@ -36,7 +35,7 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
     ) {
         navItems.forEachIndexed { i, navItem ->
             NavigationDrawerItem(
-                modifier = modifier
+                modifier = Modifier
                     .height(40.dp),
                 onClick = {
                     navController.navigate(route = navItem.route)
@@ -47,10 +46,10 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
                     Text(navItem.label)
                 },
                 colors = NavigationDrawerItemDefaults.colors(
-                    selectedContainerColor = ButtonContainerColor,
+                    selectedContainerColor = ContainerColor,
                     unselectedContainerColor = Background,
-                    selectedTextColor = TextColor,
-                    unselectedTextColor = TextColor
+                    selectedTextColor = ContentColor,
+                    unselectedTextColor = ContentColor
                 ),
                 shape = RoundedCornerShape(25)
             )

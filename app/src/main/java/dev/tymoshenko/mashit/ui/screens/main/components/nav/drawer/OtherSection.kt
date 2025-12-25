@@ -17,7 +17,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.ui.theme.TextColor
+import dev.tymoshenko.mashit.ui.theme.ContentColor
+
+@Composable
+private fun OtherSectionButton(
+    onClick: () -> Unit,
+    text: String,
+    contentColor: Color = ContentColor,
+) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
+        onClick = onClick,
+        shape = RoundedCornerShape(25),
+        colors = ButtonDefaults.buttonColors().copy(
+            containerColor = Color.Transparent,
+            contentColor = contentColor
+        )
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .offset(x = (-6).dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = text, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+        }
+    }
+}
 
 @Composable
 fun OtherSection(modifier: Modifier = Modifier) {
@@ -25,67 +53,20 @@ fun OtherSection(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
+        OtherSectionButton(
             onClick = {},
-            shape = RoundedCornerShape(25),
-            colors = ButtonDefaults.buttonColors().copy(
-                containerColor = Color.Transparent,
-                contentColor = TextColor
-            )
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .offset(x = (-6).dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Mash-It Rules", fontSize = 16.sp, fontWeight = FontWeight.Normal)
-            }
-        }
+            text = "Mash-It Rules"
+        )
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
+        OtherSectionButton(
             onClick = {},
-            shape = RoundedCornerShape(25),
-            colors = ButtonDefaults.buttonColors().copy(
-                containerColor = Color.Transparent,
-                contentColor = Color.Red
-            )
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .offset(x = (-6).dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Help Center", fontSize = 16.sp, fontWeight = FontWeight.Normal)
-            }
-        }
+            text = "Help Center",
+            contentColor = Color.Red
+        )
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
+        OtherSectionButton(
             onClick = {},
-            shape = RoundedCornerShape(25),
-            colors = ButtonDefaults.buttonColors().copy(
-                containerColor = Color.Transparent,
-                contentColor = TextColor
-            )
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .offset(x = (-6).dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Sign Out", fontSize = 16.sp, fontWeight = FontWeight.Normal)
-            }
-        }
+            text = "Sign Out",
+        )
     }
 }
