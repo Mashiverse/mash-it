@@ -131,7 +131,5 @@ fun TopNavBar(
                 .height((1.3).dp)
                 .background(Color.DarkGray)
         )
-
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }

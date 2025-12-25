@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 
 @Composable
@@ -47,10 +46,11 @@ private fun PinnedArtist() {
     ) {
         Spacer(modifier = Modifier.width(16.dp))
 
-        Box(modifier = Modifier
-            .size(32.dp)
-            .clip(RoundedCornerShape(90))
-            .background(Color.White)
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(RoundedCornerShape(90))
+                .background(Color.White)
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -64,13 +64,15 @@ private fun PinnedArtist() {
 
         Spacer(modifier = Modifier.weight(1F))
 
-        Icon(
-            modifier = Modifier
-                .size(32.dp),
-            imageVector = Icons.Default.Favorite,
-            contentDescription = "add icon",
-            tint = ContentColor
-        )
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                modifier = Modifier
+                    .size(24.dp),
+                imageVector = Icons.Default.PushPin,
+                contentDescription = "unpin",
+                tint = ContentColor
+            )
+        }
 
         Spacer(modifier = Modifier.width(32.dp))
     }
@@ -86,7 +88,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
         }
 
         Row(
-            modifier  =Modifier
+            modifier = Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -101,7 +103,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1F))
 
-            IconButton(onClick = {isOpened = !isOpened}) {
+            IconButton(onClick = { isOpened = !isOpened }) {
                 Icon(
                     modifier = Modifier
                         .size(32.dp),
@@ -110,7 +112,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                     } else {
                         Icons.Default.ArrowDropUp
                     },
-                    contentDescription = "add icon",
+                    contentDescription = "drop list",
                     tint = Color.White
                 )
             }
