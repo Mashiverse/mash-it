@@ -18,14 +18,14 @@ fun Shop() {
         verticalArrangement = Arrangement.spacedBy(PaddingSize)
     ) {
         item {
-            ShopSection(sectionName = "Section", (1..10).toList().map { { ShopItem(it) } })
+            ShopSection(sectionName = "Section", (1..10).toList().map { { ShopItem(it, isSoldOut = false) } })
         }
 
         item {
-            ShopSection(sectionName = "Section 2", (1..10).toList().map { { ShopItem(it) } })
+            ShopSection(sectionName = "Section 2", (1..10).toList().map { { ShopItem(it, isSoldOut = true) } })
         }
         item {
-            ShopSection(sectionName = "Section 3", (1..10).toList().map { { ShopItem(it) } })
+            ShopSection(sectionName = "Section 3", (1..10).toList().map { { ShopItem(it, isSoldOut = false) } })
         }
         item {
             ShopSection(
