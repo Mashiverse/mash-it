@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.data.models
+package dev.tymoshenko.mashit.data.models.nav
 
 import dev.tymoshenko.mashit.nav.routes.MainRoutes
 
@@ -7,7 +7,7 @@ data class NavItem(
     val route: MainRoutes
 )
 
-val navItems = listOf<NavItem>(
+val navItems = listOf(
     NavItem("Shop", MainRoutes.Shop),
     NavItem("Artists", MainRoutes.Artists),
     NavItem("Collection", MainRoutes.Collection),

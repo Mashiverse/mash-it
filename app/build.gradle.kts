@@ -98,6 +98,8 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation("io.coil-kt.coil3:coil-gif:3.3.0")
+    implementation("io.coil-kt.coil3:coil-svg:3.3.0")
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)

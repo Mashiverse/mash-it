@@ -8,37 +8,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
+import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
-import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiHolder
+import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 
 @Composable
 fun ShopItem(
-    i: Int,
-    avatarName: String = "Ervindas",
-    authorName: String = "Ervindas",
-    soldQuantity: Int = 10,
-    quantity: Int = 100,
-    price: Int = 50,
-    isSoldOut: Boolean
+    mashiDetails: MashiDetails,
+    selectMashi: (MashiDetails) -> Unit,
 ) {
+    val isSoldOut = mashiDetails.soldQuantity >= mashiDetails.quantity
+
     Column(
         modifier = Modifier,
     ) {
-        MashiHolder()
+        TraitHolder(
+            onClick = { selectMashi.invoke(mashiDetails) },
+            data = mashiDetails.compositeUrl
+        )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = avatarName, fontSize = 14.sp, color = ContentAccentColor)
+        Text(text = mashiDetails.name, fontSize = 14.sp, color = ContentAccentColor)
 
-        Text(text = "by $authorName", fontSize = 12.sp, color = ContentColor)
+        Text(text = "by ${mashiDetails.author}", fontSize = 12.sp, color = ContentColor)
 
-        Text(text = "$soldQuantity of $quantity sold", fontSize = 12.sp, color = ContentColor)
+        Text(text = "${mashiDetails.soldQuantity} of ${mashiDetails.quantity} sold", fontSize = 12.sp, color = ContentColor)
 
         BuyButton(
-            text = if (isSoldOut) "Sold out" else "$price USDC",
+            text = if (isSoldOut) "Sold out" else "${mashiDetails.price} ${mashiDetails.priceCurrency.name}",
             enabled = !isSoldOut,
         )
     }
@@ -47,5 +49,5 @@ fun ShopItem(
 @Preview
 @Composable
 private fun ShopItemPreview() {
-    ShopItem(i = 1, isSoldOut = true)
+    ShopItem(mashiDetails = ervindasExample, selectMashi = {})
 }

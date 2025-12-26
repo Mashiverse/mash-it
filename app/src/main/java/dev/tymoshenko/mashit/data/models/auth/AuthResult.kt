@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.data.models
+package dev.tymoshenko.mashit.data.models.auth
 
 data class AuthResult(
     val isSignedIn: Boolean,

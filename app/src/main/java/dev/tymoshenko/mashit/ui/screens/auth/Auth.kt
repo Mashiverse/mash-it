@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import dev.tymoshenko.mashit.data.models.WalletPreferences
+import dev.tymoshenko.mashit.data.models.wallet.WalletPreferences
 import dev.tymoshenko.mashit.ui.theme.Background
 
 @Composable

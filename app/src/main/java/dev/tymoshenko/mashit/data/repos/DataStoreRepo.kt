@@ -1,13 +1,12 @@
 package dev.tymoshenko.mashit.data.repos
 
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import dev.tymoshenko.mashit.data.local.ds.PreferencesKeys
-import dev.tymoshenko.mashit.data.models.WalletPreferences
-import dev.tymoshenko.mashit.data.models.WalletType
-import dev.tymoshenko.mashit.data.models.toWalletTypeEnum
+import dev.tymoshenko.mashit.data.models.wallet.WalletPreferences
+import dev.tymoshenko.mashit.data.models.wallet.WalletType
+import dev.tymoshenko.mashit.data.models.wallet.toWalletTypeEnum
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

@@ -19,7 +19,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +29,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
+import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
@@ -41,16 +45,22 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: SheetState) {
+fun MashiDetailsSection(
+    mashiDetails: MashiDetails = ervindasExample,
+    scope: CoroutineScope,
+    closeBottomShit: () -> Unit,
+    sheetState: SheetState
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(LargeMashiHolderHeight),
         horizontalArrangement = Arrangement.spacedBy(PaddingSize)
     ) {
-        MashiHolder(
+        TraitHolder(
             width = LargeMashiHolderWidth,
-            height = LargeMashiHolderHeight
+            height = LargeMashiHolderHeight,
+            data = mashiDetails.compositeUrl,
         )
 
         Column(
@@ -62,7 +72,7 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Avatar Name",
+                    text = mashiDetails.name,
                     color = ContentAccentColor,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -105,7 +115,7 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                 }
             }
 
-            Text(text = "by Ervindas", color = ContentColor, fontSize = 12.sp)
+            Text(text = "by ${mashiDetails.author}", color = ContentColor, fontSize = 12.sp)
 
 
             Text(
@@ -113,28 +123,28 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                 overflow = TextOverflow.Ellipsis,
                 fontSize = 12.sp,
                 color = ContentAccentColor,
-                text = "fgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetw"
+                text = mashiDetails.description
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(text = "50 USDC", color = ContentAccentColor, fontSize = 14.sp)
+            Text(text = "${mashiDetails.price} ${mashiDetails.priceCurrency.name}", color = ContentAccentColor, fontSize = 14.sp)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(text = "Per-wallet: 50", color = ContentColor, fontSize = 12.sp)
-                    Text(text = "74/100 sold", color = ContentColor, fontSize = 12.sp)
+                    Text(text = "Per-wallet: ${mashiDetails.perWallet}", color = ContentColor, fontSize = 12.sp)
+                    Text(text = "${mashiDetails.soldQuantity}/${mashiDetails.quantity} sold", color = ContentColor, fontSize = 12.sp)
                 }
 
                 Spacer(modifier = Modifier.weight(1F))
 
                 BuyButton(
-                    text = "Buy",
+                    text = if (mashiDetails.soldQuantity < mashiDetails.quantity) "Buy" else "Sold",
                     height = 32.dp,
-                    enabled = true,
+                    enabled = mashiDetails.soldQuantity < mashiDetails.quantity,
                     textSize = 16.sp
                 )
             }
@@ -142,14 +152,19 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-private fun MashiInfoPreview() {
+private fun MashiDetailsSectionPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
     ) {
-//        MashiInfo()
+        MashiDetailsSection(
+            scope = rememberCoroutineScope(),
+            closeBottomShit = {},
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        )
     }
 }

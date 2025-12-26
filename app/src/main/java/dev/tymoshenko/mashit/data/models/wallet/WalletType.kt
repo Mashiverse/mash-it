@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.data.models
+package dev.tymoshenko.mashit.data.models.wallet
 
 enum class WalletType {
     METAMASK,

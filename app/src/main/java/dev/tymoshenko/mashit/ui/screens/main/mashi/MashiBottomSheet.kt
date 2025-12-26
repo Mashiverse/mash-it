@@ -15,6 +15,9 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -23,6 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
+import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
+import dev.tymoshenko.mashit.ui.screens.main.shop.ShopViewModel
 import dev.tymoshenko.mashit.ui.theme.BottomSheetShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
@@ -34,10 +41,21 @@ import kotlinx.coroutines.CoroutineScope
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MashiBottomSheet(closeBottomShit: () -> Unit, sheetState: SheetState, scope: CoroutineScope) {
+fun MashiBottomSheet(
+    closeBottomShit: () -> Unit,
+    sheetState: SheetState,
+    scope: CoroutineScope
+) {
     val config = LocalConfiguration.current
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
+
+    val viewModel = hiltViewModel<ShopViewModel>()
+    val mashiDetails by remember {
+        derivedStateOf {
+            viewModel.selectedMashi.value
+        }
+    }
 
     ModalBottomSheet(
         modifier = Modifier
@@ -56,7 +74,12 @@ fun MashiBottomSheet(closeBottomShit: () -> Unit, sheetState: SheetState, scope:
                 .fillMaxWidth()
                 .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
         ) {
-            MashiInfo(scope = scope, sheetState = sheetState, closeBottomShit = closeBottomShit)
+            MashiDetailsSection(
+                mashiDetails = mashiDetails!!,
+                scope = scope,
+                sheetState = sheetState,
+                closeBottomShit = closeBottomShit
+            )
 
             Spacer(modifier = Modifier.height(PaddingSize))
 
@@ -73,8 +96,9 @@ fun MashiBottomSheet(closeBottomShit: () -> Unit, sheetState: SheetState, scope:
                 horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 columns = GridCells.Fixed(3)
             ) {
-                items(12) {
+                items(mashiDetails!!.traits.size) { i ->
                     MashiTraitHolder(
+                        trait = mashiDetails!!.traits[i],
                         width = mashiHolderWidth,
                         height = mashiHolderHeight
                     )
