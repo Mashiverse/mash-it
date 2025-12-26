@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.R
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
 import dev.tymoshenko.mashit.ui.theme.SearchHeight
 import dev.tymoshenko.mashit.ui.theme.SearchShape
@@ -89,7 +90,7 @@ fun SearchBar(
                     .clickable { onIsSearchChange.invoke() },
                 painter = painterResource(R.drawable.search_icon),
                 contentDescription = "Search icon",
-                tint = Color.White
+                tint = ContentAccentColor
             )
         } else {
             TextField(
@@ -110,7 +111,7 @@ fun SearchBar(
                             },
                         painter = painterResource(R.drawable.search_icon),
                         contentDescription = "Search icon",
-                        tint = Color.White
+                        tint = ContentAccentColor
                     )
                 },
                 colors = TextFieldDefaults.colors().copy(

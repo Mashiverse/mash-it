@@ -7,6 +7,7 @@ val Background = Color(22, 22, 22)
 val SearchBarBackground = Color(63, 63, 63)
 val ContainerColor = Color(45, 45, 45)
 val ContentColor = Color(197, 197, 197)
+val ContentAccentColor = Color.White
 
 val MashiBackground = Color(185, 185, 185)
 

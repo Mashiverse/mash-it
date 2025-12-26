@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
@@ -58,7 +59,7 @@ fun BuyButton(
         onClick = {/*TODO*/ },
         border = BorderStroke(
             width = (1).dp,
-            color = if(enabled) {
+            color = if (enabled) {
                 Color.Red
             } else {
                 Color.Transparent
@@ -71,7 +72,7 @@ fun BuyButton(
             text = text,
             fontSize = textSize,
             color = if (enabled) {
-                Color.White
+                ContentAccentColor
             } else {
                 ContentColor
             },

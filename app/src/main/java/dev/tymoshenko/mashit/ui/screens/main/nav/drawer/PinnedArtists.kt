@@ -28,8 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
@@ -54,7 +54,7 @@ private fun PinnedArtist() {
             modifier = Modifier
                 .size(SmallIconSize)
                 .clip(IconsShape)
-                .background(Color.White)
+                .background(ContentAccentColor)
         )
 
         Spacer(modifier = Modifier.width(SmallPaddingSize))
@@ -101,7 +101,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
             Text(
                 "Pinned Artists",
                 fontSize = ContentTextSize,
-                color = Color.White,
+                color = ContentAccentColor,
                 fontWeight = FontWeight.Bold
             )
 
@@ -117,7 +117,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                         Icons.Default.ArrowDropUp
                     },
                     contentDescription = "drop list",
-                    tint = Color.White
+                    tint = ContentAccentColor
                 )
             }
         }

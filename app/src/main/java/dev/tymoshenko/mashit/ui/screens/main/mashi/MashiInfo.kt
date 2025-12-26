@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
 import dev.tymoshenko.mashit.ui.theme.Background
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
@@ -63,7 +63,7 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
             ) {
                 Text(
                     text = "Avatar Name",
-                    color = Color.White,
+                    color = ContentAccentColor,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -79,7 +79,7 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                             .size(SmallIconSize),
                         imageVector = Icons.Default.Money,
                         contentDescription = "More",
-                        tint = Color.White
+                        tint = ContentAccentColor
                     )
                 }
 
@@ -100,7 +100,7 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                             .size(SmallIconSize),
                         imageVector = Icons.Default.Close,
                         contentDescription = "More",
-                        tint = Color.White
+                        tint = ContentAccentColor
                     )
                 }
             }
@@ -112,13 +112,13 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 fontSize = 12.sp,
-                color = Color.White,
+                color = ContentAccentColor,
                 text = "fgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetw"
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(text = "50 USDC", color = Color.White, fontSize = 14.sp)
+            Text(text = "50 USDC", color = ContentAccentColor, fontSize = 14.sp)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

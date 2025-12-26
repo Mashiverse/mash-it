@@ -17,7 +17,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import dev.tymoshenko.mashit.ui.theme.BottomSheetShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
@@ -63,7 +63,7 @@ fun MashiBottomSheet(closeBottomShit: () -> Unit, sheetState: SheetState, scope:
             Text(
                 fontSize = 14.sp,
                 text = "Traits",
-                color = Color.White,
+                color = ContentAccentColor,
                 fontWeight = FontWeight.Bold
             )
 

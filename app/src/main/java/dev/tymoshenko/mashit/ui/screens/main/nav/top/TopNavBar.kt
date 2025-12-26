@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.R
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
 import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.NavBarHeight
@@ -106,7 +107,7 @@ fun TopNavBar(
                                     }
                                 }
                             }),
-                        tint = Color.White,
+                        tint = ContentAccentColor,
                         contentDescription = "menu icon"
                     )
                 }

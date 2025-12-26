@@ -3,11 +3,18 @@ package dev.tymoshenko.mashit.ui.screens.main.shop
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
+import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
@@ -16,8 +23,28 @@ fun ShopSection(
     sectionItems: List<@Composable () -> Unit>
 ) {
     Column {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(sectionName)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                sectionName,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = ContentAccentColor
+            )
+
+            Spacer(modifier = Modifier.weight(1F))
+
+            TextButton(
+                onClick = {/*TODO*/ }) {
+                Text(
+                    sectionName,
+                    fontSize = 14.sp,
+                    color = ContentColor,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
         }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
