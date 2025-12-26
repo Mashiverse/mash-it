@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav.drawer
+package dev.tymoshenko.mashit.ui.screens.main.nav.drawer
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -16,23 +16,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.ui.screens.main.components.MashiHolder
+import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiHolder
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
-import dev.tymoshenko.mashit.ui.theme.Geist
-import dev.tymoshenko.mashit.ui.theme.GeistTypography
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
-fun InactiveButton(
+fun BuyButton(
     text: String,
-    enabled: Boolean
+    enabled: Boolean,
+    height: Dp = 28.dp,
+    width: Dp = 72.dp,
+    textSize: TextUnit = 12.sp
 ) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(
@@ -43,14 +45,8 @@ fun InactiveButton(
 
     Button(
         modifier = Modifier
-            .height(30.dp)
-            .shadow(
-                elevation = if (enabled) 1.dp else 0.dp,
-                shape = ButtonDefaults.shape,
-                ambientColor = if(enabled) Color.Red.copy(alpha = 0.6f) else Color.Transparent,
-                spotColor = if(enabled) Color.Red.copy(alpha = 0.8f) else Color.Transparent
-            )
-            .height(28.dp)
+            .height(height)
+            .width(width)
             .background(
                 brush = if (enabled) {
                     gradient
@@ -79,7 +75,7 @@ fun InactiveButton(
     ) {
         Text(
             text = text,
-            fontSize = 12.sp,
+            fontSize = textSize,
             color = if (enabled) {
                 Color.White
             } else {
@@ -117,7 +113,7 @@ fun ShopItem(
 
         Text(text = "$soldQuantity of $quantity sold", fontSize = 12.sp, color = ContentColor)
 
-        InactiveButton(
+        BuyButton(
             text = if (isSoldOut) "Sold out" else "$price USDC",
             enabled = !isSoldOut,
         )

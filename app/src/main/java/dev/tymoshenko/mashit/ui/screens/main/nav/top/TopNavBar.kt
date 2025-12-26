@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav.top
+package dev.tymoshenko.mashit.ui.screens.main.nav.top
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

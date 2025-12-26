@@ -18,8 +18,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.tymoshenko.mashit.nav.graphs.mainGraph
 import dev.tymoshenko.mashit.nav.routes.MainRoutes
-import dev.tymoshenko.mashit.ui.screens.main.components.nav.drawer.NavDrawer
-import dev.tymoshenko.mashit.ui.screens.main.components.nav.top.TopNavBar
+import dev.tymoshenko.mashit.ui.screens.main.nav.drawer.NavDrawer
+import dev.tymoshenko.mashit.ui.screens.main.nav.top.TopNavBar
 import dev.tymoshenko.mashit.ui.theme.Background
 import kotlinx.coroutines.launch
 

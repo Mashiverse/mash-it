@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav.top
+package dev.tymoshenko.mashit.ui.screens.main.nav.top
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -23,12 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.theme.AccountInfoShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
 import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
-import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.SearchHeight
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 

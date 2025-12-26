@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav.drawer
+package dev.tymoshenko.mashit.ui.screens.main.nav.drawer
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,7 +27,6 @@ import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
-import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 

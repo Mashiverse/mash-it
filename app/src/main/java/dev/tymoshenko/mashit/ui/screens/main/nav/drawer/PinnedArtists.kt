@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.components.nav.drawer
+package dev.tymoshenko.mashit.ui.screens.main.nav.drawer
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -30,11 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
-import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.IconsShape
 import dev.tymoshenko.mashit.ui.theme.LargePaddingSize
