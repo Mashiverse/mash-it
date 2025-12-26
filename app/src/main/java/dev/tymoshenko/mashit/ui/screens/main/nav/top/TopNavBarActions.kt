@@ -56,7 +56,7 @@ fun TopNavBarActions(
         AnimatedVisibility(
             visible = !isSearch,
             enter = expandHorizontally() + fadeIn(tween(delayMillis = 300, durationMillis = 150)),
-            exit = shrinkOut() + fadeOut(tween(durationMillis = 0)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
+            exit = shrinkOut() + fadeOut(tween(durationMillis = 0))
         ) {
             Row {
                 OutlinedButton(

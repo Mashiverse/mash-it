@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.ui.screens.main.shop.BuyButton
+import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
@@ -60,8 +60,13 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(text = "Avatar Name", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            ) {
+                Text(
+                    text = "Avatar Name",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
 
                 Spacer(modifier = Modifier.weight(1F))
 
@@ -104,11 +109,12 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
 
 
             Text(
-                maxLines = 4,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 fontSize = 12.sp,
                 color = Color.White,
-                text = "fgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetw")
+                text = "fgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetwfgsdgssdgsegwetwetwetwetw"
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -119,8 +125,8 @@ fun MashiInfo(scope: CoroutineScope, closeBottomShit: () -> Unit, sheetState: Sh
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(text = "Max per wallet: 50", color = ContentColor, fontSize = 12.sp)
-                    Text(text = "74 of 100 sold", color = ContentColor, fontSize = 12.sp)
+                    Text(text = "Per-wallet: 50", color = ContentColor, fontSize = 12.sp)
+                    Text(text = "74/100 sold", color = ContentColor, fontSize = 12.sp)
                 }
 
                 Spacer(modifier = Modifier.weight(1F))

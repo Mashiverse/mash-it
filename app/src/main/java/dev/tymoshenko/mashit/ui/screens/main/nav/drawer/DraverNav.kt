@@ -20,7 +20,6 @@ import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
-import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 

@@ -1,18 +1,14 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashi
 
 import android.annotation.SuppressLint
-import android.app.LocaleConfig
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -64,7 +60,12 @@ fun MashiBottomSheet(closeBottomShit: () -> Unit, sheetState: SheetState, scope:
 
             Spacer(modifier = Modifier.height(PaddingSize))
 
-            Text(fontSize = 14.sp, text = "Traits", color = Color.White, fontWeight = FontWeight.Bold)
+            Text(
+                fontSize = 14.sp,
+                text = "Traits",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
 
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),

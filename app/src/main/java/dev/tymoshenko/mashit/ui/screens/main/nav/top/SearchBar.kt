@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,10 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
-import dev.tymoshenko.mashit.ui.theme.Geist
 import dev.tymoshenko.mashit.ui.theme.SearchHeight
 import dev.tymoshenko.mashit.ui.theme.SearchShape
 import dev.tymoshenko.mashit.ui.theme.SmallIconSize

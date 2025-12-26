@@ -34,7 +34,7 @@ fun Shop() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Button(onClick = {isBottomSheet = true}) { Text("Sheet") }
+        Button(onClick = { isBottomSheet = true }) { Text("Sheet") }
 
         LazyColumn(
             modifier = Modifier
@@ -43,44 +43,20 @@ fun Shop() {
             verticalArrangement = Arrangement.spacedBy(PaddingSize)
         ) {
             item {
-                ShopSection(sectionName = "Section", (1..10).toList().map { { ShopItem(it, isSoldOut = false) } })
+                ShopSection(
+                    sectionName = "Section",
+                    (1..10).toList().map { { ShopItem(it, isSoldOut = false) } })
             }
 
             item {
-                ShopSection(sectionName = "Section 2", (1..10).toList().map { { ShopItem(it, isSoldOut = true) } })
+                ShopSection(
+                    sectionName = "Section",
+                    (1..10).toList().map { { ShopItem(it, isSoldOut = true) } })
             }
-            item {
-                ShopSection(sectionName = "Section 3", (1..10).toList().map { { ShopItem(it, isSoldOut = false) } })
-            }
+
             item {
                 ShopSection(
                     sectionName = "Banner Section",
-                    (1..5).toList().map { { ShopBanner(it) } })
-            }
-            item {
-                ShopSection(
-                    sectionName = "Banner Section 2",
-                    (1..5).toList().map { { ShopBanner(it) } })
-            }
-            item {
-                ShopSection(
-                    sectionName = "Banner Section 3",
-                    (1..5).toList().map { { ShopBanner(it) } })
-            }
-
-            item {
-                ShopSection(
-                    sectionName = "Banner Section 4",
-                    (1..5).toList().map { { ShopBanner(it) } })
-            }
-            item {
-                ShopSection(
-                    sectionName = "Banner Section 5",
-                    (1..5).toList().map { { ShopBanner(it) } })
-            }
-            item {
-                ShopSection(
-                    sectionName = "Banner Section 6",
                     (1..5).toList().map { { ShopBanner(it) } })
             }
         }

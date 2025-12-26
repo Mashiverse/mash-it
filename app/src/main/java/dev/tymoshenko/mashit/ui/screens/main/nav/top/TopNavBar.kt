@@ -116,7 +116,7 @@ fun TopNavBar(
                 AnimatedVisibility(
                     visible = !isSearch,
                     enter = fadeIn(tween(durationMillis = 150)),
-                    exit = fadeOut(tween(durationMillis = 75)) //slideOutHorizontally(targetOffsetX = { it -> -it* 2 }),
+                    exit = fadeOut(tween(durationMillis = 75))
                 ) {
                     Image(
                         painter = painterResource(R.drawable.logo),
