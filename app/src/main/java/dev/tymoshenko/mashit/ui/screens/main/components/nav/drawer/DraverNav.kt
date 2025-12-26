@@ -45,7 +45,7 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
                 },
                 selected = i == selectedDest,
                 label = {
-                    Text(navItem.label, fontFamily = Geist)
+                    Text(navItem.label)
                 },
                 colors = NavigationDrawerItemDefaults.colors(
                     selectedContainerColor = ContainerColor,

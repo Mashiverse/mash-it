@@ -41,8 +41,6 @@ fun InactiveButton(
         )
     )
 
-    ButtonDefaults.shape
-
     Button(
         modifier = Modifier
             .height(30.dp)
@@ -92,7 +90,6 @@ fun InactiveButton(
             } else {
                 FontWeight.Normal
             },
-            fontFamily = Geist
         )
     }
 }
@@ -114,11 +111,11 @@ fun ShopItem(
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = avatarName, fontSize = 14.sp, color = Color.White, fontFamily = Geist)
+        Text(text = avatarName, fontSize = 14.sp, color = Color.White)
 
-        Text(text = "by $authorName", fontSize = 12.sp, color = ContentColor, fontFamily = Geist)
+        Text(text = "by $authorName", fontSize = 12.sp, color = ContentColor)
 
-        Text(text = "$soldQuantity of $quantity sold", fontSize = 12.sp, color = ContentColor, fontFamily = Geist)
+        Text(text = "$soldQuantity of $quantity sold", fontSize = 12.sp, color = ContentColor)
 
         InactiveButton(
             text = if (isSoldOut) "Sold out" else "$price USDC",

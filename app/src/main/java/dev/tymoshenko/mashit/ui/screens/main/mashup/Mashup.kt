@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun Mashup() {
-    Text("Mashup")
+    Text("Mashup 0")
 }

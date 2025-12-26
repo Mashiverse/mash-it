@@ -45,7 +45,7 @@ private fun OtherSectionButton(
                 .offset(x = (-6).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = text, fontSize = ContentTextSize, fontWeight = FontWeight.Normal, fontFamily = Geist)
+            Text(text = text, fontSize = ContentTextSize, fontWeight = FontWeight.Normal)
         }
     }
 }

@@ -20,7 +20,7 @@ fun ShopSection(
 ) {
     Column{
         Row(modifier = Modifier.fillMaxWidth()) {
-            Text(sectionName, fontFamily = Geist)
+            Text(sectionName)
         }
         LazyRow(
             modifier = Modifier.fillMaxWidth(),

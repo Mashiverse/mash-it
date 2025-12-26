@@ -26,6 +26,6 @@ fun ShopBanner(i: Int) {
             .background(SearchBarBackground),
         contentAlignment = Alignment.Center
     ) {
-        Text("${i}", fontFamily = Geist)
+        Text("${i}")
     }
 }

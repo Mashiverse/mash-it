@@ -63,7 +63,7 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.width(6.dp))
 
-            Text(text = "Create a post", fontSize = ContentTextSize, fontFamily = Geist, fontWeight = FontWeight.Normal)
+            Text(text = "Create a post", fontSize = ContentTextSize, fontWeight = FontWeight.Normal)
         }
     }
 }

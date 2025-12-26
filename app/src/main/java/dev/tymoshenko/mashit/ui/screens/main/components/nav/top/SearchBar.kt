@@ -122,7 +122,7 @@ fun SearchBar(
                 ),
                 singleLine = true,
                 textStyle = TextStyle(fontSize = ContentTextSize),
-                placeholder = { Text("Search Mash It", fontSize = ContentTextSize, fontFamily = Geist) }
+                placeholder = { Text("Search Mash It", fontSize = ContentTextSize) }
             )
         }
     }

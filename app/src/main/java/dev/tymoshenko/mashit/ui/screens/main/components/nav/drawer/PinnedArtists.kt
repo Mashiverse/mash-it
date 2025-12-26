@@ -65,8 +65,7 @@ private fun PinnedArtist() {
             "Ervindas rocks!",
             fontSize = ContentTextSize,
             color = ContentColor,
-            fontWeight = FontWeight.Normal,
-            fontFamily = Geist
+            fontWeight = FontWeight.Normal
         )
 
         Spacer(modifier = Modifier.weight(1F))
@@ -105,8 +104,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                 "Pinned Artists",
                 fontSize = ContentTextSize,
                 color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontFamily = Geist
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.weight(1F))

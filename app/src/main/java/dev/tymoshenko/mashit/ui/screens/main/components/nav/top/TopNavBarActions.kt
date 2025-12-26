@@ -76,8 +76,7 @@ fun TopNavBarActions(
                 ) {
                     Text(
                         text = "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}",
-                        fontSize = ContentTextSize,
-                        fontFamily = Geist
+                        fontSize = ContentTextSize
                     )
                 }
 

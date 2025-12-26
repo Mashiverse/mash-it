@@ -1,11 +1,9 @@
 package dev.tymoshenko.mashit.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.R
 
 // Set of Material typography styles to start with
@@ -22,26 +20,25 @@ val Geist = FontFamily(
     Font(R.font.geist_black, FontWeight.Black)
 )
 
+private val defaultTypography = Typography()
 val GeistTypography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = Geist,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
-    titleLarge = TextStyle(
-        fontFamily = Geist,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = Geist,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
+    displayLarge = defaultTypography.displayLarge.copy(fontFamily = Geist),
+    displayMedium = defaultTypography.displayMedium.copy(fontFamily = Geist),
+    displaySmall = defaultTypography.displaySmall.copy(fontFamily = Geist),
+
+    headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = Geist),
+    headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = Geist),
+    headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = Geist),
+
+    titleLarge = defaultTypography.titleLarge.copy(fontFamily = Geist),
+    titleMedium = defaultTypography.titleMedium.copy(fontFamily = Geist),
+    titleSmall = defaultTypography.titleSmall.copy(fontFamily = Geist),
+
+    bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = Geist),
+    bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = Geist),
+    bodySmall = defaultTypography.bodySmall.copy(fontFamily = Geist),
+
+    labelLarge = defaultTypography.labelLarge.copy(fontFamily = Geist),
+    labelMedium = defaultTypography.labelMedium.copy(fontFamily = Geist),
+    labelSmall = defaultTypography.labelSmall.copy(fontFamily = Geist)
 )
