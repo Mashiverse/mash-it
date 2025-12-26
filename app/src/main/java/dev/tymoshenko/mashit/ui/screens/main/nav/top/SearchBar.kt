@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.R
+
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
 import dev.tymoshenko.mashit.ui.theme.SearchHeight
@@ -120,7 +121,7 @@ fun SearchBar(
                 ),
                 singleLine = true,
                 textStyle = TextStyle(fontSize = ContentTextSize),
-                placeholder = { Text("Search Mash It", fontSize = ContentTextSize) }
+                placeholder = { Text(text = "Search Mash It", fontSize = ContentTextSize) }
             )
         }
     }

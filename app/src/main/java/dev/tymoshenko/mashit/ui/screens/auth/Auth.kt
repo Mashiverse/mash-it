@@ -1,7 +1,5 @@
 package dev.tymoshenko.mashit.ui.screens.auth
 
-import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,10 +11,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.wallet.WalletPreferences
-import dev.tymoshenko.mashit.ui.theme.Background
 
 @Composable
 fun Auth(onConnect: () -> Unit) {
@@ -39,11 +35,12 @@ fun Auth(onConnect: () -> Unit) {
     ) {
         Column {
             Button(onClick = onConnect) {
-                Text("Connect MetaMask")
+
+                Text(text = "Connect MetaMask")
             }
 
             Button(onClick = onConnect) {
-                Text("Connect Coinbase")
+                Text(text = "Connect Coinbase")
             }
         }
     }

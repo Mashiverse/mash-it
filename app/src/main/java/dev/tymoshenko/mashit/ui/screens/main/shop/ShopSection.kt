@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
@@ -31,7 +30,7 @@ fun ShopSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                sectionName,
+                text = sectionName,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
@@ -42,7 +41,7 @@ fun ShopSection(
             TextButton(
                 onClick = {/*TODO*/ }) {
                 Text(
-                    text = "Show more",
+                    text = "See all",
                     fontSize = 14.sp,
                     color = ContentColor,
                     modifier = Modifier.align(Alignment.CenterVertically)

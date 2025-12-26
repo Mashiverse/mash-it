@@ -27,8 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
 import dev.tymoshenko.mashit.ui.screens.main.shop.ShopViewModel
 import dev.tymoshenko.mashit.ui.theme.BottomSheetShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor

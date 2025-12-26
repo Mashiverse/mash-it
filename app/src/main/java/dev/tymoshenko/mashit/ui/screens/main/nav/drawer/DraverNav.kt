@@ -13,8 +13,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.tymoshenko.mashit.data.models.nav.navItems
+
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
@@ -44,7 +46,7 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
                 },
                 selected = i == selectedDest,
                 label = {
-                    Text(navItem.label)
+                    Text(text = navItem.label, fontSize = 16.sp)
                 },
                 colors = NavigationDrawerItemDefaults.colors(
                     selectedContainerColor = ContainerColor,

@@ -17,9 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -29,15 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
-import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.NavBarHeight
+import dev.tymoshenko.mashit.ui.theme.SmallIconSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -93,13 +89,12 @@ fun TopNavBar(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(IconSize)
-                        .clip(CircleShape)
+                        .size(SmallIconSize)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Menu,
+                        painter = painterResource(R.drawable.menu_icon),
                         modifier = Modifier
-                            .size(IconSize)
+                            .size(SmallIconSize)
                             .clickable(onClick = {
                                 scope.launch {
                                     drawerState.apply {

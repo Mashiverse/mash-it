@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+
 import dev.tymoshenko.mashit.ui.theme.AccountInfoShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize

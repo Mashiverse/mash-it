@@ -18,7 +18,6 @@ import coil3.gif.AnimatedImageDecoder
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
-import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
 import dev.tymoshenko.mashit.ui.theme.MashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.MashiHolderShape

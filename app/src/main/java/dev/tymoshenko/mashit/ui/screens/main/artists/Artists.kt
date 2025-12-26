@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun Artists() {
-    Text("Artists")
+    Text(text = "Artists")
 }

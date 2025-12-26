@@ -1,5 +1,7 @@
 package dev.tymoshenko.mashit.ui
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,5 +45,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val overrideConfiguration = Configuration(
+            newBase.resources.configuration
+        ).apply { fontScale = 1.0f }
+
+        super.attachBaseContext(
+            newBase.createConfigurationContext(overrideConfiguration)
+        )
     }
 }

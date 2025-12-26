@@ -12,9 +12,11 @@ import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
 import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
+
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
 fun ShopItem(
@@ -35,9 +37,19 @@ fun ShopItem(
 
         Text(text = mashiDetails.name, fontSize = 14.sp, color = ContentAccentColor)
 
+        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+
         Text(text = "by ${mashiDetails.author}", fontSize = 12.sp, color = ContentColor)
 
-        Text(text = "${mashiDetails.soldQuantity} of ${mashiDetails.quantity} sold", fontSize = 12.sp, color = ContentColor)
+        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+
+        Text(
+            text = "${mashiDetails.soldQuantity} of ${mashiDetails.quantity} sold",
+            fontSize = 12.sp,
+            color = ContentColor
+        )
+
+        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         BuyButton(
             text = if (isSoldOut) "Sold out" else "${mashiDetails.price} ${mashiDetails.priceCurrency.name}",

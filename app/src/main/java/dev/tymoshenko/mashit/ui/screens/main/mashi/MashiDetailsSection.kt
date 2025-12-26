@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,19 +21,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
+import dev.tymoshenko.mashit.data.models.mashi.ervindasExample2
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
+import dev.tymoshenko.mashit.ui.theme.MashItTheme
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallIconSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
@@ -46,7 +47,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiDetailsSection(
-    mashiDetails: MashiDetails = ervindasExample,
+    mashiDetails: MashiDetails = ervindasExample2,
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
     sheetState: SheetState
@@ -87,7 +88,7 @@ fun MashiDetailsSection(
                     Icon(
                         modifier = Modifier
                             .size(SmallIconSize),
-                        imageVector = Icons.Default.Money,
+                        painter = painterResource(R.drawable.expand_icon),
                         contentDescription = "More",
                         tint = ContentAccentColor
                     )
@@ -108,7 +109,7 @@ fun MashiDetailsSection(
                     Icon(
                         modifier = Modifier
                             .size(SmallIconSize),
-                        imageVector = Icons.Default.Close,
+                        painter = painterResource(R.drawable.close_icon),
                         contentDescription = "More",
                         tint = ContentAccentColor
                     )
@@ -117,26 +118,45 @@ fun MashiDetailsSection(
 
             Text(text = "by ${mashiDetails.author}", color = ContentColor, fontSize = 12.sp)
 
+            Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
             Text(
-                maxLines = 3,
+                maxLines = 6,
                 overflow = TextOverflow.Ellipsis,
                 fontSize = 12.sp,
                 color = ContentAccentColor,
-                text = mashiDetails.description
+                text = mashiDetails.description,
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text(text = "${mashiDetails.price} ${mashiDetails.priceCurrency.name}", color = ContentAccentColor, fontSize = 14.sp)
+            Text(
+                text = "${mashiDetails.price} ${mashiDetails.priceCurrency.name}",
+                color = ContentAccentColor,
+                fontSize = 14.sp
+            )
+
+
+            Spacer(modifier = Modifier.height(PaddingSize))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(text = "Per-wallet: ${mashiDetails.perWallet}", color = ContentColor, fontSize = 12.sp)
-                    Text(text = "${mashiDetails.soldQuantity}/${mashiDetails.quantity} sold", color = ContentColor, fontSize = 12.sp)
+                    Text(
+                        text = "Per-wallet: ${mashiDetails.perWallet}",
+                        color = ContentColor,
+                        fontSize = 12.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+
+                    Text(
+                        text = "${mashiDetails.soldQuantity}/${mashiDetails.quantity} sold",
+                        color = ContentColor,
+                        fontSize = 12.sp
+                    )
                 }
 
                 Spacer(modifier = Modifier.weight(1F))
@@ -144,6 +164,7 @@ fun MashiDetailsSection(
                 BuyButton(
                     text = if (mashiDetails.soldQuantity < mashiDetails.quantity) "Buy" else "Sold",
                     height = 32.dp,
+                    width = 80.dp,
                     enabled = mashiDetails.soldQuantity < mashiDetails.quantity,
                     textSize = 16.sp
                 )
@@ -151,6 +172,7 @@ fun MashiDetailsSection(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -166,5 +188,24 @@ private fun MashiDetailsSectionPreview() {
             closeBottomShit = {},
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun MashiDetailsSectionPreview2() {
+    MashItTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Background)
+        ) {
+            MashiDetailsSection(
+                scope = rememberCoroutineScope(),
+                closeBottomShit = {},
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            )
+        }
     }
 }

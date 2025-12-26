@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -19,15 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
-import dev.tymoshenko.mashit.ui.theme.IconSize
+import dev.tymoshenko.mashit.ui.theme.SmallIconSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 @Composable
@@ -54,8 +54,8 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
         ) {
             Icon(
                 modifier = Modifier
-                    .size(IconSize),
-                imageVector = Icons.Default.Add,
+                    .size(SmallIconSize),
+                painter = painterResource(R.drawable.add_icon),
                 contentDescription = "add icon",
                 tint = Color.Red
             )

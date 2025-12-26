@@ -13,10 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -28,12 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import dev.tymoshenko.mashit.R
+
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentTextSize
-import dev.tymoshenko.mashit.ui.theme.IconSize
 import dev.tymoshenko.mashit.ui.theme.IconsShape
 import dev.tymoshenko.mashit.ui.theme.LargePaddingSize
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
@@ -60,7 +58,7 @@ private fun PinnedArtist() {
         Spacer(modifier = Modifier.width(SmallPaddingSize))
 
         Text(
-            "Ervindas rocks!",
+            text = "Ervindas rocks!",
             fontSize = ContentTextSize,
             color = ContentColor,
             fontWeight = FontWeight.Normal
@@ -72,8 +70,8 @@ private fun PinnedArtist() {
             Icon(
                 modifier = Modifier
                     .size(SmallIconSize),
-                imageVector = Icons.Default.PushPin,
-                contentDescription = "unpin",
+                painter = painterResource(R.drawable.pin_icon),
+                contentDescription = "pin",
                 tint = ContentColor
             )
         }
@@ -99,7 +97,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.width(PaddingSize))
 
             Text(
-                "Pinned Artists",
+                text = "Pinned Artists",
                 fontSize = ContentTextSize,
                 color = ContentAccentColor,
                 fontWeight = FontWeight.Bold
@@ -107,14 +105,18 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1F))
 
-            IconButton(onClick = { isOpened = !isOpened }) {
+            IconButton(
+                modifier = Modifier
+                    .size(SmallIconSize),
+                onClick = { isOpened = !isOpened }
+            ) {
                 Icon(
                     modifier = Modifier
-                        .size(IconSize),
-                    imageVector = if (!isOpened) {
-                        Icons.Default.ArrowDropDown
+                        .size(SmallIconSize),
+                    painter = if (!isOpened) {
+                        painterResource(R.drawable.drop_down_icon)
                     } else {
-                        Icons.Default.ArrowDropUp
+                        painterResource(R.drawable.drop_up_icon)
                     },
                     contentDescription = "drop list",
                     tint = ContentAccentColor
