@@ -35,7 +35,8 @@ fun ColorSheet(
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
     scope: CoroutineScope,
-    initialColor: Color
+    initialColor: Color,
+    changeColor: (Color) -> Unit
 ) {
     val config = LocalConfiguration.current
 
@@ -48,8 +49,7 @@ fun ColorSheet(
     }
 
     ModalBottomSheet(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = BottomSheetShape,
         onDismissRequest = closeBottomShit,
         sheetState = sheetState,
@@ -65,9 +65,7 @@ fun ColorSheet(
                 .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
         ) {
             ColorPicker(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                initialColor = color
+                modifier = Modifier.fillMaxWidth(), initialColor = color
             ) { newColor ->
                 color = newColor
             }
@@ -86,10 +84,19 @@ fun ColorSheet(
                 Spacer(modifier = Modifier.width(PaddingSize))
 
                 ColorPreviewSection(
-                    initialColor = initialColor,
-                    updatedColor = color
+                    initialColor = initialColor, updatedColor = color
                 )
             }
+
+            Spacer(modifier = Modifier.height(PaddingSize))
+
+            ColorSheetActions(
+                scope = scope,
+                sheetState = sheetState,
+                closeBottomShit = closeBottomShit,
+                color = color,
+                changeColor = changeColor
+            )
         }
     }
 }

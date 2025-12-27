@@ -67,7 +67,7 @@ fun ColorPicker(
         val yProgress =
             (pickerLocation.y / colorPickerSize.height).coerceIn(0f, 1f)
         if (xProgress.isNaN().not() && yProgress.isNaN().not()) {
-            color = Color(
+            val newColor = Color(
                 rangeColor
                     .red()
                     .lighten(xProgress)
@@ -81,10 +81,17 @@ fun ColorPicker(
                     .lighten(xProgress)
                     .darken(yProgress),
             )
+
+            if (newColor != color) {
+                color = newColor
+                onPickedColor(newColor)
+            }
         }
     }
 
     LaunchedEffect(colorPickerSize, initialColor) {
+        if (initialColor == color) return@LaunchedEffect
+
         if (colorPickerSize.width > 1 && colorPickerSize.height > 1) {
             val hsv = FloatArray(3)
             android.graphics.Color.colorToHSV(initialColor.toArgb(), hsv)
@@ -102,9 +109,6 @@ fun ColorPicker(
         }
     }
 
-    LaunchedEffect(color) {
-        onPickedColor(color)
-    }
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {

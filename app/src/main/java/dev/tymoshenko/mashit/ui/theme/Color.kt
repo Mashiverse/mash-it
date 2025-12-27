@@ -7,6 +7,9 @@ val Background = Color(22, 22, 22)
 val ColorFieldBackground = Color(29, 29, 29)
 val SearchBarBackground = Color(63, 63, 63)
 val ContainerColor = Color(45, 45, 45)
+val ColorCloseButtonBackground = Color(86, 86, 86)
+val ColorSaveButtonBackground = Color(255, 0, 0)
+
 val ContentColor = Color(197, 197, 197)
 val ContentAccentColor = Color.White
 
