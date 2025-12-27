@@ -3,6 +3,7 @@ package dev.tymoshenko.mashit.ui.screens.main.mashi
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,33 +28,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
+import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
 import dev.tymoshenko.mashit.ui.screens.main.shop.ShopViewModel
+import dev.tymoshenko.mashit.ui.screens.main.shop.mashi.ShopDetailsSection
 import dev.tymoshenko.mashit.ui.theme.BottomSheetShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
+import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
-import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiBottomSheet(
+    selectedMashi: MashiDetails,
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
-    scope: CoroutineScope
+    detailsContent: @Composable () -> Unit
 ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
-
-    val viewModel = hiltViewModel<ShopViewModel>()
-    val mashiDetails by remember {
-        derivedStateOf {
-            viewModel.selectedMashi.value
-        }
-    }
 
     ModalBottomSheet(
         modifier = Modifier
@@ -72,12 +71,17 @@ fun MashiBottomSheet(
                 .fillMaxWidth()
                 .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
         ) {
-            MashiDetailsSection(
-                mashiDetails = mashiDetails!!,
-                scope = scope,
-                sheetState = sheetState,
-                closeBottomShit = closeBottomShit
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+                TraitHolder(
+                    width = LargeMashiHolderWidth,
+                    height = LargeMashiHolderHeight,
+                    data = selectedMashi.compositeUrl,
+                )
+
+                detailsContent.invoke()
+            }
 
             Spacer(modifier = Modifier.height(PaddingSize))
 
@@ -94,9 +98,9 @@ fun MashiBottomSheet(
                 horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 columns = GridCells.Fixed(3)
             ) {
-                items(mashiDetails!!.traits.size) { i ->
+                items(selectedMashi.traits.size) { i ->
                     MashiTraitHolder(
-                        trait = mashiDetails!!.traits[i],
+                        trait = selectedMashi.traits[i],
                         width = mashiHolderWidth,
                         height = mashiHolderHeight
                     )
@@ -109,10 +113,18 @@ fun MashiBottomSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun MashiBottomSheetPreview() {
+private fun ShopBottomSheetPreview() {
     MashiBottomSheet(
+        selectedMashi = ervindasExample,
         closeBottomShit = {},
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        scope = rememberCoroutineScope()
+        detailsContent = {
+            ShopDetailsSection(
+                mashiDetails = ervindasExample,
+                scope = rememberCoroutineScope(),
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                closeBottomShit = {}
+            )
+        }
     )
 }

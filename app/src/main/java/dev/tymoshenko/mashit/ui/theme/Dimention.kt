@@ -13,6 +13,7 @@ val MashiHolderWidth = (552 * 0.24).dp
 val MashiHolderHeight = (736 * 0.24).dp
 val LargeMashiHolderWidth = (552 * 0.3).dp
 val LargeMashiHolderHeight = (736 * 0.3).dp
+val ColorPreviewSize = 80.dp
 
 // Paddings
 val PaddingSize = 16.dp

@@ -1,0 +1,12 @@
+package dev.tymoshenko.mashit.ui.screens.main.mashup.actions
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+@Composable
+fun RightActionsPanel(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+    ) { }
+}

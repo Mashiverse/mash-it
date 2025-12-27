@@ -58,7 +58,7 @@ fun Main(onDisconnect: () -> Unit) {
 
                 NavHost(
                     navController = navController,
-                    startDestination = MainRoutes.Shop,
+                    startDestination = MainRoutes.Mashup,
                     modifier = Modifier
                         .padding(paddingValues)
                 ) {

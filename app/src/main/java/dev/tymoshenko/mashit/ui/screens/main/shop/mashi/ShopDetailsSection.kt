@@ -1,7 +1,6 @@
-package dev.tymoshenko.mashit.ui.screens.main.mashi
+package dev.tymoshenko.mashit.ui.screens.main.shop.mashi
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,15 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.R
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.ervindasExample2
+import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
-import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
-import dev.tymoshenko.mashit.ui.theme.MashItTheme
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallIconSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
@@ -46,8 +43,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MashiDetailsSection(
-    mashiDetails: MashiDetails = ervindasExample2,
+fun ShopDetailsSection(
+    mashiDetails: MashiDetails = ervindasExample,
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
     sheetState: SheetState
@@ -55,15 +52,8 @@ fun MashiDetailsSection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(LargeMashiHolderHeight),
-        horizontalArrangement = Arrangement.spacedBy(PaddingSize)
+            .height(LargeMashiHolderHeight)
     ) {
-        TraitHolder(
-            width = LargeMashiHolderWidth,
-            height = LargeMashiHolderHeight,
-            data = mashiDetails.compositeUrl,
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -177,35 +167,16 @@ fun MashiDetailsSection(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-private fun MashiDetailsSectionPreview() {
+private fun ShopDetailsSectionPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
     ) {
-        MashiDetailsSection(
+        ShopDetailsSection(
             scope = rememberCoroutineScope(),
             closeBottomShit = {},
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
-@Composable
-private fun MashiDetailsSectionPreview2() {
-    MashItTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background)
-        ) {
-            MashiDetailsSection(
-                scope = rememberCoroutineScope(),
-                closeBottomShit = {},
-                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-            )
-        }
     }
 }

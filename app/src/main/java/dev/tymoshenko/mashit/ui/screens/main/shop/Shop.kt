@@ -2,15 +2,10 @@ package dev.tymoshenko.mashit.ui.screens.main.shop
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -20,13 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.multipleExample
+import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiBottomSheet
-import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
-import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
+import dev.tymoshenko.mashit.ui.screens.main.shop.mashi.ShopDetailsSection
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +30,11 @@ fun Shop() {
     var isBottomSheet by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<ShopViewModel>()
+    val mashies by remember {
+        derivedStateOf {
+            viewModel.mashies.value
+        }
+    }
     val selectedMashi by remember {
         derivedStateOf {
             viewModel.selectedMashi.value
@@ -56,17 +54,7 @@ fun Shop() {
             .fillMaxSize()
             .padding(horizontal = PaddingSize)
     ) {
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Shop", fontWeight = FontWeight.Bold, color = ContentAccentColor)
-        }
-
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        CategoryHeader(title = "Shop")
 
         LazyColumn(
             modifier = Modifier
@@ -77,31 +65,7 @@ fun Shop() {
                 ShopSection(
                     sectionName = "Ervindas",
                     onMashiClick = selectMashi,
-                    sectionItems = multipleExample
-                )
-            }
-
-            item {
-                ShopSection(
-                    sectionName = "Ervindas",
-                    onMashiClick = selectMashi,
-                    sectionItems = multipleExample
-                )
-            }
-
-            item {
-                ShopSection(
-                    sectionName = "Ervindas",
-                    onMashiClick = selectMashi,
-                    sectionItems = multipleExample
-                )
-            }
-
-            item {
-                ShopSection(
-                    sectionName = "Ervindas",
-                    onMashiClick = selectMashi,
-                    sectionItems = multipleExample
+                    sectionItems = mashies
                 )
             }
         }
@@ -110,10 +74,17 @@ fun Shop() {
     if (isBottomSheet) {
         selectedMashi?.let {
             MashiBottomSheet(
+                selectedMashi = selectedMashi!!,
                 sheetState = sheetState,
-                scope = scope,
                 closeBottomShit = closeBottomShit
-            )
+            ) {
+                ShopDetailsSection(
+                    mashiDetails = selectedMashi!!,
+                    scope = scope,
+                    sheetState = sheetState,
+                    closeBottomShit = closeBottomShit
+                )
+            }
         }
     }
 }

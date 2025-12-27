@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.data.models.mashi.Trait
-import dev.tymoshenko.mashit.data.models.mashi.traitsExample
+import dev.tymoshenko.mashit.data.models.mashi.ervindasTraitsExample
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 import dev.tymoshenko.mashit.ui.theme.MashiHolderHeight
@@ -47,5 +47,5 @@ fun MashiTraitHolder(
 @Composable
 @Preview
 private fun MashiTraitHolderPreview() {
-    MashiTraitHolder(trait = traitsExample[0])
+    MashiTraitHolder(trait = ervindasTraitsExample[0])
 }
