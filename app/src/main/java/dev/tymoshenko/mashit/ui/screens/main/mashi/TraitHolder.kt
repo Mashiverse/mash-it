@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -98,11 +99,12 @@ fun TraitHolder(
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
     data: String = "https://example.com/image.svg",
-    colors: Triple<String, String, String>? = Triple("", "", "")
+    background: Color = MashiBackground,
+    colors: Triple<String, String, String>? = null
 ) {
     val ctx = LocalContext.current
 
-    val (hair, eyes, body) = colors ?: Triple("", "", "")
+    val (body, eyes, hair) = colors ?: Triple("#00FF00", "#FFFF00", "#0000FF")
     val imageLoader = remember(colors) {
         ImageLoader.Builder(ctx)
             .components {
@@ -123,7 +125,7 @@ fun TraitHolder(
             .width(width)
             .height(height)
             .clip(MashiHolderShape)
-            .background(MashiBackground)
+            .background(background)
             .clickable(onClick = onClick),
         alignment = Alignment.Center,
         imageLoader = imageLoader,

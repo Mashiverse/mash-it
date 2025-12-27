@@ -61,9 +61,22 @@ val hofExample = MashiDetails(
     price = 10
 )
 
+val rinniExample = MashiDetails(
+    name = "Morika",
+    author = "Rinni",
+    description = "",
+    perWallet = 5,
+    soldQuantity = 16,
+    quantity =49,
+    compositeUrl = "https://ipfs.filebase.io/ipfs/QmP1abhYkeghmyaPfZhzBEEMfgPPgeMEkZgQNTqnWsJKpP",
+    traits = rinniTraitsExample,
+    price = 5
+)
+
 val multipleExample = listOf(
     ervindasExample,
     napsExample,
     panExample,
-    hofExample
+    hofExample,
+    rinniExample
 )

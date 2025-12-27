@@ -52,6 +52,37 @@ val ervindasTraitsExample = listOf(
     )
 )
 
+val rinniTraitsExample = listOf(
+    Trait(
+        traitType = TraitType.BACKGROUND,
+        url = "https://ipfs.filebase.io/ipfs/QmQAZ48jHnpFU8ueTJXibhEYArnx5TEFN3HCga9DsNBrP1"
+    ),
+    Trait(
+        traitType = TraitType.BOTTOM,
+        url = "https://ipfs.filebase.io/ipfs/QmZmBZUQwsQhJFwN1UmoChaxLBneLbBdw3vGpshWeDQyB8"
+    ),
+    Trait(
+        traitType = TraitType.UPPER,
+        url = "https://ipfs.filebase.io/ipfs/QmebU67K3a2gYve4qH7haRSNQ2PZ1CN242xivunrerDEcM"
+    ),
+    Trait(
+        traitType = TraitType.HEAD,
+        url = "https://ipfs.filebase.io/ipfs/QmcTeG6CSzAMKP9xp5CKfewDbTUEa5RBcvkxGeNXW3KBQi"
+    ),
+    Trait(
+        traitType = TraitType.EYES,
+        url = "https://ipfs.filebase.io/ipfs/QmPNmzUvZYykNohrAjR2EDxvqCaJpeKMLqL2ejdSitC7Tw"
+    ),
+    Trait(
+        traitType = TraitType.HAIR_FRONT,
+        url = "https://ipfs.filebase.io/ipfs/Qmf1fMEtjtM1ghtmnqjE1crcJPETkxJUdHDWTnEN2dR7Lf"
+    ),
+    Trait(
+        traitType = TraitType.HAT,
+        url = "https://ipfs.filebase.io/ipfs/QmeczMut9UVh7LLHwZmaYv1hiAEho48sSRDNz1HE2GQmRr"
+    )
+)
+
 val panTraitsExample = listOf(
     Trait(
         traitType = TraitType.BACKGROUND,

@@ -7,17 +7,12 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 
-fun Color.toHexString(includeAlpha: Boolean = false): String {
-    val alpha = (alpha * 255).toInt()
+fun Color.toHexString(): String {
     val red = (red * 255).toInt()
     val green = (green * 255).toInt()
     val blue = (blue * 255).toInt()
 
-    return if (includeAlpha) {
-        String.format("%02X%02X%02X%02X", alpha, red, green, blue) // AARRGGBB
-    } else {
-        String.format("%02X%02X%02X", red, green, blue)             // RRGGBB
-    }
+    return String.format("%02X%02X%02X", red, green, blue)             // RRGGBB
 }
 
 fun Color.toRGB(): Triple<Int, Int, Int> {
