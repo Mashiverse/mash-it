@@ -13,3 +13,4 @@ enum class TraitType {
     LEFT_ACCESSORY,
     RIGHT_ACCESSORY
 }
+

@@ -26,6 +26,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.data.models.mashi.ervindasTraitsExample
 import dev.tymoshenko.mashit.data.models.mashi.hofTraitsExample
+import dev.tymoshenko.mashit.data.models.mashi.napsTraitsExample
+import dev.tymoshenko.mashit.data.models.mashi.panTraitsExample
 import dev.tymoshenko.mashit.data.models.mashi.rinniTraitsExample
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
@@ -109,7 +111,7 @@ fun Mashup() {
             CompositeHolder(
                 modifier = Modifier
                     .fillMaxSize(),
-                traits = hofTraitsExample,
+                traits = napsTraitsExample,
                 bodyColor = "#${body.value.toHexString()}",
                 eyesColor = "#${eyes.value.toHexString()}",
                 hairColor = "#${hair.value.toHexString()}"

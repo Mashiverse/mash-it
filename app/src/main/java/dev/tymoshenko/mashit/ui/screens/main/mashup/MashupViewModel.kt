@@ -10,13 +10,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(): ViewModel() {
-    private val _body = mutableStateOf(Color(38, 24, 4))
+    private val _body = mutableStateOf(Color.Green)
     val body: State<Color> get() = _body
 
-    private val _eyes = mutableStateOf(Color(38, 24, 4))
+    private val _eyes = mutableStateOf(Color.Yellow)
     val eyes: State<Color> get() = _eyes
 
-    private val _hair = mutableStateOf(Color(38, 24, 4))
+    private val _hair = mutableStateOf(Color.Blue)
     val hair: State<Color> get() = _hair
 
     private val _selectedColorType = mutableStateOf(ColorType.BODY)

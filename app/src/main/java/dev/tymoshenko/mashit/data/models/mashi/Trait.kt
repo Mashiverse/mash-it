@@ -38,10 +38,10 @@ val ervindasTraitsExample = listOf(
         traitType = TraitType.HAIR_FRONT,
         url = "https://ipfs.filebase.io/ipfs/Qmc9NrBWZR7J1xYeJQJ2NP1HAw4Uzwmwoh3dnowU8qi6V4"
     ),
-    Trait(
-        traitType = TraitType.HAT,
-        url = "https://ipfs.filebase.io/ipfs/QmZTSZRrdszcoWyJxYPmzvFHADRvXaQTGVaSgpLa7RvES9"
-    ),
+//    Trait(
+//        traitType = TraitType.HAT,
+//        url = "https://ipfs.filebase.io/ipfs/QmZTSZRrdszcoWyJxYPmzvFHADRvXaQTGVaSgpLa7RvES9"
+//    ),
     Trait(
         traitType = TraitType.LEFT_ACCESSORY,
         url = "https://ipfs.filebase.io/ipfs/QmUYr95SvARnDXrMgTF3dUo98Z1p91LEnqGMBNcfaXB4FU"
@@ -53,10 +53,10 @@ val ervindasTraitsExample = listOf(
 )
 
 val rinniTraitsExample = listOf(
-    Trait(
-        traitType = TraitType.BACKGROUND,
-        url = "https://ipfs.filebase.io/ipfs/QmQAZ48jHnpFU8ueTJXibhEYArnx5TEFN3HCga9DsNBrP1"
-    ),
+//    Trait(
+//        traitType = TraitType.BACKGROUND,
+//        url = "https://ipfs.filebase.io/ipfs/QmQAZ48jHnpFU8ueTJXibhEYArnx5TEFN3HCga9DsNBrP1"
+//    ),
     Trait(
         traitType = TraitType.BOTTOM,
         url = "https://ipfs.filebase.io/ipfs/QmZmBZUQwsQhJFwN1UmoChaxLBneLbBdw3vGpshWeDQyB8"
@@ -175,21 +175,21 @@ val napsTraitsExample = listOf(
         traitType = TraitType.CAPE,
         url = "https://ipfs.filebase.io/ipfs/QmdQppzKjcFPLBf6iPe7W18YGb5G73qA3PsiqQLTrHuTgq"
     ),
-    Trait(
-        traitType = TraitType.BOTTOM,
-        url = "https://ipfs.filebase.io/ipfs/Qmf2HmWhrH5T75EJCSZ8DJw8YMzyc3zyCFsnpebyaweBc2"
-    ),
-    Trait(
-        traitType = TraitType.UPPER,
-        url = "https://ipfs.filebase.io/ipfs/QmP2FcZYoG6kyZ3HWKUKrK1rN2rLiKAgwwK9sAVcwNG9mV"
-    ),
-    Trait(
-        traitType = TraitType.HEAD,
-        url = "https://ipfs.filebase.io/ipfs/QmUEZ8Qn4syRRyLG2H9Ad5ZMeDPpUffyHxiTUt1EwRML1E"
-    ),
-    Trait(
-        traitType = TraitType.EYES,
-        url = "https://ipfs.filebase.io/ipfs/QmS47kTU4SQ58PTnExMLjXPbBRaXf7TP1vegWBtHTgyqv7"
-    )
+//    Trait(
+//        traitType = TraitType.BOTTOM,
+//        url = "https://ipfs.filebase.io/ipfs/Qmf2HmWhrH5T75EJCSZ8DJw8YMzyc3zyCFsnpebyaweBc2"
+//    ),
+//    Trait(
+//        traitType = TraitType.UPPER,
+//        url = "https://ipfs.filebase.io/ipfs/QmP2FcZYoG6kyZ3HWKUKrK1rN2rLiKAgwwK9sAVcwNG9mV"
+//    ),
+//    Trait(
+//        traitType = TraitType.HEAD,
+//        url = "https://ipfs.filebase.io/ipfs/QmUEZ8Qn4syRRyLG2H9Ad5ZMeDPpUffyHxiTUt1EwRML1E"
+//    ),
+//    Trait(
+//        traitType = TraitType.EYES,
+//        url = "https://ipfs.filebase.io/ipfs/QmS47kTU4SQ58PTnExMLjXPbBRaXf7TP1vegWBtHTgyqv7"
+//    )
 )
 

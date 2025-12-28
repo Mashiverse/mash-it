@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dev.tymoshenko.mashit.data.models.mashi.MashiCollectionItem
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.collection.mashi.CollectionDetailsSection

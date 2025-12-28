@@ -33,6 +33,8 @@ android {
         }
 
         buildConfigField("String", "INFURA_API_KEY", localProperties.getProperty("INFURA_API_KEY"))
+        buildConfigField("String", "ALCHEMY_API_KEY", localProperties.getProperty("ALCHEMY_API_KEY"))
+        buildConfigField("String", "MASH_IT_API_KEY", localProperties.getProperty("MASH_IT_API_KEY"))
     }
 
     buildTypes {
@@ -104,8 +106,4 @@ dependencies {
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)
-
-    // SVG
-    implementation(libs.androidsvg.aar)
-    //implementation(libs.androidsvg)
 }

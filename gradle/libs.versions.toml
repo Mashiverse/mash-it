@@ -1,7 +1,5 @@
 [versions]
 agp = "8.13.2"
-androidsvg = "1.5"
-androidsvgAar = "1.4"
 coilCompose = "3.3.0"
 coinbaseWalletSdk = "1.2.0"
 converterGson = "3.0.0"
@@ -23,8 +21,6 @@ retrofit = "3.0.0"
 remoteCreationCore = "1.0.0-alpha01"
 
 [libraries]
-androidsvg = { module = "com.caverock:androidsvg", version.ref = "androidsvg" }
-androidsvg-aar = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvgAar" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
