@@ -1,6 +1,7 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashup
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -13,13 +14,17 @@ import dev.tymoshenko.mashit.data.models.mashi.MashupDetails
 import dev.tymoshenko.mashit.data.models.mashi.Trait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.data.repos.AlchemyRepo
+import dev.tymoshenko.mashit.data.repos.MashiRepo
+import dev.tymoshenko.mashit.utils.io.saveImageToGallery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
-    alchemyRepo: AlchemyRepo
+    alchemyRepo: AlchemyRepo,
+    private val mashiRepo: MashiRepo
 ) : ViewModel() {
     // Colors
     private val _body = mutableStateOf(Color.Green)
@@ -65,7 +70,13 @@ class MashupViewModel @Inject constructor(
 
         val current = _mashupDetails.value
         val updated = when (trait.traitType) {
-            TraitType.BACKGROUND -> current.copy(background = toggleTrait(current.background, trait))
+            TraitType.BACKGROUND -> current.copy(
+                background = toggleTrait(
+                    current.background,
+                    trait
+                )
+            )
+
             TraitType.HAIR_BACK -> current.copy(hairBack = toggleTrait(current.hairBack, trait))
             TraitType.CAPE -> current.copy(cape = toggleTrait(current.cape, trait))
             TraitType.BOTTOM -> current.copy(bottom = toggleTrait(current.bottom, trait))
@@ -74,8 +85,19 @@ class MashupViewModel @Inject constructor(
             TraitType.EYES -> current.copy(eyes = toggleTrait(current.eyes, trait))
             TraitType.HAIR_FRONT -> current.copy(hairFront = toggleTrait(current.hairFront, trait))
             TraitType.HAT -> current.copy(hat = toggleTrait(current.hat, trait))
-            TraitType.LEFT_ACCESSORY -> current.copy(leftAccessory = toggleTrait(current.leftAccessory, trait))
-            TraitType.RIGHT_ACCESSORY -> current.copy(rightAccessory = toggleTrait(current.rightAccessory, trait))
+            TraitType.LEFT_ACCESSORY -> current.copy(
+                leftAccessory = toggleTrait(
+                    current.leftAccessory,
+                    trait
+                )
+            )
+
+            TraitType.RIGHT_ACCESSORY -> current.copy(
+                rightAccessory = toggleTrait(
+                    current.rightAccessory,
+                    trait
+                )
+            )
         }
 
         _mashupDetails.value = updated
@@ -90,6 +112,29 @@ class MashupViewModel @Inject constructor(
             ColorType.BODY -> _body.value = color
             ColorType.EYES -> _eyes.value = color
             ColorType.HAIR -> _hair.value = color
+        }
+    }
+
+    fun saveMashup(ctx: Context, wallet: String = "0xd659688366e5a5a6190409dcd4834b3a5b7c88ba", isStatic: Boolean = true) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val mashupResult = mashiRepo.getMashup(wallet, isStatic)
+            val timestamp = System.currentTimeMillis()
+            val fileName = if (mashupResult.contentType == "image/png") {
+                "mashup_$timestamp.png"
+            } else {
+                "mashup_$timestamp.gif"
+            }
+
+            saveImageToGallery(
+                context = ctx,
+                imageBytes = mashupResult.bytes,
+                fileName = fileName,
+                mimeType = mashupResult.contentType
+            )
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(ctx, "Saved", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

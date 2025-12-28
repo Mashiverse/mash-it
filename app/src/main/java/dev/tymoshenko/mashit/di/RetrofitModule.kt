@@ -5,10 +5,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.tymoshenko.mashit.data.remote.apis.AlchemyApi
+import dev.tymoshenko.mashit.data.remote.apis.MashiApi
 import dev.tymoshenko.mashit.utils.ALCHEMY_BASE_URL
+import dev.tymoshenko.mashit.utils.MASHI_BASE_URL
 import jakarta.inject.Named
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -28,4 +32,28 @@ object RetrofitModule {
     fun provideAlchemyApi(@Named("AlchemyClient") retrofit: Retrofit): AlchemyApi =
         retrofit.create(AlchemyApi::class.java)
 
+    val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(3, TimeUnit.MINUTES)
+        .build()
+
+    @Provides
+    @Singleton
+    @Named("MashiClient")
+    fun provideMashiClient(): Retrofit {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(3, TimeUnit.MINUTES)
+            .build()
+
+        return Retrofit
+            .Builder()
+            .baseUrl(MASHI_BASE_URL)
+            .client(client)
+            .build()
+    }
+
+    @Provides
+    fun provideMashiApi(@Named("MashiClient") retrofit: Retrofit) =
+        retrofit.create(MashiApi::class.java)
 }

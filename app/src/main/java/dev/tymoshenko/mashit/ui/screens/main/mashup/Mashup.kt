@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -56,6 +57,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
+    val ctx = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
@@ -152,6 +154,24 @@ fun Mashup() {
                 }
             ) {
                 Text("COLOR")
+            }
+
+            Column(Modifier.align(Alignment.TopEnd)) {
+                Button(
+                    onClick = {
+                        viewModel.saveMashup(ctx)
+                    }
+                ) {
+                    Text("Save")
+                }
+
+                Button(
+                    onClick = {
+                        viewModel.saveMashup(ctx, isStatic = false)
+                    }
+                ) {
+                    Text("Save anim")
+                }
             }
 
             Box(
