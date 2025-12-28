@@ -1,17 +1,23 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashup
 
+import android.util.Log
+import android.widget.GridLayout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -21,10 +27,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
@@ -39,6 +51,7 @@ import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
 import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import dev.tymoshenko.mashit.utils.color.helpers.toHexString
 
 
@@ -48,6 +61,10 @@ fun Mashup() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
+
+    val config = LocalConfiguration.current
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
+    val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     val viewModel = hiltViewModel<MashupViewModel>()
 
@@ -71,7 +88,7 @@ fun Mashup() {
         viewModel.selectColorType(colorType)
     }
 
-    val mashupTraits by remember {
+    val mashupDetail by remember {
         viewModel.mashupDetails
     }
 
@@ -79,20 +96,20 @@ fun Mashup() {
         viewModel.mashies
     }
 
-    val traits by remember(mashupTraits) {
+    val mashupTraits by remember(mashupDetail) {
         derivedStateOf {
             listOf(
-                mashupTraits.background,
-                mashupTraits.hairBack,
-                mashupTraits.cape,
-                mashupTraits.bottom,
-                mashupTraits.upper,
-                mashupTraits.head,
-                mashupTraits.eyes,
-                mashupTraits.hairFront,
-                mashupTraits.hat,
-                mashupTraits.leftAccessory,
-                mashupTraits.rightAccessory
+                mashupDetail.background,
+                mashupDetail.hairBack,
+                mashupDetail.cape,
+                mashupDetail.bottom,
+                mashupDetail.upper,
+                mashupDetail.head,
+                mashupDetail.eyes,
+                mashupDetail.hairFront,
+                mashupDetail.hat,
+                mashupDetail.leftAccessory,
+                mashupDetail.rightAccessory
             )
         }
     }
@@ -132,8 +149,7 @@ fun Mashup() {
             }
         }.map {
             MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.CAPE },
-                avatarName = it.name
+                trait = it.traits.first { it.traitType == TraitType.CAPE }, avatarName = it.name
             )
         }
     }
@@ -144,8 +160,7 @@ fun Mashup() {
             }
         }.map {
             MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.BOTTOM },
-                avatarName = it.name
+                trait = it.traits.first { it.traitType == TraitType.BOTTOM }, avatarName = it.name
             )
         }
     }
@@ -156,8 +171,7 @@ fun Mashup() {
             }
         }.map {
             MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.UPPER },
-                avatarName = it.name
+                trait = it.traits.first { it.traitType == TraitType.UPPER }, avatarName = it.name
             )
         }
     }
@@ -168,8 +182,7 @@ fun Mashup() {
             }
         }.map {
             MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.HEAD },
-                avatarName = it.name
+                trait = it.traits.first { it.traitType == TraitType.HEAD }, avatarName = it.name
             )
         }
     }
@@ -180,8 +193,7 @@ fun Mashup() {
             }
         }.map {
             MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.EYES },
-                avatarName = it.name
+                trait = it.traits.first { it.traitType == TraitType.EYES }, avatarName = it.name
             )
         }
     }
@@ -204,8 +216,7 @@ fun Mashup() {
             }
         }.map {
             MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.HAT },
-                avatarName = it.name
+                trait = it.traits.first { it.traitType == TraitType.HAT }, avatarName = it.name
             )
         }
     }
@@ -234,6 +245,27 @@ fun Mashup() {
         }
     }
 
+    var selectedCategory by remember {
+        mutableStateOf(TraitType.BACKGROUND)
+    }
+
+    val traits by remember(selectedCategory, mashies) {
+        derivedStateOf {
+            when (selectedCategory) {
+                TraitType.BACKGROUND -> backgroundTraits
+                TraitType.HAIR_BACK -> hairBackTraits
+                TraitType.CAPE -> capeTraits
+                TraitType.BOTTOM -> bottomTraits
+                TraitType.UPPER -> upperTraits
+                TraitType.HEAD -> headTraits
+                TraitType.EYES -> eyesTraits
+                TraitType.HAIR_FRONT -> hairFrontTraits
+                TraitType.HAT -> hatTraits
+                TraitType.LEFT_ACCESSORY -> leftTraits
+                TraitType.RIGHT_ACCESSORY -> rightTraits
+            }
+        }
+    }
 
     val changeColor = remember(selectedColorType.value) {
         { newColor: Color ->
@@ -260,6 +292,9 @@ fun Mashup() {
         isBottomSheet = false
     }
 
+    Log.d("COLL", backgroundTraits.size.toString())
+    Log.d("COLL", traits.size.toString())
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -269,55 +304,77 @@ fun Mashup() {
 
         Box(
             modifier = Modifier
-                .height(LargeMashiHolderHeight)
-                .width(LargeMashiHolderWidth)
-                .clip(MashiHolderShape)
-                .background(MashiBackground)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            CompositeHolder(
+            Button(
                 modifier = Modifier
-                    .fillMaxSize(),
-                traits = traits,
-                bodyColor = "#${body.value.toHexString()}",
-                eyesColor = "#${eyes.value.toHexString()}",
-                hairColor = "#${hair.value.toHexString()}"
-            )
+                    .align(Alignment.TopStart),
+                onClick = {
+                    isBottomSheet = true
+                }
+            ) {
+                Text("COLOR")
+            }
+
+            Box(
+                modifier = Modifier
+                    .height(LargeMashiHolderHeight)
+                    .width(LargeMashiHolderWidth)
+                    .clip(MashiHolderShape)
+                    .background(MashiBackground)
+            ) {
+                CompositeHolder(
+                    modifier = Modifier.fillMaxSize(),
+                    traits = mashupTraits,
+                    bodyColor = "#${body.value.toHexString()}",
+                    eyesColor = "#${eyes.value.toHexString()}",
+                    hairColor = "#${hair.value.toHexString()}"
+                )
+            }
         }
 
         Column {
-            Button(
-                modifier = Modifier.background(body.value),
-                onClick = {
-                    selectColorType.invoke(ColorType.BODY)
-                    isBottomSheet = true
-                }) {
-                Text("Body")
+            LazyRow {
+                items(TraitType.entries) { traitType ->
+                    Button(
+                        onClick = {
+                            when (traitType) {
+                                TraitType.EYES -> {
+                                    selectColorType(ColorType.EYES)
+                                    selectedCategory = traitType
+                                }
+
+                                TraitType.HAIR_BACK, TraitType.HAIR_FRONT -> {
+                                    selectColorType(ColorType.HAIR)
+                                    selectedCategory = traitType
+                                }
+
+                                else -> {
+                                    selectColorType(ColorType.BODY)
+                                    selectedCategory = traitType
+                                }
+                            }
+                        }
+                    ) {
+                        Text(traitType.name)
+                    }
+                }
             }
 
-            Button(
-                modifier = Modifier.background(eyes.value),
-                onClick = {
-                    selectColorType.invoke(ColorType.EYES)
-                    isBottomSheet = true
-                }) {
-                Text("Eyes")
-            }
-
-            Button(modifier = Modifier.background(hair.value), onClick = {
-                selectColorType.invoke(ColorType.HAIR)
-                isBottomSheet = true
-            }) {
-                Text("Hair")
-            }
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                columns = GridCells.Fixed(3)
             ) {
-                items(backgroundTraits.size) { i ->
+                items(traits.size) { i ->
                     TraitHolder(
-                        onClick = { changeMashupTrait.invoke(backgroundTraits[i].trait) },
-                        data = backgroundTraits[i].trait.url
+                        width = mashiHolderWidth,
+                        height = mashiHolderHeight,
+                        onClick = { changeMashupTrait.invoke(traits[i].trait) },
+                        data = traits[i].trait.url,
+                        colors = Triple("#${body.value.toHexString()}", "#${eyes.value.toHexString()}", "#${hair.value.toHexString()}")
                     )
                 }
             }
