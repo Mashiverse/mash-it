@@ -46,7 +46,9 @@ class MashupViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val collection = alchemyRepo.getCollection()
+            val collection = alchemyRepo.getCollection().sortedBy { mashie ->
+                mashie.name
+            }
             _mashies.value = collection.map { item ->
                 MashiDetails(
                     name = item.name,
@@ -115,7 +117,7 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun saveMashup(ctx: Context, wallet: String = "0xd659688366e5a5a6190409dcd4834b3a5b7c88ba", isStatic: Boolean = true) {
+    fun saveMashup(ctx: Context, wallet: String = "0xae42edc0fc636d1214a6c5d829c37d778398f17b", isStatic: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
             val mashupResult = mashiRepo.getMashup(wallet, isStatic)
             val timestamp = System.currentTimeMillis()

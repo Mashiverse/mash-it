@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -33,16 +35,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
+import dev.tymoshenko.mashit.data.models.color.SelectedColors
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
 import dev.tymoshenko.mashit.data.models.mashi.Trait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
-import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
 import dev.tymoshenko.mashit.ui.screens.main.mashup.composite.CompositeHolder
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
+import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
@@ -123,7 +128,7 @@ fun Mashup() {
                     trait = mashie.traits.first { it.traitType == type },
                     avatarName = mashie.name
                 )
-            }
+            }.toSet().toList()
         }
     }
     var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
@@ -184,51 +189,54 @@ fun Mashup() {
                 CompositeHolder(
                     modifier = Modifier.fillMaxSize(),
                     traits = mashupTraits,
-                    bodyColor = "#${body.value.toHexString()}",
-                    eyesColor = "#${eyes.value.toHexString()}",
-                    hairColor = "#${hair.value.toHexString()}"
+                    selectedColors = SelectedColors(
+                        body = "#${body.value.toHexString()}",
+                        eyes = "#${eyes.value.toHexString()}",
+                        hair = "#${hair.value.toHexString()}"
+                    ),
                 )
             }
         }
 
-        Column {
-            LazyRow {
-                items(TraitType.entries) { traitType ->
-                    Button(
-                        onClick = {
-                            val colorTypeForTrait = when (traitType) {
-                                TraitType.EYES -> ColorType.EYES
-                                TraitType.HAIR_BACK, TraitType.HAIR_FRONT -> ColorType.HAIR
-                                else -> ColorType.BODY
-                            }
+        Spacer(Modifier.height(SmallPaddingSize))
 
-                            selectColorType(colorTypeForTrait)
-                            selectedCategory = traitType
-                            scope.launch {
-                                lazyGridState.scrollToItem(0)
-                            }
+        LazyRow {
+            items(TraitType.entries) { traitType ->
+                TextButton(
+                    onClick = {
+                        selectedCategory = traitType
+                        scope.launch {
+                            lazyGridState.scrollToItem(0)
                         }
-                    ) {
-                        Text(traitType.name)
                     }
-                }
-            }
-
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth(),
-                state = lazyGridState,
-                verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                columns = GridCells.Fixed(3)
-            ) {
-                items(traits.size) { i ->
-                    TraitHolder(
-                        width = mashiHolderWidth,
-                        height = mashiHolderHeight,
-                        onClick = { changeMashupTrait.invoke(traits[i].trait) },
-                        data = traits[i].trait.url,
+                ) {
+                    Text(
+                        text = traitType.name
+                            .lowercase()
+                            .replace("_", " "),
+                        fontSize = 14.sp,
+                        color = if (traitType == selectedCategory) ContentAccentColor else ContentColor
                     )
                 }
+            }
+        }
+
+        Spacer(Modifier.height(SmallPaddingSize))
+
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxWidth(),
+            state = lazyGridState,
+            verticalArrangement = Arrangement.spacedBy(PaddingSize),
+            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+            columns = GridCells.Fixed(3)
+        ) {
+            items(traits.size) { i ->
+                MashupTraitHolder(
+                    mashiHolderHeight = mashiHolderHeight,
+                    mashiHolderWidth = mashiHolderWidth,
+                    trait = traits[i],
+                    changeMashupTrait = changeMashupTrait
+                )
             }
         }
     }
@@ -239,7 +247,9 @@ fun Mashup() {
             scope = scope,
             sheetState = sheetState,
             initialColor = color,
-            changeColor = changeColor
+            changeColor = changeColor,
+            selectColorType = selectColorType,
+            selectedColorType = selectedColorType.value
         )
     }
 }

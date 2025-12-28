@@ -25,7 +25,9 @@ class CollectionViewModel @Inject constructor(alchemyRepo: AlchemyRepo): ViewMod
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val collection = alchemyRepo.getCollection()
+            val collection = alchemyRepo.getCollection().sortedBy { mashie ->
+                mashie.name
+            }
             _mashies.value = collection.map { item ->
                 MashiDetails(
                     name = item.name,

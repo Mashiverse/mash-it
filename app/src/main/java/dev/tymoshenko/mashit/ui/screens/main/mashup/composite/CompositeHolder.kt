@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 import android.util.Base64
+import dev.tymoshenko.mashit.data.models.color.SelectedColors
 
 suspend fun isSvgUrl(url: String): Boolean = withContext(Dispatchers.IO) {
     try {
@@ -41,13 +42,11 @@ suspend fun fetchSvgContent(url: String): String = withContext(Dispatchers.IO) {
 fun CompositeHolder(
     traits: List<Trait?>,
     modifier: Modifier = Modifier,
-    bodyColor: String = "#00FF00",
-    eyesColor: String = "#FFFF00",
-    hairColor: String = "#0000FF"
+    selectedColors: SelectedColors
 ) {
     var htmlContent by remember { mutableStateOf("") }
 
-    LaunchedEffect(traits, bodyColor, eyesColor, hairColor) {
+    LaunchedEffect(traits, selectedColors) {
         val htmlBuilder = StringBuilder()
         htmlBuilder.append(
             """
@@ -74,7 +73,12 @@ fun CompositeHolder(
                 val rawSvg = fetchSvgContent(trait.url)
                 if (rawSvg.isNotEmpty()) {
                     // 1. Replace colors
-                    val coloredSvg = replaceColors(rawSvg, bodyColor, eyesColor, hairColor)
+                    val coloredSvg = replaceColors(
+                        svgSrc = rawSvg,
+                        bodyColor = selectedColors.body,
+                        eyesColor = selectedColors.eyes,
+                        hairColor = selectedColors.hair
+                    )
 
 
                     // 3. Encode SVG in Base64 to avoid WebView parsing issues
