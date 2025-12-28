@@ -49,7 +49,7 @@ suspend fun fetchSvgContent(url: String): String = withContext(Dispatchers.IO) {
 
 @Composable
 fun CompositeHolder(
-    traits: List<Trait>,
+    traits: List<Trait?>,
     modifier: Modifier = Modifier,
     bodyColor: String = "#00FF00",
     eyesColor: String = "#FFFF00",
@@ -111,8 +111,10 @@ fun CompositeHolder(
     """.trimIndent()
         )
 
-        traits.forEachIndexed { index, trait ->
-            val traitClass = if (trait.traitType == TraitType.BACKGROUND) {
+        traits
+            .filter{trait -> trait != null}
+            .forEachIndexed { index, trait ->
+            val traitClass = if (trait!!.traitType == TraitType.BACKGROUND) {
                 "background-content"
             } else {
                 "trait-content"
