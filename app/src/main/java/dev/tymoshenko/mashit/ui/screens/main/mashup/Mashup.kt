@@ -1,12 +1,10 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashup
 
 import android.util.Log
-import android.widget.GridLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,10 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -53,6 +49,7 @@ import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import dev.tymoshenko.mashit.utils.color.helpers.toHexString
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,6 +58,8 @@ fun Mashup() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
+
+    val lazyGridState = rememberLazyGridState()
 
     val config = LocalConfiguration.current
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
@@ -343,16 +342,25 @@ fun Mashup() {
                                 TraitType.EYES -> {
                                     selectColorType(ColorType.EYES)
                                     selectedCategory = traitType
+                                    scope.launch {
+                                        lazyGridState.scrollToItem(0)
+                                    }
                                 }
 
                                 TraitType.HAIR_BACK, TraitType.HAIR_FRONT -> {
                                     selectColorType(ColorType.HAIR)
                                     selectedCategory = traitType
+                                    scope.launch {
+                                        lazyGridState.scrollToItem(0)
+                                    }
                                 }
 
                                 else -> {
                                     selectColorType(ColorType.BODY)
                                     selectedCategory = traitType
+                                    scope.launch {
+                                        lazyGridState.scrollToItem(0)
+                                    }
                                 }
                             }
                         }
@@ -364,6 +372,7 @@ fun Mashup() {
 
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
+                state =lazyGridState,
                 verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 columns = GridCells.Fixed(3)
@@ -374,7 +383,11 @@ fun Mashup() {
                         height = mashiHolderHeight,
                         onClick = { changeMashupTrait.invoke(traits[i].trait) },
                         data = traits[i].trait.url,
-                        colors = Triple("#${body.value.toHexString()}", "#${eyes.value.toHexString()}", "#${hair.value.toHexString()}")
+                        colors = Triple(
+                            "#${body.value.toHexString()}",
+                            "#${eyes.value.toHexString()}",
+                            "#${hair.value.toHexString()}"
+                        )
                     )
                 }
             }
