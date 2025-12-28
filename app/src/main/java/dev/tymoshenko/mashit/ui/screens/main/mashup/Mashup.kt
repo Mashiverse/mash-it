@@ -1,14 +1,11 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashup
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,26 +18,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
-import dev.tymoshenko.mashit.data.models.mashi.TraitType
+import dev.tymoshenko.mashit.data.models.mashi.ervindasTraitsExample
+import dev.tymoshenko.mashit.data.models.mashi.hofTraitsExample
 import dev.tymoshenko.mashit.data.models.mashi.rinniTraitsExample
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
-import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
-import dev.tymoshenko.mashit.ui.theme.ColorPreviewSize
+import dev.tymoshenko.mashit.ui.screens.main.mashup.composite.CompositeHolder
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
-import dev.tymoshenko.mashit.ui.theme.LargeTraitHolderWidth
-import dev.tymoshenko.mashit.ui.theme.MashiHolderHeight
-import dev.tymoshenko.mashit.ui.theme.MashiHolderWidth
+import dev.tymoshenko.mashit.ui.theme.MashiBackground
+import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.utils.color.helpers.toHexString
-import retrofit2.http.Body
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,46 +101,44 @@ fun Mashup() {
 
         Box(
             modifier = Modifier
-            .height(LargeMashiHolderHeight)
-            .width(LargeMashiHolderWidth),
-            contentAlignment = Alignment.Center
+                .height(LargeMashiHolderHeight)
+                .width(LargeMashiHolderWidth)
+                .clip(MashiHolderShape)
+                .background(MashiBackground)
         ) {
-            rinniTraitsExample.forEach { trait ->
-                if (trait.traitType == TraitType.BACKGROUND) {
-                    TraitHolder(
-                        onClick = {
-                            isBottomSheet = true
-                        },
-                        width = LargeMashiHolderWidth,
-                        height = LargeMashiHolderHeight,
-                        data = trait.url,
-                        colors = Triple("#${body.value.toHexString()}" ,"#${eyes.value.toHexString()}", "#${hair.value.toHexString()}")
-                    )
-                } else {
-                    TraitHolder(
-                        onClick = {
-                            isBottomSheet = true
-                        },
-                        width = LargeTraitHolderWidth,
-                        height = LargeMashiHolderHeight,
-                        data = trait.url,
-                        colors = Triple("#${body.value.toHexString()}" ,"#${eyes.value.toHexString()}", "#${hair.value.toHexString()}"),
-                        background = Color.Transparent
-                    )
-                }
-            }
+            CompositeHolder(
+                modifier = Modifier
+                    .fillMaxSize(),
+                traits = hofTraitsExample,
+                bodyColor = "#${body.value.toHexString()}",
+                eyesColor = "#${eyes.value.toHexString()}",
+                hairColor = "#${hair.value.toHexString()}"
+            )
         }
 
         Column {
-            Button(modifier = Modifier.background(body.value),onClick = {selectColorType.invoke(ColorType.BODY)}) {
+            Button(
+                modifier = Modifier.background(body.value),
+                onClick = {
+                    selectColorType.invoke(ColorType.BODY)
+                    isBottomSheet = true
+                }) {
                 Text("Body")
             }
 
-            Button(modifier = Modifier.background(eyes.value), onClick = {selectColorType.invoke(ColorType.EYES)}) {
+            Button(
+                modifier = Modifier.background(eyes.value),
+                onClick = {
+                    selectColorType.invoke(ColorType.EYES)
+                    isBottomSheet = true
+                }) {
                 Text("Eyes")
             }
 
-            Button(modifier = Modifier.background(hair.value),onClick = {selectColorType.invoke(ColorType.HAIR)}) {
+            Button(modifier = Modifier.background(hair.value), onClick = {
+                selectColorType.invoke(ColorType.HAIR)
+                isBottomSheet = true
+            }) {
                 Text("Hair")
             }
         }

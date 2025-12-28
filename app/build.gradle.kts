@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.remote.creation.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,9 +99,13 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation("io.coil-kt.coil3:coil-gif:3.3.0")
-    implementation("io.coil-kt.coil3:coil-svg:3.3.0")
+    implementation(libs.coil.gif)
+    implementation(libs.coil.svg)
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)
+
+    // SVG
+    implementation(libs.androidsvg.aar)
+    //implementation(libs.androidsvg)
 }

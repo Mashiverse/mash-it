@@ -19,6 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import dev.tymoshenko.mashit.ui.screens.main.picker.ColorPicker
@@ -60,9 +62,9 @@ fun ColorSheet(
     ) {
         Column(
             modifier = Modifier
-                .height((config.screenHeightDp * 0.8).dp)
+                .height((config.screenHeightDp * 0.6).dp)
                 .fillMaxWidth()
-                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
+                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize)
         ) {
             ColorPicker(
                 modifier = Modifier.fillMaxWidth(), initialColor = color

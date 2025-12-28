@@ -1,7 +1,5 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashi
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
@@ -20,7 +18,6 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.decode.DecodeResult
 import coil3.decode.Decoder
-import coil3.decode.ImageSource
 import coil3.fetch.SourceFetchResult
 import coil3.gif.AnimatedImageDecoder
 import coil3.request.ImageRequest
@@ -53,7 +50,10 @@ class SvgColorReplacementDecoder(
 
         // Wrap into a new SourceFetchResult
         val editedResult = SourceFetchResult(
-            source = coil3.decode.ImageSource(Buffer().writeUtf8(editedSvg), result.source.fileSystem),
+            source = coil3.decode.ImageSource(
+                Buffer().writeUtf8(editedSvg),
+                result.source.fileSystem
+            ),
             mimeType = "image/svg+xml",
             dataSource = result.dataSource
         )
@@ -117,7 +117,7 @@ fun TraitHolder(
 
     val request = ImageRequest.Builder(ctx)
         .data(data)
-        .crossfade(true)
+        .crossfade(false)
         .build()
 
     AsyncImage(

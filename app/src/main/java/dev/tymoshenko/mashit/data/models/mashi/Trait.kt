@@ -71,11 +71,11 @@ val rinniTraitsExample = listOf(
     ),
     Trait(
         traitType = TraitType.EYES,
-        url = "https://ipfs.filebase.io/ipfs/QmPNmzUvZYykNohrAjR2EDxvqCaJpeKMLqL2ejdSitC7Tw"
+        url = "https://ipfs.filebase.io/ipfs/QmYFGZm34kNADVEf44YxihmtCgRjr1itTvuWVuSVqkTABi"
     ),
     Trait(
         traitType = TraitType.HAIR_FRONT,
-        url = "https://ipfs.filebase.io/ipfs/Qmf1fMEtjtM1ghtmnqjE1crcJPETkxJUdHDWTnEN2dR7Lf"
+        url = "https://ipfs.filebase.io/ipfs/QmUZxRsQc8z2TMmiod3mSUeRh5wespJGarRELYZV9Zbw1o"
     ),
     Trait(
         traitType = TraitType.HAT,
