@@ -21,21 +21,21 @@ import javax.inject.Inject
 class MashupViewModel @Inject constructor(
     alchemyRepo: AlchemyRepo
 ) : ViewModel() {
+    // Colors
     private val _body = mutableStateOf(Color.Green)
     val body: State<Color> get() = _body
-
     private val _eyes = mutableStateOf(Color.Yellow)
     val eyes: State<Color> get() = _eyes
-
     private val _hair = mutableStateOf(Color.Blue)
     val hair: State<Color> get() = _hair
-
     private val _selectedColorType = mutableStateOf(ColorType.BODY)
     val selectedColorType: State<ColorType> get() = _selectedColorType
 
+    // Mashies
     private val _mashies = mutableStateOf<List<MashiDetails>>(listOf())
     val mashies: State<List<MashiDetails>> get() = _mashies
 
+    //Mashup
     private val _mashupDetails = mutableStateOf(MashupDetails())
     val mashupDetails: State<MashupDetails> get() = _mashupDetails
 
@@ -58,140 +58,38 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun changeMashupTrait(
-        trait: Trait
-    ) {
-        Log.d("Mashup", "here")
-        when (trait.traitType) {
-            TraitType.BACKGROUND -> if (_mashupDetails.value.background?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(background = null)
-            } else {
-                _mashupDetails.value = mashupDetails.value.copy(
-                    background = Trait(
-                        traitType = TraitType.BACKGROUND,
-                        url = trait.url
-                    )
-                )
-            }
-
-            TraitType.HAIR_BACK -> if (_mashupDetails.value.hairBack?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(hairBack = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(hairBack = Trait(
-                        traitType = TraitType.HAIR_BACK,
-                        url = trait.url
-                    )
-                    )
-            }
-
-            TraitType.CAPE -> if (_mashupDetails.value.cape?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(cape = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(cape = Trait(
-                        traitType = TraitType.CAPE,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.BOTTOM -> if (_mashupDetails.value.bottom?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(bottom = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(bottom = Trait(
-                        traitType = TraitType.BOTTOM,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.UPPER -> if (_mashupDetails.value.upper?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(upper = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(upper = Trait(
-                        traitType = TraitType.UPPER,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.HEAD -> if (_mashupDetails.value.head?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(head = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(head = Trait(
-                        traitType = TraitType.HEAD,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.EYES -> if (_mashupDetails.value.eyes?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(eyes = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(eyes =Trait(
-                        traitType = TraitType.EYES,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.HAIR_FRONT -> if (_mashupDetails.value.hairFront?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(hairFront = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(hairFront = Trait(
-                        traitType = TraitType.HAIR_FRONT,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.HAT -> if (_mashupDetails.value.hat?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(hat = null)
-            } else {
-                _mashupDetails.value =
-                    mashupDetails.value.copy(hat = Trait(
-                        traitType = TraitType.HAT,
-                        url = trait.url
-                    ))
-            }
-
-            TraitType.LEFT_ACCESSORY -> if (_mashupDetails.value.leftAccessory?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(leftAccessory = null)
-            } else {
-                _mashupDetails.value = mashupDetails.value.copy(
-                    leftAccessory = Trait(
-                        traitType = TraitType.LEFT_ACCESSORY,
-                        url = trait.url
-                    )
-                )
-            }
-
-            TraitType.RIGHT_ACCESSORY -> if (_mashupDetails.value.rightAccessory?.url == trait.url) {
-                _mashupDetails.value = _mashupDetails.value.copy(rightAccessory = null)
-            } else {
-                _mashupDetails.value = mashupDetails.value.copy(
-                    rightAccessory = Trait(
-                        traitType = TraitType.RIGHT_ACCESSORY,
-                        url = trait.url
-                    )
-                )
-            }
+    fun changeMashupTrait(trait: Trait) {
+        val toggleTrait: (Trait?, Trait?) -> Trait? = { currentTrait: Trait?, newTrait: Trait? ->
+            if (currentTrait?.url == newTrait?.url) null else newTrait
         }
+
+        val current = _mashupDetails.value
+        val updated = when (trait.traitType) {
+            TraitType.BACKGROUND -> current.copy(background = toggleTrait(current.background, trait))
+            TraitType.HAIR_BACK -> current.copy(hairBack = toggleTrait(current.hairBack, trait))
+            TraitType.CAPE -> current.copy(cape = toggleTrait(current.cape, trait))
+            TraitType.BOTTOM -> current.copy(bottom = toggleTrait(current.bottom, trait))
+            TraitType.UPPER -> current.copy(upper = toggleTrait(current.upper, trait))
+            TraitType.HEAD -> current.copy(head = toggleTrait(current.head, trait))
+            TraitType.EYES -> current.copy(eyes = toggleTrait(current.eyes, trait))
+            TraitType.HAIR_FRONT -> current.copy(hairFront = toggleTrait(current.hairFront, trait))
+            TraitType.HAT -> current.copy(hat = toggleTrait(current.hat, trait))
+            TraitType.LEFT_ACCESSORY -> current.copy(leftAccessory = toggleTrait(current.leftAccessory, trait))
+            TraitType.RIGHT_ACCESSORY -> current.copy(rightAccessory = toggleTrait(current.rightAccessory, trait))
+        }
+
+        _mashupDetails.value = updated
     }
 
     fun selectColorType(colorType: ColorType) {
         _selectedColorType.value = colorType
     }
 
-    fun changeBody(color: Color) {
-        _body.value = color
-    }
-
-    fun changeEyes(color: Color) {
-        _eyes.value = color
-    }
-
-    fun changeHair(color: Color) {
-        _hair.value = color
+    fun changeColor(color: Color, colorType: ColorType) {
+        when (colorType) {
+            ColorType.BODY -> _body.value = color
+            ColorType.EYES -> _eyes.value = color
+            ColorType.HAIR -> _hair.value = color
+        }
     }
 }

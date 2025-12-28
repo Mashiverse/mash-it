@@ -1,6 +1,6 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashup
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,12 +52,14 @@ import dev.tymoshenko.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
+    val closeBottomShit = { isBottomSheet = false }
 
     val lazyGridState = rememberLazyGridState()
 
@@ -67,34 +69,27 @@ fun Mashup() {
 
     val viewModel = hiltViewModel<MashupViewModel>()
 
-    val body = remember {
-        viewModel.body
+    // Colors
+    val body = remember { viewModel.body }
+    val eyes = remember { viewModel.eyes }
+    val hair = remember { viewModel.hair }
+    val selectedColorType = remember { viewModel.selectedColorType }
+    val selectColorType = { colorType: ColorType -> viewModel.selectColorType(colorType) }
+    val changeColor =
+        { newColor: Color -> viewModel.changeColor(newColor, selectedColorType.value) }
+
+    val color by remember(selectedColorType, body.value, eyes.value, hair.value) {
+        derivedStateOf {
+            when (selectedColorType.value) {
+                ColorType.BODY -> body.value
+                ColorType.EYES -> eyes.value
+                ColorType.HAIR -> hair.value
+            }
+        }
     }
 
-    val eyes = remember {
-        viewModel.eyes
-    }
-
-    val hair = remember {
-        viewModel.hair
-    }
-
-    val selectedColorType = remember {
-        viewModel.selectedColorType
-    }
-
-    val selectColorType = { colorType: ColorType ->
-        viewModel.selectColorType(colorType)
-    }
-
-    val mashupDetail by remember {
-        viewModel.mashupDetails
-    }
-
-    val mashies by remember {
-        viewModel.mashies
-    }
-
+    // Mashup
+    val mashupDetail by remember { viewModel.mashupDetails }
     val mashupTraits by remember(mashupDetail) {
         derivedStateOf {
             listOf(
@@ -112,187 +107,30 @@ fun Mashup() {
             )
         }
     }
+    val changeMashupTrait = { trait: Trait -> viewModel.changeMashupTrait(trait) }
 
-    val changeMashupTrait = { trait: Trait ->
-        viewModel.changeMashupTrait(trait)
-    }
 
-    val backgroundTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.BACKGROUND
+    // traits
+    val mashies by remember { viewModel.mashies }
+    val traitsByType = remember(mashies) {
+        TraitType.entries.associateWith { type ->
+            mashies.filter { mashie ->
+                mashie.traits.any { it.traitType == type }
+            }.map { mashie ->
+                MashupTrait(
+                    trait = mashie.traits.first { it.traitType == type },
+                    avatarName = mashie.name
+                )
             }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.BACKGROUND },
-                avatarName = it.name
-            )
         }
     }
-    val hairBackTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.HAIR_BACK
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.HAIR_BACK },
-                avatarName = it.name
-            )
-        }
-    }
-    val capeTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.CAPE
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.CAPE }, avatarName = it.name
-            )
-        }
-    }
-    val bottomTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.BOTTOM
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.BOTTOM }, avatarName = it.name
-            )
-        }
-    }
-    val upperTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.UPPER
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.UPPER }, avatarName = it.name
-            )
-        }
-    }
-    val headTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.HEAD
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.HEAD }, avatarName = it.name
-            )
-        }
-    }
-    val eyesTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.EYES
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.EYES }, avatarName = it.name
-            )
-        }
-    }
-    val hairFrontTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.HAIR_FRONT
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.HAIR_FRONT },
-                avatarName = it.name
-            )
-        }
-    }
-    val hatTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.HAT
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.HAT }, avatarName = it.name
-            )
-        }
-    }
-    val leftTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.LEFT_ACCESSORY
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.LEFT_ACCESSORY },
-                avatarName = it.name
-            )
-        }
-    }
-    val rightTraits = remember(mashies) {
-        mashies.filter { mashie ->
-            mashie.traits.any { trait ->
-                trait.traitType == TraitType.RIGHT_ACCESSORY
-            }
-        }.map {
-            MashupTrait(
-                trait = it.traits.first { it.traitType == TraitType.RIGHT_ACCESSORY },
-                avatarName = it.name
-            )
-        }
-    }
-
-    var selectedCategory by remember {
-        mutableStateOf(TraitType.BACKGROUND)
-    }
-
+    var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
     val traits by remember(selectedCategory, mashies) {
         derivedStateOf {
-            when (selectedCategory) {
-                TraitType.BACKGROUND -> backgroundTraits
-                TraitType.HAIR_BACK -> hairBackTraits
-                TraitType.CAPE -> capeTraits
-                TraitType.BOTTOM -> bottomTraits
-                TraitType.UPPER -> upperTraits
-                TraitType.HEAD -> headTraits
-                TraitType.EYES -> eyesTraits
-                TraitType.HAIR_FRONT -> hairFrontTraits
-                TraitType.HAT -> hatTraits
-                TraitType.LEFT_ACCESSORY -> leftTraits
-                TraitType.RIGHT_ACCESSORY -> rightTraits
-            }
+            traitsByType[selectedCategory] ?: emptyList()
         }
     }
 
-    val changeColor = remember(selectedColorType.value) {
-        { newColor: Color ->
-            when (selectedColorType.value) {
-                ColorType.BODY -> viewModel.changeBody(newColor)
-                ColorType.EYES -> viewModel.changeEyes(newColor)
-                ColorType.HAIR -> viewModel.changeHair(newColor)
-            }
-        }
-    }
-
-    val color by remember(selectedColorType, body.value, eyes.value, hair.value) {
-        derivedStateOf {
-            when (selectedColorType.value) {
-                ColorType.BODY -> body.value
-                ColorType.EYES -> eyes.value
-                ColorType.HAIR -> hair.value
-            }
-        }
-    }
-
-
-    val closeBottomShit = {
-        isBottomSheet = false
-    }
-
-    Log.d("COLL", backgroundTraits.size.toString())
-    Log.d("COLL", traits.size.toString())
 
     Column(
         modifier = Modifier
@@ -338,30 +176,16 @@ fun Mashup() {
                 items(TraitType.entries) { traitType ->
                     Button(
                         onClick = {
-                            when (traitType) {
-                                TraitType.EYES -> {
-                                    selectColorType(ColorType.EYES)
-                                    selectedCategory = traitType
-                                    scope.launch {
-                                        lazyGridState.scrollToItem(0)
-                                    }
-                                }
+                            val colorTypeForTrait = when (traitType) {
+                                TraitType.EYES -> ColorType.EYES
+                                TraitType.HAIR_BACK, TraitType.HAIR_FRONT -> ColorType.HAIR
+                                else -> ColorType.BODY
+                            }
 
-                                TraitType.HAIR_BACK, TraitType.HAIR_FRONT -> {
-                                    selectColorType(ColorType.HAIR)
-                                    selectedCategory = traitType
-                                    scope.launch {
-                                        lazyGridState.scrollToItem(0)
-                                    }
-                                }
-
-                                else -> {
-                                    selectColorType(ColorType.BODY)
-                                    selectedCategory = traitType
-                                    scope.launch {
-                                        lazyGridState.scrollToItem(0)
-                                    }
-                                }
+                            selectColorType(colorTypeForTrait)
+                            selectedCategory = traitType
+                            scope.launch {
+                                lazyGridState.scrollToItem(0)
                             }
                         }
                     ) {
@@ -372,7 +196,7 @@ fun Mashup() {
 
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
-                state =lazyGridState,
+                state = lazyGridState,
                 verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 columns = GridCells.Fixed(3)
@@ -383,11 +207,6 @@ fun Mashup() {
                         height = mashiHolderHeight,
                         onClick = { changeMashupTrait.invoke(traits[i].trait) },
                         data = traits[i].trait.url,
-                        colors = Triple(
-                            "#${body.value.toHexString()}",
-                            "#${eyes.value.toHexString()}",
-                            "#${hair.value.toHexString()}"
-                        )
                     )
                 }
             }
