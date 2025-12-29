@@ -1,9 +1,8 @@
 package dev.tymoshenko.mashit.data.repos
 
-import android.util.Log
 import dev.tymoshenko.mashit.BuildConfig
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.Trait
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.data.remote.apis.AlchemyApi
 import dev.tymoshenko.mashit.utils.MASHI_CONTRACT
@@ -45,8 +44,8 @@ class AlchemyRepo @Inject constructor(
 
                     val assets = metadata.assets
 
-                    val traits = assets.map { asset ->
-                        Trait(
+                    val mashiTraits = assets.map { asset ->
+                        MashiTrait(
                             url = asset.uri.replace("ipfs://", "https://ipfs.filebase.io/ipfs/"),
                             traitType = TraitType.valueOf(asset.label.uppercase())
                         )
@@ -57,7 +56,7 @@ class AlchemyRepo @Inject constructor(
                             name = mashiName,
                             description = description,
                             compositeUrl = compositeUrl,
-                            traits = traits,
+                            mashiTraits = mashiTraits,
                             author = authorName
                         )
                     )

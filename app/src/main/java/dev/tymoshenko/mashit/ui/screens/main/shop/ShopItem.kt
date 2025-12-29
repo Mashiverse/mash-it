@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.data.models.mashi.ListingDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.data.models.mashi.ProductInfo
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
@@ -17,32 +18,27 @@ import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 
 @Composable
 fun ShopItem(
-    mashiDetails: MashiDetails,
-    selectMashi: (MashiDetails) -> Unit,
+    listingDetails: ListingDetails,
+    selectId: (String) -> Unit,
 ) {
-    val productInfo = mashiDetails.productInfo ?: ProductInfo(
-        price = 0,
-        perWallet = 0,
-        soldQuantity = 0,
-        quantity = 0
-    )
+    val productInfo = listingDetails.productInfo
     val isSoldOut = productInfo.soldQuantity >= productInfo.quantity
 
     Column(
         modifier = Modifier,
     ) {
         Trait(
-            onClick = { selectMashi.invoke(mashiDetails) },
-            data = mashiDetails.compositeUrl
+            onClick = { selectId.invoke(listingDetails.id) },
+            data = listingDetails.compositeUrl
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = mashiDetails.name, fontSize = 14.sp, color = ContentAccentColor)
+        Text(text = listingDetails.name, fontSize = 14.sp, color = ContentAccentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = "by ${mashiDetails.author}", fontSize = 12.sp, color = ContentColor)
+        Text(text = "by ${listingDetails.author}", fontSize = 12.sp, color = ContentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 

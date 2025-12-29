@@ -1,6 +1,6 @@
 package dev.tymoshenko.mashit.data.models.mashi
 
-data class Trait(
+data class MashiTrait(
     val traitType: TraitType,
     val url: String
 )

@@ -11,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashupDetails
-import dev.tymoshenko.mashit.data.models.mashi.Trait
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.data.repos.AlchemyRepo
 import dev.tymoshenko.mashit.data.repos.MashiRepo
@@ -52,39 +52,39 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun changeMashupTrait(trait: Trait) {
-        val toggleTrait: (Trait?, Trait?) -> Trait? = { currentTrait: Trait?, newTrait: Trait? ->
-            if (currentTrait?.url == newTrait?.url) null else newTrait
+    fun changeMashupTrait(mashiTrait: MashiTrait) {
+        val toggleMashiTrait: (MashiTrait?, MashiTrait?) -> MashiTrait? = { currentMashiTrait: MashiTrait?, newMashiTrait: MashiTrait? ->
+            if (currentMashiTrait?.url == newMashiTrait?.url) null else newMashiTrait
         }
 
         val current = _mashupDetails.value
-        val updated = when (trait.traitType) {
+        val updated = when (mashiTrait.traitType) {
             TraitType.BACKGROUND -> current.copy(
-                background = toggleTrait(
+                background = toggleMashiTrait(
                     current.background,
-                    trait
+                    mashiTrait
                 )
             )
 
-            TraitType.HAIR_BACK -> current.copy(hairBack = toggleTrait(current.hairBack, trait))
-            TraitType.CAPE -> current.copy(cape = toggleTrait(current.cape, trait))
-            TraitType.BOTTOM -> current.copy(bottom = toggleTrait(current.bottom, trait))
-            TraitType.UPPER -> current.copy(upper = toggleTrait(current.upper, trait))
-            TraitType.HEAD -> current.copy(head = toggleTrait(current.head, trait))
-            TraitType.EYES -> current.copy(eyes = toggleTrait(current.eyes, trait))
-            TraitType.HAIR_FRONT -> current.copy(hairFront = toggleTrait(current.hairFront, trait))
-            TraitType.HAT -> current.copy(hat = toggleTrait(current.hat, trait))
+            TraitType.HAIR_BACK -> current.copy(hairBack = toggleMashiTrait(current.hairBack, mashiTrait))
+            TraitType.CAPE -> current.copy(cape = toggleMashiTrait(current.cape, mashiTrait))
+            TraitType.BOTTOM -> current.copy(bottom = toggleMashiTrait(current.bottom, mashiTrait))
+            TraitType.UPPER -> current.copy(upper = toggleMashiTrait(current.upper, mashiTrait))
+            TraitType.HEAD -> current.copy(head = toggleMashiTrait(current.head, mashiTrait))
+            TraitType.EYES -> current.copy(eyes = toggleMashiTrait(current.eyes, mashiTrait))
+            TraitType.HAIR_FRONT -> current.copy(hairFront = toggleMashiTrait(current.hairFront, mashiTrait))
+            TraitType.HAT -> current.copy(hat = toggleMashiTrait(current.hat, mashiTrait))
             TraitType.LEFT_ACCESSORY -> current.copy(
-                leftAccessory = toggleTrait(
+                leftAccessory = toggleMashiTrait(
                     current.leftAccessory,
-                    trait
+                    mashiTrait
                 )
             )
 
             TraitType.RIGHT_ACCESSORY -> current.copy(
-                rightAccessory = toggleTrait(
+                rightAccessory = toggleMashiTrait(
                     current.rightAccessory,
-                    trait
+                    mashiTrait
                 )
             )
         }

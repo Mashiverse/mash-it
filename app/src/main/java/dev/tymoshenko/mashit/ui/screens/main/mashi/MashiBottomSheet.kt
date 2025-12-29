@@ -96,9 +96,9 @@ fun MashiBottomSheet(
                 horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                 columns = GridCells.Fixed(3)
             ) {
-                items(selectedMashi.traits.size) { i ->
+                items(selectedMashi.mashiTraits.size) { i ->
                     TraitHolder(
-                        trait = selectedMashi.traits[i],
+                        mashiTrait = selectedMashi.mashiTraits[i],
                         width = mashiHolderWidth,
                         height = mashiHolderHeight
                     )

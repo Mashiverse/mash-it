@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
-import dev.tymoshenko.mashit.data.models.mashi.Trait
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 
@@ -19,7 +19,7 @@ fun MashupTraitHolder(
     mashiHolderWidth: Dp,
     mashiHolderHeight: Dp,
     trait: MashupTrait,
-    changeMashupTrait: (Trait) -> Unit,
+    changeMashupTrait: (MashiTrait) -> Unit,
 ) {
     var avatarName = trait.avatarName.substringBefore("#").trimIndent()
     avatarName = if (avatarName.length > 16) {
@@ -35,8 +35,8 @@ fun MashupTraitHolder(
         Trait(
             width = mashiHolderWidth,
             height = mashiHolderHeight,
-            onClick = { changeMashupTrait.invoke(trait.trait) },
-            data = trait.trait.url,
+            onClick = { changeMashupTrait.invoke(trait.mashiTrait) },
+            data = trait.mashiTrait.url,
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))

@@ -1,15 +1,15 @@
 package dev.tymoshenko.mashit.data.models.mashi
 
 data class MashupDetails(
-    val background: Trait? = null,
-    val hairBack: Trait? = null,
-    val cape: Trait? = null,
-    val bottom: Trait? = null,
-    val upper: Trait? = null,
-    val head: Trait? = null,
-    val eyes: Trait? = null,
-    val hairFront: Trait? = null,
-    val hat: Trait? = null,
-    val leftAccessory: Trait? = null,
-    val rightAccessory: Trait? = null
+    val background: MashiTrait? = null,
+    val hairBack: MashiTrait? = null,
+    val cape: MashiTrait? = null,
+    val bottom: MashiTrait? = null,
+    val upper: MashiTrait? = null,
+    val head: MashiTrait? = null,
+    val eyes: MashiTrait? = null,
+    val hairFront: MashiTrait? = null,
+    val hat: MashiTrait? = null,
+    val leftAccessory: MashiTrait? = null,
+    val rightAccessory: MashiTrait? = null
 )

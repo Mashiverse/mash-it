@@ -1,6 +1,5 @@
 package dev.tymoshenko.mashit.data.remote.apis
 
-import dev.tymoshenko.mashit.data.remote.dtos.AlchemyDto
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Path

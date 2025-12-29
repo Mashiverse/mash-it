@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import dev.tymoshenko.mashit.data.models.mashi.ListingDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
@@ -21,8 +22,8 @@ import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 @Composable
 fun ShopSection(
     sectionName: String,
-    onMashiClick: (MashiDetails) -> Unit,
-    sectionItems: List<MashiDetails>
+    selectId: (String) -> Unit,
+    sectionItems: List<ListingDetails>
 ) {
     Column {
         Row(
@@ -54,8 +55,8 @@ fun ShopSection(
         ) {
             items(sectionItems.size) { i ->
                 ShopItem(
-                    mashiDetails = sectionItems[i],
-                    selectMashi = onMashiClick
+                    listingDetails = sectionItems[i],
+                    selectId = selectId
                 )
             }
         }

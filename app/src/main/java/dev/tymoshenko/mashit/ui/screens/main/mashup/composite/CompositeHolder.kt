@@ -5,7 +5,7 @@ import android.webkit.WebView
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.tymoshenko.mashit.data.models.mashi.Trait
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.utils.color.helpers.replaceColors
 import kotlinx.coroutines.Dispatchers
@@ -40,13 +40,13 @@ suspend fun fetchSvgContent(url: String): String = withContext(Dispatchers.IO) {
 
 @Composable
 fun CompositeHolder(
-    traits: List<Trait?>,
+    mashiTraits: List<MashiTrait?>,
     modifier: Modifier = Modifier,
     selectedColors: SelectedColors
 ) {
     var htmlContent by remember { mutableStateOf("") }
 
-    LaunchedEffect(traits, selectedColors) {
+    LaunchedEffect(mashiTraits, selectedColors) {
         val htmlBuilder = StringBuilder()
         htmlBuilder.append(
             """
@@ -66,7 +66,7 @@ fun CompositeHolder(
             """.trimIndent()
         )
 
-        traits.filterNotNull().forEachIndexed { index, trait ->
+        mashiTraits.filterNotNull().forEachIndexed { index, trait ->
             val traitClass = if (trait.traitType == TraitType.BACKGROUND) "background-content" else "trait-content"
 
             if (isSvgUrl(trait.url)) {

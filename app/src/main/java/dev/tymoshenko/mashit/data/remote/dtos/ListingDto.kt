@@ -44,7 +44,7 @@ data class ListingDto(
 
             data class Attribute(
                 val trait_type: String,
-                val value: Int
+                val value: String
             )
         }
     }

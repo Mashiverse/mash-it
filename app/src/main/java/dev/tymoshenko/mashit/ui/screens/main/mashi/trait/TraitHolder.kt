@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import dev.tymoshenko.mashit.data.models.mashi.Trait
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 import dev.tymoshenko.mashit.ui.theme.MashiHolderHeight
@@ -17,7 +17,7 @@ import dev.tymoshenko.mashit.ui.theme.MashiHolderWidth
 
 @Composable
 fun TraitHolder(
-    trait: Trait,
+    mashiTrait: MashiTrait,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
 ) {
@@ -25,14 +25,14 @@ fun TraitHolder(
         Trait(
             width = width,
             height = height,
-            data = trait.url,
+            data = mashiTrait.url,
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         Text(
             fontSize = 14.sp,
-            text = trait.traitType.name
+            text = mashiTrait.traitType.name
                 .lowercase()
                 .replace("_", " ")
                 .replaceFirstChar { c -> c.uppercaseChar() },

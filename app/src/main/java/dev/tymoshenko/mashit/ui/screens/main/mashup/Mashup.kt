@@ -48,7 +48,7 @@ import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.data.models.color.SelectedColors
 import dev.tymoshenko.mashit.data.models.mashi.MashupDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
-import dev.tymoshenko.mashit.data.models.mashi.Trait
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
@@ -123,7 +123,7 @@ fun Mashup() {
             )
         }
     }
-    val changeMashupTrait = { trait: Trait -> viewModel.changeMashupTrait(trait) }
+    val changeMashupTrait = { mashiTrait: MashiTrait -> viewModel.changeMashupTrait(mashiTrait) }
 
 
     // traits
@@ -131,10 +131,10 @@ fun Mashup() {
     val traitsByType = remember(mashies) {
         TraitType.entries.associateWith { type ->
             mashies.filter { mashie ->
-                mashie.traits.any { it.traitType == type }
+                mashie.mashiTraits.any { it.traitType == type }
             }.map { mashie ->
                 MashupTrait(
-                    trait = mashie.traits.first { it.traitType == type },
+                    mashiTrait = mashie.mashiTraits.first { it.traitType == type },
                     avatarName = mashie.name
                 )
             }.toSet().toList()
@@ -205,17 +205,17 @@ fun Mashup() {
                 Button(
                     onClick = {
                         val randomMashup = MashupDetails(
-                            background = traitsByType[TraitType.BACKGROUND]!!.random().trait,
-                            hairBack = traitsByType[TraitType.HAIR_BACK]!!.random().trait,
-                            cape = traitsByType[TraitType.CAPE]!!.random().trait,
-                            bottom = traitsByType[TraitType.BOTTOM]!!.random().trait,
-                            upper = traitsByType[TraitType.UPPER]!!.random().trait,
-                            head = traitsByType[TraitType.HEAD]!!.random().trait,
-                            eyes = traitsByType[TraitType.EYES]!!.random().trait,
-                            hairFront = traitsByType[TraitType.HAIR_FRONT]!!.random().trait,
-                            hat = traitsByType[TraitType.HAT]!!.random().trait,
-                            leftAccessory = traitsByType[TraitType.LEFT_ACCESSORY]!!.random().trait,
-                            rightAccessory = traitsByType[TraitType.RIGHT_ACCESSORY]!!.random().trait,
+                            background = traitsByType[TraitType.BACKGROUND]!!.random().mashiTrait,
+                            hairBack = traitsByType[TraitType.HAIR_BACK]!!.random().mashiTrait,
+                            cape = traitsByType[TraitType.CAPE]!!.random().mashiTrait,
+                            bottom = traitsByType[TraitType.BOTTOM]!!.random().mashiTrait,
+                            upper = traitsByType[TraitType.UPPER]!!.random().mashiTrait,
+                            head = traitsByType[TraitType.HEAD]!!.random().mashiTrait,
+                            eyes = traitsByType[TraitType.EYES]!!.random().mashiTrait,
+                            hairFront = traitsByType[TraitType.HAIR_FRONT]!!.random().mashiTrait,
+                            hat = traitsByType[TraitType.HAT]!!.random().mashiTrait,
+                            leftAccessory = traitsByType[TraitType.LEFT_ACCESSORY]!!.random().mashiTrait,
+                            rightAccessory = traitsByType[TraitType.RIGHT_ACCESSORY]!!.random().mashiTrait,
                         )
                         viewModel.randomize(randomMashup)
                     }
@@ -233,7 +233,7 @@ fun Mashup() {
             ) {
                 CompositeHolder(
                     modifier = Modifier.fillMaxSize(),
-                    traits = mashupTraits,
+                    mashiTraits = mashupTraits,
                     selectedColors = SelectedColors(
                         body = "#${body.value.toHexString()}",
                         eyes = "#${eyes.value.toHexString()}",

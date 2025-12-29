@@ -28,14 +28,14 @@ fun Shop() {
     var isBottomSheet by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<ShopViewModel>()
-    val mashies by remember {
-        viewModel.mashies
+    val listings by remember {
+        viewModel.listings
     }
     val selectedMashi by remember {
         viewModel.selectedMashi
     }
-    val selectMashi = { mashi: MashiDetails ->
-        viewModel.selectMashi(mashi)
+    val selectId = { id: String ->
+        viewModel.selectId(id)
         isBottomSheet = true
     }
 
@@ -58,8 +58,8 @@ fun Shop() {
             item {
                 ShopSection(
                     sectionName = "Ervindas",
-                    onMashiClick = selectMashi,
-                    sectionItems = mashies
+                    selectId = selectId,
+                    sectionItems = listings
                 )
             }
         }
