@@ -2,6 +2,8 @@ package dev.tymoshenko.mashit.ui.screens.main.mashup
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,12 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -31,15 +36,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.data.models.color.SelectedColors
+import dev.tymoshenko.mashit.data.models.mashi.MashupDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
 import dev.tymoshenko.mashit.data.models.mashi.Trait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
@@ -48,6 +57,8 @@ import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
 import dev.tymoshenko.mashit.ui.screens.main.mashup.composite.CompositeHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderHeight
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
@@ -56,12 +67,14 @@ import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import dev.tymoshenko.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
+    val density = LocalDensity.current
     val ctx = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -131,6 +144,9 @@ fun Mashup() {
             }.toSet().toList()
         }
     }
+
+
+
     var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
     val traits by remember(selectedCategory, mashies) {
         derivedStateOf {
@@ -151,17 +167,29 @@ fun Mashup() {
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Button(
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopStart),
-                onClick = {
-                    isBottomSheet = true
-                }
-            ) {
-                Text("COLOR")
-            }
+                    .width(56.dp)
+                    .height(32.dp)
+                    .align(Alignment.TopStart)
+                    .clip(RoundedCornerShape(90))
+                    .background(
+                        brush = Brush.sweepGradient(
+                            colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Red).reversed(),
+                            center = Offset(
+                                with(density) {28.dp.toPx()},
+                                with(density) {16.dp.toPx()}
+                            )
+                        )
+                    )
+                    .border(width = (0.5).dp, color = Color.White, shape = RoundedCornerShape(90))
+                    .clickable{
+                        isBottomSheet = true
+                    }
+            )
 
-            Column(Modifier.align(Alignment.TopEnd)) {
+            Column(Modifier.align(Alignment.TopEnd),
+                horizontalAlignment = Alignment.End) {
                 Button(
                     onClick = {
                         viewModel.saveMashup(ctx)
@@ -177,12 +205,33 @@ fun Mashup() {
                 ) {
                     Text("Save anim")
                 }
+
+                Button(
+                    onClick = {
+                        val randomMashup = MashupDetails(
+                            background = traitsByType[TraitType.BACKGROUND]!!.random().trait,
+                            hairBack = traitsByType[TraitType.HAIR_BACK]!!.random().trait,
+                            cape = traitsByType[TraitType.CAPE]!!.random().trait,
+                            bottom = traitsByType[TraitType.BOTTOM]!!.random().trait,
+                            upper = traitsByType[TraitType.UPPER]!!.random().trait,
+                            head = traitsByType[TraitType.HEAD]!!.random().trait,
+                            eyes = traitsByType[TraitType.EYES]!!.random().trait,
+                            hairFront = traitsByType[TraitType.HAIR_FRONT]!!.random().trait,
+                            hat = traitsByType[TraitType.HAT]!!.random().trait,
+                            leftAccessory = traitsByType[TraitType.LEFT_ACCESSORY]!!.random().trait,
+                            rightAccessory = traitsByType[TraitType.RIGHT_ACCESSORY]!!.random().trait,
+                        )
+                        viewModel.randomize(randomMashup)
+                    }
+                ) {
+                    Text("R")
+                }
             }
 
             Box(
                 modifier = Modifier
-                    .height(LargeMashiHolderHeight)
-                    .width(LargeMashiHolderWidth)
+                    .height(ExtraLargeMashiHolderHeight)
+                    .width(ExtraLargeMashiHolderWidth)
                     .clip(MashiHolderShape)
                     .background(MashiBackground)
             ) {

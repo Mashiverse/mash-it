@@ -139,4 +139,8 @@ class MashupViewModel @Inject constructor(
             }
         }
     }
+
+    fun randomize(mashupDetails: MashupDetails) {
+        _mashupDetails.value = mashupDetails
+    }
 }

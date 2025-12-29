@@ -7,6 +7,11 @@ val Background = Color(22, 22, 22)
 val ColorFieldBackground = Color(29, 29, 29)
 val SearchBarBackground = Color(63, 63, 63)
 val ContainerColor = Color(45, 45, 45)
+
+
+
+val InactiveMashupButtonBackground = Color(71, 71, 71)
+val ActiveMashupButtonBackground = Color(114, 114, 114)
 val ColorCloseButtonBackground = Color(86, 86, 86)
 val ColorSaveButtonBackground = Color(255, 0, 0)
 

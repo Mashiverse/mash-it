@@ -74,48 +74,14 @@ fun ColorSheet(
     ) {
         Column(
             modifier = Modifier
-                .height((config.screenHeightDp * 0.65).dp)
+//                .height((config.screenHeightDp * 0.65).dp)
                 .fillMaxWidth()
-                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize)
+                .padding(start = PaddingSize, end = PaddingSize, top = SmallPaddingSize)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                TextButton(
-                    onClick = {
-                        selectColorType.invoke(ColorType.BODY)
-                    }
-                ) {
-                    Text(
-                        text = "Body" + if (selectedColorType == ColorType.BODY) " ✔" else "",
-                        color = if (selectedColorType == ColorType.BODY) ContentAccentColor else ContentColor
-                    )
-                }
-
-                TextButton(
-                    onClick = {
-                        selectColorType.invoke(ColorType.EYES)
-                    }
-                ) {
-                    Text(
-                        text = "Eyes" + if (selectedColorType == ColorType.EYES) " ✔" else "",
-                        color = if (selectedColorType == ColorType.EYES) ContentAccentColor else ContentColor
-                    )
-                }
-
-                TextButton(
-                    onClick = {
-                        selectColorType.invoke(ColorType.HAIR)
-                    }
-                ) {
-                    Text(
-                        text = "Hair" + if (selectedColorType == ColorType.HAIR) " ✔" else "",
-                        color = if (selectedColorType == ColorType.HAIR) ContentAccentColor else ContentColor
-                    )
-                }
-            }
+            ColorTypeSelector(
+                selectedColorType =selectedColorType,
+                selectColorType = selectColorType
+            )
 
             Spacer(modifier = Modifier.height(SmallPaddingSize))
 

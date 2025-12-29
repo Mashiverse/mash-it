@@ -115,7 +115,7 @@ fun ColorPicker(
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .height(288.dp)
+                .height(200.dp)
                 .onSizeChanged { colorPickerSize = it }
                 .drawWithContent {
                     drawContent()
