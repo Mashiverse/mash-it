@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.data.models.mashi.ProductInfo
 import dev.tymoshenko.mashit.ui.screens.main.buttons.BuyButton
-import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
+import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.Trait
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
@@ -31,7 +31,7 @@ fun ShopItem(
     Column(
         modifier = Modifier,
     ) {
-        TraitHolder(
+        Trait(
             onClick = { selectMashi.invoke(mashiDetails) },
             data = mashiDetails.compositeUrl
         )

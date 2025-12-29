@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import dev.tymoshenko.mashit.data.models.nav.navItems
+import dev.tymoshenko.mashit.ui.screens.main.nav.data.navItems
 
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.ContainerColor

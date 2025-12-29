@@ -26,7 +26,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiBottomSheet
-import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
+import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.Trait
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
@@ -80,7 +80,7 @@ fun Collection() {
             columns = GridCells.Fixed(3)
         ) {
             items(mashies.size) { i ->
-                TraitHolder(
+                Trait(
                     onClick = { selectMashi.invoke(mashies[i]) },
                     width = mashiHolderWidth,
                     height = mashiHolderHeight,

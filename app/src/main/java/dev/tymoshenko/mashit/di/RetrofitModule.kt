@@ -22,7 +22,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     @Named("AlchemyClient")
-    fun provideAlchemyClient() = Retrofit
+    fun provideAlchemyClient(): Retrofit = Retrofit
         .Builder()
         .baseUrl(ALCHEMY_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -31,12 +31,7 @@ object RetrofitModule {
     @Provides
     fun provideAlchemyApi(@Named("AlchemyClient") retrofit: Retrofit): AlchemyApi =
         retrofit.create(AlchemyApi::class.java)
-
-    val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(3, TimeUnit.MINUTES)
-        .build()
-
+    
     @Provides
     @Singleton
     @Named("MashiClient")
@@ -54,6 +49,6 @@ object RetrofitModule {
     }
 
     @Provides
-    fun provideMashiApi(@Named("MashiClient") retrofit: Retrofit) =
+    fun provideMashiApi(@Named("MashiClient") retrofit: Retrofit): MashiApi =
         retrofit.create(MashiApi::class.java)
 }

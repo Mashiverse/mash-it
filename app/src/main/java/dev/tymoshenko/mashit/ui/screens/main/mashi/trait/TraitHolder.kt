@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.mashi
+package dev.tymoshenko.mashit.ui.screens.main.mashi.trait
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,7 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.data.models.mashi.Trait
@@ -17,13 +16,13 @@ import dev.tymoshenko.mashit.ui.theme.MashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.MashiHolderWidth
 
 @Composable
-fun MashiTraitHolder(
+fun TraitHolder(
     trait: Trait,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
 ) {
     Column {
-        TraitHolder(
+        Trait(
             width = width,
             height = height,
             data = trait.url,

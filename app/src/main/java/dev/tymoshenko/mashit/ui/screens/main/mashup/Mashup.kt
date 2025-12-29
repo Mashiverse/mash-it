@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,21 +51,19 @@ import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
 import dev.tymoshenko.mashit.data.models.mashi.Trait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
+import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
 import dev.tymoshenko.mashit.ui.screens.main.mashup.composite.CompositeHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderWidth
-import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
-import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
 import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import dev.tymoshenko.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 
 
 @SuppressLint("ConfigurationScreenWidthHeight")

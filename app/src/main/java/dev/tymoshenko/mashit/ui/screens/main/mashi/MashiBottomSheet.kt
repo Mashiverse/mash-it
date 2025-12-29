@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
+import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.TraitHolder
+import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.Trait
 import dev.tymoshenko.mashit.ui.theme.BottomSheetShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
@@ -65,7 +67,7 @@ fun MashiBottomSheet(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TraitHolder(
+                Trait(
                     width = LargeMashiHolderWidth,
                     height = LargeMashiHolderHeight,
                     data = selectedMashi.compositeUrl,
@@ -95,7 +97,7 @@ fun MashiBottomSheet(
                 columns = GridCells.Fixed(3)
             ) {
                 items(selectedMashi.traits.size) { i ->
-                    MashiTraitHolder(
+                    TraitHolder(
                         trait = selectedMashi.traits[i],
                         width = mashiHolderWidth,
                         height = mashiHolderHeight

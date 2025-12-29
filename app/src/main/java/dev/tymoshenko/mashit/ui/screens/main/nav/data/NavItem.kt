@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.data.models.nav
+package dev.tymoshenko.mashit.ui.screens.main.nav.data
 
 import dev.tymoshenko.mashit.nav.routes.MainRoutes
 

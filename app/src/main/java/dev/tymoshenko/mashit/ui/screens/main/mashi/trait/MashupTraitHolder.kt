@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.ui.screens.main.mashup
+package dev.tymoshenko.mashit.ui.screens.main.mashi.trait
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
 import dev.tymoshenko.mashit.data.models.mashi.Trait
-import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraSmallPaddingSize
 
@@ -33,7 +32,7 @@ fun MashupTraitHolder(
         modifier = Modifier
             .width(mashiHolderWidth)
     ) {
-        TraitHolder(
+        Trait(
             width = mashiHolderWidth,
             height = mashiHolderHeight,
             onClick = { changeMashupTrait.invoke(trait.trait) },
