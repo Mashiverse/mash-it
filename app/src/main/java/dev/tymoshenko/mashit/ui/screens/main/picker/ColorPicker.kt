@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,9 +27,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import dev.tymoshenko.mashit.data.models.color.ColorRange
-import dev.tymoshenko.mashit.data.models.color.Colors.gradientColors
-import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
+import dev.tymoshenko.mashit.utils.color.data.ColorRange
+import dev.tymoshenko.mashit.utils.color.data.Colors.gradientColors
 import dev.tymoshenko.mashit.ui.theme.LargePaddingSize
 import dev.tymoshenko.mashit.utils.color.ext.blue
 import dev.tymoshenko.mashit.utils.color.ext.darken

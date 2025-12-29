@@ -6,14 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.tymoshenko.mashit.data.models.mashi.MashiCollectionItem
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.multipleExample
 import dev.tymoshenko.mashit.data.repos.AlchemyRepo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 @HiltViewModel
 class CollectionViewModel @Inject constructor(alchemyRepo: AlchemyRepo): ViewModel() {
@@ -25,21 +22,8 @@ class CollectionViewModel @Inject constructor(alchemyRepo: AlchemyRepo): ViewMod
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val collection = alchemyRepo.getCollection().sortedBy { mashie ->
+            _mashies.value = alchemyRepo.getCollection().sortedBy { mashie ->
                 mashie.name
-            }
-            _mashies.value = collection.map { item ->
-                MashiDetails(
-                    name = item.name,
-                    author = item.author,
-                    description = item.description,
-                    perWallet = 0,
-                    soldQuantity = 0,
-                    quantity = 0,
-                    compositeUrl = item.compositeUrl,
-                    traits = item.traits,
-                    price = 0
-                )
             }
         }
     }

@@ -23,10 +23,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import dev.tymoshenko.mashit.data.models.mashi.MashiCollectionItem
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
-import dev.tymoshenko.mashit.ui.screens.main.collection.mashi.CollectionDetailsSection
 import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiBottomSheet
 import dev.tymoshenko.mashit.ui.screens.main.mashi.TraitHolder
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
@@ -97,15 +95,9 @@ fun Collection() {
             MashiBottomSheet(
                 selectedMashi = selectedMashi!!,
                 sheetState = sheetState,
-                closeBottomShit = closeBottomShit
-            ) {
-                CollectionDetailsSection(
-                    mashiDetails = selectedMashi!!,
-                    scope = scope,
-                    sheetState = sheetState,
-                    closeBottomShit = closeBottomShit
-                )
-            }
+                closeBottomShit = closeBottomShit,
+                scope = scope
+            )
         }
     }
 }

@@ -2,7 +2,7 @@ package dev.tymoshenko.mashit.data.repos
 
 import android.util.Log
 import dev.tymoshenko.mashit.BuildConfig
-import dev.tymoshenko.mashit.data.models.mashi.MashiCollectionItem
+import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.data.models.mashi.Trait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.data.remote.apis.AlchemyApi
@@ -12,8 +12,8 @@ import javax.inject.Inject
 class AlchemyRepo @Inject constructor(
     private val alchemyApi: AlchemyApi
 ) {
-    suspend fun getCollection(wallet: String = ""): List<MashiCollectionItem> {
-        val nfts: MutableList<MashiCollectionItem> = mutableListOf()
+    suspend fun getCollection(wallet: String = ""): List<MashiDetails> {
+        val nfts: MutableList<MashiDetails> = mutableListOf()
         var key: String? = null
 
         try {
@@ -53,7 +53,7 @@ class AlchemyRepo @Inject constructor(
                     }
 
                     nfts.add(
-                        MashiCollectionItem(
+                        MashiDetails(
                             name = mashiName,
                             description = description,
                             compositeUrl = compositeUrl,

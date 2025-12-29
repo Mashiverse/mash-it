@@ -1,4 +1,4 @@
-package dev.tymoshenko.mashit.data.models.color
+package dev.tymoshenko.mashit.utils.color.data
 
 enum class ColorRange {
     RED_TO_YELLOW,

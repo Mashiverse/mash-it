@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.multipleExample
 import jakarta.inject.Inject
 
 
@@ -18,7 +17,7 @@ class ShopViewModel @Inject constructor(): ViewModel() {
     val selectedMashi: State<MashiDetails?> get() = _selectedMashi
 
     init {
-        _mashies.value = multipleExample
+        _mashies.value = emptyList()
     }
 
     fun selectMashi(mashi: MashiDetails) {

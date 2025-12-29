@@ -46,21 +46,8 @@ class MashupViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val collection = alchemyRepo.getCollection().sortedBy { mashie ->
+            _mashies.value  = alchemyRepo.getCollection().sortedBy { mashie ->
                 mashie.name
-            }
-            _mashies.value = collection.map { item ->
-                MashiDetails(
-                    name = item.name,
-                    author = item.author,
-                    description = item.description,
-                    perWallet = 0,
-                    soldQuantity = 0,
-                    quantity = 0,
-                    compositeUrl = item.compositeUrl,
-                    traits = item.traits,
-                    price = 0
-                )
             }
         }
     }

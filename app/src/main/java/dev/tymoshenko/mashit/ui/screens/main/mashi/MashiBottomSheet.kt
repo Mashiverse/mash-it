@@ -14,24 +14,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
-import dev.tymoshenko.mashit.data.models.mashi.ervindasExample
-import dev.tymoshenko.mashit.ui.screens.main.shop.ShopViewModel
-import dev.tymoshenko.mashit.ui.screens.main.shop.mashi.ShopDetailsSection
 import dev.tymoshenko.mashit.ui.theme.BottomSheetShape
 import dev.tymoshenko.mashit.ui.theme.ContainerColor
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
@@ -40,15 +30,16 @@ import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.LargeMashiHolderWidth
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
+import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiBottomSheet(
     selectedMashi: MashiDetails,
+    scope: CoroutineScope,
     closeBottomShit: () -> Unit,
-    sheetState: SheetState,
-    detailsContent: @Composable () -> Unit
+    sheetState: SheetState
 ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
@@ -72,7 +63,7 @@ fun MashiBottomSheet(
                 .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TraitHolder(
                     width = LargeMashiHolderWidth,
@@ -80,7 +71,12 @@ fun MashiBottomSheet(
                     data = selectedMashi.compositeUrl,
                 )
 
-                detailsContent.invoke()
+                MashiDetailsSection(
+                    mashiDetails = selectedMashi,
+                    scope = scope,
+                    closeBottomShit = closeBottomShit,
+                    sheetState = sheetState
+                )
             }
 
             Spacer(modifier = Modifier.height(PaddingSize))
@@ -108,23 +104,4 @@ fun MashiBottomSheet(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-private fun ShopBottomSheetPreview() {
-    MashiBottomSheet(
-        selectedMashi = ervindasExample,
-        closeBottomShit = {},
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        detailsContent = {
-            ShopDetailsSection(
-                mashiDetails = ervindasExample,
-                scope = rememberCoroutineScope(),
-                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                closeBottomShit = {}
-            )
-        }
-    )
 }

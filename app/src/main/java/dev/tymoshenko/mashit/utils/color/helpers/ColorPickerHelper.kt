@@ -2,7 +2,7 @@ package dev.tymoshenko.mashit.utils.color.helpers
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
-import dev.tymoshenko.mashit.data.models.color.ColorRange
+import dev.tymoshenko.mashit.utils.color.data.ColorRange
 import kotlin.math.pow
 import kotlin.math.sqrt
 

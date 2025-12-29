@@ -19,7 +19,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiBottomSheet
-import dev.tymoshenko.mashit.ui.screens.main.shop.mashi.ShopDetailsSection
+import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiDetailsSection
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,15 +76,9 @@ fun Shop() {
             MashiBottomSheet(
                 selectedMashi = selectedMashi!!,
                 sheetState = sheetState,
-                closeBottomShit = closeBottomShit
-            ) {
-                ShopDetailsSection(
-                    mashiDetails = selectedMashi!!,
-                    scope = scope,
-                    sheetState = sheetState,
-                    closeBottomShit = closeBottomShit
-                )
-            }
+                closeBottomShit = closeBottomShit,
+                scope = scope
+            )
         }
     }
 }
