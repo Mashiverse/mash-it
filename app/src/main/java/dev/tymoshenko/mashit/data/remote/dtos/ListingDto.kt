@@ -10,7 +10,7 @@ data class ListingDto(
         val chainId: Int,
         val createdAt: Any,
         val currency: String,
-        val description: String,
+        val description: String?,
         val id: String,
         val images: Images,
         val listingId: String,

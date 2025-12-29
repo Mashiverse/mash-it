@@ -45,7 +45,7 @@ fun ListingDto.toMashiDetails(): MashiDetails {
     return MashiDetails(
         name = listing.title,
         author = listing.artistName,
-        description = listing.description,
+        description = listing.description ?: "",
         compositeUrl = listing.images.composite,
         mashiTraits = traits,
         productInfo = ProductInfo(
