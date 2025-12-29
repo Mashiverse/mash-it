@@ -5,9 +5,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.tymoshenko.mashit.data.remote.apis.AlchemyApi
+import dev.tymoshenko.mashit.data.remote.apis.MashItApi
 import dev.tymoshenko.mashit.data.remote.apis.MashiApi
 import dev.tymoshenko.mashit.utils.ALCHEMY_BASE_URL
 import dev.tymoshenko.mashit.utils.MASHI_BASE_URL
+import dev.tymoshenko.mashit.utils.MASH_IT_BASE_URL
 import jakarta.inject.Named
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -51,4 +53,17 @@ object RetrofitModule {
     @Provides
     fun provideMashiApi(@Named("MashiClient") retrofit: Retrofit): MashiApi =
         retrofit.create(MashiApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("MashItClient")
+    fun provideMashItClient(): Retrofit = Retrofit
+        .Builder()
+        .baseUrl(MASH_IT_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Provides
+    fun provideMashItApi(@Named("MashItClient") retrofit: Retrofit): MashItApi =
+        retrofit.create(MashItApi::class.java)
 }

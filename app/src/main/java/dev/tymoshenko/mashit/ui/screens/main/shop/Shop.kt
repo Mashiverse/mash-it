@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,7 +18,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiBottomSheet
-import dev.tymoshenko.mashit.ui.screens.main.mashi.MashiDetailsSection
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,14 +29,10 @@ fun Shop() {
 
     val viewModel = hiltViewModel<ShopViewModel>()
     val mashies by remember {
-        derivedStateOf {
-            viewModel.mashies.value
-        }
+        viewModel.mashies
     }
     val selectedMashi by remember {
-        derivedStateOf {
-            viewModel.selectedMashi.value
-        }
+        viewModel.selectedMashi
     }
     val selectMashi = { mashi: MashiDetails ->
         viewModel.selectMashi(mashi)
