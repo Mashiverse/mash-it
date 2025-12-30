@@ -15,8 +15,8 @@ val LargeMashiHolderWidth = (552 * 0.3).dp
 val LargeMashiHolderHeight = (736 * 0.3).dp
 val ExtraLargeMashiHolderWidth = (552 * 0.42).dp
 val ExtraLargeMashiHolderHeight = (736 * 0.42).dp
-val LargeTraitHolderWidth = (380 * 0.3).dp
-val LargeTraitHolderHeight = (600 * 0.3).dp
+val ExtraLargeTraitHolderWidth = (380 * 0.42).dp
+val ExtraLargeTraitHolderHeight = (600 * 0.42).dp
 val ColorPreviewSize = 80.dp
 
 // Paddings

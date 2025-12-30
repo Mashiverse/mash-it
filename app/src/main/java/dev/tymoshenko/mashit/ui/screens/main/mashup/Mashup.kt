@@ -52,12 +52,15 @@ import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
+import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.Trait
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
 import dev.tymoshenko.mashit.ui.screens.main.mashup.composite.CompositeHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderWidth
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeTraitHolderHeight
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeTraitHolderWidth
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
 import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
@@ -171,15 +174,21 @@ fun Mashup() {
                     .clip(RoundedCornerShape(90))
                     .background(
                         brush = Brush.sweepGradient(
-                            colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Red).reversed(),
+                            colors = listOf(
+                                Color.Red,
+                                Color.Yellow,
+                                Color.Green,
+                                Color.Blue,
+                                Color.Red
+                            ).reversed(),
                             center = Offset(
-                                with(density) {28.dp.toPx()},
-                                with(density) {16.dp.toPx()}
+                                with(density) { 28.dp.toPx() },
+                                with(density) { 16.dp.toPx() }
                             )
                         )
                     )
                     .border(width = (0.5).dp, color = Color.White, shape = RoundedCornerShape(90))
-                    .clickable{
+                    .clickable {
                         isBottomSheet = true
                     }
             )
@@ -229,17 +238,28 @@ fun Mashup() {
                     .height(ExtraLargeMashiHolderHeight)
                     .width(ExtraLargeMashiHolderWidth)
                     .clip(MashiHolderShape)
-                    .background(MashiBackground)
+                    .background(MashiBackground),
+                contentAlignment = Alignment.Center
             ) {
-                CompositeHolder(
-                    modifier = Modifier.fillMaxSize(),
-                    mashiTraits = mashupTraits,
-                    selectedColors = SelectedColors(
-                        body = "#${body.value.toHexString()}",
-                        eyes = "#${eyes.value.toHexString()}",
-                        hair = "#${hair.value.toHexString()}"
-                    ),
-                )
+                mashupTraits.forEach { trait ->
+                    if (trait != null) {
+                        val traitType = trait.traitType
+                        val width = if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
+                        val height = if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
+
+                        Trait(
+                            width = width,
+                            height = height,
+                            background = Color.Transparent,
+                            selectedColors = SelectedColors(
+                                body = "#${body.value.toHexString()}",
+                                eyes = "#${eyes.value.toHexString()}",
+                                hair = "#${hair.value.toHexString()}"
+                            ),
+                            data = trait.url
+                        )
+                    }
+                }
             }
         }
 

@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.tymoshenko.mashit.data.models.mashi.ListingDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashiDetails
@@ -13,7 +12,6 @@ import dev.tymoshenko.mashit.data.repos.MashItRepo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 
 @HiltViewModel

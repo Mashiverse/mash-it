@@ -1,5 +1,6 @@
 package dev.tymoshenko.mashit.ui.screens.main.collection
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import dev.tymoshenko.mashit.ui.theme.PaddingSize
 import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Collection() {

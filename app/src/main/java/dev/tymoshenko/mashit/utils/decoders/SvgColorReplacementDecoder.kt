@@ -6,13 +6,19 @@ import coil3.decode.Decoder
 import coil3.fetch.SourceFetchResult
 import coil3.request.Options
 import coil3.svg.SvgDecoder
+import dev.tymoshenko.mashit.data.models.color.SelectedColors
 import dev.tymoshenko.mashit.utils.color.helpers.replaceColors
 import okio.Buffer
 
+fun String.containsSvgMask(): Boolean {
+    // Matches "<mask" followed by any characters until ">"
+    val maskRegex = Regex("<mask[\\s>]", RegexOption.IGNORE_CASE)
+    return maskRegex.containsMatchIn(this)
+}
+
 class SvgColorReplacementDecoder(
-    private val hair: String,
-    private val eyes: String,
-    private val body: String,
+    private val onMaskDetection: (Boolean) -> Unit,
+    private val selectedColors: SelectedColors?,
     private val result: SourceFetchResult,
     private val options: Options,
     private val imageLoader: ImageLoader
@@ -20,15 +26,27 @@ class SvgColorReplacementDecoder(
 
     override suspend fun decode(): DecodeResult? {
         // Read the full SVG text
-        val svgText = result.source.source().readUtf8()
+        var svgText = result.source.source().readUtf8()
 
         // Replace colors
-        val editedSvg = replaceColors(svgText, body, eyes, hair)
+        if (selectedColors != null) {
+            svgText = replaceColors(
+                svgText,
+                selectedColors.body,
+                selectedColors.eyes,
+                selectedColors.hair
+            )
+        }
+
+        // Mask detection callback
+        if (svgText.containsSvgMask()) {
+            onMaskDetection.invoke(true)
+        }
 
         // Wrap into a new SourceFetchResult
         val editedResult = SourceFetchResult(
             source = coil3.decode.ImageSource(
-                Buffer().writeUtf8(editedSvg),
+                Buffer().writeUtf8(svgText),
                 result.source.fileSystem
             ),
             mimeType = "image/svg+xml",
@@ -43,10 +61,9 @@ class SvgColorReplacementDecoder(
     }
 }
 
-class SvgColorReplacementDecoderFactory(
-    private val hair: String,
-    private val eyes: String,
-    private val body: String
+class SvgCustomDecoderFactory(
+    private val onMaskDetection: (Boolean) -> Unit,
+    private val selectedColors: SelectedColors?
 ) : Decoder.Factory {
 
     override fun create(
@@ -59,9 +76,8 @@ class SvgColorReplacementDecoderFactory(
         }
 
         return SvgColorReplacementDecoder(
-            hair = hair,
-            eyes = eyes,
-            body = body,
+            selectedColors = selectedColors,
+            onMaskDetection = onMaskDetection,
             result = result,
             options = options,
             imageLoader = imageLoader
