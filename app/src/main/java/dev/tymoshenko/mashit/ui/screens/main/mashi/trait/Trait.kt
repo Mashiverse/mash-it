@@ -84,13 +84,13 @@ fun Trait(
     }
 
     // State for SVG detection
-    var isSvg by remember(data) { mutableStateOf<Boolean?>(true) }
+    var isSvg by remember(data) { mutableStateOf(true) }
     val onSvgDetection = { isDetected: Boolean ->
         isSvg = isDetected
     }
 
     // Only create a special loader for SVGs, otherwise use defaultLoader
-    val imageLoader = if (isSvg == true) {
+    val imageLoader = if (isSvg) {
         remember(selectedColors) {
             ImageLoader.Builder(ctx)
                 .components {
@@ -115,25 +115,29 @@ fun Trait(
         .crossfade(false)
         .build()
 
+    val colorMatrix = if (hasMask){ maskingMatrix} else { commonMatrix}
+
     Box(
         modifier = modifier
             .width(width)
             .height(height)
             .clip(MashiHolderShape)
     ) {
-        lastPainter?.let {
-            Image(
-                modifier = modifier
-                    .width(width)
-                    .height(height)
-                    .clip(MashiHolderShape)
-                    .background(background)
-                    .clickable(onClick = onClick),
-                painter = it,
-                contentDescription = null,
-                contentScale = contentScale,
-                colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix)
-            )
+        if (isSvg && !hasMask) {
+            lastPainter?.let {
+                Image(
+                    modifier = modifier
+                        .width(width)
+                        .height(height)
+                        .clip(MashiHolderShape)
+                        .background(background)
+                        .clickable(onClick = onClick),
+                    painter = it,
+                    contentDescription = null,
+                    contentScale = contentScale,
+                    colorFilter = ColorFilter.colorMatrix(colorMatrix)
+                )
+            }
         }
 
         AsyncImage(
@@ -144,7 +148,7 @@ fun Trait(
                 .background(background)
                 .clickable(onClick = onClick),
             alignment = Alignment.Center,
-            colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix),
+            colorFilter = ColorFilter.colorMatrix(colorMatrix),
             imageLoader = imageLoader,
             model = request,
             contentDescription = "Mashi",
