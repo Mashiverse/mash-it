@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,8 +69,9 @@ fun MashiBottomSheet(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Trait(
-                    width = LargeMashiHolderWidth,
-                    height = LargeMashiHolderHeight,
+                    modifier = Modifier
+                        .height(LargeMashiHolderHeight)
+                        .width(LargeMashiHolderWidth),
                     data = selectedMashi.compositeUrl,
                 )
 

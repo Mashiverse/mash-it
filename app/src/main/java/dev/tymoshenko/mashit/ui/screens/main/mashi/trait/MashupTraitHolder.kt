@@ -33,8 +33,9 @@ fun MashupTraitHolder(
             .width(mashiHolderWidth)
     ) {
         Trait(
-            width = mashiHolderWidth,
-            height = mashiHolderHeight,
+            modifier = Modifier
+                .width(mashiHolderWidth)
+                .height(mashiHolderHeight),
             onClick = { changeMashupTrait.invoke(trait.mashiTrait) },
             data = trait.mashiTrait.url,
         )

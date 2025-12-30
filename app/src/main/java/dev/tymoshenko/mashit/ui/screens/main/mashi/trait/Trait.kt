@@ -4,8 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
@@ -31,9 +29,7 @@ import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import dev.tymoshenko.mashit.data.models.color.SelectedColors
 import dev.tymoshenko.mashit.ui.theme.MashiBackground
-import dev.tymoshenko.mashit.ui.theme.MashiHolderHeight
 import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
-import dev.tymoshenko.mashit.ui.theme.MashiHolderWidth
 import dev.tymoshenko.mashit.utils.decoders.SvgCustomDecoderFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
@@ -58,11 +54,7 @@ val commonMatrix = ColorMatrix()
 @Composable
 private fun NonSvgTrait(
     modifier: Modifier,
-    onClick: () -> Unit,
-    width: Dp,
-    height: Dp,
     data: String,
-    background: Color,
     contentScale: ContentScale
 ) {
     val ctx = LocalContext.current
@@ -81,32 +73,19 @@ private fun NonSvgTrait(
             .build()
     }
 
-    Box(
-        modifier = modifier
-            .width(width)
-            .height(height)
-            .clip(MashiHolderShape)
-            .background(background)
-            .clickable(onClick = onClick)
-    ) {
-        AsyncImage(
-            model = request,
-            imageLoader = staticLoader,
-            contentDescription = null,
-            modifier = Modifier.matchParentSize(),
-            contentScale = contentScale
-        )
-    }
+    AsyncImage(
+        model = request,
+        imageLoader = staticLoader,
+        contentDescription = null,
+        modifier = modifier,
+        contentScale = contentScale
+    )
 }
 
 @Composable
 private fun SvgTrait(
     modifier: Modifier,
-    onClick: () -> Unit,
-    width: Dp,
-    height: Dp,
     data: String,
-    background: Color,
     selectedColors: SelectedColors?,
     contentScale: ContentScale
 ) {
@@ -138,11 +117,7 @@ private fun SvgTrait(
 
     Box(
         modifier = modifier
-            .width(width)
-            .height(height)
             .clip(MashiHolderShape)
-            .background(background)
-            .clickable(onClick = onClick)
     ) {
         // Cached painter overlay
         cachedPainter?.let {
@@ -177,9 +152,8 @@ private fun SvgTrait(
 @Composable
 fun Trait(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
-    width: Dp = MashiHolderWidth,
-    height: Dp = MashiHolderHeight,
+    onClick: (() -> Unit)? = null,
+
     data: String,
     background: Color = MashiBackground,
     selectedColors: SelectedColors? = null,
@@ -187,35 +161,38 @@ fun Trait(
 ) {
     val isSvg by rememberIsSvg(data)
 
-    if (isSvg != null) {
-        if (isSvg == true) {
-            SvgTrait(
-                modifier = modifier,
-                onClick = onClick,
-                width = width,
-                height = height,
-                data = data,
-                background = background,
-                selectedColors = selectedColors,
-                contentScale = contentScale
+    Box(
+        modifier = modifier
+            .clip(MashiHolderShape)
+            .background(background)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick)
+                } else Modifier
             )
-        } else {
-            NonSvgTrait(
-                modifier = modifier,
-                onClick = onClick,
-                width = width,
-                height = height,
-                data = data,
-                background = background,
-                contentScale = contentScale
-            )
+    ) {
+        if (isSvg != null) {
+
+            if (isSvg == true) {
+                SvgTrait(
+                    modifier = modifier,
+                    data = data,
+                    selectedColors = selectedColors,
+                    contentScale = contentScale
+                )
+            } else {
+                NonSvgTrait(
+                    modifier = modifier,
+                    data = data,
+                    contentScale = contentScale
+                )
+            }
         }
     }
 }
 
 @Composable
 fun rememberIsSvg(url: String): State<Boolean?> {
-    // Reset to null whenever URL changes
     val result = remember(url) { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(url) {

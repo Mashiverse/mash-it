@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,9 +84,10 @@ fun Collection() {
         ) {
             items(mashies.size) { i ->
                 Trait(
+                    modifier = Modifier
+                        .height(mashiHolderHeight)
+                        .width(mashiHolderWidth),
                     onClick = { selectMashi.invoke(mashies[i]) },
-                    width = mashiHolderWidth,
-                    height = mashiHolderHeight,
                     data = mashies[i].compositeUrl,
                 )
             }

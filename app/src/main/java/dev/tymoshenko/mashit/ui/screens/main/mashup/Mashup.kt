@@ -254,8 +254,9 @@ fun Mashup() {
                                 if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
 
                             Trait(
-                                width = width,
-                                height = height,
+                                modifier = Modifier
+                                    .width(width)
+                                    .height(height),
                                 background = Color.Transparent,
                                 selectedColors = SelectedColors(
                                     body = "#${body.value.toHexString()}",
