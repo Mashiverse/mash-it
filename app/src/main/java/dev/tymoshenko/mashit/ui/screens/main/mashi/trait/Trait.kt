@@ -1,7 +1,9 @@
 package dev.tymoshenko.mashit.ui.screens.main.mashi.trait
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
@@ -11,12 +13,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import coil3.gif.AnimatedImageDecoder
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -63,6 +68,8 @@ fun Trait(
         hasMask = isMaskDetected
     }
 
+    var lastPainter by remember { mutableStateOf<Painter?>(null) }
+
     // Always use a default loader for non-SVGs
     val defaultLoader = remember {
         ImageLoader.Builder(ctx)
@@ -102,23 +109,52 @@ fun Trait(
 
     val request = ImageRequest.Builder(ctx)
         .data(data)
-        .crossfade(true)
+        .crossfade(false)
         .build()
 
-    AsyncImage(
-        modifier = modifier
-            .width(width)
-            .height(height)
-            .clip(MashiHolderShape)
-            .background(background)
-            .clickable(onClick = onClick),
-        alignment = Alignment.Center,
-        colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix),
-        imageLoader = imageLoader,
-        model = request,
-        contentDescription = "Mashi",
-        contentScale = contentScale
-    )
+    Box( modifier = modifier
+        .width(width)
+        .height(height)
+        .clip(MashiHolderShape)
+    ) {
+        lastPainter?.let {
+            Image(
+                modifier = modifier
+                    .width(width)
+                    .height(height)
+                    .clip(MashiHolderShape)
+                    .background(background)
+                    .clickable(onClick = onClick),
+                painter = it,
+                contentDescription = null,
+                contentScale = contentScale,
+                colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix)
+            )
+        }
+
+        AsyncImage(
+            modifier = modifier
+                .width(width)
+                .height(height)
+                .clip(MashiHolderShape)
+                .background(background)
+                .clickable(onClick = onClick),
+            alignment = Alignment.Center,
+            colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix),
+            imageLoader = imageLoader,
+            model = request,
+            contentDescription = "Mashi",
+            contentScale = contentScale,
+            onState = { state: AsyncImagePainter.State ->
+                lastPainter = if (state is AsyncImagePainter.State.Success) {
+                    state.painter
+                } else {
+                    null
+                }
+            }
+        )
+    }
+
 }
 
 
