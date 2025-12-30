@@ -319,7 +319,7 @@ fun Mashup() {
             closeBottomShit = closeBottomShit,
             scope = scope,
             sheetState = sheetState,
-            initialColor = color,
+            color = color,
             changeColor = changeColor,
             selectColorType = selectColorType,
             selectedColorType = selectedColorType.value

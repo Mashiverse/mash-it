@@ -20,69 +20,99 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import dev.tymoshenko.mashit.utils.color.helpers.ColorPickerHelper.calculateInitialProgress
 
 private const val thumbRadius = 20f
 
 @Composable
-fun ColorSlideBar(colors: List<Color>, initialColor: Color, onProgress: (Float) -> Unit) {
-    var progress by remember { mutableFloatStateOf(calculateInitialProgress(initialColor, colors)) }
-    var slideBarSize by remember {
-        mutableStateOf(IntSize.Zero)
+fun ColorSlideBar(colors: List<Color>, color: Color, onProgress: (Float) -> Unit) {
+    var progress by remember { mutableFloatStateOf(0f) }
+    var slideBarSize by remember { mutableStateOf(IntSize.Zero) }
+
+    // 🔥 Track if the user is currently touching the slider
+    var isDragging by remember { mutableStateOf(false) }
+
+    var lastHue by remember { mutableFloatStateOf(-1f) }
+
+
+    LaunchedEffect(color) {
+        if (!isDragging) {
+            val hsv = FloatArray(3)
+            android.graphics.Color.colorToHSV(color.toArgb(), hsv)
+
+            val currentHue = hsv[0]
+
+            if (currentHue != lastHue) {
+                lastHue = currentHue
+                progress = currentHue / 360f
+            }
+        }
     }
-    LaunchedEffect(progress) {
-        onProgress(progress)
+
+    LaunchedEffect(color) {
+        isDragging = true
     }
+
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .height(16.dp) // slightly taller to give room for thumb
-            .onSizeChanged {
-                slideBarSize = it
-            }
-            .graphicsLayer {
-                clip = false // 🔥 allow drawing outside bounds
-            }
-            .pointerInput(Unit) {
+            .height(24.dp) // Height for the thumb area
+            .onSizeChanged { slideBarSize = it }
+            .graphicsLayer { clip = false }
+            .pointerInput(slideBarSize) {
                 forEachGesture {
                     awaitPointerEventScope {
-                        val down = awaitFirstDown() // wait for first touch
+                        val down = awaitFirstDown()
+                        isDragging = true // Block external sync
 
-                        // Update picker on tap
-                        val xPosition =
-                            down.position.x.coerceIn(0f, slideBarSize.width.toFloat())
-                        progress = (xPosition / slideBarSize.width).coerceIn(0f, 1f)
+                        // TrackWidth is total width minus the padding needed for thumb centers
+                        val trackWidth = (slideBarSize.width - (thumbRadius * 2)).coerceAtLeast(1f)
 
-                        // Track drag
-                        val pointerId = down.id
-                        drag(pointerId) { change ->
-                            val xPosition =
-                                change.position.x.coerceIn(0f, slideBarSize.width.toFloat())
-                            progress = (xPosition / slideBarSize.width).coerceIn(0f, 1f)
-                            change.consume() // mark as handled
+                        val updateProgress = { xPos: Float ->
+                            // Normalize touch: subtract radius so 0 starts at thumb's leftmost center
+                            val relativeX = (xPos - thumbRadius).coerceIn(0f, trackWidth)
+                            progress = relativeX / trackWidth
+                            onProgress(progress)
                         }
+
+                        updateProgress(down.position.x)
+
+                        drag(down.id) { change ->
+                            updateProgress(change.position.x)
+                            change.consume()
+                        }
+
+                        isDragging = false // Re-enable external sync
                     }
                 }
             }
     ) {
-        // BAR HEIGHT (smaller than canvas)
-        val barHeight = size.height / 2
+        val barHeight = 8.dp.toPx()
         val barTop = (size.height - barHeight) / 2
 
-        // Gradient bar (clipped)
+        // Gradient bar
         drawRoundRect(
             brush = Brush.horizontalGradient(colors),
             topLeft = Offset(0f, barTop),
             size = Size(size.width, barHeight),
-            cornerRadius = CornerRadius(100f, 100f)
+            cornerRadius = CornerRadius(barHeight, barHeight)
         )
 
-        // Thumb (can go out of bounds now)
-        val thumbCenterX = thumbRadius + ((size.width - thumbRadius * 2) * progress)
+        // 🔥 Match the thumb drawing logic exactly to the pointer input logic
+        val trackWidth = size.width - (thumbRadius * 2)
+        val thumbCenterX = thumbRadius + (trackWidth * progress)
+
+        // Optional: Small shadow for the thumb
+        drawCircle(
+            color = Color.Black.copy(alpha = 0.1f),
+            radius = thumbRadius + 2f,
+            center = Offset(thumbCenterX, size.height / 2)
+        )
+
         drawCircle(
             color = Color.White,
             radius = thumbRadius,
@@ -90,3 +120,4 @@ fun ColorSlideBar(colors: List<Color>, initialColor: Color, onProgress: (Float) 
         )
     }
 }
+

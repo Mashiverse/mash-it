@@ -2,6 +2,7 @@ package dev.tymoshenko.mashit.ui.screens.main.picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.utils.color.data.ColorRange
 import dev.tymoshenko.mashit.utils.color.data.Colors.gradientColors
 import dev.tymoshenko.mashit.ui.theme.LargePaddingSize
@@ -42,74 +44,47 @@ import kotlin.math.roundToInt
 @Composable
 fun ColorPicker(
     modifier: Modifier = Modifier,
-    initialColor: Color = Color.Red,
-    onPickedColor: (Color) -> Unit
+    color: Color = Color.Red,
+    onPickedColor: (Color) -> Unit,
 ) {
-    var pickerLocation by remember {
-        mutableStateOf(Offset.Zero)
-    }
-    var colorPickerSize by remember {
-        mutableStateOf(IntSize(1, 1))
-    }
+    var pickerLocation by remember { mutableStateOf(Offset.Zero) }
+    var colorPickerSize by remember { mutableStateOf(IntSize(1, 1)) }
+    var rangeColor by remember { mutableStateOf(color) }
 
-    var rangeColor by remember {
-        mutableStateOf(initialColor)
-    }
-    var color by remember {
-        mutableStateOf(initialColor)
-    }
+    var isDragging by remember { mutableStateOf(false) }
 
-    val changeColor = { pickerLocation: Offset ->
-        val xProgress =
-            (1f - (pickerLocation.x / colorPickerSize.width)).coerceIn(0f, 1f)
-        val yProgress =
-            (pickerLocation.y / colorPickerSize.height).coerceIn(0f, 1f)
-        if (xProgress.isNaN().not() && yProgress.isNaN().not()) {
-            val newColor = Color(
-                rangeColor
-                    .red()
-                    .lighten(xProgress)
-                    .darken(yProgress),
-                rangeColor
-                    .green()
-                    .lighten(xProgress)
-                    .darken(yProgress),
-                rangeColor
-                    .blue()
-                    .lighten(xProgress)
-                    .darken(yProgress),
-            )
-
-            if (newColor != color) {
-                color = newColor
-                onPickedColor(newColor)
-            }
-        }
-    }
-
-    LaunchedEffect(colorPickerSize, initialColor) {
-        if (initialColor == color) return@LaunchedEffect
-
-        if (colorPickerSize.width > 1 && colorPickerSize.height > 1) {
+    LaunchedEffect(color, colorPickerSize) {
+        // 🔥 2. Only sync if NOT dragging
+        if (!isDragging && colorPickerSize.width > 1) {
             val hsv = FloatArray(3)
-            android.graphics.Color.colorToHSV(initialColor.toArgb(), hsv)
+            android.graphics.Color.colorToHSV(color.toArgb(), hsv)
 
-            // 1. Set the background rangeColor to the pure Hue (Saturation=1, Value=1)
-            val pureHue = android.graphics.Color.HSVToColor(floatArrayOf(hsv[0], 1f, 1f))
-            rangeColor = Color(pureHue)
+            rangeColor = Color(android.graphics.Color.HSVToColor(floatArrayOf(hsv[0], 1f, 1f)))
 
-            // 2. Calculate coordinates based on Saturation and Value
             pickerLocation = Offset(
-                x = colorPickerSize.width * hsv[1],
-                y = colorPickerSize.height * (1f - hsv[2])
+                x = (hsv[1]) * colorPickerSize.width,
+                y = (1F - hsv[2]) * colorPickerSize.height
             )
-            changeColor(pickerLocation)
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    val updateFinalColor = { position: Offset, hue: Color ->
+        // Note: Your math here uses (1f - xProgress) for Lighten.
+        // Ensure this matches your Background Brush (White -> Hue)
+        val xProgress = (1f - (position.x / colorPickerSize.width)).coerceIn(0f, 1f)
+        val yProgress = (position.y / colorPickerSize.height).coerceIn(0f, 1f)
+
+        if (!xProgress.isNaN() && !yProgress.isNaN()) {
+            val newColor = Color(
+                red = hue.red().lighten(xProgress).darken(yProgress),
+                green = hue.green().lighten(xProgress).darken(yProgress),
+                blue = hue.blue().lighten(xProgress).darken(yProgress),
+            )
+            onPickedColor(newColor)
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
@@ -117,43 +92,35 @@ fun ColorPicker(
                 .onSizeChanged { colorPickerSize = it }
                 .drawWithContent {
                     drawContent()
+                    // Draw selector based on external state
                     drawColorSelector(color.copy(alpha = 1f), pickerLocation)
                 }
                 .clip(RoundedCornerShape(16.dp))
                 .background(Brush.horizontalGradient(listOf(Color.White, rangeColor)))
                 .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
-                .pointerInput(Unit) {
+                .pointerInput(colorPickerSize) {
                     forEachGesture {
                         awaitPointerEventScope {
-                            // Wait for the first touch
                             val down = awaitFirstDown()
+                            isDragging = true // Block LaunchedEffect
 
-                            // Update picker immediately (tap)
-                            pickerLocation = Offset(
-                                x = down.position.x.coerceIn(0f, colorPickerSize.width.toFloat()),
-                                y = down.position.y.coerceIn(0f, colorPickerSize.height.toFloat())
-                            )
-
-                            changeColor.invoke(pickerLocation)
-
-
-                            var pointerId = down.id
-                            drag(pointerId) { change ->
-                                pickerLocation = Offset(
-                                    x = change.position.x.coerceIn(
-                                        0f,
-                                        colorPickerSize.width.toFloat()
-                                    ),
-                                    y = change.position.y.coerceIn(
-                                        0f,
-                                        colorPickerSize.height.toFloat()
-                                    )
+                            val update = { pos: Offset ->
+                                val constrainedPos = Offset(
+                                    x = pos.x.coerceIn(0f, colorPickerSize.width.toFloat()),
+                                    y = pos.y.coerceIn(0f, colorPickerSize.height.toFloat())
                                 )
-
-                                changeColor.invoke(pickerLocation)
-
-                                change.consume() // mark event as handled
+                                pickerLocation = constrainedPos
+                                updateFinalColor(constrainedPos, rangeColor)
                             }
+
+                            update(down.position)
+
+                            drag(down.id) { change ->
+                                update(change.position)
+                                change.consume()
+                            }
+
+                            isDragging = false // Allow LaunchedEffect again
                         }
                     }
                 }
@@ -161,45 +128,16 @@ fun ColorPicker(
 
         Spacer(modifier = Modifier.height(LargePaddingSize))
 
-        ColorSlideBar(colors = gradientColors, initialColor = color) {
-            val (rangeProgress, range) = ColorPickerHelper.calculateRangeProgress(it.toDouble())
-            val red: Int
-            val green: Int
-            val blue: Int
-            when (range) {
-                ColorRange.RED_TO_YELLOW -> {
-                    red = 255
-                    green = (255 * rangeProgress).roundToInt()
-                    blue = 0
-                }
-                ColorRange.YELLOW_TO_GREEN -> {
-                    red = (255 * (1 - rangeProgress)).roundToInt()
-                    green = 255
-                    blue = 0
-                }
-                ColorRange.GREEN_TO_CYAN -> {
-                    red = 0
-                    green = 255
-                    blue = (255 * rangeProgress).roundToInt()
-                }
-                ColorRange.CYAN_TO_BLUE -> {
-                    red = 0
-                    green = (255 * (1 - rangeProgress)).roundToInt()
-                    blue = 255
-                }
-                ColorRange.BLUE_TO_PURPLE -> {
-                    red = (255 * rangeProgress).roundToInt()
-                    green = 0
-                    blue = 255
-                }
-                ColorRange.PURPLE_TO_RED -> {
-                    red = 255
-                    green = 0
-                    blue = (255 * (1 - rangeProgress)).roundToInt()
-                }
-            }
-            rangeColor = Color(red, green, blue)
-            changeColor(pickerLocation)
+        ColorSlideBar(colors = gradientColors, color = color) { progress ->
+            val newHue = calculateHueFromProgress(progress)
+            rangeColor = newHue
+            updateFinalColor(pickerLocation, newHue)
         }
     }
+}
+
+fun calculateHueFromProgress(progress: Float): Color {
+    val hue = progress * 360f
+    val colorInt = android.graphics.Color.HSVToColor(floatArrayOf(hue, 1f, 1f))
+    return Color(colorInt)
 }
