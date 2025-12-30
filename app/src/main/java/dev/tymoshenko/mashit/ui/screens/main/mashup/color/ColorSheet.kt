@@ -54,6 +54,10 @@ fun ColorSheet(
         mutableStateOf(initialColor)
     }
 
+    LaunchedEffect(color) {
+        changeColor.invoke(color)
+    }
+
     LaunchedEffect(selectedColorType) {
         color = initialColor
     }
