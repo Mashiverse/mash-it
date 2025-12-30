@@ -72,19 +72,19 @@ class SvgCustomDecoderFactory(
         options: Options,
         imageLoader: ImageLoader
     ): Decoder? {
-        if (result.mimeType != null && !result.mimeType!!.contains("svg", ignoreCase = true)) {
-            onSvgDetection.invoke(false)
-            onMaskDetection.invoke(false)
-            return null
+        if (result.mimeType != null && result.mimeType!!.contains("svg", ignoreCase = true)) {
+            return SvgCustomDecoder(
+                selectedColors = selectedColors,
+                onMaskDetection = onMaskDetection,
+                result = result,
+                options = options,
+                imageLoader = imageLoader,
+                onSvgDetection = onSvgDetection
+            )
         }
 
-        return SvgCustomDecoder(
-            selectedColors = selectedColors,
-            onMaskDetection = onMaskDetection,
-            result = result,
-            options = options,
-            imageLoader = imageLoader,
-            onSvgDetection = onSvgDetection
-        )
+        onSvgDetection.invoke(false)
+        onMaskDetection.invoke(false)
+        return null
     }
 }

@@ -66,7 +66,7 @@ fun Trait(
     contentScale: ContentScale = ContentScale.Fit
 ) {
     val ctx = LocalContext.current
-    var hasMask by remember(data) { mutableStateOf(false) }
+    var hasMask by remember { mutableStateOf(true) }
     val onMaskDetection = { isMaskDetected: Boolean ->
         hasMask = isMaskDetected
     }
@@ -84,7 +84,7 @@ fun Trait(
     }
 
     // State for SVG detection
-    var isSvg by remember(data) { mutableStateOf(true) }
+    var isSvg by remember { mutableStateOf(true) }
     val onSvgDetection = { isDetected: Boolean ->
         isSvg = isDetected
     }
@@ -115,7 +115,14 @@ fun Trait(
         .crossfade(false)
         .build()
 
-    val colorMatrix = if (hasMask){ maskingMatrix} else { commonMatrix}
+    val colorMatrix =
+        if (hasMask) {
+            maskingMatrix
+        } else {
+            commonMatrix
+        }
+
+
 
     Box(
         modifier = modifier
