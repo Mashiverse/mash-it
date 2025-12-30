@@ -123,7 +123,7 @@ fun Trait(
             .height(height)
             .clip(MashiHolderShape)
     ) {
-        if (isSvg && !hasMask) {
+        if (isSvg) {
             lastPainter?.let {
                 Image(
                     modifier = modifier

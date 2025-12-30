@@ -41,9 +41,7 @@ class SvgCustomDecoder(
         }
 
         // Mask detection callback
-        if (svgText.containsSvgMask()) {
-            onMaskDetection.invoke(true)
-        }
+        onMaskDetection.invoke(svgText.containsSvgMask())
 
         // Wrap into a new SourceFetchResult
         val editedResult = SourceFetchResult(
@@ -76,6 +74,7 @@ class SvgCustomDecoderFactory(
     ): Decoder? {
         if (result.mimeType != null && !result.mimeType!!.contains("svg", ignoreCase = true)) {
             onSvgDetection.invoke(false)
+            onMaskDetection.invoke(false)
             return null
         }
 
