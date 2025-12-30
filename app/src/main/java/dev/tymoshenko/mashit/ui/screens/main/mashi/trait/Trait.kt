@@ -4,11 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,19 +30,19 @@ import dev.tymoshenko.mashit.utils.decoders.SvgCustomDecoderFactory
 
 val maskingMatrix = ColorMatrix(
     floatArrayOf(
-        1f, 0f, 0f, 0f, 0f,       // Red (Keep as is)
-        0f, 1f, 0f, 0f, 0f,       // Green (Keep as is)
-        0f, 0f, 1f, 0f, 0f,       // Blue (Keep as is)
-        0f, 0f, 0f, 100f, -10f     // Alpha: Multiply by 100, subtract 1
+        1f, 0f, 0f, 0f, 0f,
+        0f, 1f, 0f, 0f, 0f,
+        0f, 0f, 1f, 0f, 0f,
+        0f, 0f, 0f, 100f, -10f
     )
 )
 
 val commonMatrix = ColorMatrix(
     floatArrayOf(
-        1f, 0f, 0f, 0f, 0f, // Red:   100% of original Red
-        0f, 1f, 0f, 0f, 0f, // Green: 100% of original Green
-        0f, 0f, 1f, 0f, 0f, // Blue:  100% of original Blue
-        0f, 0f, 0f, 1f, 0f  // Alpha: 100% of original Alpha
+        1f, 0f, 0f, 0f, 0f,
+        0f, 1f, 0f, 0f, 0f,
+        0f, 0f, 1f, 0f, 0f,
+        0f, 0f, 0f, 1f, 0f
     )
 )
 
@@ -58,7 +54,8 @@ fun Trait(
     height: Dp = MashiHolderHeight,
     data: String = "https://example.com/image.svg",
     background: Color = MashiBackground,
-    selectedColors: SelectedColors? = null
+    selectedColors: SelectedColors? = null,
+    contentScale: ContentScale = ContentScale.Fit
 ) {
     val ctx = LocalContext.current
     var hasMask by remember(data) { mutableStateOf(false) }
@@ -66,24 +63,46 @@ fun Trait(
         hasMask = isMaskDetected
     }
 
-    val imageLoader = remember(selectedColors) {
+    // Always use a default loader for non-SVGs
+    val defaultLoader = remember {
         ImageLoader.Builder(ctx)
             .components {
-                add(
-                    SvgCustomDecoderFactory(
-                        selectedColors = selectedColors,
-                        onMaskDetection = onMaskDetection
-                    )
-                )
                 add(AnimatedImageDecoder.Factory())
                 add(SvgDecoder.Factory())
             }
             .build()
     }
 
+    // State for SVG detection
+    var isSvg by remember(data) { mutableStateOf<Boolean?>(true) }
+    val onSvgDetection = { isDetected: Boolean ->
+        isSvg = isDetected
+    }
+
+    // Only create a special loader for SVGs, otherwise use defaultLoader
+    val imageLoader = if (isSvg == true) {
+        remember(selectedColors) {
+            ImageLoader.Builder(ctx)
+                .components {
+                    add(
+                        SvgCustomDecoderFactory(
+                            selectedColors = selectedColors,
+                            onMaskDetection = onMaskDetection,
+                            onSvgDetection = onSvgDetection
+                        )
+                    )
+                    add(AnimatedImageDecoder.Factory())
+                    add(SvgDecoder.Factory())
+                }
+                .build()
+        }
+    } else {
+        defaultLoader
+    }
+
     val request = ImageRequest.Builder(ctx)
         .data(data)
-        .crossfade(false)
+        .crossfade(true)
         .build()
 
     AsyncImage(
@@ -92,14 +111,13 @@ fun Trait(
             .height(height)
             .clip(MashiHolderShape)
             .background(background)
-//            .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
             .clickable(onClick = onClick),
         alignment = Alignment.Center,
         colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix),
         imageLoader = imageLoader,
         model = request,
         contentDescription = "Mashi",
-        contentScale = ContentScale.Fit
+        contentScale = contentScale
     )
 }
 

@@ -16,17 +16,19 @@ fun String.containsSvgMask(): Boolean {
     return maskRegex.containsMatchIn(this)
 }
 
-class SvgColorReplacementDecoder(
+class SvgCustomDecoder(
     private val onMaskDetection: (Boolean) -> Unit,
     private val selectedColors: SelectedColors?,
     private val result: SourceFetchResult,
     private val options: Options,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val onSvgDetection: (Boolean) -> Unit,
 ) : Decoder {
 
     override suspend fun decode(): DecodeResult? {
         // Read the full SVG text
         var svgText = result.source.source().readUtf8()
+        onSvgDetection.invoke(true)
 
         // Replace colors
         if (selectedColors != null) {
@@ -63,7 +65,8 @@ class SvgColorReplacementDecoder(
 
 class SvgCustomDecoderFactory(
     private val onMaskDetection: (Boolean) -> Unit,
-    private val selectedColors: SelectedColors?
+    private val selectedColors: SelectedColors?,
+    private val onSvgDetection: (Boolean) -> Unit,
 ) : Decoder.Factory {
 
     override fun create(
@@ -72,15 +75,17 @@ class SvgCustomDecoderFactory(
         imageLoader: ImageLoader
     ): Decoder? {
         if (result.mimeType != null && !result.mimeType!!.contains("svg", ignoreCase = true)) {
+            onSvgDetection.invoke(false)
             return null
         }
 
-        return SvgColorReplacementDecoder(
+        return SvgCustomDecoder(
             selectedColors = selectedColors,
             onMaskDetection = onMaskDetection,
             result = result,
             options = options,
-            imageLoader = imageLoader
+            imageLoader = imageLoader,
+            onSvgDetection = onSvgDetection
         )
     }
 }

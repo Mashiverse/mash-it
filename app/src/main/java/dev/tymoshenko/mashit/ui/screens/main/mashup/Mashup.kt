@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -46,15 +47,14 @@ import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.tymoshenko.mashit.data.models.color.ColorType
 import dev.tymoshenko.mashit.data.models.color.SelectedColors
+import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.MashupDetails
 import dev.tymoshenko.mashit.data.models.mashi.MashupTrait
-import dev.tymoshenko.mashit.data.models.mashi.MashiTrait
 import dev.tymoshenko.mashit.data.models.mashi.TraitType
 import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
 import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.Trait
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
-import dev.tymoshenko.mashit.ui.screens.main.mashup.composite.CompositeHolder
 import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
 import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderHeight
@@ -145,7 +145,6 @@ fun Mashup() {
     }
 
 
-
     var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
     val traits by remember(selectedCategory, mashies) {
         derivedStateOf {
@@ -193,8 +192,10 @@ fun Mashup() {
                     }
             )
 
-            Column(Modifier.align(Alignment.TopEnd),
-                horizontalAlignment = Alignment.End) {
+            Column(
+                Modifier.align(Alignment.TopEnd),
+                horizontalAlignment = Alignment.End
+            ) {
                 Button(
                     onClick = {
                         viewModel.saveMashup(ctx)
@@ -241,23 +242,30 @@ fun Mashup() {
                     .background(MashiBackground),
                 contentAlignment = Alignment.Center
             ) {
-                mashupTraits.forEach { trait ->
-                    if (trait != null) {
-                        val traitType = trait.traitType
-                        val width = if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
-                        val height = if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
+                if (mashupTraits.isNotEmpty()) {
+                    mashupTraits.forEach { trait ->
+                        if (trait != null) {
+                            val traitType = trait.traitType
+                            val width =
+                                if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
+                            val height =
+                                if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
+                            val contentScale =
+                                if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
 
-                        Trait(
-                            width = width,
-                            height = height,
-                            background = Color.Transparent,
-                            selectedColors = SelectedColors(
-                                body = "#${body.value.toHexString()}",
-                                eyes = "#${eyes.value.toHexString()}",
-                                hair = "#${hair.value.toHexString()}"
-                            ),
-                            data = trait.url
-                        )
+                            Trait(
+                                width = width,
+                                height = height,
+                                background = Color.Transparent,
+                                selectedColors = SelectedColors(
+                                    body = "#${body.value.toHexString()}",
+                                    eyes = "#${eyes.value.toHexString()}",
+                                    hair = "#${hair.value.toHexString()}"
+                                ),
+                                data = trait.url,
+                                contentScale = contentScale
+                            )
+                        }
                     }
                 }
             }
