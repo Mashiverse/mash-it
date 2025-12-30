@@ -36,13 +36,13 @@ import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
 import dev.tymoshenko.mashit.ui.theme.MashiHolderWidth
 import dev.tymoshenko.mashit.utils.decoders.SvgCustomDecoderFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 
-/* ---------------------------------- */
-/* Color matrices */
-/* ---------------------------------- */
+private val svgCheckSemaphore = Semaphore(10)
 
 val maskingMatrix = ColorMatrix(
     floatArrayOf(
@@ -163,9 +163,7 @@ private fun SvgTrait(
             contentDescription = null,
             modifier = Modifier.matchParentSize(),
             contentScale = contentScale,
-            colorFilter = if (cachedPainter != null)
-                ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix)
-            else null,
+            colorFilter = ColorFilter.colorMatrix(if (hasMask) maskingMatrix else commonMatrix),
             onState = { state ->
                 if (state is AsyncImagePainter.State.Success) {
                     cachedPainter = state.painter
@@ -222,18 +220,20 @@ fun rememberIsSvg(url: String): State<Boolean?> {
 
     LaunchedEffect(url) {
         val isSvg = withContext(Dispatchers.IO) {
-            try {
-                val connection = (URL(url).openConnection() as HttpURLConnection).apply {
-                    requestMethod = "HEAD"
-                    connectTimeout = 5000
-                    readTimeout = 5000
+            svgCheckSemaphore.withPermit {
+                try {
+                    val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+                        requestMethod = "HEAD"
+                        connectTimeout = 100
+                        readTimeout = 100
+                    }
+                    connection.connect()
+                    val contentType = connection.contentType
+                    connection.disconnect()
+                    contentType?.contains("svg", ignoreCase = true) == true
+                } catch (e: Exception) {
+                    false
                 }
-                connection.connect()
-                val contentType = connection.contentType
-                connection.disconnect()
-                contentType?.contains("svg", ignoreCase = true) == true
-            } catch (e: Exception) {
-                false
             }
         }
         result.value = isSvg
