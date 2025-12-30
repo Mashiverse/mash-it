@@ -61,7 +61,7 @@ fun Trait(
     selectedColors: SelectedColors? = null
 ) {
     val ctx = LocalContext.current
-    var hasMask by remember { mutableStateOf(false) }
+    var hasMask by remember(data) { mutableStateOf(false) }
     val onMaskDetection = { isMaskDetected: Boolean ->
         hasMask = isMaskDetected
     }
