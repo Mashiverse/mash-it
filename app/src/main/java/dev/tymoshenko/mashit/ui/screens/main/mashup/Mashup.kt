@@ -4,15 +4,33 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +55,16 @@ import dev.tymoshenko.mashit.ui.screens.main.header.CategoryHeader
 import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
 import dev.tymoshenko.mashit.ui.screens.main.mashi.trait.Trait
 import dev.tymoshenko.mashit.ui.screens.main.mashup.color.ColorSheet
-import dev.tymoshenko.mashit.ui.theme.*
+import dev.tymoshenko.mashit.ui.theme.ContentAccentColor
+import dev.tymoshenko.mashit.ui.theme.ContentColor
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderHeight
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeMashiHolderWidth
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeTraitHolderHeight
+import dev.tymoshenko.mashit.ui.theme.ExtraLargeTraitHolderWidth
+import dev.tymoshenko.mashit.ui.theme.MashiBackground
+import dev.tymoshenko.mashit.ui.theme.MashiHolderShape
+import dev.tymoshenko.mashit.ui.theme.PaddingSize
+import dev.tymoshenko.mashit.ui.theme.SmallPaddingSize
 import dev.tymoshenko.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.launch
 
@@ -54,19 +81,38 @@ fun Mashup() {
     var isBottomSheet by remember { mutableStateOf(false) }
 
     val lazyGridState = rememberLazyGridState()
-    val mashiHolderWidth = (config.screenWidthDp.dp - (2.0 * PaddingSize) - 2 * SmallPaddingSize) / 3
+    val mashiHolderWidth =
+        (config.screenWidthDp.dp - (2.0 * PaddingSize) - 2 * SmallPaddingSize) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     val viewModel = hiltViewModel<MashupViewModel>()
 
     // Hoisted color states
     val selectedColorType by viewModel.selectedColorType
-    val body by viewModel.body
-    val eyes by viewModel.eyes
-    val hair by viewModel.hair
+    val body = remember { mutableStateOf(viewModel.body.value) }
+    val eyes = remember { mutableStateOf(viewModel.eyes.value) }
+    val hair = remember { mutableStateOf(viewModel.hair.value) }
 
+    val saveColors = {
+        viewModel.changeColor(body.value, ColorType.BODY)
+        viewModel.changeColor(eyes.value, ColorType.EYES)
+        viewModel.changeColor(hair.value, ColorType.HAIR)
+    }
+
+    // Reset colors to ViewModel's current state
+    val resetColors = {
+        body.value = viewModel.body.value
+        eyes.value = viewModel.eyes.value
+        hair.value = viewModel.hair.value
+    }
+
+    // Change color based on selected type
     val changeColor: (Color) -> Unit = { newColor ->
-        viewModel.changeColor(newColor, selectedColorType)
+        when (selectedColorType) {
+            ColorType.BODY -> body.value = newColor
+            ColorType.EYES -> eyes.value = newColor
+            ColorType.HAIR -> hair.value = newColor
+        }
     }
 
     val color by remember(selectedColorType, body, eyes, hair) {
@@ -103,7 +149,12 @@ fun Mashup() {
     val traitsByType = remember(mashies) {
         TraitType.entries.associateWith { type ->
             mashies.filter { mashie -> mashie.mashiTraits.any { it.traitType == type } }
-                .map { mashie -> MashupTrait(mashiTrait = mashie.mashiTraits.first { it.traitType == type }, avatarName = mashie.name) }
+                .map { mashie ->
+                    MashupTrait(
+                        mashiTrait = mashie.mashiTraits.first { it.traitType == type },
+                        avatarName = mashie.name
+                    )
+                }
                 .toSet().toList()
         }
     }
@@ -132,7 +183,13 @@ fun Mashup() {
                     .clip(RoundedCornerShape(90))
                     .background(
                         brush = Brush.sweepGradient(
-                            colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Red).reversed(),
+                            colors = listOf(
+                                Color.Red,
+                                Color.Yellow,
+                                Color.Green,
+                                Color.Blue,
+                                Color.Red
+                            ).reversed(),
                             center = Offset(
                                 x = with(density) {
                                     28.dp.toPx()
@@ -152,7 +209,12 @@ fun Mashup() {
                 horizontalAlignment = Alignment.End
             ) {
                 Button(onClick = { viewModel.saveMashup(ctx) }) { Text("Save") }
-                Button(onClick = { viewModel.saveMashup(ctx, isStatic = false) }) { Text("Save anim") }
+                Button(onClick = {
+                    viewModel.saveMashup(
+                        ctx,
+                        isStatic = false
+                    )
+                }) { Text("Save anim") }
                 Button(
                     onClick = {
                         val randomMashup = MashupDetails(
@@ -186,17 +248,22 @@ fun Mashup() {
                 mashupTraits.forEach { trait ->
                     trait?.let {
                         val traitType = it.traitType
-                        val width = if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
-                        val height = if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
-                        val contentScale = if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
+                        val width =
+                            if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
+                        val height =
+                            if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
+                        val contentScale =
+                            if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
 
                         Trait(
-                            modifier = Modifier.width(width).height(height),
+                            modifier = Modifier
+                                .width(width)
+                                .height(height),
                             background = Color.Transparent,
                             selectedColors = SelectedColors(
-                                body = "#${body.toHexString()}",
-                                eyes = "#${eyes.toHexString()}",
-                                hair = "#${hair.toHexString()}"
+                                body = "#${body.value.toHexString()}",
+                                eyes = "#${eyes.value.toHexString()}",
+                                hair = "#${hair.value.toHexString()}"
                             ),
                             data = it.url,
                             contentScale = contentScale
@@ -247,13 +314,17 @@ fun Mashup() {
 
     if (isBottomSheet) {
         ColorSheet(
-            closeBottomShit = { isBottomSheet = false },
-            scope = scope,
+            closeBottomShit = {
+                isBottomSheet = false
+                resetColors.invoke()
+            },
+            saveColors = saveColors,
             sheetState = sheetState,
-            color = color,
+            color = color.value,
+            scope = scope,
             changeColor = changeColor,
+            selectedColorType = selectedColorType,
             selectColorType = { viewModel.selectColorType(it) },
-            selectedColorType = selectedColorType
         )
     }
 }

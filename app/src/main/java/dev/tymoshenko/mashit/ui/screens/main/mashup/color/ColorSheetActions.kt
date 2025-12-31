@@ -13,7 +13,6 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.tymoshenko.mashit.ui.theme.ColorCloseButtonBackground
@@ -29,8 +28,7 @@ fun ColorSheetActions(
     scope: CoroutineScope,
     sheetState: SheetState,
     closeBottomShit: () -> Unit,
-    color: Color,
-    changeColor: (Color) -> Unit
+    saveColors: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Button(
@@ -62,7 +60,7 @@ fun ColorSheetActions(
             onClick = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                     if (!sheetState.isVisible) {
-                        changeColor.invoke(color)
+                        saveColors.invoke()
                         closeBottomShit.invoke()
                     }
                 }

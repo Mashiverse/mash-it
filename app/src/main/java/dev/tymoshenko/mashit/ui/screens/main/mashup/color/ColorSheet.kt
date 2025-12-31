@@ -30,9 +30,11 @@ fun ColorSheet(
     sheetState: SheetState,
     scope: CoroutineScope,
     color: Color,
+    saveColors: () -> Unit,
     changeColor: (Color) -> Unit,
     selectedColorType: ColorType,
-    selectColorType: (ColorType) -> Unit
+    selectColorType: (ColorType) -> Unit,
+
 ) {
     // Picker states
     var pickerLocation by remember { mutableStateOf(Offset.Zero) }
@@ -140,8 +142,7 @@ fun ColorSheet(
                 scope = scope,
                 sheetState = sheetState,
                 closeBottomShit = closeBottomShit,
-                color = color,
-                changeColor = changeColor
+                saveColors = saveColors
             )
         }
     }
