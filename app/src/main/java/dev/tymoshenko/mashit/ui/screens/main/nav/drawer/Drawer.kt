@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DismissibleDrawerSheet
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,10 +19,16 @@ import androidx.navigation.NavHostController
 import dev.tymoshenko.mashit.ui.theme.Background
 import dev.tymoshenko.mashit.ui.theme.DrawerPaddingSize
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
+import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun NavDrawer(modifier: Modifier = Modifier, navController: NavHostController) {
+fun NavDrawer(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    drawerState: DrawerState,
+    scope: CoroutineScope
+) {
     val config = LocalConfiguration.current
 
     DismissibleDrawerSheet(
@@ -40,7 +47,9 @@ fun NavDrawer(modifier: Modifier = Modifier, navController: NavHostController) {
 
             DrawerNav(
                 modifier = Modifier.padding(horizontal = DrawerPaddingSize),
-                navController = navController
+                navController = navController,
+                drawerState = drawerState,
+                scope = scope
             )
 
             HorizontalDivider()

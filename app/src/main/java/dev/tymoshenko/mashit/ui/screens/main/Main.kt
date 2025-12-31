@@ -32,7 +32,7 @@ fun Main(onDisconnect: () -> Unit) {
     DismissibleNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            NavDrawer(navController = navController)
+            NavDrawer(navController = navController, drawerState = drawerState, scope = scope)
         },
         gesturesEnabled = true
     ) {

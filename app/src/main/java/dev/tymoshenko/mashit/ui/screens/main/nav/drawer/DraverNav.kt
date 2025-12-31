@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
@@ -23,10 +24,17 @@ import dev.tymoshenko.mashit.ui.theme.ContentColor
 import dev.tymoshenko.mashit.ui.theme.ContentContainerHeight
 import dev.tymoshenko.mashit.ui.theme.ContentContainerShape
 import dev.tymoshenko.mashit.ui.theme.PaddingSize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
+fun DrawerNav(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    drawerState: DrawerState,
+    scope: CoroutineScope
+) {
     var selectedDest by rememberSaveable {
         mutableIntStateOf(0)
     }
@@ -43,6 +51,9 @@ fun DrawerNav(modifier: Modifier = Modifier, navController: NavHostController) {
                 onClick = {
                     navController.navigate(route = navItem.route)
                     selectedDest = i
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
                 selected = i == selectedDest,
                 label = {
