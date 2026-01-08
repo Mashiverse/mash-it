@@ -10,13 +10,13 @@ plugins {
 }
 
 android {
-    namespace = "dev.tymoshenko.mashit"
+    namespace = "io.mashit.mashit"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "dev.tymoshenko.mashit"
+        applicationId = "io.mashit.mashit"
         minSdk = 31
         targetSdk = 36
         versionCode = 1
@@ -32,7 +32,7 @@ android {
             }
         }
 
-        buildConfigField("String", "INFURA_API_KEY", localProperties.getProperty("INFURA_API_KEY"))
+        buildConfigField("String", "REOWN_PROJECT_ID", localProperties.getProperty("REOWN_PROJECT_ID"))
         buildConfigField("String", "ALCHEMY_API_KEY", localProperties.getProperty("ALCHEMY_API_KEY"))
         buildConfigField("String", "MASH_IT_API_KEY", localProperties.getProperty("MASH_IT_API_KEY"))
     }
@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.remote.creation.core)
+    implementation(libs.litert.api)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,16 +80,18 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+//    implementation("androidx.compose.material:material-navigation:1.7.0")
+    implementation(libs.accompanist.navigation.material)
+
 
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
-    // MetaMask
-    implementation(libs.metamask.android.sdk)
-
-    // Coinbase
+    // Web3
+    implementation(platform(libs.android.bom))
+    implementation(libs.android.core)
+    implementation(libs.appkit)
     implementation(libs.coinbase.wallet.sdk)
 
     // DataStore
