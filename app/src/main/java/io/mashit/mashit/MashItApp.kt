@@ -24,11 +24,11 @@ class MashItApp : Application() {
             description = "Mashing platform",
             url = "https://mash-it.io",
             icons = listOf("https://www.mash-it.io/img/transparent_logo_p.png?v=d38f16da3dbbe9535ea894f4699c1a2386cfdcad"),
-            redirect = null
+            redirect = "mashi://"
         )
 
         CoreClient.initialize(
-            projectId = projectId,
+            projectId = "a02c5e102a8b6292ac8ad8df578b3bba",
             connectionType = connectionType,
             application = this,
             metaData = appMetaData,
@@ -40,7 +40,7 @@ class MashItApp : Application() {
             init = Modal.Params.Init(
                 CoreClient, coinbaseEnabled = true, includeWalletIds = listOf(
                     "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96", // MetaMask
-                    //"fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa" // Base
+                    "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa" // Base
                 )
             ),
             onSuccess = {
