@@ -16,6 +16,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +24,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -44,6 +47,14 @@ fun Main() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val isArtists by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true
+        }
+    }
+
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -76,6 +87,7 @@ fun Main() {
             containerColor = Background,
             topBar = {
                 TopNavBar(
+                    isArtists = isArtists,
                     drawerState = drawerState,
                     scope = scope,
                     wallet = walletPreferences.value.wallet,

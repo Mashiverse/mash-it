@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TopNavBar(
+    isArtists: Boolean,
     wallet: String?,
     onConnect: () -> Unit,
     drawerState: DrawerState,
@@ -114,15 +116,24 @@ fun TopNavBar(
                     enter = fadeIn(tween(durationMillis = 150)),
                     exit = fadeOut(tween(durationMillis = 75))
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.logo),
-                        modifier = Modifier
-                            .size(NavBarHeight),
-                        contentDescription = "logo"
-                    )
+                    if (isArtists) {
+                        Image(
+                            painter = painterResource(R.drawable.text_logo),
+                            modifier = Modifier
+                                .height(NavBarHeight)
+                                .width((48 * 2.58).dp),
+                            contentDescription = null
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.logo),
+                            modifier = Modifier
+                                .size(NavBarHeight),
+                            contentDescription = "logo"
+                        )
+                    }
                 }
             }
-
         }
 
         Spacer(
