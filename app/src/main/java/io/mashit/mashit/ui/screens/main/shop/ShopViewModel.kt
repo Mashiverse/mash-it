@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.mashit.mashit.data.models.mashi.ListingDetails
 import io.mashit.mashit.data.models.mashi.MashiDetails
 import io.mashit.mashit.data.repos.MashItRepo
-import io.mashit.mashit.data.repos.WalletRepo
+import io.mashit.mashit.data.repos.Web3Repo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,8 +17,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
-    private val mashItRepo: MashItRepo,
-    private val walletRepo: WalletRepo
+    private val mashItRepo: MashItRepo
 ): ViewModel() {
     private val _listings =  mutableStateOf<List<ListingDetails>>(listOf())
     val listings: State<List<ListingDetails>> get() = _listings
@@ -39,7 +38,7 @@ class ShopViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _selectedId.value = id
             _selectedMashi.value = null
-            Log.d("GG", "1")
+
             _selectedMashi.value = mashItRepo.getShopItem(_selectedId.value!!)
         }
     }

@@ -23,20 +23,3 @@
 -keepclassmembers class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
-
--keep class com.sun.jna.** { *; }
--keepclassmembers class com.sun.jna.** {
-    native <methods>;
-    *;
-}
-
--keep class uniffi.** { *; }
-
-# Preserve all public and protected fields and methods
--keepclassmembers class ** {
-    public *;
-    protected *;
-}
-
--dontwarn uniffi.**
--dontwarn com.sun.jna.**

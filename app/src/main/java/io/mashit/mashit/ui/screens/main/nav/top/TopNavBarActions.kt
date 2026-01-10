@@ -36,7 +36,7 @@ fun TopNavBarActions(
     onIsSearchChange: () -> Unit,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    wallet: String,
+    wallet: String?,
     onConnect: () -> Unit
 ) {
     val endPadding = animateFloatAsState(
@@ -73,7 +73,11 @@ fun TopNavBarActions(
                     onClick = onConnect
                 ) {
                     Text(
-                        text = "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}",
+                        text = if (wallet != null) {
+                            "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}"
+                        } else {
+                            "Connect Base"
+                        },
                         fontSize = ContentTextSize
                     )
                 }

@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "io.mashit.mashit"
-    compileSdk = 36 // AGP 8+ assignment syntax
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.mashit.mashit"
@@ -38,35 +38,6 @@ android {
         buildConfigField("String", "MASH_IT_API_KEY", localProperties.getProperty("MASH_IT_API_KEY") ?: "\"\"")
     }
 
-    packaging {
-        resources {
-            // FIX for Jackson-core and AWS SDK metadata conflicts
-            // Using wildcards to catch both -LICENSE and -NOTICE and any other future ones
-            pickFirsts += "META-INF/FastDoubleParser-*"
-
-            // FIX for duplicate Netty/Vert.x and networking files
-            pickFirsts += "META-INF/INDEX.LIST"
-            pickFirsts += "META-INF/io.netty.versions.properties"
-
-            // Common Web3j / Jackson / OkHttp metadata conflicts
-            pickFirsts += "META-INF/LICENSE"
-            pickFirsts += "META-INF/NOTICE"
-            pickFirsts += "META-INF/okio.kotlin_module"
-            pickFirsts += "META-INF/kotlinx-serialization-json.kotlin_module"
-            pickFirsts += "META-INF/gradle/incremental.annotation.processors"
-
-            // Exclude non-essential metadata files to keep APK clean
-            excludes += "/META-INF/DEPENDENCIES"
-            excludes += "/META-INF/LICENSE.md"
-            excludes += "/META-INF/NOTICE.md"
-            excludes += "/META-INF/LICENSE.txt"
-            excludes += "/META-INF/NOTICE.txt"
-            excludes += "/META-INF/AL2.0"
-            excludes += "/META-INF/LGPL2.1"
-            excludes += "META-INF/native-image/**"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -78,9 +49,6 @@ android {
     }
 
     compileOptions {
-        // FIX for "Record desugaring" / "global synthetic" error
-        // Allows Java 14+ Records (used in Web3j) to work on Android
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -96,10 +64,6 @@ android {
 }
 
 dependencies {
-    // DESUGARING: Bridge between Java 17 features and older Android runtimes
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-
-    // Android / Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -110,8 +74,6 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.remote.creation.core)
     implementation(libs.litert.api)
-
-    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -119,6 +81,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.timber)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
@@ -128,16 +91,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
-    // Web3 & Reown
-    implementation(platform(libs.android.bom))
-    implementation(libs.android.core)
-    implementation(libs.appkit)
-    implementation(libs.sign)
-    implementation(libs.coinbase.wallet.sdk)
-
-    // Web3j Core
-    implementation(libs.core)
 
     // Coinbase
     implementation(libs.coinbase.wallet.sdk)

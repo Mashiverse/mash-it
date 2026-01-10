@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.reown.appkit.client.AppKit
 import dagger.hilt.android.AndroidEntryPoint
 import io.mashit.mashit.ui.screens.main.Main
 import io.mashit.mashit.ui.theme.DarkSystemBarStyle
@@ -16,8 +15,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppKit.register(this)
 
+        // Logging
         if (Timber.treeCount == 0) {
             Timber.plant(Timber.DebugTree())
         }
@@ -32,6 +31,5 @@ class MainActivity : ComponentActivity() {
                 Main()
             }
         }
-
     }
 }

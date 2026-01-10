@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TopNavBar(
-    wallet: String,
+    wallet: String?,
     onConnect: () -> Unit,
     drawerState: DrawerState,
     scope: CoroutineScope

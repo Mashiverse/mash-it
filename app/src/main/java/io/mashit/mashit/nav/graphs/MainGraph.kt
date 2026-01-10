@@ -3,7 +3,6 @@ package io.mashit.mashit.nav.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.reown.appkit.ui.appKitGraph
 import io.mashit.mashit.nav.routes.MainRoutes
 import io.mashit.mashit.ui.screens.main.artists.Artists
 import io.mashit.mashit.ui.screens.main.collection.Collection
@@ -26,6 +25,4 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
     composable<MainRoutes.Mashup> {
         Mashup()
     }
-
-    appKitGraph(navController)
 }
