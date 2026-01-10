@@ -7,12 +7,19 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.mashit.mashit.data.models.mashi.MashiDetails
 import io.mashit.mashit.data.repos.AlchemyRepo
+import io.mashit.mashit.data.repos.DataStoreRepo
+import io.mashit.mashit.data.repos.Web3Repo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class CollectionViewModel @Inject constructor(alchemyRepo: AlchemyRepo): ViewModel() {
+class CollectionViewModel @Inject constructor(
+    alchemyRepo: AlchemyRepo,
+    dataStoreRepo: DataStoreRepo
+): ViewModel() {
+    val walletPreferences = dataStoreRepo.walletPreferencesFlow
+
     private val _mashies = mutableStateOf<List<MashiDetails>>(listOf())
     val mashies: State<List<MashiDetails>> get() = _mashies
 

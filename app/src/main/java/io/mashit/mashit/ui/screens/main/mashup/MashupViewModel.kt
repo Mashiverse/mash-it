@@ -14,6 +14,7 @@ import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.TraitType
 import io.mashit.mashit.data.repos.AlchemyRepo
+import io.mashit.mashit.data.repos.DataStoreRepo
 import io.mashit.mashit.data.repos.MashiRepo
 import io.mashit.mashit.utils.io.saveImageToGallery
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +25,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MashupViewModel @Inject constructor(
     alchemyRepo: AlchemyRepo,
+    dataStoreRepo: DataStoreRepo,
     private val mashiRepo: MashiRepo
 ) : ViewModel() {
+    val walletPreferences = dataStoreRepo.walletPreferencesFlow
+
     // Colors
     private val _body = mutableStateOf(Color.Green)
     val body: State<Color> get() = _body

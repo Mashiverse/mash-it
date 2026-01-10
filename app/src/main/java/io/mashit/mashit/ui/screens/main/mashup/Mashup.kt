@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,10 +52,12 @@ import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.data.models.mashi.MashupTrait
 import io.mashit.mashit.data.models.mashi.TraitType
+import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.ui.screens.main.header.CategoryHeader
 import io.mashit.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
 import io.mashit.mashit.ui.screens.main.mashi.trait.Trait
 import io.mashit.mashit.ui.screens.main.mashup.color.ColorSheet
+import io.mashit.mashit.ui.screens.main.placeholder.NotConnected
 import io.mashit.mashit.ui.theme.ContentAccentColor
 import io.mashit.mashit.ui.theme.ContentColor
 import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderHeight
@@ -86,6 +89,7 @@ fun Mashup() {
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     val viewModel = hiltViewModel<MashupViewModel>()
+    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
     // Hoisted color states
     val selectedColorType by viewModel.selectedColorType
@@ -164,167 +168,173 @@ fun Mashup() {
         derivedStateOf { traitsByType[selectedCategory] ?: emptyList() }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = PaddingSize)
-    ) {
-        CategoryHeader(title = "Mashup")
+    CategoryHeader(title = "Mashup")
 
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+    if (walletPreferences.value.wallet != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = PaddingSize)
         ) {
-            Box(
-                modifier = Modifier
-                    .width(56.dp)
-                    .height(32.dp)
-                    .align(Alignment.TopStart)
-                    .clip(RoundedCornerShape(90))
-                    .background(
-                        brush = Brush.sweepGradient(
-                            colors = listOf(
-                                Color.Red,
-                                Color.Yellow,
-                                Color.Green,
-                                Color.Blue,
-                                Color.Red
-                            ).reversed(),
-                            center = Offset(
-                                x = with(density) {
-                                    28.dp.toPx()
-                                },
-                                y = with(density) {
-                                    16.dp.toPx()
-                                }
-                            )
-                        )
-                    )
-                    .border(width = 0.5.dp, color = Color.White, shape = RoundedCornerShape(90))
-                    .clickable { isBottomSheet = true }
-            )
 
-            Column(
-                Modifier.align(Alignment.TopEnd),
-                horizontalAlignment = Alignment.End
-            ) {
-                Button(onClick = { viewModel.saveMashup(ctx) }) { Text("Save") }
-                Button(onClick = {
-                    viewModel.saveMashup(
-                        ctx,
-                        isStatic = false
-                    )
-                }) { Text("Save anim") }
-                Button(
-                    onClick = {
-                        val randomMashup = MashupDetails(
-                            background = traitsByType[TraitType.BACKGROUND]!!.random().mashiTrait,
-                            hairBack = traitsByType[TraitType.HAIR_BACK]!!.random().mashiTrait,
-                            cape = traitsByType[TraitType.CAPE]!!.random().mashiTrait,
-                            bottom = traitsByType[TraitType.BOTTOM]!!.random().mashiTrait,
-                            upper = traitsByType[TraitType.UPPER]!!.random().mashiTrait,
-                            head = traitsByType[TraitType.HEAD]!!.random().mashiTrait,
-                            eyes = traitsByType[TraitType.EYES]!!.random().mashiTrait,
-                            hairFront = traitsByType[TraitType.HAIR_FRONT]!!.random().mashiTrait,
-                            hat = traitsByType[TraitType.HAT]!!.random().mashiTrait,
-                            leftAccessory = traitsByType[TraitType.LEFT_ACCESSORY]!!.random().mashiTrait,
-                            rightAccessory = traitsByType[TraitType.RIGHT_ACCESSORY]!!.random().mashiTrait
-                        )
-                        viewModel.randomize(randomMashup)
-                    }
-                ) {
-                    Text("R")
-                }
-            }
 
             Box(
-                modifier = Modifier
-                    .height(ExtraLargeMashiHolderHeight)
-                    .width(ExtraLargeMashiHolderWidth)
-                    .clip(MashiHolderShape)
-                    .background(MashiBackground),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                mashupTraits.forEach { trait ->
-                    trait?.let {
-                        val traitType = it.traitType
-                        val width =
-                            if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
-                        val height =
-                            if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
-                        val contentScale =
-                            if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
+                Box(
+                    modifier = Modifier
+                        .width(56.dp)
+                        .height(32.dp)
+                        .align(Alignment.TopStart)
+                        .clip(RoundedCornerShape(90))
+                        .background(
+                            brush = Brush.sweepGradient(
+                                colors = listOf(
+                                    Color.Red,
+                                    Color.Yellow,
+                                    Color.Green,
+                                    Color.Blue,
+                                    Color.Red
+                                ).reversed(),
+                                center = Offset(
+                                    x = with(density) {
+                                        28.dp.toPx()
+                                    },
+                                    y = with(density) {
+                                        16.dp.toPx()
+                                    }
+                                )
+                            )
+                        )
+                        .border(width = 0.5.dp, color = Color.White, shape = RoundedCornerShape(90))
+                        .clickable { isBottomSheet = true }
+                )
 
-                        Trait(
-                            modifier = Modifier
-                                .width(width)
-                                .height(height),
-                            background = Color.Transparent,
-                            selectedColors = SelectedColors(
-                                body = "#${body.value.toHexString()}",
-                                eyes = "#${eyes.value.toHexString()}",
-                                hair = "#${hair.value.toHexString()}"
-                            ),
-                            data = it.url,
-                            contentScale = contentScale
+                Column(
+                    Modifier.align(Alignment.TopEnd),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Button(onClick = { viewModel.saveMashup(ctx) }) { Text("Save") }
+                    Button(onClick = {
+                        viewModel.saveMashup(
+                            ctx,
+                            isStatic = false
+                        )
+                    }) { Text("Save anim") }
+                    Button(
+                        onClick = {
+                            val randomMashup = MashupDetails(
+                                background = traitsByType[TraitType.BACKGROUND]!!.random().mashiTrait,
+                                hairBack = traitsByType[TraitType.HAIR_BACK]!!.random().mashiTrait,
+                                cape = traitsByType[TraitType.CAPE]!!.random().mashiTrait,
+                                bottom = traitsByType[TraitType.BOTTOM]!!.random().mashiTrait,
+                                upper = traitsByType[TraitType.UPPER]!!.random().mashiTrait,
+                                head = traitsByType[TraitType.HEAD]!!.random().mashiTrait,
+                                eyes = traitsByType[TraitType.EYES]!!.random().mashiTrait,
+                                hairFront = traitsByType[TraitType.HAIR_FRONT]!!.random().mashiTrait,
+                                hat = traitsByType[TraitType.HAT]!!.random().mashiTrait,
+                                leftAccessory = traitsByType[TraitType.LEFT_ACCESSORY]!!.random().mashiTrait,
+                                rightAccessory = traitsByType[TraitType.RIGHT_ACCESSORY]!!.random().mashiTrait
+                            )
+                            viewModel.randomize(randomMashup)
+                        }
+                    ) {
+                        Text("R")
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .height(ExtraLargeMashiHolderHeight)
+                        .width(ExtraLargeMashiHolderWidth)
+                        .clip(MashiHolderShape)
+                        .background(MashiBackground),
+                    contentAlignment = Alignment.Center
+                ) {
+                    mashupTraits.forEach { trait ->
+                        trait?.let {
+                            val traitType = it.traitType
+                            val width =
+                                if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
+                            val height =
+                                if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
+                            val contentScale =
+                                if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
+
+                            Trait(
+                                modifier = Modifier
+                                    .width(width)
+                                    .height(height),
+                                background = Color.Transparent,
+                                selectedColors = SelectedColors(
+                                    body = "#${body.value.toHexString()}",
+                                    eyes = "#${eyes.value.toHexString()}",
+                                    hair = "#${hair.value.toHexString()}"
+                                ),
+                                data = it.url,
+                                contentScale = contentScale
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(SmallPaddingSize))
+
+            LazyRow {
+                items(TraitType.entries) { traitType ->
+                    TextButton(
+                        onClick = {
+                            selectedCategory = traitType
+                            scope.launch { lazyGridState.scrollToItem(0) }
+                        }
+                    ) {
+                        Text(
+                            text = traitType.name.lowercase().replace("_", " "),
+                            fontSize = 14.sp,
+                            color = if (traitType == selectedCategory) ContentAccentColor else ContentColor
                         )
                     }
                 }
             }
-        }
 
-        Spacer(Modifier.height(SmallPaddingSize))
+            Spacer(Modifier.height(SmallPaddingSize))
 
-        LazyRow {
-            items(TraitType.entries) { traitType ->
-                TextButton(
-                    onClick = {
-                        selectedCategory = traitType
-                        scope.launch { lazyGridState.scrollToItem(0) }
-                    }
-                ) {
-                    Text(
-                        text = traitType.name.lowercase().replace("_", " "),
-                        fontSize = 14.sp,
-                        color = if (traitType == selectedCategory) ContentAccentColor else ContentColor
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxWidth(),
+                state = lazyGridState,
+                verticalArrangement = Arrangement.spacedBy(PaddingSize),
+                horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                columns = GridCells.Fixed(3)
+            ) {
+                items(traits.size) { i ->
+                    MashupTraitHolder(
+                        mashiHolderHeight = mashiHolderHeight,
+                        mashiHolderWidth = mashiHolderWidth,
+                        trait = traits[i],
+                        changeMashupTrait = changeMashupTrait
                     )
                 }
             }
         }
 
-        Spacer(Modifier.height(SmallPaddingSize))
-
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
-            state = lazyGridState,
-            verticalArrangement = Arrangement.spacedBy(PaddingSize),
-            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-            columns = GridCells.Fixed(3)
-        ) {
-            items(traits.size) { i ->
-                MashupTraitHolder(
-                    mashiHolderHeight = mashiHolderHeight,
-                    mashiHolderWidth = mashiHolderWidth,
-                    trait = traits[i],
-                    changeMashupTrait = changeMashupTrait
-                )
-            }
+        if (isBottomSheet) {
+            ColorSheet(
+                closeBottomShit = {
+                    isBottomSheet = false
+                    resetColors.invoke()
+                },
+                saveColors = saveColors,
+                sheetState = sheetState,
+                color = color.value,
+                scope = scope,
+                changeColor = changeColor,
+                selectedColorType = selectedColorType,
+                selectColorType = { viewModel.selectColorType(it) },
+            )
         }
-    }
-
-    if (isBottomSheet) {
-        ColorSheet(
-            closeBottomShit = {
-                isBottomSheet = false
-                resetColors.invoke()
-            },
-            saveColors = saveColors,
-            sheetState = sheetState,
-            color = color.value,
-            scope = scope,
-            changeColor = changeColor,
-            selectedColorType = selectedColorType,
-            selectColorType = { viewModel.selectColorType(it) },
-        )
+    } else {
+        NotConnected()
     }
 }

@@ -12,7 +12,6 @@ import io.mashit.mashit.ui.theme.PaddingSize
 fun Artists() {
     Column(
         modifier = Modifier
-            .padding(PaddingSize)
     ) {
         CategoryHeader("Artists")
     }

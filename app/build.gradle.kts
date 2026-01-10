@@ -33,7 +33,6 @@ android {
             }
         }
 
-        buildConfigField("String", "REOWN_PROJECT_ID", localProperties.getProperty("REOWN_PROJECT_ID") ?: "\"\"")
         buildConfigField("String", "ALCHEMY_API_KEY", localProperties.getProperty("ALCHEMY_API_KEY") ?: "\"\"")
         buildConfigField("String", "MASH_IT_API_KEY", localProperties.getProperty("MASH_IT_API_KEY") ?: "\"\"")
     }
