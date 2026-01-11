@@ -72,12 +72,6 @@ fun Main() {
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-    )
-
     DismissibleNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
