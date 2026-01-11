@@ -74,7 +74,7 @@ fun TopNavBarActions(
                 ) {
                     Text(
                         text = if (wallet != null) {
-                            "${wallet.take(6)}...${wallet.substring(wallet.length - 4)}"
+                            "${wallet.take(6).lowercase()}...${wallet.substring(wallet.length - 4).lowercase()}"
                         } else {
                             "Connect Base"
                         },

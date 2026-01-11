@@ -3,6 +3,7 @@ package io.mashit.mashit.ui.screens.main
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -70,6 +71,12 @@ fun Main() {
             launcher.launch(intent)
         }
     }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+    )
 
     DismissibleNavigationDrawer(
         drawerState = drawerState,

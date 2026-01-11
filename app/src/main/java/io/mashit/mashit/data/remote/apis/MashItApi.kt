@@ -30,4 +30,7 @@ interface MashItApi {
 
     @GET("api/v1/health")
     suspend fun getStatus(): HealthDto
+
+    @GET("api/mashers/latest")
+    suspend fun getMashup()
 }

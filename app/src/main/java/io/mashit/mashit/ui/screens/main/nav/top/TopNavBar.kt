@@ -121,7 +121,7 @@ fun TopNavBar(
                             painter = painterResource(R.drawable.text_logo),
                             modifier = Modifier
                                 .height(NavBarHeight)
-                                .width((48 * 2.58).dp),
+                                .width((48 * 2).dp),
                             contentDescription = null
                         )
                     } else {
