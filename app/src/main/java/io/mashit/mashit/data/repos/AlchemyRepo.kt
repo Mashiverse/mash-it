@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AlchemyRepo @Inject constructor(
     private val alchemyApi: AlchemyApi
 ) {
-    suspend fun getCollection(wallet: String = ""): List<MashiDetails> {
+    suspend fun getCollection(wallet: String): List<MashiDetails> {
         val nfts: MutableList<MashiDetails> = mutableListOf()
         var key: String? = null
 
@@ -20,7 +20,7 @@ class AlchemyRepo @Inject constructor(
                 val data = alchemyApi.getNFTsForOwner(
                     apiKey = BuildConfig.ALCHEMY_API_KEY,
                     withMetadata = true,
-                    owner = "0xd3145ee544a1d8fc5802b5861e2777a2be2ebb5a",
+                    owner = wallet,
                     contractAddress = MASHI_CONTRACT,
                     pageKey = key
                 )

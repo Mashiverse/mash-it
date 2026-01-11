@@ -6,30 +6,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.mashit.mashit.data.models.mashi.MashiDetails
-import io.mashit.mashit.data.repos.AlchemyRepo
+import io.mashit.mashit.data.repos.CollectionRepo
 import io.mashit.mashit.data.repos.DataStoreRepo
-import io.mashit.mashit.data.repos.Web3Repo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
-    alchemyRepo: AlchemyRepo,
+    collectionRepo: CollectionRepo,
     dataStoreRepo: DataStoreRepo
-): ViewModel() {
+) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
-
-    private val _mashies = mutableStateOf<List<MashiDetails>>(listOf())
-    val mashies: State<List<MashiDetails>> get() = _mashies
+    val collectionFlow = collectionRepo.getCollectionFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private val _selectedMashi = mutableStateOf<MashiDetails?>(null)
     val selectedMashi: State<MashiDetails?> get() = _selectedMashi
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _mashies.value = alchemyRepo.getCollection().sortedBy { mashie ->
-                mashie.name
+            walletPreferences
+                .distinctUntilChanged()
+                .collect { prefs ->
+                if (prefs.wallet != null) {
+                    collectionRepo.updateData(prefs.wallet)
+                }
             }
         }
     }

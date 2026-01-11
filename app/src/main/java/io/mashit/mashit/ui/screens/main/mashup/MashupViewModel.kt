@@ -13,22 +13,29 @@ import io.mashit.mashit.data.models.mashi.MashiDetails
 import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.TraitType
+import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.data.repos.AlchemyRepo
+import io.mashit.mashit.data.repos.CollectionRepo
 import io.mashit.mashit.data.repos.DataStoreRepo
 import io.mashit.mashit.data.repos.MashiRepo
 import io.mashit.mashit.utils.io.saveImageToGallery
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
-    alchemyRepo: AlchemyRepo,
+    collectionRepo: CollectionRepo,
     dataStoreRepo: DataStoreRepo,
     private val mashiRepo: MashiRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
+    val collectionFlow = collectionRepo.getCollectionFlow()
 
     // Colors
     private val _body = mutableStateOf(Color.Green)
@@ -40,9 +47,6 @@ class MashupViewModel @Inject constructor(
     private val _selectedColorType = mutableStateOf(ColorType.BODY)
     val selectedColorType: State<ColorType> get() = _selectedColorType
 
-    // Mashies
-    private val _mashies = mutableStateOf<List<MashiDetails>>(listOf())
-    val mashies: State<List<MashiDetails>> get() = _mashies
 
     //Mashup
     private val _mashupDetails = mutableStateOf(MashupDetails())
@@ -50,9 +54,13 @@ class MashupViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _mashies.value  = alchemyRepo.getCollection().sortedBy { mashie ->
-                mashie.name
-            }
+            walletPreferences
+                .distinctUntilChanged()
+                .collect { prefs ->
+                    if (prefs.wallet != null) {
+                        collectionRepo.updateData(prefs.wallet)
+                    }
+                }
         }
     }
 

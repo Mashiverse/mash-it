@@ -22,9 +22,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Essential for large Web3 libraries (Web3j/Reown)
-        multiDexEnabled = true
-
         val localProperties = Properties()
         val localPropertiesFile = File(rootDir, "keys.properties")
         if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
@@ -86,7 +83,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.accompanist.navigation.material)
 
-    // Hilt (DI)
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -99,7 +96,13 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    // Image Loading (Coil)
+    // Local DB
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.paging)
+
+    // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.gif)

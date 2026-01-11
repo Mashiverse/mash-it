@@ -52,6 +52,7 @@ import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.data.models.mashi.MashupTrait
 import io.mashit.mashit.data.models.mashi.TraitType
+import io.mashit.mashit.data.models.mashi.mappers.fromEntities
 import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.ui.screens.main.header.CategoryHeader
 import io.mashit.mashit.ui.screens.main.mashi.trait.MashupTraitHolder
@@ -69,6 +70,7 @@ import io.mashit.mashit.ui.theme.MashiHolderShape
 import io.mashit.mashit.ui.theme.PaddingSize
 import io.mashit.mashit.ui.theme.SmallPaddingSize
 import io.mashit.mashit.utils.color.helpers.toHexString
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -149,7 +151,10 @@ fun Mashup() {
     }
     val changeMashupTrait = { mashiTrait: MashiTrait -> viewModel.changeMashupTrait(mashiTrait) }
 
-    val mashies by remember { viewModel.mashies }
+    val mashies by viewModel.collectionFlow
+        .map { it.fromEntities() }
+        .collectAsState(emptyList())
+
     val traitsByType = remember(mashies) {
         TraitType.entries.associateWith { type ->
             mashies.filter { mashie -> mashie.mashiTraits.any { it.traitType == type } }
@@ -176,8 +181,6 @@ fun Mashup() {
                 .fillMaxSize()
                 .padding(horizontal = PaddingSize)
         ) {
-
-
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center

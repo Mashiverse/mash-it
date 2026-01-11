@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import io.mashit.mashit.R
 import io.mashit.mashit.data.models.mashi.MashiDetails
+import io.mashit.mashit.data.models.mashi.mappers.fromEntities
 import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.ui.screens.main.header.CategoryHeader
 import io.mashit.mashit.ui.screens.main.mashi.MashiBottomSheet
@@ -44,6 +45,7 @@ import io.mashit.mashit.ui.screens.main.mashi.trait.Trait
 import io.mashit.mashit.ui.screens.main.placeholder.NotConnected
 import io.mashit.mashit.ui.theme.PaddingSize
 import io.mashit.mashit.ui.theme.SmallPaddingSize
+import kotlinx.coroutines.flow.map
 
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -55,11 +57,9 @@ fun Collection() {
     var isBottomSheet by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<CollectionViewModel>()
-    val mashies by remember {
-        derivedStateOf {
-            viewModel.mashies.value
-        }
-    }
+    val mashies by viewModel.collectionFlow
+        .map { it.fromEntities() }
+        .collectAsState(emptyList())
 
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
