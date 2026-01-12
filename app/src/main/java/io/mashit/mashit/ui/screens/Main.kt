@@ -29,7 +29,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.nav.graphs.mainGraph
 import io.mashit.mashit.nav.routes.MainRoutes
@@ -39,7 +38,7 @@ import io.mashit.mashit.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main() {
     val viewModel = hiltViewModel<Web3ViewModel>()

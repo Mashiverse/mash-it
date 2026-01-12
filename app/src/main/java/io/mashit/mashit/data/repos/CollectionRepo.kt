@@ -21,7 +21,6 @@ class CollectionRepo @Inject constructor(
         val oldNames = oldCollectionList.map { it.name }.toSet()
 
         val toAdd = newCollectionList.filter { it.name !in oldNames }
-
         val toDelete = oldCollectionList.filter { it.name !in newNames }
 
         if (toAdd.isNotEmpty()) {
