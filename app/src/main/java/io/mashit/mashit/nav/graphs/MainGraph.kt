@@ -4,10 +4,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import io.mashit.mashit.nav.routes.MainRoutes
-import io.mashit.mashit.ui.screens.main.artists.Artists
-import io.mashit.mashit.ui.screens.main.collection.Collection
-import io.mashit.mashit.ui.screens.main.mashup.Mashup
-import io.mashit.mashit.ui.screens.main.shop.Shop
+import io.mashit.mashit.ui.screens.artists.Artists
+import io.mashit.mashit.ui.screens.collection.Collection
+import io.mashit.mashit.ui.screens.mashup.Mashup
+import io.mashit.mashit.ui.screens.shop.Shop
 
 fun NavGraphBuilder.mainGraph(navController: NavHostController) {
     composable<MainRoutes.Shop> {

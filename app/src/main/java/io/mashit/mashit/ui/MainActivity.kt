@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import io.mashit.mashit.ui.screens.main.Main
+import io.mashit.mashit.ui.screens.Main
 import io.mashit.mashit.ui.theme.Background
 import io.mashit.mashit.ui.theme.DarkSystemBarStyle
 import io.mashit.mashit.ui.theme.MashItTheme

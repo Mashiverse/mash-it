@@ -81,7 +81,6 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.accompanist.navigation.material)
 
     // Hilt
     implementation(libs.hilt.android)
