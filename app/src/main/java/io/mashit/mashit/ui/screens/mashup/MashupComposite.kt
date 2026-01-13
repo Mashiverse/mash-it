@@ -10,24 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import io.mashit.mashit.data.models.mashi.MashupDetails
-import io.mashit.mashit.data.models.mashi.MashupTrait
 import io.mashit.mashit.data.models.mashi.TraitType
 import io.mashit.mashit.ui.screens.mashi.trait.Trait
-import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderHeight
-import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderWidth
-import io.mashit.mashit.ui.theme.ExtraLargeTraitHolderHeight
-import io.mashit.mashit.ui.theme.ExtraLargeTraitHolderWidth
 import io.mashit.mashit.ui.theme.MashiBackground
 import io.mashit.mashit.ui.theme.MashiHolderShape
-import timber.log.Timber
 
 @Composable
-fun MashupComposite(mashupDetails: MashupDetails) {
+fun MashupComposite(
+    mashupDetails: MashupDetails,
+    modifier: Modifier = Modifier,
+    holderWidth: Dp
+) {
     Box(
-        modifier = Modifier
-            .height(ExtraLargeMashiHolderHeight)
-            .width(ExtraLargeMashiHolderWidth)
+        modifier = modifier
             .clip(MashiHolderShape)
             .background(MashiBackground),
         contentAlignment = Alignment.Center
@@ -35,13 +32,11 @@ fun MashupComposite(mashupDetails: MashupDetails) {
         mashupDetails.assets?.sortedBy { it.traitType }?.forEach { trait ->
             val traitType = trait.traitType
             val width =
-                if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderWidth else ExtraLargeTraitHolderWidth
+                if (traitType == TraitType.BACKGROUND) holderWidth else holderWidth * 380 / 552
             val height =
-                if (traitType == TraitType.BACKGROUND) ExtraLargeMashiHolderHeight else ExtraLargeTraitHolderHeight
+                if (traitType == TraitType.BACKGROUND) holderWidth * 4 / 3 else (holderWidth * 4 / 3) * 600 / 736
             val contentScale =
                 if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
-
-            Timber.tag("GG").d(trait.url)
 
             Trait(
                 modifier = Modifier

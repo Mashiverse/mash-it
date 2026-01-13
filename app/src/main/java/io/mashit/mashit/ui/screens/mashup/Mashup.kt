@@ -32,11 +32,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import io.mashit.mashit.data.models.color.ColorType
 import io.mashit.mashit.data.models.mashi.MashiTrait
@@ -46,7 +44,10 @@ import io.mashit.mashit.data.models.mashi.mappers.fromEntities
 import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.ui.screens.header.CategoryHeader
 import io.mashit.mashit.ui.screens.mashup.color.ColorSheet
+import io.mashit.mashit.ui.screens.mashup.preview.MashupPreview
 import io.mashit.mashit.ui.screens.placeholder.NotConnected
+import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderHeight
+import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderWidth
 import io.mashit.mashit.ui.theme.ExtraSmallPaddingSize
 import io.mashit.mashit.ui.theme.PaddingSize
 import io.mashit.mashit.ui.theme.SmallPaddingSize
@@ -66,8 +67,10 @@ fun Mashup() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isBottomSheet by remember { mutableStateOf(false) }
 
-    val lazyGridState = rememberLazyGridState()
+    val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var isPreviewBottomSheet by remember { mutableStateOf(false) }
 
+    val lazyGridState = rememberLazyGridState()
 
     val viewModel = hiltViewModel<MashupViewModel>()
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
@@ -223,7 +226,16 @@ fun Mashup() {
                         }
                     }
 
-                    MashupComposite(mashupDetails = mashupDetails)
+                    MashupComposite(
+                        mashupDetails = mashupDetails,
+                        modifier = Modifier
+                            .height(ExtraLargeMashiHolderHeight)
+                            .width(ExtraLargeMashiHolderWidth)
+                            .clickable {
+                                isPreviewBottomSheet = true
+                            },
+                        holderWidth = ExtraLargeMashiHolderWidth
+                    )
                 }
 
                 Spacer(Modifier.height(SmallPaddingSize))
@@ -255,6 +267,17 @@ fun Mashup() {
                     changeColor = changeColor,
                     selectedColorType = selectedColorType,
                     selectColorType = { viewModel.selectColorType(it) },
+                )
+            }
+
+            if (isPreviewBottomSheet) {
+                MashupPreview(
+                    closeBottomShit = {
+                        isPreviewBottomSheet = false
+                    },
+                    sheetState = previewSheetState,
+                    scope = scope,
+                    mashupDetails = mashupDetails,
                 )
             }
         } else {

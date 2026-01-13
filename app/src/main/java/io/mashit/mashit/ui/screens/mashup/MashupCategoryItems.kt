@@ -27,7 +27,7 @@ fun MashupCategoryItems(
 ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth =
-        (config.screenWidthDp.dp - (2.0 * PaddingSize) - 2 * SmallPaddingSize) / 3
+        (config.screenWidthDp.dp - (2.0 * PaddingSize) - 2 * SmallPaddingSize) / 3 - 1.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     LazyVerticalGrid(

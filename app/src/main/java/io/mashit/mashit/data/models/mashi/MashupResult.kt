@@ -18,7 +18,7 @@ data class MashupResult(
 
     override fun hashCode(): Int {
         var result = bytes.contentHashCode()
-        result = 31 * result + (contentType?.hashCode() ?: 0)
+        result = 31 * result + contentType.hashCode()
         return result
     }
 }
