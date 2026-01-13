@@ -50,7 +50,7 @@ fun MashupPreview(
     scope: CoroutineScope,
 ) {
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 1.dp
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     val compositeHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize)

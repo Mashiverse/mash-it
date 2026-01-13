@@ -61,59 +61,61 @@ import kotlinx.coroutines.launch
 @Composable
 fun Mashup() {
     val density = LocalDensity.current
-
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    // Bottom Sheet States
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isBottomSheet by remember { mutableStateOf(false) }
-
     val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isPreviewBottomSheet by remember { mutableStateOf(false) }
 
     val lazyGridState = rememberLazyGridState()
-
     val viewModel = hiltViewModel<MashupViewModel>()
+
+    // 1. Source of Truth from ViewModel
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
-
-    // Hoisted color states
+    val vmDetails by viewModel.mashupDetails
     val selectedColorType by viewModel.selectedColorType
-    var selectedColors by remember(viewModel.mashupDetails) {
-        mutableStateOf(viewModel.mashupDetails.value.colors)
+
+    // 2. The Buffer: This holds unsaved color changes for the UI
+    // It resets only if the ViewModel's saved colors change (e.g., after a save or R)
+    var colorBuffer by remember(vmDetails.colors) {
+        mutableStateOf(vmDetails.colors)
     }
 
+    // 3. Actions
     val saveColors = {
-        viewModel.changeColors(selectedColors)
+        viewModel.changeColors(colorBuffer)
     }
 
-    // Reset colors to ViewModel's current state
     val resetColors = {
-        selectedColors = viewModel.mashupDetails.value.colors
+        colorBuffer = vmDetails.colors
     }
 
     val changeColor: (Color) -> Unit = { newColor ->
-        selectedColors = when (selectedColorType) {
-            ColorType.BASE -> selectedColors.copy(base = "#" + newColor.toHexString())
-            ColorType.EYES -> selectedColors.copy(eyes = "#" + newColor.toHexString())
-            ColorType.HAIR -> selectedColors.copy(hair = "#" + newColor.toHexString())
+        val hex = "#" + newColor.toHexString()
+        colorBuffer = when (selectedColorType) {
+            ColorType.BASE -> colorBuffer.copy(base = hex)
+            ColorType.EYES -> colorBuffer.copy(eyes = hex)
+            ColorType.HAIR -> colorBuffer.copy(hair = hex)
         }
     }
 
-    val color by remember(selectedColorType, selectedColors) {
+    // 4. Derived Hex for the Color Picker
+    val currentColorHex by remember(selectedColorType, colorBuffer) {
         derivedStateOf {
             when (selectedColorType) {
-                ColorType.BASE -> selectedColors.base
-                ColorType.EYES -> selectedColors.eyes
-                ColorType.HAIR -> selectedColors.hair
+                ColorType.BASE -> colorBuffer.base
+                ColorType.EYES -> colorBuffer.eyes
+                ColorType.HAIR -> colorBuffer.hair
             }
         }
     }
 
-    val mashupDetails by remember { viewModel.mashupDetails }
-    val mashupTraits = remember(mashupDetails) {
-        mashupDetails.assets
-    }
     val changeMashupTrait = { mashiTrait: MashiTrait -> viewModel.changeMashupTrait(mashiTrait) }
 
+    // Collection Data
     val mashies by viewModel.collectionFlow
         .map { it.fromEntities() }
         .collectAsState(emptyList())
@@ -143,7 +145,6 @@ fun Mashup() {
 
     Column {
         CategoryHeader(title = "Mashup")
-
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         if (walletPreferences.value.wallet != null) {
@@ -156,6 +157,7 @@ fun Mashup() {
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
+                    // Color Picker Trigger
                     Box(
                         modifier = Modifier
                             .width(56.dp)
@@ -164,76 +166,37 @@ fun Mashup() {
                             .clip(RoundedCornerShape(90))
                             .background(
                                 brush = Brush.sweepGradient(
-                                    colors = listOf(
-                                        Color.Red,
-                                        Color.Yellow,
-                                        Color.Green,
-                                        Color.Blue,
-                                        Color.Red
-                                    ).reversed(),
-                                    center = Offset(
-                                        x = with(density) {
-                                            28.dp.toPx()
-                                        },
-                                        y = with(density) {
-                                            16.dp.toPx()
-                                        }
-                                    )
+                                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Red).reversed(),
+                                    center = Offset(x = with(density) { 28.dp.toPx() }, y = with(density) { 16.dp.toPx() })
                                 )
                             )
-                            .border(
-                                width = 0.5.dp,
-                                color = Color.White,
-                                shape = RoundedCornerShape(90)
-                            )
+                            .border(0.5.dp, Color.White, RoundedCornerShape(90))
                             .clickable { isBottomSheet = true }
                     )
 
-                    Column(
-                        Modifier.align(Alignment.TopEnd),
-                        horizontalAlignment = Alignment.End
-                    ) {
+                    // Control Buttons
+                    Column(Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End) {
                         Button(onClick = { viewModel.saveMashup(ctx) }) { Text("Save") }
-                        Button(onClick = {
-                            viewModel.saveMashup(
-                                ctx,
-                                isStatic = false
-                            )
-                        }) { Text("Save anim") }
+                        Button(onClick = { viewModel.saveMashup(ctx, isStatic = false) }) { Text("Save anim") }
                         Button(
                             onClick = {
                                 if (mashies.isNotEmpty()) {
-                                    val randomAssets = listOf(
-                                        traitsByType[TraitType.BACKGROUND]!!.random().mashiTrait,
-                                        traitsByType[TraitType.HAIR_BACK]!!.random().mashiTrait,
-                                        traitsByType[TraitType.CAPE]!!.random().mashiTrait,
-                                        traitsByType[TraitType.BOTTOM]!!.random().mashiTrait,
-                                        traitsByType[TraitType.UPPER]!!.random().mashiTrait,
-                                        traitsByType[TraitType.HEAD]!!.random().mashiTrait,
-                                        traitsByType[TraitType.EYES]!!.random().mashiTrait,
-                                        traitsByType[TraitType.HAIR_FRONT]!!.random().mashiTrait,
-                                        traitsByType[TraitType.HAT]!!.random().mashiTrait,
-                                        traitsByType[TraitType.LEFT_ACCESSORY]!!.random().mashiTrait,
-                                        traitsByType[TraitType.RIGHT_ACCESSORY]!!.random().mashiTrait
-                                    )
-                                    randomAssets.forEach {
-                                        viewModel.changeMashupTrait(it)
+                                    val randomAssets = TraitType.entries.mapNotNull { type ->
+                                        traitsByType[type]?.randomOrNull()?.mashiTrait
                                     }
+                                    randomAssets.forEach { viewModel.changeMashupTrait(it) }
                                 }
                             }
-                        ) {
-                            Text("R")
-                        }
+                        ) { Text("R") }
                     }
 
+                    // MASHUP PREVIEW: We use vmDetails but pass colorBuffer for live feedback
                     MashupComposite(
-                        mashupDetails = mashupDetails,
+                        mashupDetails = vmDetails.copy(colors = colorBuffer),
                         modifier = Modifier
                             .height(ExtraLargeMashiHolderHeight)
                             .width(ExtraLargeMashiHolderWidth)
-                            .clickable {
-                                isPreviewBottomSheet = true
-                            },
+                            .clickable { isPreviewBottomSheet = true },
                         holderWidth = ExtraLargeMashiHolderWidth
                     )
                 }
@@ -254,15 +217,19 @@ fun Mashup() {
                 )
             }
 
+            // COLOR SHEET
             if (isBottomSheet) {
                 ColorSheet(
                     closeBottomShit = {
                         isBottomSheet = false
-                        resetColors.invoke()
+                        resetColors()
                     },
-                    saveColors = saveColors,
+                    saveColors = {
+                        saveColors()
+                        isBottomSheet = false
+                    },
                     sheetState = sheetState,
-                    color = color.toHexColor(),
+                    color = currentColorHex.toHexColor(),
                     scope = scope,
                     changeColor = changeColor,
                     selectedColorType = selectedColorType,
@@ -270,14 +237,13 @@ fun Mashup() {
                 )
             }
 
+            // MASHUP PREVIEW SHEET
             if (isPreviewBottomSheet) {
                 MashupPreview(
-                    closeBottomShit = {
-                        isPreviewBottomSheet = false
-                    },
+                    closeBottomShit = { isPreviewBottomSheet = false },
                     sheetState = previewSheetState,
                     scope = scope,
-                    mashupDetails = mashupDetails,
+                    mashupDetails = vmDetails.copy(colors = colorBuffer),
                 )
             }
         } else {

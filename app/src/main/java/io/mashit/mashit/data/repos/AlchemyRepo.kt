@@ -20,7 +20,7 @@ class AlchemyRepo @Inject constructor(
                 val data = alchemyApi.getNFTsForOwner(
                     apiKey = BuildConfig.ALCHEMY_API_KEY,
                     withMetadata = true,
-                    owner = wallet,
+                    owner = "0x60873c2d9d575514df19cbae29040c6c9915377a",
                     contractAddress = MASHI_CONTRACT,
                     pageKey = key
                 )
