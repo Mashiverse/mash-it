@@ -5,6 +5,7 @@ import io.mashit.mashit.data.remote.dtos.ArtistsDto
 import io.mashit.mashit.data.remote.dtos.HealthDto
 import io.mashit.mashit.data.remote.dtos.ListingDto
 import io.mashit.mashit.data.remote.dtos.ListingsDto
+import io.mashit.mashit.data.remote.dtos.MashupDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -32,5 +33,7 @@ interface MashItApi {
     suspend fun getStatus(): HealthDto
 
     @GET("api/mashers/latest")
-    suspend fun getMashup()
+    suspend fun getMashup(
+        @Query("wallet") wallet: String
+    ): MashupDto
 }

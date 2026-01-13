@@ -1,7 +1,7 @@
 package io.mashit.mashit.data.models.color
 
 enum class ColorType {
-    BODY,
+    BASE,
     EYES,
     HAIR
 }

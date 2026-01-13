@@ -61,7 +61,7 @@ fun ColorTypeSelector(
             text = "Body",
             selectedColorType = selectedColorType,
             selectColorType = selectColorType,
-            colorType = ColorType.BODY
+            colorType = ColorType.BASE
         )
 
         Spacer(Modifier.width(SmallPaddingSize))

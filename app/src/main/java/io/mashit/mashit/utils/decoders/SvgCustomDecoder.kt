@@ -28,7 +28,7 @@ class SvgCustomDecoder(
         if (selectedColors != null) {
             svgText = replaceColors(
                 svgText,
-                selectedColors.body,
+                selectedColors.base,
                 selectedColors.eyes,
                 selectedColors.hair
             )
