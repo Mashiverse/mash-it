@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.21"
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.kotlin.android)
 }
 
 configure<ApplicationExtension> {
@@ -102,6 +103,11 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.gif)
     implementation(libs.coil.svg)
+
+    // Apng
+    implementation(libs.glide.plugin)
+    implementation("com.github.bumptech.glide:glide:5.0.5")
+    ksp("com.github.bumptech.glide:compiler:5.0.5")
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)

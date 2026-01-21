@@ -80,7 +80,7 @@ fun Mashup() {
 
     // 2. The Buffer: This holds unsaved color changes for the UI
     // It resets only if the ViewModel's saved colors change (e.g., after a save or R)
-    var colorBuffer by remember(vmDetails.colors) {
+    var colorBuffer by remember(vmDetails) {
         mutableStateOf(vmDetails.colors)
     }
 
@@ -184,7 +184,10 @@ fun Mashup() {
                                     val randomAssets = TraitType.entries.mapNotNull { type ->
                                         traitsByType[type]?.randomOrNull()?.mashiTrait
                                     }
-                                    randomAssets.forEach { viewModel.changeMashupTrait(it) }
+                                    randomAssets.forEach {
+                                        viewModel.changeMashupTrait(it)
+
+                                    }
                                 }
                             }
                         ) { Text("R") }

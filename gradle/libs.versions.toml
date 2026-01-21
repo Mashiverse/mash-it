@@ -4,6 +4,7 @@ coilCompose = "3.3.0"
 coinbaseWalletSdk = "1.2.0"
 converterGson = "3.0.0"
 datastorePreferences = "1.2.0"
+glidePlugin = "3.0.5"
 hiltAndroid = "2.58"
 hiltNavigationCompose = "1.3.0"
 kotlin = "2.3.0"
@@ -37,6 +38,7 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilCompose" }
 coinbase-wallet-sdk = { module = "com.coinbase:coinbase-wallet-sdk", version.ref = "coinbaseWalletSdk" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+glide-plugin = { module = "com.github.penfeizhou.android.animation:glide-plugin", version.ref = "glidePlugin" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -60,4 +62,5 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
