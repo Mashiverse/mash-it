@@ -1,8 +1,9 @@
 package io.mashit.mashit.ui.screens.mashi.trait
 
-import ApngImage
+import io.mashit.mashit.ui.screens.mashi.trait.images.ApngImage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
@@ -28,6 +30,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import io.mashit.mashit.data.models.color.SelectedColors
+import io.mashit.mashit.ui.theme.ContentColor
 import io.mashit.mashit.ui.theme.MashiBackground
 import io.mashit.mashit.ui.theme.MashiHolderShape
 import io.mashit.mashit.utils.decoders.SvgCustomDecoderFactory

@@ -1,6 +1,7 @@
 package io.mashit.mashit.ui.screens.collection
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,8 @@ import io.mashit.mashit.ui.screens.header.CategoryHeader
 import io.mashit.mashit.ui.screens.mashi.MashiBottomSheet
 import io.mashit.mashit.ui.screens.mashi.trait.Trait
 import io.mashit.mashit.ui.screens.placeholder.NotConnected
+import io.mashit.mashit.ui.theme.ContentColor
+import io.mashit.mashit.ui.theme.MashiHolderShape
 import io.mashit.mashit.ui.theme.PaddingSize
 import io.mashit.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.flow.map
@@ -91,7 +94,8 @@ fun Collection() {
                     Trait(
                         modifier = Modifier
                             .height(mashiHolderHeight)
-                            .width(mashiHolderWidth),
+                            .width(mashiHolderWidth)
+                            .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
                         onClick = { selectMashi.invoke(mashies[i]) },
                         data = mashies[i].compositeUrl,
                     )

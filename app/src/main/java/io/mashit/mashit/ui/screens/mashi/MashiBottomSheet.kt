@@ -57,6 +57,7 @@ fun MashiBottomSheet(
         containerColor = ContainerColor,
         contentColor = ContentColor,
         dragHandle = null,
+        sheetGesturesEnabled = false
     ) {
         Column(
             modifier = Modifier

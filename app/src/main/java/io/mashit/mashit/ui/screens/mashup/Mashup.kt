@@ -4,18 +4,29 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,13 +40,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import io.mashit.mashit.R
 import io.mashit.mashit.data.models.color.ColorType
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.MashupTrait
@@ -43,13 +60,19 @@ import io.mashit.mashit.data.models.mashi.TraitType
 import io.mashit.mashit.data.models.mashi.mappers.fromEntities
 import io.mashit.mashit.data.models.wallet.WalletPreferences
 import io.mashit.mashit.ui.screens.header.CategoryHeader
+import io.mashit.mashit.ui.screens.mashi.trait.TraitHolder
 import io.mashit.mashit.ui.screens.mashup.color.ColorSheet
 import io.mashit.mashit.ui.screens.mashup.preview.MashupPreview
 import io.mashit.mashit.ui.screens.placeholder.NotConnected
+import io.mashit.mashit.ui.theme.ContentAccentColor
+import io.mashit.mashit.ui.theme.ContentColor
 import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderHeight
 import io.mashit.mashit.ui.theme.ExtraLargeMashiHolderWidth
 import io.mashit.mashit.ui.theme.ExtraSmallPaddingSize
+import io.mashit.mashit.ui.theme.InactiveMashupButtonBackground
+import io.mashit.mashit.ui.theme.MashiHolderShape
 import io.mashit.mashit.ui.theme.PaddingSize
+import io.mashit.mashit.ui.theme.SmallIconSize
 import io.mashit.mashit.ui.theme.SmallPaddingSize
 import io.mashit.mashit.utils.color.helpers.toHexColor
 import io.mashit.mashit.utils.color.helpers.toHexString
@@ -64,11 +87,17 @@ fun Mashup() {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
+    val config = LocalConfiguration.current
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
+    val mashiHolderHeight = mashiHolderWidth * 4 / 3
+
     // Bottom Sheet States
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isBottomSheet by remember { mutableStateOf(false) }
     val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isPreviewBottomSheet by remember { mutableStateOf(false) }
+
+    var isActiveTraits by remember { mutableStateOf(false) }
 
     val lazyGridState = rememberLazyGridState()
     val viewModel = hiltViewModel<MashupViewModel>()
@@ -147,7 +176,7 @@ fun Mashup() {
         CategoryHeader(title = "Mashup")
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        if (walletPreferences.value.wallet != null) {
+        if (true) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -199,25 +228,75 @@ fun Mashup() {
                         modifier = Modifier
                             .height(ExtraLargeMashiHolderHeight)
                             .width(ExtraLargeMashiHolderWidth)
-                            .clickable { isPreviewBottomSheet = true },
+                            .clickable { isActiveTraits = true }
+                            .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
                         holderWidth = ExtraLargeMashiHolderWidth
                     )
                 }
 
                 Spacer(Modifier.height(SmallPaddingSize))
 
-                MashupCategories(
-                    onMashupCategorySelect = onMashupCategorySelect,
-                    selectedCategory = selectedCategory
-                )
+                if (isActiveTraits) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Active traits",
+                            fontSize = 14.sp,
+                            color = ContentAccentColor,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
 
-                Spacer(Modifier.height(SmallPaddingSize))
+                        IconButton(
+                            onClick = {isActiveTraits = false},
+                            modifier = Modifier
+                                .size(36.dp)
+                                .align(Alignment.CenterEnd),
+                            colors = IconButtonDefaults.iconButtonColors().copy(
+                                containerColor = InactiveMashupButtonBackground,
+                                contentColor = ContentAccentColor
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.close_icon),
+                                contentDescription = null
+                            )
+                        }
+                    }
 
-                MashupCategoryItems(
-                    lazyGridState = lazyGridState,
-                    traits = traits,
-                    changeMashupTrait = changeMashupTrait
-                )
+                    Spacer(Modifier.height(SmallPaddingSize))
+
+                    vmDetails.copy(colors = colorBuffer).assets?.sortedBy { it.traitType }.let {
+                        LazyVerticalGrid(
+                            modifier = Modifier.fillMaxWidth()
+                                .wrapContentHeight(),
+                            verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                            columns = GridCells.Fixed(3)
+                        ) {
+                            items(it!!.size) { i ->
+                                TraitHolder(
+                                    mashiTrait = it[i],
+                                    width = mashiHolderWidth,
+                                    height = mashiHolderHeight
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    MashupCategories(
+                        onMashupCategorySelect = onMashupCategorySelect,
+                        selectedCategory = selectedCategory
+                    )
+
+                    Spacer(Modifier.height(SmallPaddingSize))
+
+                    MashupCategoryItems(
+                        lazyGridState = lazyGridState,
+                        traits = traits,
+                        changeMashupTrait = changeMashupTrait
+                    )
+                }
             }
 
             // COLOR SHEET
@@ -240,15 +319,14 @@ fun Mashup() {
                 )
             }
 
-            // MASHUP PREVIEW SHEET
-            if (isPreviewBottomSheet) {
-                MashupPreview(
-                    closeBottomShit = { isPreviewBottomSheet = false },
-                    sheetState = previewSheetState,
-                    scope = scope,
-                    mashupDetails = vmDetails.copy(colors = colorBuffer),
-                )
-            }
+//            if (isPreviewBottomSheet) {
+//                MashupPreview(
+//                    closeBottomShit = { isPreviewBottomSheet = false },
+//                    sheetState = previewSheetState,
+//                    scope = scope,
+//                    mashupDetails = vmDetails.copy(colors = colorBuffer),
+//                )
+//            }
         } else {
             NotConnected()
         }
