@@ -106,8 +106,8 @@ dependencies {
 
     // Apng
     implementation(libs.glide.plugin)
-    implementation("com.github.bumptech.glide:glide:5.0.5")
-    ksp("com.github.bumptech.glide:compiler:5.0.5")
+    implementation(libs.glide)
+    ksp(libs.compiler)
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)

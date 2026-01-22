@@ -1,9 +1,7 @@
 package io.mashit.mashit.ui.screens.mashi.trait
 
-import io.mashit.mashit.ui.screens.mashi.trait.images.ApngImage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -21,19 +19,19 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.gif.AnimatedImageDecoder
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import io.mashit.mashit.data.models.color.SelectedColors
-import io.mashit.mashit.ui.theme.ContentColor
+import io.mashit.mashit.ui.screens.mashi.trait.images.ApngImage
 import io.mashit.mashit.ui.theme.MashiBackground
 import io.mashit.mashit.ui.theme.MashiHolderShape
-import io.mashit.mashit.utils.decoders.SvgCustomDecoderFactory
+import io.mashit.mashit.utils.decoders.SvgCustomDecoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -102,7 +100,7 @@ private fun SvgImage(
         ImageLoader.Builder(ctx)
             .components {
                 add(
-                    SvgCustomDecoderFactory(
+                    SvgCustomDecoder.Factory(
                         selectedColors = selectedColors,
                         onMaskDetection = { hasMask = it }
                     )
@@ -187,7 +185,7 @@ fun Trait(
                     selectedColors = selectedColors,
                     contentScale = contentScale
                 )
-            } else if(
+            } else if (
                 imageType == ImageType.APNG
             ) {
                 ApngImage(
@@ -206,9 +204,8 @@ fun Trait(
 }
 
 
-
 @Composable
-fun rememberContentType(url: String): State<ImageType?> {
+private fun rememberContentType(url: String): State<ImageType?> {
     val result = remember(url) { mutableStateOf<ImageType?>(null) }
 
     LaunchedEffect(url) {

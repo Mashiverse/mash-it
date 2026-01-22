@@ -50,24 +50,24 @@ class SvgCustomDecoder(
 
         return svgDecoder.decode()
     }
-}
 
-class SvgCustomDecoderFactory(
-    private val onMaskDetection: (Boolean) -> Unit,
-    private val selectedColors: SelectedColors?,
-) : Decoder.Factory {
+    class Factory(
+        private val onMaskDetection: (Boolean) -> Unit,
+        private val selectedColors: SelectedColors?,
+    ) : Decoder.Factory {
 
-    override fun create(
-        result: SourceFetchResult,
-        options: Options,
-        imageLoader: ImageLoader
-    ): Decoder {
-        return SvgCustomDecoder(
-            selectedColors = selectedColors,
-            onMaskDetection = onMaskDetection,
-            result = result,
-            options = options,
-            imageLoader = imageLoader
-        )
+        override fun create(
+            result: SourceFetchResult,
+            options: Options,
+            imageLoader: ImageLoader
+        ): Decoder {
+            return SvgCustomDecoder(
+                selectedColors = selectedColors,
+                onMaskDetection = onMaskDetection,
+                result = result,
+                options = options,
+                imageLoader = imageLoader
+            )
+        }
     }
 }

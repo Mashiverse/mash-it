@@ -1,40 +1,49 @@
 package io.mashit.mashit.ui.screens.mashi.trait.images
 
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.github.penfeizhou.animation.apng.APNGDrawable
-import com.github.penfeizhou.animation.loader.StreamLoader
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.net.URL
-
-class RemoteByteStreamLoader(private val data: ByteArray) : StreamLoader() {
-    override fun getInputStream(): InputStream = ByteArrayInputStream(data)
-}
+import com.github.penfeizhou.animation.loader.FileLoader
+import java.io.File
 
 @Composable
 fun ApngImage(
     url: String,
     modifier: Modifier = Modifier
 ) {
-    var drawable by remember { mutableStateOf<APNGDrawable?>(null) }
+    val ctx = LocalContext.current
+    var apngDrawable by remember { mutableStateOf<APNGDrawable?>(null) }
 
     LaunchedEffect(url) {
-        withContext(Dispatchers.IO) {
-            try {
-                val data = URL(url).readBytes()
-                val loader = RemoteByteStreamLoader(data)
-                val apngDrawable = APNGDrawable(loader)
-                apngDrawable.start() // start animation
-                drawable = apngDrawable
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        Glide.with(ctx)
+            .asFile()
+            .load(url)
+            .into(object : CustomTarget<File>() {
+                override fun onResourceReady(resource: File, transition: Transition<in File>?) {
+                    val loader = FileLoader(resource.absolutePath)
+                    val drawable = APNGDrawable(loader)
+                    drawable.start()
+                    apngDrawable = drawable
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    apngDrawable?.stop()
+                    apngDrawable = null
+                }
+            })
     }
 
     AndroidView(
@@ -44,8 +53,16 @@ fun ApngImage(
             }
         },
         update = { imageView ->
-            drawable?.let { imageView.setImageDrawable(it) }
+            if (apngDrawable != null && imageView.drawable !== apngDrawable) {
+                imageView.setImageDrawable(apngDrawable)
+            }
         },
         modifier = modifier
     )
+
+    DisposableEffect(url) {
+        onDispose {
+            apngDrawable?.stop()
+        }
+    }
 }
