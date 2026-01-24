@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.ui.screens.header.CategoryHeader
 import io.mashit.mashit.ui.screens.mashi.MashiBottomSheet
 import io.mashit.mashit.ui.theme.PaddingSize
@@ -58,7 +59,20 @@ fun Shop() {
                 ShopSection(
                     sectionName = "Ervindas",
                     selectId = selectId,
-                    sectionItems = listings
+                    sectionItems = listings,
+                    getImageType = { url: String ->
+                        var imageType: ImageType? = null
+                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                            imageType = type
+                        }
+                        imageType
+                    },
+                    setImageType = { imageType: ImageType, data: String ->
+                        viewModel.insertTraitType(
+                            url = data,
+                            imageType = imageType
+                        )
+                    }
                 )
             }
         }
@@ -70,7 +84,20 @@ fun Shop() {
                 selectedMashi = selectedMashi!!,
                 sheetState = sheetState,
                 closeBottomShit = closeBottomShit,
-                scope = scope
+                scope = scope,
+                getImageType = { url: String ->
+                    var imageType: ImageType? = null
+                    viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                        imageType = type
+                    }
+                    imageType
+                },
+                setImageType = { imageType: ImageType, data: String ->
+                    viewModel.insertTraitType(
+                        url = data,
+                        imageType = imageType
+                    )
+                }
             )
         }
     }

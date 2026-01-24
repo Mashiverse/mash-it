@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.ListingDetails
 import io.mashit.mashit.ui.screens.buttons.BuyButton
 import io.mashit.mashit.ui.screens.mashi.trait.Trait
@@ -24,6 +25,8 @@ import io.mashit.mashit.ui.theme.MashiHolderShape
 fun ShopItem(
     listingDetails: ListingDetails,
     selectId: (String) -> Unit,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
 ) {
     val productInfo = listingDetails.productInfo
     val isSoldOut = productInfo.soldQuantity >= productInfo.quantity
@@ -37,7 +40,9 @@ fun ShopItem(
                 .height(LargeMashiHolderHeight)
                 .border(width = 0.3.dp, shape = MashiHolderShape, color = ContentColor),
             onClick = { selectId.invoke(listingDetails.id) },
-            data = listingDetails.compositeUrl
+            data = listingDetails.compositeUrl,
+            getImageType =getImageType,
+            setImageType = setImageType
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))

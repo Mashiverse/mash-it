@@ -27,9 +27,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashiDetails
 import io.mashit.mashit.data.models.mashi.mappers.fromEntities
 import io.mashit.mashit.data.models.wallet.WalletPreferences
+import io.mashit.mashit.data.remote.dtos.AlchemyDto
 import io.mashit.mashit.ui.screens.header.CategoryHeader
 import io.mashit.mashit.ui.screens.mashi.MashiBottomSheet
 import io.mashit.mashit.ui.screens.mashi.trait.Trait
@@ -98,6 +100,19 @@ fun Collection() {
                             .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
                         onClick = { selectMashi.invoke(mashies[i]) },
                         data = mashies[i].compositeUrl,
+                        getImageType = { url: String ->
+                            var imageType: ImageType? = null
+                            viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                                imageType = type
+                            }
+                            imageType
+                        },
+                        setImageType = { imageType: ImageType, data: String ->
+                            viewModel.insertTraitType(
+                                url = data,
+                                imageType = imageType
+                            )
+                        }
                     )
                 }
             }
@@ -109,7 +124,20 @@ fun Collection() {
                     selectedMashi = selectedMashi!!,
                     sheetState = sheetState,
                     closeBottomShit = closeBottomShit,
-                    scope = scope
+                    scope = scope,
+                    getImageType = { url: String ->
+                        var imageType: ImageType? = null
+                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                            imageType = type
+                        }
+                        imageType
+                    },
+                    setImageType = { imageType: ImageType, data: String ->
+                        viewModel.insertTraitType(
+                            url = data,
+                            imageType = imageType
+                        )
+                    }
                 )
             }
         }

@@ -25,8 +25,12 @@ object RoomModule {
     ).build()
 
     @Provides
-    @Singleton
     fun provideMashiDetailsDao(
         db: RoomDb
     ) = db.getMashiDetailsDao()
+
+    @Provides
+    fun provideTraitTypeDao(
+        db: RoomDb
+    ) = db.getTraitTypeDto()
 }

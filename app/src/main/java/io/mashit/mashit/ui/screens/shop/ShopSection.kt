@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.ListingDetails
 import io.mashit.mashit.ui.theme.ContentAccentColor
 import io.mashit.mashit.ui.theme.ContentColor
@@ -22,7 +23,9 @@ import io.mashit.mashit.ui.theme.SmallPaddingSize
 fun ShopSection(
     sectionName: String,
     selectId: (String) -> Unit,
-    sectionItems: List<ListingDetails>
+    sectionItems: List<ListingDetails>,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit
 ) {
     Column {
         Row(
@@ -55,7 +58,9 @@ fun ShopSection(
             items(sectionItems.size) { i ->
                 ShopItem(
                     listingDetails = sectionItems[i],
-                    selectId = selectId
+                    selectId = selectId,
+                    getImageType = getImageType,
+                    setImageType = setImageType
                 )
             }
         }

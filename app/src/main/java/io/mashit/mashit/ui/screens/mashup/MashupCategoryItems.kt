@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.MashupTrait
 import io.mashit.mashit.ui.screens.mashi.trait.MashupTraitHolder
@@ -23,7 +24,9 @@ import io.mashit.mashit.ui.theme.SmallPaddingSize
 fun MashupCategoryItems(
     lazyGridState: LazyGridState,
     traits: List<MashupTrait>,
-    changeMashupTrait: (MashiTrait) -> Unit
+    changeMashupTrait: (MashiTrait) -> Unit,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
 ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth =
@@ -42,7 +45,9 @@ fun MashupCategoryItems(
                 mashiHolderHeight = mashiHolderHeight,
                 mashiHolderWidth = mashiHolderWidth,
                 trait = traits[i],
-                changeMashupTrait = changeMashupTrait
+                changeMashupTrait = changeMashupTrait,
+                getImageType = getImageType,
+                setImageType = setImageType
             )
         }
     }

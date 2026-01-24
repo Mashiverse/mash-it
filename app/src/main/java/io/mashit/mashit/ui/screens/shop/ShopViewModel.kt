@@ -6,18 +6,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.mashit.mashit.data.local.db.entities.TraitTypeEntity
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.ListingDetails
 import io.mashit.mashit.data.models.mashi.MashiDetails
 import io.mashit.mashit.data.repos.MashItRepo
+import io.mashit.mashit.data.repos.TraitTypeRepo
 import io.mashit.mashit.data.repos.Web3Repo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
-    private val mashItRepo: MashItRepo
+    private val mashItRepo: MashItRepo,
+    private val traitTypeRepo: TraitTypeRepo
 ): ViewModel() {
     private val _listings =  mutableStateOf<List<ListingDetails>>(listOf())
     val listings: State<List<ListingDetails>> get() = _listings
@@ -43,13 +48,27 @@ class ShopViewModel @Inject constructor(
         }
     }
 
-
-
     private fun fetchShopListings() {
         viewModelScope.launch(Dispatchers.IO) {
             val listingsDetails =  mashItRepo.getShopList()
             _listings.value = listingsDetails.listings
             _hasMore.value = listingsDetails.hasMore
+        }
+    }
+
+    fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = traitTypeRepo.getTraitTypeEntity(url)?.type
+            withContext(Dispatchers.Main) {
+                onResult.invoke(result)
+            }
+        }
+    }
+
+    fun insertTraitType(url: String, imageType: ImageType) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val entity = TraitTypeEntity(url, imageType)
+            traitTypeRepo.insertTraitType(entity)
         }
     }
 }

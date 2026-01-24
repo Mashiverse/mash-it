@@ -18,6 +18,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.github.penfeizhou.animation.apng.APNGDrawable
 import com.github.penfeizhou.animation.loader.FileLoader
 import java.io.File
+import java.util.concurrent.ScheduledThreadPoolExecutor
 
 @Composable
 fun ApngImage(
@@ -26,6 +27,7 @@ fun ApngImage(
 ) {
     val ctx = LocalContext.current
     var apngDrawable by remember { mutableStateOf<APNGDrawable?>(null) }
+    val sharedExecutor = ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors())
 
     LaunchedEffect(url) {
         Glide.with(ctx)

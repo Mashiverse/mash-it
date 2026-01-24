@@ -18,6 +18,8 @@ import io.mashit.mashit.ui.theme.ContentAccentColor
 import io.mashit.mashit.ui.theme.ContentColor
 import io.mashit.mashit.ui.theme.ExtraSmallPaddingSize
 import io.mashit.mashit.ui.theme.InactiveMashupButtonBackground
+import io.mashit.mashit.ui.theme.PaddingSize
+import io.mashit.mashit.ui.theme.SmallIconSize
 import io.mashit.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.Job
 
@@ -27,12 +29,12 @@ fun MashupCategories(
     selectedCategory: TraitType
 ) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(ExtraSmallPaddingSize)
+        horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
     ) {
         items(TraitType.entries) { traitType ->
             Button(
                 modifier = Modifier
-                    .height(36.dp),
+                    .height(32.dp),
                 onClick = { onMashupCategorySelect.invoke(traitType) },
                 colors = ButtonDefaults.buttonColors().copy(
                     containerColor = if (selectedCategory == traitType) {
@@ -42,10 +44,10 @@ fun MashupCategories(
                     },
                     contentColor = if (selectedCategory == traitType) ContentAccentColor else ContentColor
                 ),
-                contentPadding = PaddingValues(horizontal = SmallPaddingSize)
+                contentPadding = PaddingValues(horizontal = PaddingSize)
             ) {
                 Text(
-                    text = traitType.name.lowercase().replace("_", " "),
+                    text = traitType.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() }},
                     fontSize = 14.sp,
                 )
             }

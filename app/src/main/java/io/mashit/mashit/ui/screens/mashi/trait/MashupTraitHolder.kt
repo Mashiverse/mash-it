@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashupTrait
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.ui.theme.ContentAccentColor
@@ -24,6 +25,8 @@ fun MashupTraitHolder(
     mashiHolderHeight: Dp,
     trait: MashupTrait,
     changeMashupTrait: (MashiTrait) -> Unit,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
 ) {
     var avatarName = trait.avatarName.substringBefore("#").trimIndent()
     avatarName = if (avatarName.length > 16) {
@@ -43,6 +46,8 @@ fun MashupTraitHolder(
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
             onClick = { changeMashupTrait.invoke(trait.mashiTrait) },
             data = trait.mashiTrait.url,
+            getImageType = getImageType,
+            setImageType = setImageType
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))

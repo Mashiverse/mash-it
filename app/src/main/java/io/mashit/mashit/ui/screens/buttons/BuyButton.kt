@@ -27,7 +27,7 @@ import io.mashit.mashit.ui.theme.SmallPaddingSize
 fun BuyButton(
     text: String,
     enabled: Boolean,
-    height: Dp = 28.dp,
+    height: Dp = 32.dp,
     width: Dp = 72.dp,
     textSize: TextUnit = 12.sp
 ) {

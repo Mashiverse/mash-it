@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.ui.theme.ContentAccentColor
 import io.mashit.mashit.ui.theme.ContentColor
@@ -25,6 +26,8 @@ fun TraitHolder(
     mashiTrait: MashiTrait,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
 ) {
     Column {
         Trait(
@@ -33,6 +36,8 @@ fun TraitHolder(
                 .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
             data = mashiTrait.url,
+            getImageType = getImageType,
+            setImageType = setImageType
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))

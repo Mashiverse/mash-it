@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashiDetails
 import io.mashit.mashit.ui.screens.mashi.trait.TraitHolder
 import io.mashit.mashit.ui.screens.mashi.trait.Trait
@@ -42,6 +43,8 @@ fun MashiBottomSheet(
     selectedMashi: MashiDetails,
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
     sheetState: SheetState
 ) {
     val config = LocalConfiguration.current
@@ -73,6 +76,8 @@ fun MashiBottomSheet(
                         .height(LargeMashiHolderHeight)
                         .width(LargeMashiHolderWidth),
                     data = selectedMashi.compositeUrl,
+                    getImageType = getImageType,
+                    setImageType = setImageType
                 )
 
                 MashiDetailsSection(
@@ -102,7 +107,9 @@ fun MashiBottomSheet(
                     TraitHolder(
                         mashiTrait = selectedMashi.mashiTraits[i],
                         width = mashiHolderWidth,
-                        height = mashiHolderHeight
+                        height = mashiHolderHeight,
+                        getImageType = getImageType,
+                        setImageType = setImageType
                     )
                 }
             }

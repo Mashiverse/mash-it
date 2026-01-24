@@ -2,7 +2,6 @@ package io.mashit.mashit.ui.screens.mashup.preview
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import io.mashit.mashit.R
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.ui.screens.mashi.trait.TraitHolder
 import io.mashit.mashit.ui.screens.mashup.MashupComposite
@@ -48,7 +46,10 @@ fun MashupPreview(
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
     scope: CoroutineScope,
-) {
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
+
+    ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
@@ -96,14 +97,16 @@ fun MashupPreview(
                         )
                     }
                 }
-
-                MashupComposite(
-                    mashupDetails = mashupDetails,
-                    modifier = Modifier
-                        .width(compositeHolderWidth)
-                        .height(compositeHolderHeight),
-                    holderWidth = compositeHolderWidth
-                )
+//
+//                MashupComposite(
+//                    mashupDetails = mashupDetails,
+//                    modifier = Modifier
+//                        .width(compositeHolderWidth)
+//                        .height(compositeHolderHeight),
+//                    holderWidth = compositeHolderWidth,
+//                    getImageType = getImageType,
+//                    setImageType = setImageType
+//                )
 
                 Spacer(modifier = Modifier.height(PaddingSize))
 
@@ -119,7 +122,9 @@ fun MashupPreview(
                             TraitHolder(
                                 mashiTrait = i,
                                 width = mashiHolderWidth,
-                                height = mashiHolderHeight
+                                height = mashiHolderHeight,
+                                getImageType = getImageType,
+                                setImageType = setImageType
                             )
                         }
                     }

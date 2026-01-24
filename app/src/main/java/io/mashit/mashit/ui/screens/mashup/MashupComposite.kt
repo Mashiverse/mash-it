@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.data.models.mashi.TraitType
 import io.mashit.mashit.ui.screens.mashi.trait.Trait
@@ -21,6 +22,8 @@ import io.mashit.mashit.ui.theme.MashiHolderShape
 fun MashupComposite(
     mashupDetails: MashupDetails,
     modifier: Modifier = Modifier,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
     holderWidth: Dp
 ) {
     Box(
@@ -45,7 +48,9 @@ fun MashupComposite(
                 background = Color.Transparent,
                 selectedColors = mashupDetails.colors,
                 data = trait.url,
-                contentScale = contentScale
+                contentScale = contentScale,
+                getImageType = getImageType,
+                setImageType = setImageType
             )
         }
     }

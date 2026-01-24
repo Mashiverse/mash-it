@@ -1,0 +1,12 @@
+package io.mashit.mashit.data.local.db.converters
+
+import androidx.room.TypeConverter
+import io.mashit.mashit.data.models.image.ImageType
+
+class TraitTypeConverters {
+    @TypeConverter
+    fun fromImageType(value: ImageType): String = value.name
+
+    @TypeConverter
+    fun toImageType(value: String): ImageType = ImageType.valueOf(value)
+}

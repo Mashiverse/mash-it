@@ -23,12 +23,11 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.gif.AnimatedImageDecoder
-import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import io.mashit.mashit.data.models.color.SelectedColors
-import io.mashit.mashit.ui.screens.mashi.trait.images.ApngImage
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.ui.theme.MashiBackground
 import io.mashit.mashit.ui.theme.MashiHolderShape
 import io.mashit.mashit.utils.decoders.SvgCustomDecoder
@@ -150,22 +149,19 @@ private fun SvgImage(
     }
 }
 
-enum class ImageType {
-    SVG,
-    APNG,
-    OTHER
-}
-
 @Composable
 fun Trait(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     data: String,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit,
     background: Color = MashiBackground,
     selectedColors: SelectedColors? = null,
     contentScale: ContentScale = ContentScale.Fit
 ) {
-    val imageType by rememberContentType(data)
+
+    val imageType by rememberContentType(data = data, getImageType = { getImageType.invoke(data) }, setImageType = setImageType)
 
     Box(
         modifier = modifier
@@ -178,26 +174,42 @@ fun Trait(
             )
     ) {
         if (imageType != null) {
-            if (imageType == ImageType.SVG) {
-                SvgImage(
-                    modifier = modifier,
-                    data = data,
-                    selectedColors = selectedColors,
-                    contentScale = contentScale
-                )
-            } else if (
-                imageType == ImageType.APNG
-            ) {
-                ApngImage(
-                    url = data,
-                    modifier = modifier
-                )
-            } else {
-                AnimatedImage(
-                    modifier = modifier,
-                    data = data,
-                    contentScale = contentScale
-                )
+            when (imageType) {
+                ImageType.SVG, ImageType.SVG_MASK -> {
+                    val newData = when (imageType) {
+                        ImageType.SVG -> data
+                        ImageType.SVG_MASK -> "https://katzemon.com/api/svg/${data.split("/").last()}"
+                        else -> ""
+                    }
+                    SvgImage(
+                        modifier = modifier,
+                        data = newData,
+                        selectedColors = selectedColors,
+                        contentScale = contentScale
+                    )
+                }
+
+                ImageType.APNG
+                    -> {
+                    val newData = "https://katzemon.com/api/apng/${data.split("/").last()}"
+                    AnimatedImage(
+                        modifier = modifier,
+                        data = newData,
+                        contentScale = contentScale
+                    )
+        //                ApngImage(
+        //                    url = data,
+        //                    modifier = modifier
+        //                )
+                }
+
+                else -> {
+                    AnimatedImage(
+                        modifier = modifier,
+                        data = data,
+                        contentScale = contentScale
+                    )
+                }
             }
         }
     }
@@ -205,14 +217,20 @@ fun Trait(
 
 
 @Composable
-private fun rememberContentType(url: String): State<ImageType?> {
-    val result = remember(url) { mutableStateOf<ImageType?>(null) }
+private fun rememberContentType(
+    data: String,
+    getImageType: (String) -> ImageType?,
+    setImageType: (ImageType, String) -> Unit
+): State<ImageType?> {
+    val result = remember(data) { mutableStateOf(getImageType.invoke(data)) }
 
-    LaunchedEffect(url) {
+    if (result.value != null) return result
+
+    LaunchedEffect(data) {
         val type = withContext(Dispatchers.IO) {
             svgCheckSemaphore.withPermit {
                 try {
-                    val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+                    val connection = (URL(data).openConnection() as HttpURLConnection).apply {
                         requestMethod = "GET" // GET to read first bytes
                         connectTimeout = 5000
                         readTimeout = 5000
@@ -226,8 +244,10 @@ private fun rememberContentType(url: String): State<ImageType?> {
                     ImageType.OTHER
                 }
             }
+
         }
         result.value = type
+        setImageType.invoke(type, data)
     }
 
     return result
@@ -235,26 +255,32 @@ private fun rememberContentType(url: String): State<ImageType?> {
 
 /** Detects SVG, APNG, or OTHER from the first 1000 bytes */
 private fun detectImageType(input: InputStream): ImageType {
-    val buffer = ByteArray(1000)
-    val bytesRead = input.read(buffer, 0, buffer.size)
+    // We use a buffered approach to peek at the start without losing data
+    // or we read the bytes into a reusable array.
+    val buffer = ByteArray(1024)
+    input.mark(1024) // Mark the start if the stream supports it
+    val bytesRead = input.read(buffer)
     if (bytesRead <= 0) return ImageType.OTHER
 
-    val header = buffer.copyOfRange(0, bytesRead).toString(Charsets.US_ASCII).lowercase()
-
-    // Quick SVG detection: check for <svg or <?xml at the start
-    if (header.contains("<svg") || header.contains("<?xml")) {
-        return ImageType.SVG
+    // 1. PNG & APNG Detection (Check bytes first, it's faster)
+    val pngSignature = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
+    if (bytesRead >= 8 && buffer.take(8).toByteArray().contentEquals(pngSignature)) {
+        // Look for "acTL" chunk in the first KB to identify Animated PNG
+        val headerString = buffer.toString(Charsets.US_ASCII)
+        return if (headerString.contains("acTL")) ImageType.APNG else ImageType.OTHER
     }
 
-    // PNG signature: 89 50 4E 47 0D 0A 1A 0A
-    val pngSignature = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
-    if (bytesRead >= 8 && buffer.copyOfRange(0, 8).contentEquals(pngSignature)) {
-        // APNG detection: look for acTL chunk
-        val acTL = "acTL".toByteArray(Charsets.US_ASCII)
-        for (i in 8 until bytesRead - 3) {
-            if (buffer.sliceArray(i..i + 3).contentEquals(acTL)) return ImageType.APNG
+    // 2. SVG Detection (Read all if initial check suggests XML/SVG)
+    val initialHeader = buffer.toString(Charsets.UTF_8).lowercase()
+    if (initialHeader.contains("<svg") || initialHeader.contains("<?xml")) {
+        // To be 100% sure it's a valid SVG, you might want to read the rest
+        // Use .use { ... } to ensure the stream closes if this is the end of the line
+        val fullContent = initialHeader + input.bufferedReader().use { it.readText() }
+        if (fullContent.contains("mask", ignoreCase = true)) {
+            return ImageType.SVG_MASK
         }
-        return ImageType.OTHER // PNG but not animated (could be treated differently if needed)
+
+        return ImageType.SVG
     }
 
     return ImageType.OTHER

@@ -7,15 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.mashit.mashit.data.local.db.entities.TraitTypeEntity
 import io.mashit.mashit.data.models.color.ColorType
 import io.mashit.mashit.data.models.color.SelectedColors
+import io.mashit.mashit.data.models.image.ImageType
 import io.mashit.mashit.data.models.mashi.MashiTrait
 import io.mashit.mashit.data.models.mashi.MashupDetails
 import io.mashit.mashit.data.repos.CollectionRepo
 import io.mashit.mashit.data.repos.DataStoreRepo
 import io.mashit.mashit.data.repos.MashiRepo
+import io.mashit.mashit.data.repos.TraitTypeRepo
 import io.mashit.mashit.utils.io.saveImageToGallery
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,7 +29,8 @@ import javax.inject.Inject
 class MashupViewModel @Inject constructor(
     collectionRepo: CollectionRepo,
     dataStoreRepo: DataStoreRepo,
-    private val mashiRepo: MashiRepo
+    private val mashiRepo: MashiRepo,
+    private val traitTypeRepo: TraitTypeRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
     val collectionFlow = collectionRepo.getCollectionFlow()
@@ -58,7 +63,12 @@ class MashupViewModel @Inject constructor(
         if (assetToUpdate != null) {
             assets.remove(assetToUpdate)
         }
-        assets.add(mashiTrait)
+
+        if (assetToUpdate?.url != mashiTrait.url) {
+            assets.add(mashiTrait)
+        } else {
+            assets.add(MashiTrait(mashiTrait.traitType, ""))
+        }
 
         _mashupDetails.value = mashupDetails.value.copy(assets = assets)
     }
@@ -95,6 +105,22 @@ class MashupViewModel @Inject constructor(
             withContext(Dispatchers.Main) {
                 Toast.makeText(ctx, "Saved", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = traitTypeRepo.getTraitTypeEntity(url)?.type
+            withContext(Dispatchers.Main) {
+                onResult.invoke(result)
+            }
+        }
+    }
+
+    fun insertTraitType(url: String, imageType: ImageType) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val entity = TraitTypeEntity(url, imageType)
+            traitTypeRepo.insertTraitType(entity)
         }
     }
 }

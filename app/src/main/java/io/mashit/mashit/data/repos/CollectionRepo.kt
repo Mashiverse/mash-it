@@ -11,7 +11,7 @@ import javax.inject.Inject
 class CollectionRepo @Inject constructor(
     val alchemyRepo: AlchemyRepo,
     val mashiDetailsDao: MashiDetailsDao,
-    val mashItRepo: MashItRepo
+    val mashItRepo: MashItRepo,
 ) {
     fun getCollectionFlow(): Flow<List<MashiDetailsEntity>> = mashiDetailsDao.getMashiDetails()
 
