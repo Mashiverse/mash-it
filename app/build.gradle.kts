@@ -11,11 +11,11 @@ plugins {
 }
 
 configure<ApplicationExtension> {
-    namespace = "io.mashit.mashit"
+    namespace = "com.mashiverse.mashit"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "io.mashit.mashit"
+        applicationId = "com.mashiverse.mashit"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
@@ -103,11 +103,6 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.gif)
     implementation(libs.coil.svg)
-
-    // Apng
-    implementation(libs.glide.plugin)
-    implementation(libs.glide)
-    ksp(libs.compiler)
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)
