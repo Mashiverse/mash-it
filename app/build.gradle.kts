@@ -14,6 +14,19 @@ configure<ApplicationExtension> {
     namespace = "com.mashiverse.mashit"
     compileSdk = 36
 
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/INDEX.LIST",
+                "META-INF/*.kotlin_module",
+                "META-INF/FastDoubleParser-LICENSE",
+                "META-INF/FastDoubleParser-NOTICE",
+                "META-INF/io.netty.versions.properties"
+            )
+        }
+    }
+
     defaultConfig {
         applicationId = "com.mashiverse.mashit"
         minSdk = 28
@@ -86,6 +99,7 @@ dependencies {
 
     // Coinbase
     implementation(libs.coinbase.wallet.sdk)
+    implementation(libs.core)
 
     // Networking
     implementation(libs.androidx.datastore.preferences)
@@ -103,6 +117,10 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.gif)
     implementation(libs.coil.svg)
+
+    // Paging
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)

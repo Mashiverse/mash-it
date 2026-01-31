@@ -15,7 +15,6 @@ import com.mashiverse.mashit.data.models.mashi.MashiTrait
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DataStoreRepo
-import com.mashiverse.mashit.data.repos.MashiRepo
 import com.mashiverse.mashit.data.repos.TraitTypeRepo
 import com.mashiverse.mashit.utils.io.saveImageToGallery
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,6 @@ import javax.inject.Inject
 class MashupViewModel @Inject constructor(
     collectionRepo: CollectionRepo,
     dataStoreRepo: DataStoreRepo,
-    private val mashiRepo: MashiRepo,
     private val traitTypeRepo: TraitTypeRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
@@ -78,33 +76,6 @@ class MashupViewModel @Inject constructor(
 
     fun changeColors(selectedColors: SelectedColors) {
         _mashupDetails.value = mashupDetails.value.copy(colors = selectedColors)
-    }
-
-    fun saveMashup(
-        ctx: Context,
-        wallet: String = "0xae42edc0fc636d1214a6c5d829c37d778398f17b",
-        isStatic: Boolean = true
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val mashupResult = mashiRepo.getMashup(wallet, isStatic)
-            val timestamp = System.currentTimeMillis()
-            val fileName = if (mashupResult.contentType == "image/png") {
-                "mashup_$timestamp.png"
-            } else {
-                "mashup_$timestamp.gif"
-            }
-
-            saveImageToGallery(
-                context = ctx,
-                imageBytes = mashupResult.bytes,
-                fileName = fileName,
-                mimeType = mashupResult.contentType
-            )
-
-            withContext(Dispatchers.Main) {
-                Toast.makeText(ctx, "Saved", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {

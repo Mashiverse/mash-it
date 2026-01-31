@@ -6,7 +6,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.data.remote.apis.MashItApi
-import com.mashiverse.mashit.data.remote.apis.MashiApi
 import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
 import com.mashiverse.mashit.utils.MASHI_BASE_URL
 import com.mashiverse.mashit.utils.MASH_IT_BASE_URL
@@ -33,26 +32,6 @@ object RetrofitModule {
     @Provides
     fun provideAlchemyApi(@Named("AlchemyClient") retrofit: Retrofit): AlchemyApi =
         retrofit.create(AlchemyApi::class.java)
-    
-    @Provides
-    @Singleton
-    @Named("MashiClient")
-    fun provideMashiClient(): Retrofit {
-        val client = OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(3, TimeUnit.MINUTES)
-            .build()
-
-        return Retrofit
-            .Builder()
-            .baseUrl(MASHI_BASE_URL)
-            .client(client)
-            .build()
-    }
-
-    @Provides
-    fun provideMashiApi(@Named("MashiClient") retrofit: Retrofit): MashiApi =
-        retrofit.create(MashiApi::class.java)
 
     @Provides
     @Singleton

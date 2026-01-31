@@ -201,8 +201,6 @@ fun Mashup() {
 
                     // Control Buttons
                     Column(Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End) {
-                        Button(onClick = { viewModel.saveMashup(ctx) }) { Text("Save") }
-                        Button(onClick = { viewModel.saveMashup(ctx, isStatic = false) }) { Text("Save anim") }
                         Button(
                             onClick = {
                                 if (mashies.isNotEmpty()) {

@@ -11,7 +11,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MashItApi {
-    @GET("api/v1/listings")
+    @GET("api/v1/mashers/shop")
     suspend fun getShopList(
         @Query("apiKey") apiKey: String = BuildConfig.MASH_IT_API_KEY,
         @Query("limit") limit: Int,
