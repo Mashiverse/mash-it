@@ -13,6 +13,7 @@ import com.mashiverse.mashit.ui.screens.Main
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.DarkSystemBarStyle
 import com.mashiverse.mashit.ui.theme.MashItTheme
+import com.mashiverse.mashit.utils.helpers.AlchemyHelper
 import timber.log.Timber
 
 @AndroidEntryPoint

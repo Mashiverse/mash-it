@@ -35,9 +35,12 @@ import com.mashiverse.mashit.nav.routes.MainRoutes
 import com.mashiverse.mashit.ui.screens.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
+import com.mashiverse.mashit.utils.helpers.AlchemyHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-@SuppressLint("RestrictedApi")
+@SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main() {
@@ -54,6 +57,9 @@ fun Main() {
         }
     }
 
+    scope.launch(Dispatchers.IO) {
+        Timber.tag("GG").d(AlchemyHelper.getTotalSoldListing402().toString())
+    }
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(

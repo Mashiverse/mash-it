@@ -164,7 +164,6 @@ class ShopViewModel @Inject constructor(
                     result.onSuccess {
                         Timber.d("✅ Approval Successful. Waiting for Polygon sync...")
                         CoroutineScope(Dispatchers.Main).launch {
-                            delay(7000)
                             executeMint(client, BigInteger("402"))
                             cont.resume(Unit)
                         }
@@ -196,7 +195,7 @@ class ShopViewModel @Inject constructor(
             weiValue = "0",
             data = mintData,
             chainId = "137",
-            gasLimit = "666666",
+            gasLimit = null,
             nonce = null,
             gasPriceInWei = null,
             maxFeePerGas = null,
