@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.ui.screens.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
@@ -39,7 +39,7 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiBottomSheet(
-    selectedNft: NftDetails,
+    selectedNft: Nft,
     closeBottomShit: () -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,

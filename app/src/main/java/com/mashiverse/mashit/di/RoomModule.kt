@@ -27,7 +27,7 @@ object RoomModule {
     @Provides
     fun provideNftDetailsDao(
         db: RoomDb
-    ) = db.getNftDetailsDao()
+    ) = db.getNftDao()
 
     @Provides
     fun provideImageTypeDao(

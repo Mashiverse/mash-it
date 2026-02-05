@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.R
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiDetailsSection(
-    nftDetails: NftDetails,
+    nft: Nft,
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
@@ -54,7 +54,7 @@ fun MashiDetailsSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = nftDetails.name,
+                    text = nft.name,
                     color = ContentAccentColor,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -97,11 +97,11 @@ fun MashiDetailsSection(
                 }
             }
 
-            Text(text = "by ${nftDetails.author}", color = ContentColor, fontSize = 12.sp)
+            Text(text = "by ${nft.author}", color = ContentColor, fontSize = 12.sp)
 
             Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-            nftDetails.description?.let {
+            nft.description?.let {
                 Text(
                     maxLines = 6,
                     overflow = TextOverflow.Ellipsis,
@@ -113,8 +113,8 @@ fun MashiDetailsSection(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (nftDetails.productInfo != null) {
-                ProductInfoSection(nftDetails, getSoldQty)
+            if (nft.productInfo != null) {
+                ProductInfoSection(nft, getSoldQty)
             }
         }
     }

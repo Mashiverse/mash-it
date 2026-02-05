@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
@@ -58,12 +58,12 @@ fun Collection() {
 
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
-    val selectedMashi: NftDetails? by remember {
+    val selectedMashi: Nft? by remember {
         derivedStateOf {
             viewModel.selectedNft.value
         }
     }
-    val selectMashi = { mashi: NftDetails ->
+    val selectMashi = { mashi: Nft ->
         viewModel.selectMashi(mashi)
         isBottomSheet = true
     }
@@ -139,7 +139,7 @@ fun Collection() {
                     sheetState = sheetState,
                 ) {
                     MashiDetailsSection(
-                        nftDetails = selectedMashi!!,
+                        nft = selectedMashi!!,
                         scope = scope,
                         closeBottomShit = closeBottomShit,
                         sheetState = sheetState,

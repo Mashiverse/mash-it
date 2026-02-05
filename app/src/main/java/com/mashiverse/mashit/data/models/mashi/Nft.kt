@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.models.mashi
 
-data class NftDetails(
+data class Nft(
     val name: String,
     val author: String,
     val description: String?,
@@ -27,6 +27,6 @@ enum class PriceCurrency {
 }
 
 data class ShopListings(
-    val listings: List<NftDetails>,
+    val listings: List<Nft>,
     val hasMore: Boolean
 )

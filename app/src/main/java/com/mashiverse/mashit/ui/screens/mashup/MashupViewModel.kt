@@ -43,8 +43,10 @@ class MashupViewModel @Inject constructor(
                 .distinctUntilChanged()
                 .collect { prefs ->
                     if (prefs.wallet != null) {
-                        collectionRepo.updateData(prefs.wallet)
+                        collectionRepo.updateOwnedData(prefs.wallet)
                         _mashupDetails.value = collectionRepo.getMashup(prefs.wallet)
+                    } else {
+                        collectionRepo.clearOwned()
                     }
                 }
         }

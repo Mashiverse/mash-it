@@ -7,7 +7,7 @@ import com.mashiverse.mashit.data.models.mashi.ProductInfo
 import com.mashiverse.mashit.data.models.mashi.Trait
 
 @Entity(tableName = "nft_details")
-data class NftDetailsEntity(
+data class NftEntity(
     @PrimaryKey
     val name: String,
     val author: String,
@@ -16,4 +16,5 @@ data class NftDetailsEntity(
     val traits: List<Trait>? = null,
     @Embedded(prefix = "product_")
     val productInfo: ProductInfo? = null,
+    val isOwned: Boolean = false
 )

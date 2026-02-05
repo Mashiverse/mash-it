@@ -2,7 +2,7 @@ package com.mashiverse.mashit.data.repos
 
 import com.mashiverse.mashit.data.models.color.SelectedColors
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.ShopListings
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
@@ -29,7 +29,7 @@ class MashitRepo @Inject constructor(private val mashitApi: MashitApi) {
 
     suspend fun getShopItem(
         id: String
-    ): NftDetails {
+    ): Nft {
         val listingDto = mashitApi.getShopItem(id)
         return listingDto.toNftDetails()
     }

@@ -11,7 +11,7 @@ import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
@@ -38,16 +38,16 @@ class ShopViewModel @Inject constructor(
     private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo
 ) : ViewModel() {
-    private val _nfts = mutableStateOf<List<NftDetails>>(listOf())
-    val listings: State<List<NftDetails>> get() = _nfts
+    private val _nfts = mutableStateOf<List<Nft>>(listOf())
+    val listings: State<List<Nft>> get() = _nfts
 
     private val _hasMore = mutableStateOf(false)
     val hasMore: State<Boolean> get() = _hasMore
 
     private val _selectedId = mutableStateOf<String?>(null)
 
-    private val _selectedNft = mutableStateOf<NftDetails?>(null)
-    val selectedNft: State<NftDetails?> get() = _selectedNft
+    private val _selectedNft = mutableStateOf<Nft?>(null)
+    val selectedNft: State<Nft?> get() = _selectedNft
 
     init {
         fetchShopListings()

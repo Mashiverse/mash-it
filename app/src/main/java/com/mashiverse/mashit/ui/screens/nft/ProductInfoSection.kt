@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.ui.screens.buttons.BuyButton
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -28,12 +28,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProductInfoSection(
-    nftDetails: NftDetails,
+    nft: Nft,
     getSoldQty: (suspend (Int) -> Int)?,
 ) {
     val scope = rememberCoroutineScope()
 
-    val productInfo = nftDetails.productInfo!!
+    val productInfo = nft.productInfo!!
 
     var soldQty by remember {
         mutableIntStateOf(0)
@@ -41,7 +41,7 @@ fun ProductInfoSection(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty?.invoke(nftDetails.productInfo.listingId?.toInt() ?: 0) ?: 0
+            soldQty = getSoldQty?.invoke(nft.productInfo.listingId?.toInt() ?: 0) ?: 0
         }
     }
 

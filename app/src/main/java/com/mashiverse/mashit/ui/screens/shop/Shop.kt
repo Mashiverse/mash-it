@@ -135,7 +135,7 @@ fun Shop() {
                 },
             ) {
                 MashiDetailsSection(
-                    nftDetails = selectedListing!!,
+                    nft = selectedListing!!,
                     scope = scope,
                     closeBottomShit = closeBottomShit,
                     sheetState = sheetState,

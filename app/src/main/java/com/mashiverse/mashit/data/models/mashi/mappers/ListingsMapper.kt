@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.models.mashi.mappers
 
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.PriceCurrency
 import com.mashiverse.mashit.data.models.mashi.ProductInfo
 import com.mashiverse.mashit.data.models.mashi.Trait
@@ -20,7 +20,7 @@ fun ListingsDto.toNftsDetails() = this.listings.map { listing ->
         listingId = listing.listingId,
     )
 
-    NftDetails(
+    Nft(
         name = listing.title,
         author = listing.artistName,
         description = listing.description,
@@ -29,7 +29,7 @@ fun ListingsDto.toNftsDetails() = this.listings.map { listing ->
     )
 }
 
-fun ListingDto.toNftDetails(): NftDetails {
+fun ListingDto.toNftDetails(): Nft {
     val listing = this.listing
 
     val traits = listing.metadata.assets.filter { asset ->
@@ -52,7 +52,7 @@ fun ListingDto.toNftDetails(): NftDetails {
         id = listing.id
     )
 
-    return NftDetails(
+    return Nft(
         name = listing.title,
         author = listing.artistName,
         description = listing.description ?: "",

@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.NftDetails
+import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.ui.screens.buttons.BuyButton
 import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -32,14 +32,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ShopItem(
-    nftDetails: NftDetails,
+    nft: Nft,
     selectId: (String) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: suspend (Int) -> Int
 ) {
     val scope = rememberCoroutineScope()
-    val productInfo = nftDetails.productInfo
+    val productInfo = nft.productInfo
 
     var soldQty by remember {
         mutableIntStateOf(0)
@@ -65,18 +65,18 @@ fun ShopItem(
                 .height(LargeMashiHolderHeight)
                 .border(width = 0.3.dp, shape = MashiHolderShape, color = ContentColor),
             onClick = { selectId.invoke(productInfo?.id ?: "") },
-            data = nftDetails.compositeUrl,
+            data = nft.compositeUrl,
             getImageType = getImageType,
             setImageType = setImageType
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = nftDetails.name, fontSize = 14.sp, color = ContentAccentColor)
+        Text(text = nft.name, fontSize = 14.sp, color = ContentAccentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = "by ${nftDetails.author}", fontSize = 12.sp, color = ContentColor)
+        Text(text = "by ${nft.author}", fontSize = 12.sp, color = ContentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
