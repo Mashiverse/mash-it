@@ -23,7 +23,7 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 fun ShopSection(
     sectionName: String,
     selectId: (String) -> Unit,
-    sectionItems: List<NftDetails.ListingDetails>,
+    sectionItems: List<NftDetails>,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: suspend (Int) -> Int
@@ -58,7 +58,7 @@ fun ShopSection(
         ) {
             items(sectionItems.size) { i ->
                 ShopItem(
-                    listingDetails = sectionItems[i],
+                    nftDetails = sectionItems[i],
                     selectId = selectId,
                     getImageType = getImageType,
                     setImageType = setImageType,

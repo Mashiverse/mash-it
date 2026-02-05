@@ -33,7 +33,7 @@ fun ProductInfoSection(
 ) {
     val scope = rememberCoroutineScope()
 
-    val productInfo = nftDetails.productInfo
+    val productInfo = nftDetails.productInfo!!
 
     var soldQty by remember {
         mutableIntStateOf(0)
@@ -41,7 +41,7 @@ fun ProductInfoSection(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty?.invoke(nftDetails.productInfo?.listingId?.toInt() ?: 0) ?: 0
+            soldQty = getSoldQty?.invoke(nftDetails.productInfo.listingId?.toInt() ?: 0) ?: 0
         }
     }
 
@@ -77,8 +77,8 @@ fun ProductInfoSection(
 
         BuyButton(
             text = when {
-                soldQty < productInfo?.quantity -> "Buy"
-                isPaused -> "Delisted"
+                soldQty < productInfo.quantity -> "Buy"
+                productInfo.isPaused -> "Delisted"
                 else -> "Sold"
             },
             height = 32.dp,

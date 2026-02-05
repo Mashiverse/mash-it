@@ -32,15 +32,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ShopItem(
-    listingDetails: NftDetails.ListingDetails,
+    nftDetails: NftDetails,
     selectId: (String) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: suspend (Int) -> Int
 ) {
     val scope = rememberCoroutineScope()
-    val productInfo = listingDetails.productInfo
-    val listingId = listingDetails.listingId
+    val productInfo = nftDetails.productInfo
 
     var soldQty by remember {
         mutableIntStateOf(0)
@@ -48,13 +47,13 @@ fun ShopItem(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty(listingId.toInt())
+            soldQty = getSoldQty(productInfo?.listingId?.toInt() ?: -1)
         }
     }
 
 
     val isSoldOut by remember(soldQty) {
-        mutableStateOf(soldQty >= productInfo.quantity)
+        mutableStateOf(soldQty >= (productInfo?.quantity ?: -1))
     }
 
     Column(
@@ -65,24 +64,24 @@ fun ShopItem(
                 .width(LargeMashiHolderWidth)
                 .height(LargeMashiHolderHeight)
                 .border(width = 0.3.dp, shape = MashiHolderShape, color = ContentColor),
-            onClick = { selectId.invoke(listingDetails.id) },
-            data = listingDetails.compositeUrl,
+            onClick = { selectId.invoke(productInfo?.id ?: "") },
+            data = nftDetails.compositeUrl,
             getImageType = getImageType,
             setImageType = setImageType
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = listingDetails.name, fontSize = 14.sp, color = ContentAccentColor)
+        Text(text = nftDetails.name, fontSize = 14.sp, color = ContentAccentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = "by ${listingDetails.author}", fontSize = 12.sp, color = ContentColor)
+        Text(text = "by ${nftDetails.author}", fontSize = 12.sp, color = ContentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         Text(
-            text = "${soldQty} of ${productInfo.quantity} sold",
+            text = "$soldQty of ${productInfo?.quantity ?: -1} sold",
             fontSize = 12.sp,
             color = ContentColor
         )
@@ -90,7 +89,7 @@ fun ShopItem(
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         BuyButton(
-            text = if (isSoldOut) "Sold out" else "${productInfo.price} ${productInfo.priceCurrency.name}",
+            text = if (isSoldOut) "Sold out" else "${productInfo?.price} ${productInfo?.priceCurrency?.name}",
             enabled = !isSoldOut,
         )
     }

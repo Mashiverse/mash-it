@@ -40,7 +40,7 @@ fun Shop() {
         viewModel.listings
     }
     val selectedListing by remember {
-        viewModel.selectedListing
+        viewModel.selectedNft
     }
     val selectId = { id: String ->
         viewModel.selectId(id)

@@ -12,8 +12,8 @@ import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.NftDetails
-import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
+import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
 import com.mashiverse.mashit.utils.helpers.SoldHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,16 +38,16 @@ class ShopViewModel @Inject constructor(
     private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo
 ) : ViewModel() {
-    private val _listings = mutableStateOf<List<NftDetails.ListingDetails>>(listOf())
-    val listings: State<List<NftDetails.ListingDetails>> get() = _listings
+    private val _nfts = mutableStateOf<List<NftDetails>>(listOf())
+    val listings: State<List<NftDetails>> get() = _nfts
 
     private val _hasMore = mutableStateOf(false)
     val hasMore: State<Boolean> get() = _hasMore
 
     private val _selectedId = mutableStateOf<String?>(null)
 
-    private val _selectedListing = mutableStateOf<NftDetails.ListingDetails?>(null)
-    val selectedListing: State<NftDetails.ListingDetails?> get() = _selectedListing
+    private val _selectedNft = mutableStateOf<NftDetails?>(null)
+    val selectedNft: State<NftDetails?> get() = _selectedNft
 
     init {
         fetchShopListings()
@@ -56,16 +56,16 @@ class ShopViewModel @Inject constructor(
     fun selectId(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _selectedId.value = id
-            _selectedListing.value = null
+            _selectedNft.value = null
 
-            _selectedListing.value = mashItRepo.getShopItem(_selectedId.value!!)
+            _selectedNft.value = mashItRepo.getShopItem(_selectedId.value!!)
         }
     }
 
     private fun fetchShopListings() {
         viewModelScope.launch(Dispatchers.IO) {
             val listingsDetails = mashItRepo.getShopList()
-            _listings.value = listingsDetails.listings
+            _nfts.value = listingsDetails.listings
             _hasMore.value = listingsDetails.hasMore
         }
     }
