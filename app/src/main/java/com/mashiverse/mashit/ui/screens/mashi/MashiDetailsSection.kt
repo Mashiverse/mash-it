@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.R
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -30,14 +30,16 @@ import com.mashiverse.mashit.ui.theme.SmallIconSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiDetailsSection(
-    mashiDetails: MashiDetails,
+    nftDetails: NftDetails,
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
-    sheetState: SheetState
+    sheetState: SheetState,
+    getSoldQty: (suspend (Int) -> Int)? = null
 ) {
     Row(
         modifier = Modifier
@@ -53,7 +55,7 @@ fun MashiDetailsSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = mashiDetails.name,
+                    text = nftDetails.name,
                     color = ContentAccentColor,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -96,22 +98,24 @@ fun MashiDetailsSection(
                 }
             }
 
-            Text(text = "by ${mashiDetails.author}", color = ContentColor, fontSize = 12.sp)
+            Text(text = "by ${nftDetails.author}", color = ContentColor, fontSize = 12.sp)
 
             Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-            Text(
-                maxLines = 6,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = 12.sp,
-                color = ContentAccentColor,
-                text = mashiDetails.description,
-            )
+            nftDetails.description?.let {
+                Text(
+                    maxLines = 6,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 12.sp,
+                    color = ContentAccentColor,
+                    text = it,
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (mashiDetails.productInfo != null) {
-                MashiProductInfoSection(mashiDetails.productInfo)
+            if (nftDetails is NftDetails.ListingDetails) {
+                MashiProductInfoSection(nftDetails, getSoldQty)
             }
         }
     }

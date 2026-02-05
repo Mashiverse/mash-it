@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,12 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.mashi.MashiBottomSheet
+import com.mashiverse.mashit.ui.screens.mashi.MashiDetailsSection
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import kotlinx.coroutines.launch
-import java.math.BigInteger
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,8 +39,8 @@ fun Shop() {
     val listings by remember {
         viewModel.listings
     }
-    val selectedMashi by remember {
-        viewModel.selectedMashi
+    val selectedListing by remember {
+        viewModel.selectedListing
     }
     val selectId = { id: String ->
         viewModel.selectId(id)
@@ -67,7 +65,9 @@ fun Shop() {
         }
     }
 
-
+    val getSoldQty: suspend (Int) -> Int = { listingId ->
+        viewModel.getTotalSold(listingId)
+    }
 
     Column(
         modifier = Modifier
@@ -107,19 +107,19 @@ fun Shop() {
                             url = data,
                             imageType = imageType
                         )
-                    }
+                    },
+                    getSoldQty = getSoldQty
                 )
             }
         }
     }
 
     if (isBottomSheet) {
-        selectedMashi?.let {
+        selectedListing?.let {
             MashiBottomSheet(
-                selectedMashi = selectedMashi!!,
+                selectedNft = selectedListing!!,
                 sheetState = sheetState,
                 closeBottomShit = closeBottomShit,
-                scope = scope,
                 getImageType = { url: String ->
                     var imageType: ImageType? = null
                     viewModel.getTraitTypeEntity(url) { type: ImageType? ->
@@ -132,8 +132,16 @@ fun Shop() {
                         url = data,
                         imageType = imageType
                     )
-                }
-            )
+                },
+            ) {
+                MashiDetailsSection(
+                    nftDetails = selectedListing!!,
+                    scope = scope,
+                    closeBottomShit = closeBottomShit,
+                    sheetState = sheetState,
+                    getSoldQty = getSoldQty
+                )
+            }
         }
     }
 }

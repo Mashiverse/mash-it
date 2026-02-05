@@ -1,8 +1,8 @@
 package com.mashiverse.mashit.data.repos
 
 import com.mashiverse.mashit.BuildConfig
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
 import com.mashiverse.mashit.data.models.mashi.MashiTrait
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.utils.MASHI_CONTRACT
@@ -11,8 +11,8 @@ import javax.inject.Inject
 class AlchemyRepo @Inject constructor(
     private val alchemyApi: AlchemyApi
 ) {
-    suspend fun getCollection(wallet: String): List<MashiDetails> {
-        val nfts: MutableList<MashiDetails> = mutableListOf()
+    suspend fun getCollection(wallet: String): List<NftDetails.MashiDetails> {
+        val nfts: MutableList<NftDetails.MashiDetails> = mutableListOf()
         var key: String? = null
 
         try {
@@ -52,7 +52,7 @@ class AlchemyRepo @Inject constructor(
                     }
 
                     nfts.add(
-                        MashiDetails(
+                        NftDetails.MashiDetails(
                             name = mashiName,
                             description = description,
                             compositeUrl = compositeUrl,

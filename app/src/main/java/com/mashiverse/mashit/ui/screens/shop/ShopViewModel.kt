@@ -6,49 +6,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.coinbase.android.nativesdk.message.request.Action
 import com.coinbase.android.nativesdk.message.request.RequestContent
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
-import com.coinbase.android.nativesdk.message.response.ResponseResult
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.local.db.entities.TraitTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.ListingDetails
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.repos.MashItRepo
 import com.mashiverse.mashit.data.repos.TraitTypeRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
+import com.mashiverse.mashit.utils.helpers.SoldHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import org.bouncycastle.jcajce.provider.asymmetric.dsa.DSASigner
 import org.web3j.abi.FunctionEncoder
-import org.web3j.abi.FunctionReturnDecoder
-import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.Address
-import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.Function
-import org.web3j.abi.datatypes.Utf8String
-import org.web3j.abi.datatypes.generated.Bytes32
 import org.web3j.abi.datatypes.generated.Uint256
-import org.web3j.abi.datatypes.generated.Uint32
-import org.web3j.abi.datatypes.generated.Uint64
-import org.web3j.crypto.Credentials
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.request.Transaction
-import org.web3j.protocol.http.HttpService
-import org.web3j.tx.gas.DefaultGasProvider
 import timber.log.Timber
 import java.math.BigInteger
-import kotlin.collections.emptyList
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 
 @HiltViewModel
@@ -56,17 +37,17 @@ class ShopViewModel @Inject constructor(
     private val mashItRepo: MashItRepo,
     private val traitTypeRepo: TraitTypeRepo,
     private val web3Repo: Web3Repo
-): ViewModel() {
-    private val _listings =  mutableStateOf<List<ListingDetails>>(listOf())
-    val listings: State<List<ListingDetails>> get() = _listings
+) : ViewModel() {
+    private val _listings = mutableStateOf<List<NftDetails.ListingDetails>>(listOf())
+    val listings: State<List<NftDetails.ListingDetails>> get() = _listings
 
     private val _hasMore = mutableStateOf(false)
     val hasMore: State<Boolean> get() = _hasMore
 
     private val _selectedId = mutableStateOf<String?>(null)
 
-    private val _selectedMashi = mutableStateOf<MashiDetails?>(null)
-    val selectedMashi: State<MashiDetails?> get() = _selectedMashi
+    private val _selectedListing = mutableStateOf<NftDetails.ListingDetails?>(null)
+    val selectedListing: State<NftDetails.ListingDetails?> get() = _selectedListing
 
     init {
         fetchShopListings()
@@ -75,15 +56,15 @@ class ShopViewModel @Inject constructor(
     fun selectId(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _selectedId.value = id
-            _selectedMashi.value = null
+            _selectedListing.value = null
 
-            _selectedMashi.value = mashItRepo.getShopItem(_selectedId.value!!)
+            _selectedListing.value = mashItRepo.getShopItem(_selectedId.value!!)
         }
     }
 
     private fun fetchShopListings() {
         viewModelScope.launch(Dispatchers.IO) {
-            val listingsDetails =  mashItRepo.getShopList()
+            val listingsDetails = mashItRepo.getShopList()
             _listings.value = listingsDetails.listings
             _hasMore.value = listingsDetails.hasMore
         }
@@ -133,6 +114,12 @@ class ShopViewModel @Inject constructor(
             emptyList()
         )
         return FunctionEncoder.encode(fn)
+    }
+
+    suspend fun getTotalSold(listing: Int): Int {
+        return withContext(Dispatchers.IO) {
+            SoldHelper.getTotalSold(listing.toLong()).toInt()
+        }
     }
 
     suspend fun preAuthorizeUsdc(

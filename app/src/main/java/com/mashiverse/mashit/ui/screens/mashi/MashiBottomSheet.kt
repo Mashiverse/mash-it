@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.ui.screens.mashi.trait.TraitHolder
 import com.mashiverse.mashit.ui.screens.mashi.trait.Trait
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
@@ -34,18 +34,17 @@ import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
-import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiBottomSheet(
-    selectedMashi: MashiDetails,
-    scope: CoroutineScope,
+    selectedNft: NftDetails,
     closeBottomShit: () -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
-    sheetState: SheetState
+    sheetState: SheetState,
+    detailsContent: @Composable () -> Unit
 ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
@@ -75,17 +74,12 @@ fun MashiBottomSheet(
                     modifier = Modifier
                         .height(LargeMashiHolderHeight)
                         .width(LargeMashiHolderWidth),
-                    data = selectedMashi.compositeUrl,
+                    data = selectedNft.compositeUrl,
                     getImageType = getImageType,
                     setImageType = setImageType
                 )
 
-                MashiDetailsSection(
-                    mashiDetails = selectedMashi,
-                    scope = scope,
-                    closeBottomShit = closeBottomShit,
-                    sheetState = sheetState
-                )
+                detailsContent()
             }
 
             Spacer(modifier = Modifier.height(PaddingSize))
@@ -97,20 +91,22 @@ fun MashiBottomSheet(
                 fontWeight = FontWeight.Bold
             )
 
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                columns = GridCells.Fixed(3)
-            ) {
-                items(selectedMashi.mashiTraits.size) { i ->
-                    TraitHolder(
-                        mashiTrait = selectedMashi.mashiTraits[i],
-                        width = mashiHolderWidth,
-                        height = mashiHolderHeight,
-                        getImageType = getImageType,
-                        setImageType = setImageType
-                    )
+            selectedNft.mashiTraits?.let {
+                LazyVerticalGrid(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                    horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                    columns = GridCells.Fixed(3)
+                ) {
+                    items(selectedNft.mashiTraits!!.size) { i ->
+                        TraitHolder(
+                            mashiTrait = selectedNft.mashiTraits!![i],
+                            width = mashiHolderWidth,
+                            height = mashiHolderHeight,
+                            getImageType = getImageType,
+                            setImageType = setImageType
+                        )
+                    }
                 }
             }
         }

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.ListingDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
@@ -23,9 +23,10 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 fun ShopSection(
     sectionName: String,
     selectId: (String) -> Unit,
-    sectionItems: List<ListingDetails>,
+    sectionItems: List<NftDetails.ListingDetails>,
     getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit
+    setImageType: (ImageType, String) -> Unit,
+    getSoldQty: suspend (Int) -> Int
 ) {
     Column {
         Row(
@@ -60,7 +61,8 @@ fun ShopSection(
                     listingDetails = sectionItems[i],
                     selectId = selectId,
                     getImageType = getImageType,
-                    setImageType = setImageType
+                    setImageType = setImageType,
+                    getSoldQty = getSoldQty
                 )
             }
         }

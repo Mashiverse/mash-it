@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.local.db.entities.TraitTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DataStoreRepo
 import com.mashiverse.mashit.data.repos.TraitTypeRepo
@@ -33,8 +33,8 @@ class CollectionViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    private val _selectedMashi = mutableStateOf<MashiDetails?>(null)
-    val selectedMashi: State<MashiDetails?> get() = _selectedMashi
+    private val _selectedMashi = mutableStateOf<NftDetails.MashiDetails?>(null)
+    val selectedMashi: State<NftDetails.MashiDetails?> get() = _selectedMashi
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,7 +48,7 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    fun selectMashi(mashi: MashiDetails) {
+    fun selectMashi(mashi: NftDetails.MashiDetails) {
         _selectedMashi.value = mashi
     }
 

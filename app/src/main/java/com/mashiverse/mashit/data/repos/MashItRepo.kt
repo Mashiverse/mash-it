@@ -1,13 +1,12 @@
 package com.mashiverse.mashit.data.repos
 
 import com.mashiverse.mashit.data.models.color.SelectedColors
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
 import com.mashiverse.mashit.data.models.mashi.MashiTrait
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.models.mashi.ShopListings
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.mappers.toListingDetails
-import com.mashiverse.mashit.data.models.mashi.mappers.toMashiDetails
 import com.mashiverse.mashit.data.remote.apis.MashItApi
 import javax.inject.Inject
 
@@ -29,9 +28,9 @@ class MashItRepo @Inject constructor(private val mashItApi: MashItApi) {
 
     suspend fun getShopItem(
         id: String
-    ): MashiDetails {
+    ): NftDetails.ListingDetails {
         val listingDto = mashItApi.getShopItem(id)
-        return listingDto.toMashiDetails()
+        return listingDto.toListingDetails()
     }
 
     suspend fun getMashup(

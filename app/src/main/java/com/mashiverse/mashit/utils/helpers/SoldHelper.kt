@@ -21,7 +21,7 @@ import java.math.BigInteger
  * Singleton helper:
  * Reads marketplace.listings(listingId).totalSold using Alchemy Polygon RPC.
  */
-object AlchemyHelper {
+object SoldHelper {
 
     private const val ALCHEMY_KEY = BuildConfig.ALCHEMY_API_KEY
     private const val MARKETPLACE_ADDRESS = "0x69945bc1F0fa219d3b9063B62EB2ED6f99e3EF09"
@@ -67,26 +67,10 @@ object AlchemyHelper {
         val decoded = FunctionReturnDecoder.decode(resp.value, function.outputParameters)
         if (decoded.isEmpty()) throw RuntimeException("Decoded empty output. Wrong ABI output types/order.")
 
-        val totalSoldField = decoded[TOTAL_SOLD_INDEX]
-        return when (totalSoldField) {
+        return when (val totalSoldField = decoded[TOTAL_SOLD_INDEX]) {
             is Uint64 -> totalSoldField.value
             is Uint256 -> totalSoldField.value
             else -> throw IllegalStateException("totalSold field is not Uint64/Uint256. Got: ${totalSoldField.typeAsString}")
         }
-    }
-
-    fun getTotalSoldListing402(): BigInteger = getTotalSold(404L)
-
-    fun getDecodedListingFields(listingId: Long): List<Type<*>> {
-        val function = Function(
-            "listings",
-            listOf(Uint256(BigInteger.valueOf(listingId))),
-            OUTPUT_TYPES
-        )
-        val data = FunctionEncoder.encode(function)
-        val tx = Transaction.createEthCallTransaction(null, MARKETPLACE_ADDRESS, data)
-        val resp = web3j.ethCall(tx, DefaultBlockParameterName.LATEST).send()
-        if (resp.hasError()) throw RuntimeException("RPC error: ${resp.error.message}")
-        return FunctionReturnDecoder.decode(resp.value, function.outputParameters)
     }
 }

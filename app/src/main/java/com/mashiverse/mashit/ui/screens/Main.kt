@@ -35,7 +35,7 @@ import com.mashiverse.mashit.nav.routes.MainRoutes
 import com.mashiverse.mashit.ui.screens.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
-import com.mashiverse.mashit.utils.helpers.AlchemyHelper
+import com.mashiverse.mashit.utils.helpers.SoldHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -55,10 +55,6 @@ fun Main() {
         derivedStateOf {
             navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true
         }
-    }
-
-    scope.launch(Dispatchers.IO) {
-        Timber.tag("GG").d(AlchemyHelper.getTotalSoldListing402().toString())
     }
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }

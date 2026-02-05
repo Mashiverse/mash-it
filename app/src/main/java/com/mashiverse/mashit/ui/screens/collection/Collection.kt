@@ -28,11 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.mashi.MashiBottomSheet
+import com.mashiverse.mashit.ui.screens.mashi.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.mashi.trait.Trait
 import com.mashiverse.mashit.ui.screens.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -57,12 +58,12 @@ fun Collection() {
 
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
-    val selectedMashi by remember {
+    val selectedMashi: NftDetails.MashiDetails? by remember {
         derivedStateOf {
             viewModel.selectedMashi.value
         }
     }
-    val selectMashi = { mashi: MashiDetails ->
+    val selectMashi = { mashi: NftDetails.MashiDetails ->
         viewModel.selectMashi(mashi)
         isBottomSheet = true
     }
@@ -120,10 +121,8 @@ fun Collection() {
         if (isBottomSheet) {
             selectedMashi?.let {
                 MashiBottomSheet(
-                    selectedMashi = selectedMashi!!,
-                    sheetState = sheetState,
+                    selectedNft = selectedMashi!!,
                     closeBottomShit = closeBottomShit,
-                    scope = scope,
                     getImageType = { url: String ->
                         var imageType: ImageType? = null
                         viewModel.getTraitTypeEntity(url) { type: ImageType? ->
@@ -136,8 +135,16 @@ fun Collection() {
                             url = data,
                             imageType = imageType
                         )
-                    }
-                )
+                    },
+                    sheetState = sheetState,
+                ) {
+                    MashiDetailsSection(
+                        nftDetails = selectedMashi!!,
+                        scope = scope,
+                        closeBottomShit = closeBottomShit,
+                        sheetState = sheetState,
+                    )
+                }
             }
         }
     } else {

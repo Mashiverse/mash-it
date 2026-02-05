@@ -1,9 +1,9 @@
 package com.mashiverse.mashit.data.models.mashi.mappers
 
 import com.mashiverse.mashit.data.local.db.entities.MashiDetailsEntity
-import com.mashiverse.mashit.data.models.mashi.MashiDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 
-fun MashiDetails.toEntity() = MashiDetailsEntity(
+fun NftDetails.MashiDetails.toEntity() = MashiDetailsEntity(
     name = this.name,
     author = this.author,
     description = this.description,
@@ -12,7 +12,7 @@ fun MashiDetails.toEntity() = MashiDetailsEntity(
     productInfo = this.productInfo
 )
 
-fun MashiDetailsEntity.fromEntity() = MashiDetails(
+fun MashiDetailsEntity.fromEntity() = NftDetails.MashiDetails(
     name = this.name,
     author = this.author,
     description = this.description,
@@ -21,7 +21,7 @@ fun MashiDetailsEntity.fromEntity() = MashiDetails(
     productInfo = this.productInfo
 )
 
-fun List<MashiDetails>.toEntities() = this.map {
+fun List<NftDetails.MashiDetails>.toEntities() = this.map {
     it.toEntity()
 }
 
