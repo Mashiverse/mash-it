@@ -9,11 +9,11 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.coinbase.android.nativesdk.message.request.RequestContent
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
-import com.mashiverse.mashit.data.local.db.entities.TraitTypeEntity
+import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.NftDetails
-import com.mashiverse.mashit.data.repos.MashItRepo
-import com.mashiverse.mashit.data.repos.TraitTypeRepo
+import com.mashiverse.mashit.data.repos.MashitRepo
+import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
 import com.mashiverse.mashit.utils.helpers.SoldHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,8 +34,8 @@ import kotlin.coroutines.resume
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
-    private val mashItRepo: MashItRepo,
-    private val traitTypeRepo: TraitTypeRepo,
+    private val mashItRepo: MashitRepo,
+    private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo
 ) : ViewModel() {
     private val _listings = mutableStateOf<List<NftDetails.ListingDetails>>(listOf())
@@ -72,7 +72,7 @@ class ShopViewModel @Inject constructor(
 
     fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = traitTypeRepo.getTraitTypeEntity(url)?.type
+            val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
                 onResult.invoke(result)
             }
@@ -81,8 +81,8 @@ class ShopViewModel @Inject constructor(
 
     fun insertTraitType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
-            val entity = TraitTypeEntity(url, imageType)
-            traitTypeRepo.insertTraitType(entity)
+            val entity = ImageTypeEntity(url, imageType)
+            imageTypeRepo.insertImageType(entity)
         }
     }
 

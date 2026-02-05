@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashi.trait
+package com.mashiverse.mashit.ui.screens.mashup
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.MashiTrait
+import com.mashiverse.mashit.data.models.mashi.Trait
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -21,14 +22,14 @@ import com.mashiverse.mashit.ui.theme.MashiHolderShape
 
 @Composable
 fun MashupTraitHolder(
-    mashiHolderWidth: Dp,
-    mashiHolderHeight: Dp,
-    trait: MashupTrait,
-    changeMashupTrait: (MashiTrait) -> Unit,
+    width: Dp,
+    height: Dp,
+    mashupTrait: MashupTrait,
+    changeMashupTrait: (Trait) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {
-    var avatarName = trait.avatarName.substringBefore("#").trimIndent()
+    var avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
     avatarName = if (avatarName.length > 16) {
         avatarName.take(13) + "..."
     } else {
@@ -37,15 +38,15 @@ fun MashupTraitHolder(
 
     Column(
         modifier = Modifier
-            .width(mashiHolderWidth)
+            .width(width)
     ) {
-        Trait(
+        TraitImage(
             modifier = Modifier
-                .width(mashiHolderWidth)
-                .height(mashiHolderHeight)
+                .width(width)
+                .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
-            onClick = { changeMashupTrait.invoke(trait.mashiTrait) },
-            data = trait.mashiTrait.url,
+            onClick = { changeMashupTrait.invoke(mashupTrait.trait) },
+            data = mashupTrait.trait.url,
             getImageType = getImageType,
             setImageType = setImageType
         )

@@ -41,7 +41,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -51,15 +50,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.models.color.ColorType
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashiTrait
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
+import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.mashi.trait.TraitHolder
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.screens.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -80,11 +79,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun Mashup() {
     val density = LocalDensity.current
-    val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
+    val mashiHolderWidth =
+        (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     // Bottom Sheet States
@@ -138,20 +137,23 @@ fun Mashup() {
         }
     }
 
-    val changeMashupTrait = { mashiTrait: MashiTrait -> viewModel.changeMashupTrait(mashiTrait) }
+    val changeMashupTrait = { trait: Trait -> viewModel.changeMashupTrait(trait) }
 
     // Collection Data
-    val mashies by viewModel.collectionFlow
+    val nfts by viewModel.collectionFlow
         .map { it.fromEntities() }
         .collectAsState(emptyList())
 
-    val traitsByType = remember(mashies) {
+    val traitsByType = remember(nfts) {
         TraitType.entries.associateWith { type ->
-            mashies.filter { mashie -> mashie.mashiTraits.any { it.traitType == type } }
-                .map { mashie ->
+            nfts
+                .filter { nft ->
+                    nft.traits?.any { it.type == type } ?: false
+                }
+                .map { nft ->
                     MashupTrait(
-                        mashiTrait = mashie.mashiTraits.first { it.traitType == type },
-                        avatarName = mashie.name
+                        trait = nft.traits!!.first { it.type == type },
+                        avatarName = nft.name
                     )
                 }
                 .toSet().toList()
@@ -159,7 +161,7 @@ fun Mashup() {
     }
 
     var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
-    val traits by remember(selectedCategory, mashies) {
+    val traits by remember(selectedCategory, nfts) {
         derivedStateOf { traitsByType[selectedCategory] ?: emptyList() }
     }
 
@@ -191,8 +193,16 @@ fun Mashup() {
                             .clip(RoundedCornerShape(90))
                             .background(
                                 brush = Brush.sweepGradient(
-                                    colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Red).reversed(),
-                                    center = Offset(x = with(density) { 28.dp.toPx() }, y = with(density) { 16.dp.toPx() })
+                                    colors = listOf(
+                                        Color.Red,
+                                        Color.Yellow,
+                                        Color.Green,
+                                        Color.Blue,
+                                        Color.Red
+                                    ).reversed(),
+                                    center = Offset(
+                                        x = with(density) { 28.dp.toPx() },
+                                        y = with(density) { 16.dp.toPx() })
                                 )
                             )
                             .border(0.5.dp, Color.White, RoundedCornerShape(90))
@@ -203,9 +213,9 @@ fun Mashup() {
                     Column(Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End) {
                         Button(
                             onClick = {
-                                if (mashies.isNotEmpty()) {
+                                if (nfts.isNotEmpty()) {
                                     val randomAssets = TraitType.entries.mapNotNull { type ->
-                                        traitsByType[type]?.randomOrNull()?.mashiTrait
+                                        traitsByType[type]?.randomOrNull()?.trait
                                     }
                                     randomAssets.forEach {
                                         viewModel.changeMashupTrait(it)
@@ -255,7 +265,7 @@ fun Mashup() {
                         )
 
                         IconButton(
-                            onClick = {isActiveTraits = false},
+                            onClick = { isActiveTraits = false },
                             modifier = Modifier
                                 .size(36.dp)
                                 .align(Alignment.CenterEnd),
@@ -273,9 +283,10 @@ fun Mashup() {
 
                     Spacer(Modifier.height(SmallPaddingSize))
 
-                    vmDetails.copy(colors = colorBuffer).assets?.sortedBy { it.traitType }.let {
+                    vmDetails.copy(colors = colorBuffer).assets?.sortedBy { it.type }.let {
                         LazyVerticalGrid(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .wrapContentHeight(),
                             verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
@@ -283,7 +294,7 @@ fun Mashup() {
                         ) {
                             items(it!!.size) { i ->
                                 TraitHolder(
-                                    mashiTrait = it[i],
+                                    trait = it[i],
                                     width = mashiHolderWidth,
                                     height = mashiHolderHeight,
                                     getImageType = { url: String ->

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.ui.screens.buttons.BuyButton
-import com.mashiverse.mashit.ui.screens.mashi.trait.Trait
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -60,7 +60,7 @@ fun ShopItem(
     Column(
         modifier = Modifier,
     ) {
-        Trait(
+        TraitImage(
             modifier = Modifier
                 .width(LargeMashiHolderWidth)
                 .height(LargeMashiHolderHeight)

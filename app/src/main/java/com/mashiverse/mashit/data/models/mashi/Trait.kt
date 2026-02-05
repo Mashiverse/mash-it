@@ -1,7 +1,7 @@
 package com.mashiverse.mashit.data.models.mashi
 
-data class MashiTrait(
-    val traitType: TraitType,
+data class Trait(
+    val type: TraitType,
     val url: String
 )
 

@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashi
+package com.mashiverse.mashit.ui.screens.nft
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.NftDetails
-import com.mashiverse.mashit.ui.screens.mashi.trait.TraitHolder
-import com.mashiverse.mashit.ui.screens.mashi.trait.Trait
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitHolder
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContainerColor
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -70,7 +70,7 @@ fun MashiBottomSheet(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Trait(
+                TraitImage(
                     modifier = Modifier
                         .height(LargeMashiHolderHeight)
                         .width(LargeMashiHolderWidth),
@@ -91,16 +91,16 @@ fun MashiBottomSheet(
                 fontWeight = FontWeight.Bold
             )
 
-            selectedNft.mashiTraits?.let {
+            selectedNft.traits?.let {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                     horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                     columns = GridCells.Fixed(3)
                 ) {
-                    items(selectedNft.mashiTraits!!.size) { i ->
+                    items(selectedNft.traits.size) { i ->
                         TraitHolder(
-                            mashiTrait = selectedNft.mashiTraits!![i],
+                            trait = selectedNft.traits[i],
                             width = mashiHolderWidth,
                             height = mashiHolderHeight,
                             getImageType = getImageType,

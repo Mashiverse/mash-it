@@ -32,9 +32,9 @@ import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.mashi.MashiBottomSheet
-import com.mashiverse.mashit.ui.screens.mashi.MashiDetailsSection
-import com.mashiverse.mashit.ui.screens.mashi.trait.Trait
+import com.mashiverse.mashit.ui.screens.nft.MashiBottomSheet
+import com.mashiverse.mashit.ui.screens.nft.MashiDetailsSection
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.screens.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
@@ -58,12 +58,12 @@ fun Collection() {
 
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
-    val selectedMashi: NftDetails.MashiDetails? by remember {
+    val selectedMashi: NftDetails? by remember {
         derivedStateOf {
-            viewModel.selectedMashi.value
+            viewModel.selectedNft.value
         }
     }
-    val selectMashi = { mashi: NftDetails.MashiDetails ->
+    val selectMashi = { mashi: NftDetails ->
         viewModel.selectMashi(mashi)
         isBottomSheet = true
     }
@@ -93,7 +93,7 @@ fun Collection() {
                 columns = GridCells.Fixed(3)
             ) {
                 items(mashies.size) { i ->
-                    Trait(
+                    TraitImage(
                         modifier = Modifier
                             .height(mashiHolderHeight)
                             .width(mashiHolderWidth)

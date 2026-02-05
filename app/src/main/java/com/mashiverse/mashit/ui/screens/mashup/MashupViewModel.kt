@@ -1,22 +1,19 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import com.mashiverse.mashit.data.local.db.entities.TraitTypeEntity
+import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.color.ColorType
 import com.mashiverse.mashit.data.models.color.SelectedColors
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashiTrait
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
+import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.repos.CollectionRepo
-import com.mashiverse.mashit.data.repos.DataStoreRepo
-import com.mashiverse.mashit.data.repos.TraitTypeRepo
-import com.mashiverse.mashit.utils.io.saveImageToGallery
+import com.mashiverse.mashit.data.repos.DatastoreRepo
+import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -26,11 +23,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MashupViewModel @Inject constructor(
     collectionRepo: CollectionRepo,
-    dataStoreRepo: DataStoreRepo,
-    private val traitTypeRepo: TraitTypeRepo
+    dataStoreRepo: DatastoreRepo,
+    private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
-    val collectionFlow = collectionRepo.getCollectionFlow()
+    val collectionFlow = collectionRepo.collectionFlow
 
     private val _selectedColorType = mutableStateOf(ColorType.BASE)
     val selectedColorType: State<ColorType> get() = _selectedColorType
@@ -53,18 +50,18 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun changeMashupTrait(mashiTrait: MashiTrait) {
+    fun changeMashupTrait(trait: Trait) {
         val assets = (mashupDetails.value.assets ?: emptyList()).toMutableList()
-        val assetToUpdate = assets.firstOrNull { it.traitType == mashiTrait.traitType }
+        val assetToUpdate = assets.firstOrNull { it.type == trait.type }
 
         if (assetToUpdate != null) {
             assets.remove(assetToUpdate)
         }
 
-        if (assetToUpdate?.url != mashiTrait.url) {
-            assets.add(mashiTrait)
+        if (assetToUpdate?.url != trait.url) {
+            assets.add(trait)
         } else {
-            assets.add(MashiTrait(mashiTrait.traitType, ""))
+            assets.add(Trait(trait.type, ""))
         }
 
         _mashupDetails.value = mashupDetails.value.copy(assets = assets)
@@ -80,7 +77,7 @@ class MashupViewModel @Inject constructor(
 
     fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = traitTypeRepo.getTraitTypeEntity(url)?.type
+            val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
                 onResult.invoke(result)
             }
@@ -89,8 +86,8 @@ class MashupViewModel @Inject constructor(
 
     fun insertTraitType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
-            val entity = TraitTypeEntity(url, imageType)
-            traitTypeRepo.insertTraitType(entity)
+            val entity = ImageTypeEntity(url, imageType)
+            imageTypeRepo.insertImageType(entity)
         }
     }
 }

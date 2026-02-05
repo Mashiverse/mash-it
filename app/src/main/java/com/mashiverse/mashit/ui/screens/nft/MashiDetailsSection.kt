@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashi
+package com.mashiverse.mashit.ui.screens.nft
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +30,6 @@ import com.mashiverse.mashit.ui.theme.SmallIconSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +38,7 @@ fun MashiDetailsSection(
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
-    getSoldQty: (suspend (Int) -> Int)? = null
+    getSoldQty: (suspend (Int) -> Int)? = null // TODO: REWORK TO CALLBACK
 ) {
     Row(
         modifier = Modifier
@@ -114,8 +113,8 @@ fun MashiDetailsSection(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (nftDetails is NftDetails.ListingDetails) {
-                MashiProductInfoSection(nftDetails, getSoldQty)
+            if (nftDetails.productInfo != null) {
+                ProductInfoSection(nftDetails, getSoldQty)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashi
+package com.mashiverse.mashit.ui.screens.nft
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.mashi.NftDetails
-import com.mashiverse.mashit.data.models.mashi.ProductInfo
 import com.mashiverse.mashit.ui.screens.buttons.BuyButton
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -28,14 +27,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun MashiProductInfoSection(
-    listingDetails: NftDetails.ListingDetails,
+fun ProductInfoSection(
+    nftDetails: NftDetails,
     getSoldQty: (suspend (Int) -> Int)?,
-    ) {
+) {
     val scope = rememberCoroutineScope()
 
-    val isPaused = listingDetails.isPaused
-    val productInfo = listingDetails.productInfo
+    val productInfo = nftDetails.productInfo
 
     var soldQty by remember {
         mutableIntStateOf(0)
@@ -43,7 +41,7 @@ fun MashiProductInfoSection(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty?.invoke(listingDetails.listingId.toInt()) ?: 0
+            soldQty = getSoldQty?.invoke(nftDetails.productInfo?.listingId?.toInt() ?: 0) ?: 0
         }
     }
 
@@ -79,7 +77,7 @@ fun MashiProductInfoSection(
 
         BuyButton(
             text = when {
-                soldQty < productInfo.quantity -> "Buy"
+                soldQty < productInfo?.quantity -> "Buy"
                 isPaused -> "Delisted"
                 else -> "Sold"
             },

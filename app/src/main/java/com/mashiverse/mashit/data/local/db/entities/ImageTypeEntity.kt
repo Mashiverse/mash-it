@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.mashiverse.mashit.data.models.image.ImageType
 
 @Entity(tableName = "trait_types")
-data class TraitTypeEntity(
+data class ImageTypeEntity(
     @PrimaryKey
     val url: String,
     val type: ImageType

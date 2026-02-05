@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashi.trait
+package com.mashiverse.mashit.ui.screens.nft.trait
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +42,7 @@ private val svgCheckSemaphore = Semaphore(10)
 
 
 @Composable
-private fun AnimatedImage(
+private fun NonSvgImage(
     modifier: Modifier,
     data: String,
     contentScale: ContentScale
@@ -134,7 +134,7 @@ private fun SvgImage(
 }
 
 @Composable
-fun Trait(
+fun TraitImage(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     data: String,
@@ -145,7 +145,7 @@ fun Trait(
     contentScale: ContentScale = ContentScale.Fit
 ) {
 
-    val imageType by rememberContentType(
+    val imageType by rememberImageType(
         data = data,
         getImageType = { getImageType.invoke(data) },
         setImageType = setImageType
@@ -179,7 +179,7 @@ fun Trait(
 
                 ImageType.APNG -> {
                     val newData = "${MASHI_BASE_URL}api/apng/${data.split("/").last()}"
-                    AnimatedImage(
+                    NonSvgImage(
                         modifier = modifier,
                         data = newData,
                         contentScale = contentScale
@@ -187,7 +187,7 @@ fun Trait(
                 }
 
                 else -> {
-                    AnimatedImage(
+                    NonSvgImage(
                         modifier = modifier,
                         data = data,
                         contentScale = contentScale
@@ -200,7 +200,7 @@ fun Trait(
 
 
 @Composable
-private fun rememberContentType(
+private fun rememberImageType(
     data: String,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit

@@ -5,16 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mashiverse.mashit.data.local.db.entities.TraitTypeEntity
+import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 
 @Dao
 interface TraitTypeDao {
     @Query("SELECT * FROM trait_types WHERE url = :url")
-    fun getTraitTypeEntity(url: String): TraitTypeEntity?
+    fun getImageType(url: String): ImageTypeEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTraitType(traitTypeEntity: TraitTypeEntity)
+    suspend fun insertImageType(imageTypeEntity: ImageTypeEntity)
 
     @Delete
-    suspend fun deleteMashiDetails(traitTypeEntity: TraitTypeEntity)
+    suspend fun deleteImageType(imageTypeEntity: ImageTypeEntity)
 }

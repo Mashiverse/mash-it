@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
-import com.mashiverse.mashit.ui.screens.mashi.trait.TraitHolder
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContainerColor
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -108,7 +108,7 @@ fun MashupPreview(
 
                 Spacer(modifier = Modifier.height(PaddingSize))
 
-                mashupDetails.assets?.sortedBy { it.traitType }.let {
+                mashupDetails.assets?.sortedBy { it.type }.let {
                     FlowRow(
                         modifier = Modifier.fillMaxWidth()
                             .wrapContentHeight(),
@@ -118,7 +118,7 @@ fun MashupPreview(
                     ) {
                         it?.forEach { i ->
                             TraitHolder(
-                                mashiTrait = i,
+                                trait = i,
                                 width = mashiHolderWidth,
                                 height = mashiHolderHeight,
                                 getImageType = getImageType,

@@ -8,7 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import com.mashiverse.mashit.data.local.ds.dataStore
+import com.mashiverse.mashit.data.local.ds.datastore
 import javax.inject.Singleton
 
 @Module
@@ -19,5 +19,5 @@ object DatastoreModule {
     @Singleton
     fun provideDatastore(
         @ApplicationContext ctx: Context
-    ): DataStore<Preferences> = ctx.dataStore
+    ): DataStore<Preferences> = ctx.datastore
 }

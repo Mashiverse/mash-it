@@ -23,8 +23,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.mashi.MashiBottomSheet
-import com.mashiverse.mashit.ui.screens.mashi.MashiDetailsSection
+import com.mashiverse.mashit.ui.screens.nft.MashiBottomSheet
+import com.mashiverse.mashit.ui.screens.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import kotlinx.coroutines.launch
 

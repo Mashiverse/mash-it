@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashi.trait
+package com.mashiverse.mashit.ui.screens.nft.trait
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashiTrait
+import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -23,19 +23,19 @@ import com.mashiverse.mashit.ui.theme.MashiHolderWidth
 
 @Composable
 fun TraitHolder(
-    mashiTrait: MashiTrait,
+    trait: Trait,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {
     Column {
-        Trait(
+        TraitImage(
             modifier = Modifier
                 .width(width)
                 .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
-            data = mashiTrait.url,
+            data = trait.url,
             getImageType = getImageType,
             setImageType = setImageType
         )
@@ -44,7 +44,7 @@ fun TraitHolder(
 
         Text(
             fontSize = 14.sp,
-            text = mashiTrait.traitType.name
+            text = trait.type.name
                 .lowercase()
                 .replace("_", " ")
                 .replaceFirstChar { c -> c.uppercaseChar() },

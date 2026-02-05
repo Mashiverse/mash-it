@@ -109,7 +109,7 @@ fun Main() {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                mainGraph(navController)
+                mainGraph()
             }
 
             if (drawerState.isOpen) {

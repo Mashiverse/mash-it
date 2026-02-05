@@ -2,12 +2,12 @@ package com.mashiverse.mashit.di
 
 import android.content.Context
 import androidx.room.Room
+import com.mashiverse.mashit.data.local.db.RoomDb
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import com.mashiverse.mashit.data.local.db.RoomDb
 import javax.inject.Singleton
 
 @Module
@@ -21,16 +21,16 @@ object RoomModule {
     ) = Room.databaseBuilder(
         context = ctx,
         klass = RoomDb::class.java,
-        name = "mash_it_db"
+        name = "mashit_db"
     ).build()
 
     @Provides
-    fun provideMashiDetailsDao(
+    fun provideNftDetailsDao(
         db: RoomDb
-    ) = db.getMashiDetailsDao()
+    ) = db.getNftDetailsDao()
 
     @Provides
-    fun provideTraitTypeDao(
+    fun provideImageTypeDao(
         db: RoomDb
-    ) = db.getTraitTypeDao()
+    ) = db.getImageTypeDao()
 }

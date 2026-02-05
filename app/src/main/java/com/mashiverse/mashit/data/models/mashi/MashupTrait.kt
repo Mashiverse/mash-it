@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.models.mashi
 
 data class MashupTrait(
-    val mashiTrait: MashiTrait,
+    val trait: Trait,
     val avatarName: String
 )

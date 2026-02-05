@@ -1,7 +1,7 @@
 package com.mashiverse.mashit.data.repos
 
-import com.mashiverse.mashit.data.local.db.daos.MashiDetailsDao
-import com.mashiverse.mashit.data.local.db.entities.MashiDetailsEntity
+import com.mashiverse.mashit.data.local.db.daos.NftDetailsDao
+import com.mashiverse.mashit.data.local.db.entities.NftDetailsEntity
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.mappers.toEntities
 import kotlinx.coroutines.flow.Flow
@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 class CollectionRepo @Inject constructor(
     val alchemyRepo: AlchemyRepo,
-    val mashiDetailsDao: MashiDetailsDao,
-    val mashItRepo: MashItRepo,
+    val nftDetailsDao: NftDetailsDao,
+    val mashitRepo: MashitRepo,
 ) {
-    fun getCollectionFlow(): Flow<List<MashiDetailsEntity>> = mashiDetailsDao.getMashiDetails()
+    val collectionFlow: Flow<List<NftDetailsEntity>> = nftDetailsDao.getNftDetails()
 
     suspend fun updateData(wallet: String) {
         val newCollectionList = alchemyRepo.getCollection(wallet)
-        val oldCollectionList = mashiDetailsDao.getMashiDetails().first()
+        val oldCollectionList = nftDetailsDao.getNftDetails().first()
 
         val newNames = newCollectionList.map { it.name }.toSet()
         val oldNames = oldCollectionList.map { it.name }.toSet()
@@ -26,14 +26,14 @@ class CollectionRepo @Inject constructor(
         val toDelete = oldCollectionList.filter { it.name !in newNames }
 
         if (toAdd.isNotEmpty()) {
-            mashiDetailsDao.insertMashiDetails(toAdd.toEntities())
+            nftDetailsDao.insertNftDetails(toAdd.toEntities())
         }
         if (toDelete.isNotEmpty()) {
-            mashiDetailsDao.deleteMashiDetails(toDelete)
+            nftDetailsDao.deleteNftDetails(toDelete)
         }
     }
 
     suspend fun getMashup(wallet: String): MashupDetails {
-        return mashItRepo.getMashup(wallet)
+        return mashitRepo.getMashup(wallet)
     }
 }

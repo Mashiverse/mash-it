@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import com.mashiverse.mashit.data.local.db.entities.TraitTypeEntity
+import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.repos.CollectionRepo
-import com.mashiverse.mashit.data.repos.DataStoreRepo
-import com.mashiverse.mashit.data.repos.TraitTypeRepo
+import com.mashiverse.mashit.data.repos.DatastoreRepo
+import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,19 +22,19 @@ import kotlinx.coroutines.withContext
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
     collectionRepo: CollectionRepo,
-    dataStoreRepo: DataStoreRepo,
-    private val traitTypeRepo: TraitTypeRepo
+    dataStoreRepo: DatastoreRepo,
+    private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
-    val collectionFlow = collectionRepo.getCollectionFlow()
+    val collectionFlow = collectionRepo.collectionFlow
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 
-    private val _selectedMashi = mutableStateOf<NftDetails.MashiDetails?>(null)
-    val selectedMashi: State<NftDetails.MashiDetails?> get() = _selectedMashi
+    private val _selectedNft = mutableStateOf<NftDetails?>(null)
+    val selectedNft: State<NftDetails?> get() = _selectedNft
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,13 +48,13 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    fun selectMashi(mashi: NftDetails.MashiDetails) {
-        _selectedMashi.value = mashi
+    fun selectMashi(mashi: NftDetails) {
+        _selectedNft.value = mashi
     }
 
     fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = traitTypeRepo.getTraitTypeEntity(url)?.type
+            val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
                 onResult.invoke(result)
             }
@@ -63,8 +63,8 @@ class CollectionViewModel @Inject constructor(
 
     fun insertTraitType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
-            val entity = TraitTypeEntity(url, imageType)
-            traitTypeRepo.insertTraitType(entity)
+            val entity = ImageTypeEntity(url, imageType)
+            imageTypeRepo.insertImageType(entity)
         }
     }
 }

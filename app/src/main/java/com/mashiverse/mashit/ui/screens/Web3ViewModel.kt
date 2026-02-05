@@ -8,7 +8,7 @@ import com.coinbase.android.nativesdk.message.request.Account
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import com.mashiverse.mashit.data.repos.DataStoreRepo
+import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class Web3ViewModel @Inject constructor(
     private val web3Repo: Web3Repo,
-    private val dataStoreRepo: DataStoreRepo
+    private val dataStoreRepo: DatastoreRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
 

@@ -1,6 +1,8 @@
 package com.mashiverse.mashit.utils.helpers
 
 import com.mashiverse.mashit.BuildConfig
+import com.mashiverse.mashit.utils.ALCHEMY_KEY
+import com.mashiverse.mashit.utils.CONTRACT_ADDRESS
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.FunctionReturnDecoder
 import org.web3j.abi.TypeReference
@@ -22,10 +24,6 @@ import java.math.BigInteger
  * Reads marketplace.listings(listingId).totalSold using Alchemy Polygon RPC.
  */
 object SoldHelper {
-
-    private const val ALCHEMY_KEY = BuildConfig.ALCHEMY_API_KEY
-    private const val MARKETPLACE_ADDRESS = "0x69945bc1F0fa219d3b9063B62EB2ED6f99e3EF09"
-
     private const val RPC_URL = "https://polygon-mainnet.g.alchemy.com/v2/$ALCHEMY_KEY"
 
     // totalSold is the 5th element (0-based index 4) in Listing struct
@@ -59,7 +57,7 @@ object SoldHelper {
         )
 
         val data = FunctionEncoder.encode(function)
-        val tx = Transaction.createEthCallTransaction(null, MARKETPLACE_ADDRESS, data)
+        val tx = Transaction.createEthCallTransaction(null, CONTRACT_ADDRESS, data)
         val resp = web3j.ethCall(tx, DefaultBlockParameterName.LATEST).send()
 
         if (resp.hasError()) throw RuntimeException("RPC error: ${resp.error.message}")

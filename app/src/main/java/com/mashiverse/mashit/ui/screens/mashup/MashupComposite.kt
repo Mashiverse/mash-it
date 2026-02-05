@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.ui.screens.mashi.trait.Trait
+import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.MashiBackground
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 
@@ -32,8 +32,8 @@ fun MashupComposite(
             .background(MashiBackground),
         contentAlignment = Alignment.Center
     ) {
-        mashupDetails.assets?.sortedBy { it.traitType }?.forEach { trait ->
-            val traitType = trait.traitType
+        mashupDetails.assets?.sortedBy { it.type }?.forEach { trait ->
+            val traitType = trait.type
             val width =
                 if (traitType == TraitType.BACKGROUND) holderWidth else holderWidth * 380 / 552
             val height =
@@ -41,7 +41,7 @@ fun MashupComposite(
             val contentScale =
                 if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
 
-            Trait(
+            TraitImage(
                 modifier = Modifier
                     .width(width)
                     .height(height),

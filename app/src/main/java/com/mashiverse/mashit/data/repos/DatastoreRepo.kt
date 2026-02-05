@@ -14,12 +14,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DataStoreRepo @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+class DatastoreRepo @Inject constructor(
+    private val datastore: DataStore<Preferences>
 ) {
 
     val walletPreferencesFlow: Flow<WalletPreferences> =
-        dataStore.data
+        datastore.data
             .catch { e ->
                 if (e is IOException) {
                     emit(emptyPreferences())
@@ -34,13 +34,13 @@ class DataStoreRepo @Inject constructor(
             }
 
     suspend fun updateWallet(wallet: String) {
-        dataStore.edit { preferences ->
+        datastore.edit { preferences ->
             preferences[PreferencesKeys.WALLET] = wallet
         }
     }
 
     suspend fun removeWallet() {
-        dataStore.edit { preferences ->
+        datastore.edit { preferences ->
             preferences.remove(PreferencesKeys.WALLET)
         }
     }
