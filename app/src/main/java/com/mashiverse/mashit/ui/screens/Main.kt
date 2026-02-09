@@ -32,13 +32,10 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
-import com.mashiverse.mashit.ui.screens.nav.drawer.NavDrawer
-import com.mashiverse.mashit.ui.screens.nav.top.TopNavBar
+import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
+import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
-import com.mashiverse.mashit.utils.helpers.SoldHelper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)

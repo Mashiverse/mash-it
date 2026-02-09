@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nav.data
+package com.mashiverse.mashit.ui.screens.components.nav.data
 
 import com.mashiverse.mashit.nav.routes.MainRoutes
 

@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nav.drawer
+package com.mashiverse.mashit.ui.screens.components.nav.drawer
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

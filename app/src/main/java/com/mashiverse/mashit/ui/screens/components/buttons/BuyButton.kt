@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.buttons
+package com.mashiverse.mashit.ui.screens.components.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

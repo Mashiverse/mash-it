@@ -11,7 +11,6 @@ import com.mashiverse.mashit.data.models.color.SelectedColors
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
@@ -54,7 +53,7 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun updateMashup(mashupTrait: MashupTrait) {
+    fun updateMashup(mashupTrait: MashupTrait, isRandom: Boolean) {
         val trait = mashupTrait.trait
         var mint = _mashupDetails.value.mint
 
@@ -62,7 +61,7 @@ class MashupViewModel @Inject constructor(
         val assetToUpdate = assets.firstOrNull { it.type == trait.type }
         val i = assets.indexOf(assetToUpdate)
 
-        if (assetToUpdate?.url != trait.url) {
+        if (isRandom || assetToUpdate?.url != trait.url) {
             assets[i] = trait
 
             if (assets[i].type == TraitType.BACKGROUND) {

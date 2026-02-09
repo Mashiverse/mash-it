@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.placeholder
+package com.mashiverse.mashit.ui.screens.components.placeholder
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

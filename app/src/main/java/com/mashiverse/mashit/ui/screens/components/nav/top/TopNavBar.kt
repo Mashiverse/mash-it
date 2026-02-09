@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nav.top
+package com.mashiverse.mashit.ui.screens.components.nav.top
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

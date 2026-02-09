@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.header
+package com.mashiverse.mashit.ui.screens.components.header
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

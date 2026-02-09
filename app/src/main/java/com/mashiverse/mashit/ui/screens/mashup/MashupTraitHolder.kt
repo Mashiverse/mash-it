@@ -13,9 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.Trait
-import com.mashiverse.mashit.ui.screens.nft.trait.MintedTrait
-import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
+import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -26,7 +24,7 @@ fun MashupTraitHolder(
     width: Dp,
     height: Dp,
     mashupTrait: MashupTrait,
-    changeMashupTrait: (MashupTrait) -> Unit,
+    changeMashupTrait: (MashupTrait, Boolean) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {
@@ -46,7 +44,7 @@ fun MashupTraitHolder(
                 .width(width)
                 .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
-            onClick = { changeMashupTrait.invoke(mashupTrait) },
+            onClick = { changeMashupTrait.invoke(mashupTrait, false) },
             data = mashupTrait.trait.url ?: "",
             getImageType = getImageType,
             setImageType = setImageType,

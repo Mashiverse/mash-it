@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nft.trait
+package com.mashiverse.mashit.ui.screens.components.nft.trait
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text

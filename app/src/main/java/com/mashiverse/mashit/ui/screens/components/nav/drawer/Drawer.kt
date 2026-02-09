@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nav.drawer
+package com.mashiverse.mashit.ui.screens.components.nav.drawer
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement

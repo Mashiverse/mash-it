@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nft
+package com.mashiverse.mashit.ui.screens.components.nft
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

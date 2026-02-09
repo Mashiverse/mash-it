@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nav.drawer
+package com.mashiverse.mashit.ui.screens.components.nav.drawer
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.mashiverse.mashit.ui.screens.nav.data.navItems
+import com.mashiverse.mashit.ui.screens.components.nav.data.navItems
 
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.ContainerColor

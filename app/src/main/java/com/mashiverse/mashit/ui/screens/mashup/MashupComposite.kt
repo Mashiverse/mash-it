@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.ui.screens.nft.trait.MintText
-import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
+import com.mashiverse.mashit.ui.screens.components.nft.trait.MintText
+import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.MashiBackground
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 

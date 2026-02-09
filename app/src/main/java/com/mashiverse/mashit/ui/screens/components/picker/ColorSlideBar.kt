@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.picker
+package com.mashiverse.mashit.ui.screens.components.picker
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitFirstDown

@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.nft
+package com.mashiverse.mashit.ui.screens.components.nft
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.ui.screens.buttons.BuyButton
+import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize

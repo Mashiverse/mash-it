@@ -33,11 +33,11 @@ import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.screens.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.screens.nft.MashiDetailsSection
-import com.mashiverse.mashit.ui.screens.nft.trait.MintedTrait
-import com.mashiverse.mashit.ui.screens.placeholder.NotConnected
+import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
+import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
+import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
+import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
+import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.PaddingSize
