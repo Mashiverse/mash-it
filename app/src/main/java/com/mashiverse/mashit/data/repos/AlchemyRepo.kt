@@ -44,7 +44,7 @@ class AlchemyRepo @Inject constructor(
                     }
 
                     val (nftName: String, mint: Int) = if (" #" in nftMintedName) {
-                        val parts = name.split(" #", limit = 2)
+                        val parts = nftMintedName.split(" #", limit = 2)
                         parts[0] to parts[1].toInt()
                     } else {
                         "" to -1

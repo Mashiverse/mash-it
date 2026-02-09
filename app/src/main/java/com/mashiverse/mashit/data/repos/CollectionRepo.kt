@@ -22,15 +22,19 @@ class CollectionRepo @Inject constructor(
         val oldNames = oldCollection.map { it.name }.toSet()
 
         val toAdd = newCollection.filter { it.name !in oldNames }
-        val toDelete = oldCollection.filter { it.name !in newNames }
+        val toUpdate = oldCollection.filter { it.name !in newNames }
 
         if (toAdd.isNotEmpty()) {
             val list = toAdd.toEntities().map { it.copy(isOwned = true) }
             nftRepo.insertNfts(list)
         }
 
-        if (toDelete.isNotEmpty()) {
-            val list = toDelete.map { it.copy(isOwned = false) }
+        if (toUpdate.isNotEmpty()) {
+            val list = toUpdate.map { nft ->
+                nft
+                    .copy(isOwned = false)
+                    .copy(owned = null)
+            }
             nftRepo.updateNfts(list)
         }
     }

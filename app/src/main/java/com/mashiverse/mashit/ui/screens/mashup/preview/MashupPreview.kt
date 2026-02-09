@@ -108,7 +108,7 @@ fun MashupPreview(
 
                 Spacer(modifier = Modifier.height(PaddingSize))
 
-                mashupDetails.assets?.sortedBy { it.type }.let {
+                mashupDetails.assets.sortedBy { it?.type }.let {
                     FlowRow(
                         modifier = Modifier.fillMaxWidth()
                             .wrapContentHeight(),
@@ -116,9 +116,9 @@ fun MashupPreview(
                         horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
                         maxItemsInEachRow = 3
                     ) {
-                        it?.forEach { i ->
+                        it.forEach { i ->
                             TraitHolder(
-                                trait = i,
+                                trait = i!!,
                                 width = mashiHolderWidth,
                                 height = mashiHolderHeight,
                                 getImageType = getImageType,

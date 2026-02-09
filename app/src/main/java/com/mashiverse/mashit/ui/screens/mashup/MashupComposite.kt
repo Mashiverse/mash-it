@@ -3,6 +3,7 @@ package com.mashiverse.mashit.ui.screens.mashup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,9 +12,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.ui.screens.nft.trait.MintText
 import com.mashiverse.mashit.ui.screens.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.MashiBackground
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
@@ -32,7 +35,7 @@ fun MashupComposite(
             .background(MashiBackground),
         contentAlignment = Alignment.Center
     ) {
-        mashupDetails.assets?.sortedBy { it.type }?.forEach { trait ->
+        mashupDetails.assets.sortedBy { it.type }.forEach { trait ->
             val traitType = trait.type
             val width =
                 if (traitType == TraitType.BACKGROUND) holderWidth else holderWidth * 380 / 552
@@ -47,10 +50,19 @@ fun MashupComposite(
                     .height(height),
                 background = Color.Transparent,
                 selectedColors = mashupDetails.colors,
-                data = trait.url,
+                data = trait.url ?: "",
                 contentScale = contentScale,
                 getImageType = getImageType,
                 setImageType = setImageType
+            )
+        }
+
+        mashupDetails.mint?.let {
+            MintText(
+                modifier = Modifier
+                    .padding(end = 2.dp)
+                    .align(Alignment.BottomEnd),
+                mint = mashupDetails.mint
             )
         }
     }

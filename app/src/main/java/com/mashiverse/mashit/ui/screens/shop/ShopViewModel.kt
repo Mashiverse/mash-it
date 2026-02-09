@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -130,7 +131,7 @@ class ShopViewModel @Inject constructor(
         try {
             // Native USDC on Polygon: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
             // 1,000,000 units = 1 USDC (assuming 6 decimals)
-            val approveData = encodeERC20Approve(marketplaceAddress, BigInteger("1000000"))
+            val approveData = encodeERC20Approve(marketplaceAddress, BigInteger("20000000"))
 
             val action = Web3JsonRPC.SendTransaction(
                 fromAddress = fromAddress,
@@ -139,10 +140,10 @@ class ShopViewModel @Inject constructor(
                 data = approveData,
                 chainId = "137",
                 nonce = null,
-                gasPriceInWei = null,
-                maxFeePerGas = null,
-                maxPriorityFeePerGas = null,
-                gasLimit = null,
+                gasPriceInWei = "100000000",
+                maxFeePerGas = "100000000",
+                maxPriorityFeePerGas = "100000000",
+                gasLimit = "100000000",
                 actionSource = null
             ).action()
 
@@ -150,8 +151,10 @@ class ShopViewModel @Inject constructor(
                 client.makeRequest(RequestContent.Request(listOf(action))) { result ->
                     result.onSuccess {
                         Timber.d("✅ Approval Successful. Waiting for Polygon sync...")
+
                         CoroutineScope(Dispatchers.Main).launch {
-                            executeMint(client, BigInteger("402"))
+                            delay(3000)
+                            executeMint(client, BigInteger("448"))
                             cont.resume(Unit)
                         }
                     }
@@ -182,11 +185,11 @@ class ShopViewModel @Inject constructor(
             weiValue = "0",
             data = mintData,
             chainId = "137",
-            gasLimit = null,
+            gasLimit = "10000000",
             nonce = null,
-            gasPriceInWei = null,
-            maxFeePerGas = null,
-            maxPriorityFeePerGas = null,
+            gasPriceInWei = "10000000",
+            maxFeePerGas = "10000000",
+            maxPriorityFeePerGas = "10000000",
             actionSource = null
         ).action()
 

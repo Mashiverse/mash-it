@@ -10,6 +10,8 @@ import com.mashiverse.mashit.data.models.mashi.mappers.toNftDetails
 import com.mashiverse.mashit.data.models.mashi.mappers.toNftsDetails
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import javax.inject.Inject
+import kotlin.collections.firstOrNull
+import kotlin.collections.indexOf
 
 class MashitRepo @Inject constructor(private val mashitApi: MashitApi) {
 
@@ -38,8 +40,18 @@ class MashitRepo @Inject constructor(private val mashitApi: MashitApi) {
         wallet: String
     ): MashupDetails {
         val mashupDto = mashitApi.getMashup(wallet)
-        val traits = mashupDto.assets.map { asset ->
+
+        val traits = List(11) { i ->
             Trait(
+                url = null,
+                type = TraitType.entries[i]
+            )
+        }.toMutableList()
+
+        mashupDto.assets.map { asset ->
+            val assetToUpdate = traits.firstOrNull { TraitType.valueOf(asset.name.uppercase()) == it.type }
+            val i = traits.indexOf(assetToUpdate)
+            traits[i] = Trait(
                 type = TraitType.valueOf(asset.name.uppercase()),
                 url = asset.image.replace("https://ipfs.", "https://ipfs.filebase.")
             )

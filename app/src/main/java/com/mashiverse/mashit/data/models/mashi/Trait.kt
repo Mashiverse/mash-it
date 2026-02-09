@@ -2,7 +2,7 @@ package com.mashiverse.mashit.data.models.mashi
 
 data class Trait(
     val type: TraitType,
-    val url: String
+    val url: String? = null
 )
 
 enum class TraitType {

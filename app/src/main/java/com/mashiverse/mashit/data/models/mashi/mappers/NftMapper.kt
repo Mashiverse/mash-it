@@ -9,6 +9,7 @@ fun Nft.toEntity() = NftEntity(
     description = this.description,
     compositeUrl = this.compositeUrl,
     traits = this.traits,
+    owned = this.owned,
     productInfo = this.productInfo
 )
 
@@ -18,6 +19,7 @@ fun NftEntity.fromEntity() = Nft(
     description = this.description,
     compositeUrl = this.compositeUrl,
     traits = this.traits,
+    owned = this.owned,
     productInfo = this.productInfo
 )
 

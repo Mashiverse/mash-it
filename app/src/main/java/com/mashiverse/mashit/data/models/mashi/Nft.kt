@@ -10,7 +10,6 @@ data class Nft(
     val owned: List<Owned>? = null
 )
 
-
 data class ProductInfo(
     val price: Int,
     val perWallet: Int,

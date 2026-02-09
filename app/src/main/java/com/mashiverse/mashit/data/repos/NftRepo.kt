@@ -30,6 +30,10 @@ class NftRepo @Inject constructor(
                 tempNft = tempNft.copy(traits = nft.traits)
             }
 
+            nft.owned?.let {
+                tempNft = tempNft.copy(owned = nft.owned)
+            }
+
             if (nft.isOwned) {
                 tempNft = tempNft.copy(isOwned = true)
             }

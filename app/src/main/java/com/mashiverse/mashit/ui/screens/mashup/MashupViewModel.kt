@@ -53,20 +53,21 @@ class MashupViewModel @Inject constructor(
     }
 
     fun changeMashupTrait(trait: Trait) {
-        val assets = (mashupDetails.value.assets ?: emptyList()).toMutableList()
+        val assets = (mashupDetails.value.assets).toMutableList()
         val assetToUpdate = assets.firstOrNull { it.type == trait.type }
-
-        if (assetToUpdate != null) {
-            assets.remove(assetToUpdate)
-        }
+        val i = assets.indexOf(assetToUpdate)
 
         if (assetToUpdate?.url != trait.url) {
-            assets.add(trait)
+            assets[i] = trait
         } else {
-            assets.add(Trait(trait.type, ""))
+            assets[i] = assets[i].copy(url = null)
         }
 
         _mashupDetails.value = mashupDetails.value.copy(assets = assets)
+    }
+
+    fun changeMint(mint: Int? = null) {
+        _mashupDetails.value = mashupDetails.value.copy(mint = mint)
     }
 
     fun selectColorType(colorType: ColorType) {

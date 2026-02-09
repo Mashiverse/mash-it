@@ -35,7 +35,7 @@ fun TraitHolder(
                 .width(width)
                 .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
-            data = trait.url,
+            data = trait.url ?: "",
             getImageType = getImageType,
             setImageType = setImageType
         )
