@@ -78,7 +78,7 @@ fun Shop() {
 
         Button(onClick = {
             scope.launch {
-                viewModel.preAuthorizeUsdc(clientRef!!)
+                viewModel.mint(clientRef!!)
             }
 
         }) {

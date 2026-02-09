@@ -9,7 +9,7 @@ const val WALLET_KEY = "wallet"
 // API URLs
 const val ALCHEMY_BASE_URL = "https://polygon-mainnet.g.alchemy.com/"
 const val MASHIT_BASE_URL = "https://avatar-artists-guild.web.app/"
-const val MASHI_BASE_URL = "https://katzemon.com/"
+const val MASHIVERSE_BASE_URL = "https://katzemon.com/"
 
 // Keys
 const val ALCHEMY_KEY = BuildConfig.ALCHEMY_API_KEY

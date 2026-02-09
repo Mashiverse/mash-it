@@ -10,14 +10,7 @@ import com.mashiverse.mashit.data.models.color.SelectedColors
 import com.mashiverse.mashit.utils.color.helpers.replaceColors
 import okio.Buffer
 
-fun String.containsSvgMask(): Boolean {
-    // Matches "<mask" followed by any characters until ">"
-    val maskRegex = Regex("<mask[\\s>]", RegexOption.IGNORE_CASE)
-    return maskRegex.containsMatchIn(this)
-}
-
 class SvgCustomDecoder(
-    private val onMaskDetection: (Boolean) -> Unit,
     private val selectedColors: SelectedColors?,
     private val result: SourceFetchResult,
     private val options: Options,
@@ -33,8 +26,6 @@ class SvgCustomDecoder(
                 selectedColors.hair
             )
         }
-
-        onMaskDetection.invoke(svgText.containsSvgMask())
 
         val editedResult = SourceFetchResult(
             source = coil3.decode.ImageSource(
@@ -52,7 +43,6 @@ class SvgCustomDecoder(
     }
 
     class Factory(
-        private val onMaskDetection: (Boolean) -> Unit,
         private val selectedColors: SelectedColors?,
     ) : Decoder.Factory {
 
@@ -63,7 +53,6 @@ class SvgCustomDecoder(
         ): Decoder {
             return SvgCustomDecoder(
                 selectedColors = selectedColors,
-                onMaskDetection = onMaskDetection,
                 result = result,
                 options = options,
                 imageLoader = imageLoader

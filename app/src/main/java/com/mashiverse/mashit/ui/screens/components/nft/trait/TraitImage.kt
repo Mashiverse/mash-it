@@ -28,13 +28,13 @@ import com.mashiverse.mashit.data.models.color.SelectedColors
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.ui.theme.MashiBackground
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
-import com.mashiverse.mashit.utils.MASHI_BASE_URL
+import com.mashiverse.mashit.utils.MASHIVERSE_BASE_URL
 import com.mashiverse.mashit.utils.decoders.SvgCustomDecoder
+import com.mashiverse.mashit.utils.helpers.ImageHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -82,17 +82,11 @@ private fun SvgImage(
     val ctx = LocalContext.current
 
     var cachedPainter by remember { mutableStateOf<Painter?>(null) }
-    var hasMask by remember { mutableStateOf(false) }
 
     val svgLoader = remember(ctx, selectedColors) {
         ImageLoader.Builder(ctx)
             .components {
-                add(
-                    SvgCustomDecoder.Factory(
-                        selectedColors = selectedColors,
-                        onMaskDetection = { hasMask = it }
-                    )
-                )
+                add(SvgCustomDecoder.Factory(selectedColors = selectedColors))
                 add(SvgDecoder.Factory())
             }
             .build()
@@ -166,7 +160,7 @@ fun TraitImage(
                 ImageType.SVG, ImageType.SVG_MASK -> {
                     val newData = when (imageType) {
                         ImageType.SVG -> data
-                        ImageType.SVG_MASK -> "${MASHI_BASE_URL}api/svg/${data.split("/").last()}"
+                        ImageType.SVG_MASK -> "${MASHIVERSE_BASE_URL}api/svg/${data.split("/").last()}"
                         else -> ""
                     }
                     SvgImage(
@@ -178,7 +172,7 @@ fun TraitImage(
                 }
 
                 ImageType.APNG -> {
-                    val newData = "${MASHI_BASE_URL}api/apng/${data.split("/").last()}"
+                    val newData = "${MASHIVERSE_BASE_URL}api/apng/${data.split("/").last()}"
                     NonSvgImage(
                         modifier = modifier,
                         data = newData,
@@ -220,7 +214,7 @@ private fun rememberImageType(
                     }
 
                     connection.inputStream.use { stream ->
-                        detectImageType(stream)
+                        ImageHelper.detectImageType(stream)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -234,37 +228,4 @@ private fun rememberImageType(
     }
 
     return result
-}
-
-/** Detects SVG, APNG, or OTHER from the first 1000 bytes */
-private fun detectImageType(input: InputStream): ImageType {
-    // We use a buffered approach to peek at the start without losing data
-    // or we read the bytes into a reusable array.
-    val buffer = ByteArray(1024)
-    input.mark(1024) // Mark the start if the stream supports it
-    val bytesRead = input.read(buffer)
-    if (bytesRead <= 0) return ImageType.OTHER
-
-    // 1. PNG & APNG Detection (Check bytes first, it's faster)
-    val pngSignature = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
-    if (bytesRead >= 8 && buffer.take(8).toByteArray().contentEquals(pngSignature)) {
-        // Look for "acTL" chunk in the first KB to identify Animated PNG
-        val headerString = buffer.toString(Charsets.US_ASCII)
-        return if (headerString.contains("acTL")) ImageType.APNG else ImageType.OTHER
-    }
-
-    // 2. SVG Detection (Read all if initial check suggests XML/SVG)
-    val initialHeader = buffer.toString(Charsets.UTF_8).lowercase()
-    if (initialHeader.contains("<svg") || initialHeader.contains("<?xml")) {
-        // To be 100% sure it's a valid SVG, you might want to read the rest
-        // Use .use { ... } to ensure the stream closes if this is the end of the line
-        val fullContent = initialHeader + input.bufferedReader().use { it.readText() }
-        if (fullContent.contains("mask", ignoreCase = true)) {
-            return ImageType.SVG_MASK
-        }
-
-        return ImageType.SVG
-    }
-
-    return ImageType.OTHER
 }
