@@ -10,7 +10,9 @@ import com.mashiverse.mashit.data.models.color.ColorType
 import com.mashiverse.mashit.data.models.color.SelectedColors
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupDetails
+import com.mashiverse.mashit.data.models.mashi.MashupTrait
 import com.mashiverse.mashit.data.models.mashi.Trait
+import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
@@ -52,22 +54,29 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun changeMashupTrait(trait: Trait) {
+    fun updateMashup(mashupTrait: MashupTrait) {
+        val trait = mashupTrait.trait
+        var mint = _mashupDetails.value.mint
+
         val assets = (mashupDetails.value.assets).toMutableList()
         val assetToUpdate = assets.firstOrNull { it.type == trait.type }
         val i = assets.indexOf(assetToUpdate)
 
         if (assetToUpdate?.url != trait.url) {
             assets[i] = trait
+
+            if (assets[i].type == TraitType.BACKGROUND) {
+                mint = mashupTrait.mint
+            }
         } else {
             assets[i] = assets[i].copy(url = null)
+
+            if (assets[i].type == TraitType.BACKGROUND) {
+                mint = null
+            }
         }
 
-        _mashupDetails.value = mashupDetails.value.copy(assets = assets)
-    }
-
-    fun changeMint(mint: Int? = null) {
-        _mashupDetails.value = mashupDetails.value.copy(mint = mint)
+        _mashupDetails.value = mashupDetails.value.copy(assets = assets, mint = mint)
     }
 
     fun selectColorType(colorType: ColorType) {

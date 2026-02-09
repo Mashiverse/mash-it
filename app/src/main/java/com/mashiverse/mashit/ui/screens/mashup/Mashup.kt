@@ -40,14 +40,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.color.ColorType
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
-import com.mashiverse.mashit.ui.screens.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraLargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.ExtraLargeMashiHolderWidth
@@ -121,11 +119,8 @@ fun Mashup() {
         }
     }
 
-    val changeMashupTrait = { trait: MashupTrait ->
-        viewModel.changeMashupTrait(trait.trait)
-        if (trait.trait.type == TraitType.BACKGROUND) {
-            viewModel.changeMint(trait.mint)
-        }
+    val changeMashupTrait = { mashupTrait: MashupTrait ->
+        viewModel.updateMashup(mashupTrait)
     }
 
     // Collection Data
@@ -208,11 +203,10 @@ fun Mashup() {
                         onClick = {
                             if (nfts.isNotEmpty()) {
                                 val randomAssets = TraitType.entries.mapNotNull { type ->
-                                    traitsByType[type]?.randomOrNull()?.trait
+                                    traitsByType[type]?.randomOrNull()
                                 }
-                                randomAssets.forEach {
-                                    viewModel.changeMashupTrait(it)
-
+                                randomAssets.forEach { asset ->
+                                    viewModel.updateMashup(asset)
                                 }
                             }
                         }
