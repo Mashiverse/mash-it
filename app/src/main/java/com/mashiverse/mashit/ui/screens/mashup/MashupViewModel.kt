@@ -61,12 +61,14 @@ class MashupViewModel @Inject constructor(
         val assetToUpdate = assets.firstOrNull { it.type == trait.type }
         val i = assets.indexOf(assetToUpdate)
 
-        if (isRandom || assetToUpdate?.url != trait.url) {
+        if (isRandom || assetToUpdate?.url != trait.url ) {
             assets[i] = trait
 
             if (assets[i].type == TraitType.BACKGROUND) {
                 mint = mashupTrait.mint
             }
+        } else if (mint != mashupTrait.mint) {
+            mint = mashupTrait.mint
         } else {
             assets[i] = assets[i].copy(url = null)
 
