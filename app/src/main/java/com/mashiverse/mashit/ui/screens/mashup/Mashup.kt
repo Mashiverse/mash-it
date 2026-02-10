@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -40,6 +41,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.color.ColorType
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
+import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
@@ -58,6 +61,7 @@ import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,34 +129,60 @@ fun Mashup() {
     }
 
     // Collection Data
-    val nfts by viewModel.collectionFlow
+    val collection by viewModel.collectionFlow
         .map { it.fromEntities() }
         .collectAsState(emptyList())
 
-    val traitsByType = remember(nfts) {
-        TraitType.entries.associateWith { type ->
-            nfts
-                .filter { nft ->
-                    nft.traits?.any { it.type == type } ?: false
-                }
-                .map { nft ->
-                    MashupTrait(
-                        trait = nft.traits!!.first { it.type == type },
-                        avatarName = nft.name,
-                        mint = if (type == TraitType.BACKGROUND) {
-                            nft.owned!![0].mint
-                        } else {
-                            null
-                        }
+    var nfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
+
+    LaunchedEffect(collection) {
+        val temp = mutableListOf<Nft>()
+        Timber.tag("GG").d(collection.size.toString())
+        collection.forEach { nft ->
+            nft.owned?.forEach { owned ->
+                Timber.tag("GG").d(owned.toString())
+                temp.add(
+                    nft.copy(
+                        owned = listOf(
+                            Owned(mint = owned.mint, timestamp = owned.timestamp)
+                        )
                     )
-                }
-                .toSet().toList()
+                )
+            }
         }
+        nfts = temp
+    }
+
+    val traitsByType = remember(nfts) {
+        Timber.tag("GG").d(nfts.size.toString())
+        val allMashupTraits = nfts.flatMap { nft ->
+            nft.traits?.map { trait ->
+                MashupTrait(
+                    trait = trait,
+                    avatarName = nft.name,
+                    mint = if (trait.type == TraitType.BACKGROUND) {
+                        nft.owned?.getOrNull(0)?.mint
+                    } else {
+                        null
+                    }
+                )
+            } ?: emptyList()
+        }
+
+        allMashupTraits.groupBy { it.trait.type }
     }
 
     var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
     val traits by remember(selectedCategory, nfts) {
-        derivedStateOf { traitsByType[selectedCategory] ?: emptyList() }
+        derivedStateOf {
+            val traits = traitsByType[selectedCategory] ?: emptyList()
+
+            if (selectedCategory != TraitType.BACKGROUND) {
+                traits.distinctBy { it.avatarName }
+            } else {
+                traits
+            }
+        }
     }
 
     val onMashupCategorySelect = { traitType: TraitType ->
