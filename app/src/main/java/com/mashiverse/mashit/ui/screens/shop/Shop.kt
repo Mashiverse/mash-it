@@ -29,7 +29,7 @@ import timber.log.Timber
 @Composable
 fun Shop(listingId: String?) {
 
-    if (listingId != null) {
+    if (listingId != null && listingId != "") {
         Timber.tag("GG").d(listingId)
     }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -44,6 +44,13 @@ fun Shop(listingId: String?) {
     val selectId = { id: String ->
         viewModel.selectId(id)
         isBottomSheet = true
+    }
+
+    LaunchedEffect(listingId) {
+        if (!listingId.isNullOrEmpty()) {
+            selectId.invoke(listingId)
+            isBottomSheet = true
+        }
     }
 
     val closeBottomShit = { isBottomSheet = false }
