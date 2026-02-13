@@ -80,7 +80,20 @@ class ShopViewModel @Inject constructor(
         }
     }
 
-    fun mint(client: CoinbaseWalletSDK) {
-        Web3Helper.preAuthorizeUsdc(client)
+    fun mint(client: CoinbaseWalletSDK, fromAddress: String, listingId: String, price: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val hasEnoughUsdc = Web3Helper.hasEnoughUsdc(address = fromAddress, price = price)
+
+            if (hasEnoughUsdc) {
+                Web3Helper.mint(
+                    client,
+                    fromAddress = fromAddress,
+                    listingId = listingId,
+                    price = price
+                )
+            } else {
+                Timber.tag("GG").d("Not enough usdc to mint")
+            }
+        }
     }
 }
