@@ -19,7 +19,7 @@ class NftRepo @Inject constructor(
         if (currentNft == null) {
             nftDao.insertNft(nft)
         } else {
-            var tempNft = currentNft!!
+            var tempNft: NftEntity = currentNft
 
             nft.productInfo?.let {
                 tempNft = tempNft.copy(productInfo = nft.productInfo)
