@@ -101,7 +101,7 @@ fun Main() {
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = MainRoutes.Shop,
+                startDestination = MainRoutes.Shop(listingId = null),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)

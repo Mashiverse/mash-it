@@ -5,11 +5,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class MainRoutes {
     @Serializable
-    data object Shop: MainRoutes()
+    data class Shop(val listingId: String?) : MainRoutes()
+
     @Serializable
-    data object Artists: MainRoutes()
+    data object Artists : MainRoutes()
+
     @Serializable
-    data object Collection: MainRoutes()
+    data object Collection : MainRoutes()
+
     @Serializable
-    data object Mashup: MainRoutes()
+    data object Mashup : MainRoutes()
 }
