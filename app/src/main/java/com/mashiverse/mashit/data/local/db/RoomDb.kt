@@ -12,7 +12,7 @@ import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 
 @Database(
     entities = [NftEntity::class, ImageTypeEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(NftConverters::class, ImageTypeConverters::class)

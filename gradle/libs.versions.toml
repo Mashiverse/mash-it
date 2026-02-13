@@ -25,6 +25,7 @@ litertApi = "1.4.1"
 roomPaging = "2.8.4"
 timber = "5.0.1"
 pagingCommon = "3.4.1"
+navigationRuntimeKtx = "2.9.7"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
@@ -46,6 +47,7 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 core = { module = "org.web3j:core", version.ref = "core" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -66,6 +68,7 @@ androidx-compose-remote-creation-core = { group = "androidx.compose.remote", nam
 litert-api = { group = "com.google.ai.edge.litert", name = "litert-api", version.ref = "litertApi" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCommon" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

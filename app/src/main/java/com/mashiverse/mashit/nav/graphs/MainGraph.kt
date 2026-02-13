@@ -17,6 +17,11 @@ fun NavGraphBuilder.mainGraph() {
                 basePath = "mashit://shop"
             ) {
                 this.uriPattern = "mashit://shop/{listingId}"
+            },
+            navDeepLink<MainRoutes.Shop>(
+                basePath = "https://www.mash-it.io"
+            ) {
+                uriPattern = "https://www.mash-it.io/shop/{listingId}"
             }
         )
     ) { backStackEntry ->

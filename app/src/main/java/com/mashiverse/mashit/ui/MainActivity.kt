@@ -1,5 +1,9 @@
 package com.mashiverse.mashit.ui
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,20 +12,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.mashiverse.mashit.ui.screens.Main
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.DarkSystemBarStyle
 import com.mashiverse.mashit.ui.theme.MashItTheme
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Logging
         if (Timber.treeCount == 0) {
             Timber.plant(Timber.DebugTree())
         }
@@ -32,15 +40,32 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
+            navController = rememberNavController()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                        101
+                    )
+                }
+            }
+
             MashItTheme {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Background)
-                )
-
-                Main()
+                ) {
+                    Main(navController = navController)
+                }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        navController.handleDeepLink(intent)
     }
 }

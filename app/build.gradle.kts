@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.androidx.compose.remote.creation.core)
     implementation(libs.litert.api)
     implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.navigation.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -126,6 +127,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)
