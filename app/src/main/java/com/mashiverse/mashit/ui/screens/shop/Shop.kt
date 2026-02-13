@@ -28,10 +28,6 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Shop(listingId: String?) {
-
-    if (listingId != null && listingId != "") {
-        Timber.tag("GG").d(listingId)
-    }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
