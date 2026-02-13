@@ -46,7 +46,7 @@ fun ProductInfoSection(
     }
 
     Text(
-        text = "${productInfo.price} ${productInfo.priceCurrency.name}",
+        text = "${productInfo.price.toInt()} ${productInfo.priceCurrency.name}",
         color = ContentAccentColor,
         fontSize = 14.sp
     )
@@ -82,7 +82,7 @@ fun ProductInfoSection(
                 else -> "Sold"
             },
             height = 32.dp,
-            width = 80.dp,
+            width = 88.dp,
             enabled = when {
                 productInfo.delisted -> false
                 soldQty < productInfo.quantity -> true
