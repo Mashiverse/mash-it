@@ -77,13 +77,14 @@ fun ProductInfoSection(
 
         BuyButton(
             text = when {
+                productInfo.delisted -> "Delisted"
                 soldQty < productInfo.quantity -> "Buy"
-                productInfo.isPaused -> "Delisted"
                 else -> "Sold"
             },
             height = 32.dp,
             width = 80.dp,
             enabled = when {
+                productInfo.delisted -> false
                 soldQty < productInfo.quantity -> true
                 else -> false
             },

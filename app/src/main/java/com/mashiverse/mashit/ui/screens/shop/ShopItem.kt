@@ -51,6 +51,7 @@ fun ShopItem(
         }
     }
 
+    val delisted = nft.productInfo?.delisted ?: false
 
     val isSoldOut by remember(soldQty) {
         mutableStateOf(soldQty >= (productInfo?.quantity ?: -1))
@@ -89,8 +90,12 @@ fun ShopItem(
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         BuyButton(
-            text = if (isSoldOut) "Sold out" else "${productInfo?.price} ${productInfo?.priceCurrency?.name}",
-            enabled = !isSoldOut,
+            text = when {
+                isSoldOut -> "Sold out"
+                delisted -> "Delisted"
+                else -> "${productInfo?.price?.toInt()} ${productInfo?.priceCurrency?.name}"
+            },
+            enabled = !isSoldOut && !delisted,
         )
     }
 }

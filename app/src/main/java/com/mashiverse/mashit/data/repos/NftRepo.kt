@@ -9,10 +9,9 @@ import javax.inject.Inject
 class NftRepo @Inject constructor(
     val nftDao: NftDao,
 ) {
-    val nftsFlow: Flow<List<NftEntity>> = nftDao.getNfts()
     val ownedNftsFlow: Flow<List<NftEntity>> = nftDao.getOwnedNfts()
 
-    suspend fun updateNfts(nfts: List<NftEntity>) = nftDao.updateNfts(nfts)
+    suspend fun deleteNfts(nfts: List<NftEntity>) = nftDao.deleteNfts(nfts)
 
     suspend fun insertNft(nft: NftEntity) {
         val currentNft = nftDao.getNftByName(nft.name)
@@ -44,8 +43,7 @@ class NftRepo @Inject constructor(
 
     suspend fun clearOwned() {
         val ownedNfts = ownedNftsFlow.first()
-        val list = ownedNfts.map { it.copy(isOwned = false) }
-        nftDao.updateNfts(list)
+        nftDao.deleteNfts(ownedNfts)
     }
 
     suspend fun insertNfts(nfts: List<NftEntity>) {

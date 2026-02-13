@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
@@ -36,20 +37,16 @@ fun Shop() {
     var isBottomSheet by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<ShopViewModel>()
-    val listings by remember {
-        viewModel.listings
-    }
-    val selectedListing by remember {
-        viewModel.selectedNft
-    }
+    val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
+
+    val selectedListing by remember { viewModel.selectedNft }
+
     val selectId = { id: String ->
         viewModel.selectId(id)
         isBottomSheet = true
     }
 
-    val closeBottomShit = {
-        isBottomSheet = false
-    }
+    val closeBottomShit = { isBottomSheet = false }
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -78,64 +75,52 @@ fun Shop() {
 
         Button(onClick = {
             scope.launch {
-                viewModel.mint(clientRef!!)
+                clientRef?.let { viewModel.mint(it) }
             }
-
         }) {
             Text("Mint")
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(PaddingSize)
-        ) {
-            item {
+//        LazyColumn(
+//            modifier = Modifier.fillMaxSize(),
+//            verticalArrangement = Arrangement.spacedBy(PaddingSize)
+//        ) {
+//            item {
                 ShopSection(
                     sectionName = "Ervindas",
                     selectId = selectId,
-                    sectionItems = listings,
-                    getImageType = { url: String ->
+                    sectionItems = pagingItems,
+                    getImageType = { url ->
                         var imageType: ImageType? = null
-                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                            imageType = type
-                        }
+                        viewModel.getTraitTypeEntity(url) { type -> imageType = type }
                         imageType
                     },
-                    setImageType = { imageType: ImageType, data: String ->
-                        viewModel.insertTraitType(
-                            url = data,
-                            imageType = imageType
-                        )
+                    setImageType = { type, data ->
+                        viewModel.insertTraitType(url = data, imageType = type)
                     },
                     getSoldQty = getSoldQty
                 )
             }
-        }
-    }
+//        }
+//    }
 
     if (isBottomSheet) {
-        selectedListing?.let {
+        selectedListing?.let { nft ->
             MashiBottomSheet(
-                selectedNft = selectedListing!!,
+                selectedNft = nft,
                 sheetState = sheetState,
                 closeBottomShit = closeBottomShit,
-                getImageType = { url: String ->
+                getImageType = { url ->
                     var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                        imageType = type
-                    }
+                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
                     imageType
                 },
-                setImageType = { imageType: ImageType, data: String ->
-                    viewModel.insertTraitType(
-                        url = data,
-                        imageType = imageType
-                    )
+                setImageType = { type, data ->
+                    viewModel.insertTraitType(url = data, imageType = type)
                 },
             ) {
                 MashiDetailsSection(
-                    nft = selectedListing!!,
+                    nft = nft,
                     scope = scope,
                     closeBottomShit = closeBottomShit,
                     sheetState = sheetState,

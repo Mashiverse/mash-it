@@ -11,12 +11,12 @@ data class Nft(
 )
 
 data class ProductInfo(
-    val price: Int,
+    val price: Double,
     val perWallet: Int,
     val soldQuantity: Int,
     val quantity: Int,
     val priceCurrency: PriceCurrency = PriceCurrency.USDC,
-    val isPaused: Boolean,
+    val delisted: Boolean,
     val id: String,
     val listingId: String
 )

@@ -10,12 +10,12 @@ import com.mashiverse.mashit.data.remote.dtos.ListingsDto
 
 fun ListingsDto.toNftsDetails() = this.listings.map { listing ->
     val productInfo = ProductInfo(
-        price = listing.price.toInt(),
+        price = listing.price.toDouble(),
         perWallet = listing.maxPerWallet,
         soldQuantity = listing.totalSold,
         quantity = listing.maxSupply,
         priceCurrency = PriceCurrency.valueOf(listing.currency),
-        isPaused = listing.paused,
+        delisted = listing.status == "delisted",
         id = listing.id,
         listingId = listing.listingId,
     )
@@ -42,12 +42,12 @@ fun ListingDto.toNftDetails(): Nft {
     }
 
     val productInfo = ProductInfo(
-        price = listing.price.toInt(),
+        price = listing.price.toDouble(),
         perWallet = listing.maxPerWallet,
         soldQuantity = listing.totalSold,
         quantity = listing.maxSupply,
         priceCurrency = PriceCurrency.valueOf(listing.currency),
-        isPaused = listing.paused,
+        delisted = listing.status == "delisted",
         listingId = listing.listingId,
         id = listing.id
     )

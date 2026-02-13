@@ -1,5 +1,6 @@
 package com.mashiverse.mashit.data.local.db.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,9 +13,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NftDao {
-    @Query("SELECT * FROM nft_details")
-    fun getNfts(): Flow<List<NftEntity>>
-
     @Query("SELECT * FROM nft_details WHERE name = :name LIMIT 1")
     suspend fun getNftByName(name: String): NftEntity?
 
@@ -26,7 +24,4 @@ interface NftDao {
 
     @Delete
     suspend fun deleteNfts(nfts: List<NftEntity>)
-
-    @Update
-    suspend fun updateNfts(nfts: List<NftEntity>)
 }
