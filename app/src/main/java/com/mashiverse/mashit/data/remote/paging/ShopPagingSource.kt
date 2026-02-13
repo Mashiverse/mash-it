@@ -1,6 +1,5 @@
 package com.mashiverse.mashit.data.remote.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.mashiverse.mashit.data.models.mashi.Nft

@@ -41,7 +41,7 @@ fun ProductInfoSection(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty?.invoke(nft.productInfo.listingId?.toInt() ?: 0) ?: 0
+            soldQty = getSoldQty?.invoke(nft.productInfo.listingId.toInt()) ?: 0
         }
     }
 

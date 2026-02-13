@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 

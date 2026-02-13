@@ -1,6 +1,5 @@
 package com.mashiverse.mashit.utils.helpers
 
-import com.mashiverse.mashit.BuildConfig
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.CONTRACT_ADDRESS
 import org.web3j.abi.FunctionEncoder

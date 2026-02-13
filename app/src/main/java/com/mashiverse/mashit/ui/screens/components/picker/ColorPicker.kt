@@ -2,13 +2,18 @@ package com.mashiverse.mashit.ui.screens.components.picker
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.drag
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -64,40 +69,47 @@ fun ColorPicker(
                 .background(Brush.horizontalGradient(listOf(Color.White, rangeColor)))
                 .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
                 .pointerInput(pickerSize) {
-                    forEachGesture {
-                        awaitPointerEventScope {
-                            val down = awaitFirstDown()
-                            onDraggingChange(true)
-                            isDragging = true
+                    if (pickerSize.width <= 0 || pickerSize.height <= 0) return@pointerInput
 
-                            val updatePosition: (Offset) -> Unit = { pos ->
-                                val constrained = Offset(
-                                    x = pos.x.coerceIn(0f, pickerSize.width.toFloat()),
-                                    y = pos.y.coerceIn(0f, pickerSize.height.toFloat())
-                                )
-                                internalLocation = constrained
-                                onPickerLocationChange(constrained)
+                    awaitEachGesture {
+                        // 1. Wait for the initial touch down
+                        val down = awaitFirstDown()
 
-                                val saturation = (constrained.x / pickerSize.width).coerceIn(0f, 1f)
-                                val brightness = (1f - constrained.y / pickerSize.height).coerceIn(0f, 1f)
-                                val newColor = ColorPickerHelper.hsvToColor(
-                                    rangeColor.toHue(),
-                                    saturation,
-                                    brightness
-                                )
-                                onPickedColor(newColor)
-                            }
+                        isDragging = true
+                        onDraggingChange(true)
 
-                            updatePosition(down.position)
+                        val updatePosition: (Offset) -> Unit = { pos ->
+                            val constrained = Offset(
+                                x = pos.x.coerceIn(0f, pickerSize.width.toFloat()),
+                                y = pos.y.coerceIn(0f, pickerSize.height.toFloat())
+                            )
+                            internalLocation = constrained
+                            onPickerLocationChange(constrained)
 
-                            drag(down.id) { change ->
-                                updatePosition(change.position)
-                                change.consume()
-                            }
+                            val saturation = (constrained.x / pickerSize.width).coerceIn(0f, 1f)
+                            val brightness =
+                                (1f - (constrained.y / pickerSize.height)).coerceIn(0f, 1f)
 
-                            onDraggingChange(false)
-                            isDragging = false
+                            val newColor = ColorPickerHelper.hsvToColor(
+                                rangeColor.toHue(),
+                                saturation,
+                                brightness
+                            )
+                            onPickedColor(newColor)
                         }
+
+                        // Initial update on tap
+                        updatePosition(down.position)
+
+                        // 2. Track the drag until release or cancellation
+                        drag(down.id) { change ->
+                            updatePosition(change.position)
+                            change.consume()
+                        }
+
+                        // 3. Cleanup state when finger is lifted or gesture is lost
+                        isDragging = false
+                        onDraggingChange(false)
                     }
                 }
         )

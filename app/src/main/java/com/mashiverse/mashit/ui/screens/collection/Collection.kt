@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 
-@SuppressLint("ConfigurationScreenWidthHeight")
+@SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Collection() {

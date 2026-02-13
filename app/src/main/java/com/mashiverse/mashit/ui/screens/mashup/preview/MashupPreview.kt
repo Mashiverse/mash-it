@@ -52,9 +52,6 @@ fun MashupPreview(
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
-    val compositeHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize)
-    val compositeHolderHeight = compositeHolderWidth * 4 / 3
-
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
         shape = BottomSheetShape,
@@ -108,7 +105,7 @@ fun MashupPreview(
 
                 Spacer(modifier = Modifier.height(PaddingSize))
 
-                mashupDetails.assets.sortedBy { it?.type }.let {
+                mashupDetails.assets.sortedBy { it.type }.let {
                     FlowRow(
                         modifier = Modifier.fillMaxWidth()
                             .wrapContentHeight(),
@@ -118,7 +115,7 @@ fun MashupPreview(
                     ) {
                         it.forEach { i ->
                             TraitHolder(
-                                trait = i!!,
+                                trait = i,
                                 width = mashiHolderWidth,
                                 height = mashiHolderHeight,
                                 getImageType = getImageType,

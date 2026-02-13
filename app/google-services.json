@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "681387844882",
+    "project_id": "mash-it-android-app",
+    "storage_bucket": "mash-it-android-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681387844882:android:e0808aa76209375a4fbfcb",
+        "android_client_info": {
+          "package_name": "com.mashiverse.mashit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-1msPocbArKixd29j6dbi3n_TBmRHXX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

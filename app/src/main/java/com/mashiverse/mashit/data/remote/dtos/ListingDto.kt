@@ -1,5 +1,6 @@
 package com.mashiverse.mashit.data.remote.dtos
 
+@Suppress("PropertyName")
 data class ListingDto(
     val listing: Listing,
     val success: Boolean

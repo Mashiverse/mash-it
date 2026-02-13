@@ -33,10 +33,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.color.ColorType
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -63,17 +61,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@SuppressLint("ConfigurationScreenWidthHeight")
+@SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
-
-    val config = LocalConfiguration.current
-    val mashiHolderWidth =
-        (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
-    val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     // Bottom Sheet States
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)

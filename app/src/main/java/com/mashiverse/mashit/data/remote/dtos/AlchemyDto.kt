@@ -1,5 +1,8 @@
+@file:Suppress("PropertyName")
+
 package com.mashiverse.mashit.data.remote.dtos
 
+@Suppress("PropertyName")
 data class AlchemyDto(
     val ownedNfts: List<OwnedNft>,
     val pageKey: String?,

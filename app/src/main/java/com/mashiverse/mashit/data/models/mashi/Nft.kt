@@ -25,8 +25,3 @@ enum class PriceCurrency {
     USDC,
     POL
 }
-
-data class ShopListings(
-    val listings: List<Nft>,
-    val hasMore: Boolean
-)

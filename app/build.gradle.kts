@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.21"
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
-    alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 configure<ApplicationExtension> {
@@ -122,6 +122,10 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)

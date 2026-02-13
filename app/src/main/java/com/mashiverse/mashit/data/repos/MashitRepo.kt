@@ -51,7 +51,7 @@ class MashitRepo @Inject constructor(
             )
         }.toMutableList()
 
-        mashupDto.assets.map { asset ->
+        mashupDto.assets.forEach { asset ->
             val assetToUpdate =
                 traits.firstOrNull { TraitType.valueOf(asset.name.uppercase()) == it.type }
             val i = traits.indexOf(assetToUpdate)

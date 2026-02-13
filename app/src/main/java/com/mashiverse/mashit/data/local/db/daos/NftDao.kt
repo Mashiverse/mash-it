@@ -1,14 +1,11 @@
 package com.mashiverse.mashit.data.local.db.daos
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.mashiverse.mashit.data.local.db.entities.NftEntity
-import com.mashiverse.mashit.data.models.mashi.Nft
 import kotlinx.coroutines.flow.Flow
 
 @Dao

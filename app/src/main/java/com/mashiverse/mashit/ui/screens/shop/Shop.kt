@@ -2,14 +2,10 @@ package com.mashiverse.mashit.ui.screens.shop
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +23,6 @@ import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.theme.PaddingSize
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,34 +68,26 @@ fun Shop() {
     ) {
         CategoryHeader(title = "Shop")
 
-        Button(onClick = {
-            scope.launch {
-                clientRef?.let { viewModel.mint(it) }
-            }
-        }) {
-            Text("Mint")
-        }
-
 //        LazyColumn(
 //            modifier = Modifier.fillMaxSize(),
 //            verticalArrangement = Arrangement.spacedBy(PaddingSize)
 //        ) {
 //            item {
-                ShopSection(
-                    sectionName = "Ervindas",
-                    selectId = selectId,
-                    sectionItems = pagingItems,
-                    getImageType = { url ->
-                        var imageType: ImageType? = null
-                        viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                        imageType
-                    },
-                    setImageType = { type, data ->
-                        viewModel.insertTraitType(url = data, imageType = type)
-                    },
-                    getSoldQty = getSoldQty
-                )
-            }
+        ShopSection(
+            sectionName = "Ervindas",
+            selectId = selectId,
+            sectionItems = pagingItems,
+            getImageType = { url ->
+                var imageType: ImageType? = null
+                viewModel.getTraitTypeEntity(url) { type -> imageType = type }
+                imageType
+            },
+            setImageType = { type, data ->
+                viewModel.insertTraitType(url = data, imageType = type)
+            },
+            getSoldQty = getSoldQty
+        )
+    }
 //        }
 //    }
 

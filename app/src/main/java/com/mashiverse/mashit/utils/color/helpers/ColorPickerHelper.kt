@@ -43,6 +43,4 @@ object ColorPickerHelper {
         return Color(android.graphics.Color.HSVToColor(hsv))
     }
 
-    // Clamp a Float between 0..1
-    fun Float.clamp01(): Float = coerceIn(0f, 1f)
 }

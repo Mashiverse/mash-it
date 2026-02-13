@@ -155,7 +155,7 @@ object Web3Helper {
             ).action()
 
             // Convert Coinbase SDK callback to suspend flow
-            val success = suspendCancellableCoroutine<Boolean> { continuation ->
+            val success = suspendCancellableCoroutine { continuation ->
                 client.makeRequest(RequestContent.Request(listOf(action))) { result ->
                     result.onSuccess {
                         Timber.d("✅ Approval Submitted.")
