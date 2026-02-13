@@ -11,6 +11,7 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
@@ -26,10 +27,12 @@ import timber.log.Timber
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
+    dataStoreRepo: DatastoreRepo,
     private val mashItRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo
 ) : ViewModel() {
+    val walletPreferences = dataStoreRepo.walletPreferencesFlow
 
     val shopPagingData: Flow<PagingData<Nft>> = mashItRepo.getShopListPagingData()
         .cachedIn(viewModelScope)
@@ -92,7 +95,7 @@ class ShopViewModel @Inject constructor(
                     price = price
                 )
             } else {
-                Timber.tag("GG").d("Not enough usdc to mint")
+                // TODO: Not enough USDC UI
             }
         }
     }

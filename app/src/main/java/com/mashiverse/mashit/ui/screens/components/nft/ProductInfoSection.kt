@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 fun ProductInfoSection(
     nft: Nft,
     getSoldQty: (suspend (Int) -> Int)?,
+    mint: ((String, Double) -> Unit)?,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -88,7 +89,10 @@ fun ProductInfoSection(
                 soldQty < productInfo.quantity -> true
                 else -> false
             },
-            textSize = 16.sp
+            textSize = 16.sp,
+            onClick = {
+                mint!!.invoke(nft.productInfo.listingId, nft.productInfo.price)
+            }
         )
     }
 }

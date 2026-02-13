@@ -34,7 +34,8 @@ fun ShopSection(
     sectionItems: LazyPagingItems<Nft>,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
-    getSoldQty: suspend (Int) -> Int
+    getSoldQty: suspend (Int) -> Int,
+    mint: (String, Double) -> Unit
 ) {
     Column {
         Row(
@@ -80,7 +81,8 @@ fun ShopSection(
                         selectId = selectId,
                         getImageType = getImageType,
                         setImageType = setImageType,
-                        getSoldQty = getSoldQty
+                        getSoldQty = getSoldQty,
+                        mint = mint
                     )
                 }
             }

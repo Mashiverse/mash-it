@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
@@ -37,6 +39,7 @@ fun Shop(listingId: String?) {
     val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
 
     val selectedListing by remember { viewModel.selectedNft }
+    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
     val selectId = { id: String ->
         viewModel.selectId(id)
@@ -66,6 +69,18 @@ fun Shop(listingId: String?) {
         }
     }
 
+    val mint = { listingId: String, price: Double ->
+        if (clientRef != null && walletPreferences.value.wallet != null) {
+            viewModel.mint(
+                client = clientRef!!,
+                fromAddress = walletPreferences.value.wallet!!,
+                listingId = listingId,
+                price = price
+            )
+        }
+        // TODO: No wallet UI
+    }
+
     val getSoldQty: suspend (Int) -> Int = { listingId ->
         viewModel.getTotalSold(listingId)
     }
@@ -83,7 +98,7 @@ fun Shop(listingId: String?) {
         ) {
             item {
                 ShopSection(
-                    sectionName = "Ervindas",
+                    sectionName = "Shop",
                     selectId = selectId,
                     sectionItems = pagingItems,
                     getImageType = { url ->
@@ -94,7 +109,8 @@ fun Shop(listingId: String?) {
                     setImageType = { type, data ->
                         viewModel.insertTraitType(url = data, imageType = type)
                     },
-                    getSoldQty = getSoldQty
+                    getSoldQty = getSoldQty,
+                    mint = mint
                 )
             }
         }
@@ -120,7 +136,8 @@ fun Shop(listingId: String?) {
                     scope = scope,
                     closeBottomShit = closeBottomShit,
                     sheetState = sheetState,
-                    getSoldQty = getSoldQty
+                    getSoldQty = getSoldQty,
+                    mint = mint
                 )
             }
         }

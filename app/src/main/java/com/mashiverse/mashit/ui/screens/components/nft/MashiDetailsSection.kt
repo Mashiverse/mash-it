@@ -38,7 +38,8 @@ fun MashiDetailsSection(
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
-    getSoldQty: (suspend (Int) -> Int)? = null // TODO: REWORK TO CALLBACK
+    getSoldQty: (suspend (Int) -> Int)? = null, // TODO: REWORK TO CALLBACK
+    mint: ((String, Double) -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
@@ -118,7 +119,11 @@ fun MashiDetailsSection(
             Spacer(modifier = Modifier.weight(1f))
 
             if (nft.productInfo != null) {
-                ProductInfoSection(nft, getSoldQty)
+                ProductInfoSection(
+                    nft = nft,
+                    getSoldQty = getSoldQty,
+                    mint = mint
+                )
             }
         }
     }

@@ -29,6 +29,7 @@ import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 @Composable
 fun ShopItem(
@@ -36,7 +37,8 @@ fun ShopItem(
     selectId: (String) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
-    getSoldQty: suspend (Int) -> Int
+    getSoldQty: suspend (Int) -> Int,
+    mint: (String, Double) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val productInfo = nft.productInfo
@@ -102,6 +104,11 @@ fun ShopItem(
                 else -> "${productInfo?.price?.toInt()} ${productInfo?.priceCurrency?.name}"
             },
             enabled = !isSoldOut && !delisted,
+            onClick = {
+                if (nft.productInfo?.listingId != null) {
+                    mint.invoke(nft.productInfo.listingId, nft.productInfo.price)
+                }
+            }
         )
     }
 }

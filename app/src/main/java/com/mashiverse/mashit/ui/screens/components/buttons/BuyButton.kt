@@ -29,7 +29,8 @@ fun BuyButton(
     enabled: Boolean,
     height: Dp = 32.dp,
     width: Dp = 72.dp,
-    textSize: TextUnit = 12.sp
+    textSize: TextUnit = 12.sp,
+    onClick: () -> Unit
 ) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(
@@ -56,7 +57,7 @@ fun BuyButton(
             disabledContainerColor = ContainerColor
         ),
         enabled = enabled,
-        onClick = {/*TODO*/ },
+        onClick = onClick,
         border = BorderStroke(
             width = (1).dp,
             color = if (enabled) {

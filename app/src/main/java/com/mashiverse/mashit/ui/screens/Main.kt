@@ -2,7 +2,9 @@ package com.mashiverse.mashit.ui.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,12 +46,14 @@ import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Main(navController: NavHostController) {
     val viewModel = hiltViewModel<Web3ViewModel>()
+    val ctx = LocalContext.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -58,6 +62,20 @@ fun Main(navController: NavHostController) {
     val isArtists by remember {
         derivedStateOf {
             navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true
+        }
+    }
+
+    val openGooglePlay = {
+        val packageName = "org.toshi"
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()).apply {
+                setPackage("com.android.vending")
+            }
+            ctx.startActivity(intent)
+        } catch (e: Exception) {
+            val intent = Intent(Intent.ACTION_VIEW,
+                "https://play.google.com/store/apps/details?id=$packageName".toUri())
+            ctx.startActivity(intent)
         }
     }
 
@@ -100,7 +118,11 @@ fun Main(navController: NavHostController) {
                         if (walletPreferences.value.wallet != null) {
                             viewModel.disconnect()
                         } else {
-                            viewModel.initHandshake(clientRef)
+                            if (clientRef?.isCoinbaseWalletInstalled == true) {
+                                viewModel.initHandshake(clientRef)
+                            } else {
+                                openGooglePlay.invoke()
+                            }
                         }
                     },
                 )
