@@ -20,6 +20,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.PriceCurrency
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
@@ -69,11 +70,11 @@ fun ShopSection(
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
         ) {
             items(
-                count = sectionItems.itemCount,
+                count = sectionItems.itemSnapshotList.items.filter { it.productInfo?.priceCurrency != PriceCurrency.POL }.size,
                 key = sectionItems.itemKey { it.name }
             ) { index ->
                 val nft = sectionItems[index]
-                nft?.let { nft ->
+                if (nft != null && nft.productInfo?.priceCurrency != PriceCurrency.POL) {
                     ShopItem(
                         nft = nft,
                         selectId = selectId,

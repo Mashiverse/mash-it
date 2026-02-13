@@ -3,6 +3,7 @@ package com.mashiverse.mashit.data.remote.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.PriceCurrency
 import com.mashiverse.mashit.data.models.mashi.mappers.toNftsDetails
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.utils.MASHIT_KEY
@@ -26,7 +27,12 @@ class ShopPagingSource(
                 data = listings,
                 prevKey = if (offset == 0) null else maxOf(0, offset - limit),
                 // Use listings.size to ensure the next offset is accurate
-                nextKey = if (hasMore && listings.isNotEmpty()) offset + listings.size else null
+                nextKey = when {
+                    // TODO: POL showing and minting
+                    listings.any { it.productInfo?.priceCurrency == PriceCurrency.POL } -> null
+                    hasMore && listings.isNotEmpty() -> offset + listings.size
+                    else -> null
+                }
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
