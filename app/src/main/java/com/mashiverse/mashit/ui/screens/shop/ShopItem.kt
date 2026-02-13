@@ -73,7 +73,13 @@ fun ShopItem(
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = nft.name, fontSize = 14.sp, color = ContentAccentColor)
+        Text(
+            text = if (nft.name.length > 20) {
+                "${nft.name.take(17)}..."
+            } else {
+                nft.name
+            }, fontSize = 14.sp, color = ContentAccentColor
+        )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 

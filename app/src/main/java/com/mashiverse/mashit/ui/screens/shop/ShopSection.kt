@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,8 +22,9 @@ import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
+import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
-import timber.log.Timber
 
 @Composable
 fun ShopSection(
@@ -61,7 +64,8 @@ fun ShopSection(
         val appendState = sectionItems.loadState.append
 
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
         ) {
             items(
@@ -80,8 +84,25 @@ fun ShopSection(
                 }
             }
 
+            if (appendState is LoadState.Loading) {
+                item {
+                    SectionLoading(
+                        modifier = Modifier
+                            .width(LargeMashiHolderWidth)
+                            .height(LargeMashiHolderHeight)
+                    )
+                }
+            }
+
             if (appendState is LoadState.Error) {
-                Timber.e("Paging Error: ${appendState.error.message}")
+                item {
+                    SectionRefresh(
+                        modifier = Modifier
+                            .width(LargeMashiHolderWidth)
+                            .height(LargeMashiHolderHeight),
+                        onRetry = { sectionItems.retry() }
+                    )
+                }
             }
         }
     }

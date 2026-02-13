@@ -54,7 +54,11 @@ fun MashiDetailsSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = nft.name,
+                    text = if (nft.name.length > 20) {
+                        "${nft.name.take(17)}..."
+                    } else {
+                        nft.name
+                    },
                     color = ContentAccentColor,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold

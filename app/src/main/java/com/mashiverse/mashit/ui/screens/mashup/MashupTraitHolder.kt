@@ -30,7 +30,7 @@ fun MashupTraitHolder(
 ) {
     var avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
     avatarName = if (avatarName.length > 16) {
-        avatarName.take(13) + "..."
+        "${avatarName.take(13)}..."
     } else {
         avatarName
     }

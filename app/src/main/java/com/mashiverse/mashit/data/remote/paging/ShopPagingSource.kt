@@ -21,8 +21,6 @@ class ShopPagingSource(
             val response = api.getShopList(apiKey = apiKey, limit = limit, offset = offset)
             val listings = response.toNftsDetails()
             val hasMore = response.pagination.hasMore
-            Timber.tag("GG")
-                .d("$hasMore")
 
             LoadResult.Page(
                 data = listings,

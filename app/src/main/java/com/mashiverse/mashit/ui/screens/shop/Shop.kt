@@ -2,9 +2,11 @@ package com.mashiverse.mashit.ui.screens.shop
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -23,7 +25,6 @@ import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.theme.PaddingSize
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,28 +77,28 @@ fun Shop(listingId: String?) {
     ) {
         CategoryHeader(title = "Shop")
 
-//        LazyColumn(
-//            modifier = Modifier.fillMaxSize(),
-//            verticalArrangement = Arrangement.spacedBy(PaddingSize)
-//        ) {
-//            item {
-        ShopSection(
-            sectionName = "Ervindas",
-            selectId = selectId,
-            sectionItems = pagingItems,
-            getImageType = { url ->
-                var imageType: ImageType? = null
-                viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                imageType
-            },
-            setImageType = { type, data ->
-                viewModel.insertTraitType(url = data, imageType = type)
-            },
-            getSoldQty = getSoldQty
-        )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(PaddingSize)
+        ) {
+            item {
+                ShopSection(
+                    sectionName = "Ervindas",
+                    selectId = selectId,
+                    sectionItems = pagingItems,
+                    getImageType = { url ->
+                        var imageType: ImageType? = null
+                        viewModel.getTraitTypeEntity(url) { type -> imageType = type }
+                        imageType
+                    },
+                    setImageType = { type, data ->
+                        viewModel.insertTraitType(url = data, imageType = type)
+                    },
+                    getSoldQty = getSoldQty
+                )
+            }
+        }
     }
-//        }
-//    }
 
     if (isBottomSheet) {
         selectedListing?.let { nft ->
