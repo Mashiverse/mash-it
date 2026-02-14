@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
+import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.repos.DatastoreRepo
@@ -40,6 +41,17 @@ class ShopViewModel @Inject constructor(
     private val _selectedId = mutableStateOf<String?>(null)
     private val _selectedNft = mutableStateOf<Nft?>(null)
     val selectedNft: State<Nft?> get() = _selectedNft
+
+    private val _dialogContent = mutableStateOf<DialogContent?>(null)
+    val dialogContent: State<DialogContent?> = _dialogContent
+
+    fun clearDialog() {
+        _dialogContent.value = null
+    }
+
+    fun setDialogContent(dialogContent: DialogContent) {
+        _dialogContent.value = dialogContent
+    }
 
     fun selectId(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -92,10 +104,14 @@ class ShopViewModel @Inject constructor(
                     client,
                     fromAddress = fromAddress,
                     listingId = listingId,
-                    price = price
+                    price = price,
+                    onMintFailure = { dialogContent ->
+                        _dialogContent.value = dialogContent
+                    }
                 )
             } else {
-                // TODO: Not enough USDC UI
+                // TODO: Rework error dialog
+                _dialogContent.value = DialogContent(title = "Not enough money", text = "Please top up POL/USDC")
             }
         }
     }

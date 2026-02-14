@@ -1,11 +1,7 @@
 package com.mashiverse.mashit.ui.screens
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -29,15 +25,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
@@ -47,6 +39,7 @@ import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,6 +56,10 @@ fun Main(navController: NavHostController) {
         derivedStateOf {
             navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true
         }
+    }
+
+    val dialogContent by remember {
+        viewModel.dialogContent
     }
 
     val openGooglePlay = {
@@ -149,6 +146,13 @@ fun Main(navController: NavHostController) {
                             scope.launch { drawerState.close() }
                         }
                 )
+            }
+        }
+
+        if (dialogContent != null) {
+            // TODO: rework error dialog
+            Dialog(dialogContent!!) {
+                viewModel.clearDialog()
             }
         }
     }

@@ -4,9 +4,9 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.coinbase.android.nativesdk.message.request.RequestContent
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
+import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.mashi.GasEstimate
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.web3j.abi.FunctionEncoder
@@ -132,6 +132,7 @@ object Web3Helper {
         fromAddress: String,
         listingId: String,
         price: Double,
+        onMintFailure: (DialogContent) -> Unit
     ): Boolean = withContext(Dispatchers.IO) {
         try {
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
@@ -158,23 +159,31 @@ object Web3Helper {
             val success = suspendCancellableCoroutine { continuation ->
                 client.makeRequest(RequestContent.Request(listOf(action))) { result ->
                     result.onSuccess {
-                        Timber.d("✅ Approval Submitted.")
                         continuation.resume(true)
                     }
                     result.onFailure {
-                        Timber.e("❌ Approval Failed: ${it.message}")
+                        onMintFailure.invoke(
+                            DialogContent(
+                                title = "Approval failed",
+                                text = it.message ?: "Unknown error"
+                            )
+                        )
                         continuation.resume(false)
                     }
                 }
             }
 
             if (success) {
-                delay(4000) // Wait for state propagation
-                return@withContext executeMint(client, listingId, fromAddress)
+                return@withContext executeMint(client, listingId, fromAddress, onMintFailure)
             }
             false
         } catch (e: Exception) {
-            Timber.e("Mint process error: ${e.message}")
+            onMintFailure.invoke(
+                DialogContent(
+                    title = "Mint process error",
+                    text = e.message ?: "Unknown error"
+                )
+            )
             false
         }
     }
@@ -183,6 +192,7 @@ object Web3Helper {
         client: CoinbaseWalletSDK,
         listingId: String,
         fromAddress: String,
+        onMintFailure: (DialogContent) -> Unit
     ): Boolean = withContext(Dispatchers.IO) {
         try {
             val mintData = encodeBuyAutoURIData(BigInteger(listingId), fromAddress)
@@ -206,18 +216,33 @@ object Web3Helper {
             suspendCancellableCoroutine { continuation ->
                 client.makeRequest(RequestContent.Request(listOf(action))) { result ->
                     result.onSuccess { actions ->
-                        val res = actions.firstOrNull() as? ActionResult.Result
-                        Timber.d("✅ buyAutoURI Success! Hash: ${res?.value}")
+                        actions.firstOrNull() as? ActionResult.Result
+                        onMintFailure.invoke(
+                            DialogContent(
+                                title = "Mint successful",
+                                text = "Congratulations!"
+                            )
+                        )
                         continuation.resume(true)
                     }
                     result.onFailure {
-                        Timber.e("❌ buyAutoURI Failed: ${it.message}")
+                        onMintFailure.invoke(
+                            DialogContent(
+                                title = "Mint failed",
+                                text = it.message ?: "Unknown error"
+                            )
+                        )
                         continuation.resume(false)
                     }
                 }
             }
         } catch (e: Exception) {
-            Timber.e("ExecuteMint Error: ${e.message}")
+            onMintFailure.invoke(
+                DialogContent(
+                    title = "Minting error",
+                    text = e.message ?: "Unknown error"
+                )
+            )
             false
         }
     }

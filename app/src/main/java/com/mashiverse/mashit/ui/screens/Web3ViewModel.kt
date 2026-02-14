@@ -1,12 +1,15 @@
 package com.mashiverse.mashit.ui.screens
 
 import android.content.Intent
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.coinbase.android.nativesdk.message.request.Account
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
+import com.mashiverse.mashit.data.models.dialog.DialogContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
@@ -20,6 +23,12 @@ class Web3ViewModel @Inject constructor(
     private val dataStoreRepo: DatastoreRepo
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
+    private val _dialogContent = mutableStateOf<DialogContent?>(null)
+    val dialogContent: State<DialogContent?> = _dialogContent
+
+    fun clearDialog() {
+        _dialogContent.value = null
+    }
 
     fun getCoinbaseSdk(openIntent: (Intent) -> Unit): CoinbaseWalletSDK {
         return web3Repo.getCoinbaseSdk(openIntent)
@@ -51,7 +60,10 @@ class Web3ViewModel @Inject constructor(
                 }
             }
             result.onFailure { err ->
-                // TODO: Failure handling
+                _dialogContent.value = DialogContent(
+                    title = "Base auth error",
+                    text = err.message ?: "Unknown error"
+                )
             }
         }
     }

@@ -21,8 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
@@ -77,12 +79,24 @@ fun Shop(listingId: String?) {
                 listingId = listingId,
                 price = price
             )
+        } else {
+            viewModel.setDialogContent(
+                DialogContent(
+                    title = "No wallet",
+                    text = "Please connect your wallet"
+                )
+            )
         }
+
         // TODO: No wallet UI
     }
 
     val getSoldQty: suspend (Int) -> Int = { listingId ->
         viewModel.getTotalSold(listingId)
+    }
+
+    val dialogContent by remember {
+        viewModel.dialogContent
     }
 
     Column(
@@ -140,6 +154,12 @@ fun Shop(listingId: String?) {
                     mint = mint
                 )
             }
+        }
+    }
+
+    if (dialogContent != null) {
+        Dialog(dialogContent!!) {
+            viewModel.clearDialog()
         }
     }
 }
