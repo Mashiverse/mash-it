@@ -19,12 +19,12 @@ import com.mashiverse.mashit.data.repos.Web3Repo
 import com.mashiverse.mashit.utils.helpers.SoldHelper
 import com.mashiverse.mashit.utils.helpers.Web3Helper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
@@ -97,22 +97,15 @@ class ShopViewModel @Inject constructor(
 
     fun mint(client: CoinbaseWalletSDK, fromAddress: String, listingId: String, price: Double) {
         viewModelScope.launch(Dispatchers.IO) {
-            val hasEnoughUsdc = Web3Helper.hasEnoughUsdc(address = fromAddress, price = price)
-
-            if (hasEnoughUsdc) {
-                Web3Helper.mint(
-                    client,
-                    fromAddress = fromAddress,
-                    listingId = listingId,
-                    price = price,
-                    onMintFailure = { dialogContent ->
-                        _dialogContent.value = dialogContent
-                    }
-                )
-            } else {
-                // TODO: Rework error dialog
-                _dialogContent.value = DialogContent(title = "Not enough money", text = "Please top up POL/USDC")
-            }
+            Web3Helper.mint(
+                client,
+                fromAddress = fromAddress,
+                listingId = listingId,
+                price = price,
+                onMintFailure = { dialogContent ->
+                    _dialogContent.value = dialogContent
+                }
+            )
         }
     }
 }

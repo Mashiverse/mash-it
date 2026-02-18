@@ -4,9 +4,11 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.coinbase.android.nativesdk.message.request.RequestContent
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
+import com.mashiverse.mashit.BuildConfig
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.mashi.GasEstimate
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.web3j.abi.FunctionEncoder
@@ -14,12 +16,10 @@ import org.web3j.abi.FunctionReturnDecoder
 import org.web3j.abi.TypeReference
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Function
-import org.web3j.abi.datatypes.Type
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.Transaction
-import org.web3j.protocol.core.methods.response.EthCall
 import org.web3j.protocol.http.HttpService
 import timber.log.Timber
 import java.math.BigInteger
@@ -30,7 +30,8 @@ object Web3Helper {
     private const val USDC_ADDRESS: String = "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
     private const val CHAIN_ID = "137"
 
-    private val web3j = Web3j.build(HttpService("https://polygon-rpc.com"))
+    private val MAX_UINT256 = BigInteger("f".repeat(64), 16)
+    private val web3j = Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
 
     // --- Encoding Helpers ---
 
@@ -48,84 +49,53 @@ object Web3Helper {
         return FunctionEncoder.encode(fn)
     }
 
-    // --- Gas & Nonce Helpers ---
+    // --- Balance & Allowance Helpers ---
 
     suspend fun getUsdcBalance(address: String): BigInteger = withContext(Dispatchers.IO) {
         try {
-            val function = Function(
-                "balanceOf",
-                listOf(Address(address)),
-                listOf(object : TypeReference<Uint256>() {})
-            )
-            val encodedFunction = FunctionEncoder.encode(function)
-
-            val response: EthCall = web3j.ethCall(
-                Transaction.createEthCallTransaction(address, USDC_ADDRESS, encodedFunction),
-                DefaultBlockParameterName.LATEST
-            ).send()
-
-            val results: List<Type<*>> = FunctionReturnDecoder.decode(
-                response.value,
-                function.outputParameters
-            )
-
-            if (results.isNotEmpty()) {
-                results[0].value as BigInteger
-            } else {
-                BigInteger.ZERO
-            }
-        } catch (e: Exception) {
-            Timber.e("Failed to fetch USDC balance: ${e.message}")
-            BigInteger.ZERO
-        }
+            val function = Function("balanceOf", listOf(Address(address)), listOf(object : TypeReference<Uint256>() {}))
+            val response = web3j.ethCall(Transaction.createEthCallTransaction(address, USDC_ADDRESS, FunctionEncoder.encode(function)), DefaultBlockParameterName.LATEST).send()
+            val results = FunctionReturnDecoder.decode(response.value, function.outputParameters)
+            if (results.isNotEmpty()) results[0].value as BigInteger else BigInteger.ZERO
+        } catch (e: Exception) { BigInteger.ZERO }
     }
 
-    /**
-     * Helper to check if user has enough USDC for the price.
-     * @param price The price in USDC (human readable, e.g., 10.5)
-     */
-    suspend fun hasEnoughUsdc(address: String, price: Double): Boolean {
-        val balance = getUsdcBalance(address)
-        val required = (price * 1_000_000).toLong().toBigInteger()
-        return balance >= required
-    }
-
-    private suspend fun getNonce(fromAddress: String): Int = withContext(Dispatchers.IO) {
-        val txCount =
-            web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).send()
-        txCount.transactionCount.toInt()
-    }
-
-    suspend fun calculateGasEstimate(
-        fromAddress: String,
-        toAddress: String,
-        data: String
-    ): GasEstimate = withContext(Dispatchers.IO) {
+    suspend fun getUsdcAllowance(owner: String): BigInteger = withContext(Dispatchers.IO) {
         try {
-            val feeHistory = web3j.ethFeeHistory(1, DefaultBlockParameterName.LATEST, listOf(20.0))
-                .send().feeHistory
-            val baseFee = feeHistory.baseFeePerGas.last()
-            val priorityFee = BigInteger("30000000000")
-            val maxFee = baseFee.add(priorityFee)
-
-            val transaction = Transaction.createEthCallTransaction(fromAddress, toAddress, data)
-            val estimateGas = web3j.ethEstimateGas(transaction).send().amountUsed
-
-            val bufferedLimit =
-                estimateGas.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100))
-
-            GasEstimate(
-                gasLimit = bufferedLimit.toString(),
-                maxFeePerGas = maxFee.toString(),
-                maxPriorityFeePerGas = priorityFee.toString()
-            )
-        } catch (e: Exception) {
-            Timber.e("Gas estimation failed: ${e.message}")
-            GasEstimate("300000", "250000000000", "40000000000")
-        }
+            val function = Function("allowance", listOf(Address(owner), Address(MARKETPLACE_ADDRESS)), listOf(object : TypeReference<Uint256>() {}))
+            val response = web3j.ethCall(Transaction.createEthCallTransaction(owner, USDC_ADDRESS, FunctionEncoder.encode(function)), DefaultBlockParameterName.LATEST).send()
+            val results = FunctionReturnDecoder.decode(response.value, function.outputParameters)
+            if (results.isNotEmpty()) results[0].value as BigInteger else BigInteger.ZERO
+        } catch (e: Exception) { BigInteger.ZERO }
     }
 
-    // --- Main Suspend Actions ---
+    // --- Gas & Nonce Helpers ---
+
+    private suspend fun getNonce(fromAddress: String): BigInteger = withContext(Dispatchers.IO) {
+        web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send().transactionCount
+    }
+
+    suspend fun calculateGasEstimate(fromAddress: String, toAddress: String, data: String): GasEstimate = withContext(Dispatchers.IO) {
+        try {
+            val feeHistory = web3j.ethFeeHistory(1, DefaultBlockParameterName.LATEST, listOf(20.0)).send().feeHistory
+            val baseFee = feeHistory.baseFeePerGas.last()
+            val priorityFee = web3j.ethMaxPriorityFeePerGas().send().maxPriorityFeePerGas.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100))
+            val maxFee = baseFee.multiply(BigInteger.valueOf(2)).add(priorityFee)
+            val estimateGas = web3j.ethEstimateGas(Transaction.createEthCallTransaction(fromAddress, toAddress, data)).send().amountUsed
+            GasEstimate(estimateGas.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)).toString(), maxFee.toString(), priorityFee.toString())
+        } catch (e: Exception) { GasEstimate("350000", "500000000000", "50000000000") }
+    }
+
+    private suspend fun waitForReceipt(txHash: String): Boolean = withContext(Dispatchers.IO) {
+        repeat(30) {
+            val receipt = web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt
+            if (receipt.isPresent) return@withContext receipt.get().isStatusOK
+            delay(4000)
+        }
+        false
+    }
+
+    // --- Main Optimized Action ---
 
     suspend fun mint(
         client: CoinbaseWalletSDK,
@@ -136,54 +106,60 @@ object Web3Helper {
     ): Boolean = withContext(Dispatchers.IO) {
         try {
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
-            val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, usdcPrice)
 
-            val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
-            val nonce = getNonce(fromAddress)
+            // 1. Check Balance first
+            if (getUsdcBalance(fromAddress) < usdcPrice) {
+                onMintFailure.invoke(DialogContent(title = "Mint process error", text = "Insufficient USDC balance."))
+                return@withContext false
+            }
 
-            val action = Web3JsonRPC.SendTransaction(
-                fromAddress = fromAddress,
-                toAddress = USDC_ADDRESS,
-                weiValue = "0",
-                data = approveData,
-                chainId = CHAIN_ID,
-                nonce = nonce,
-                gasLimit = gas.gasLimit,
-                maxFeePerGas = gas.maxFeePerGas,
-                maxPriorityFeePerGas = gas.maxPriorityFeePerGas,
-                gasPriceInWei = null,
-                actionSource = null
-            ).action()
+            // 2. Check Allowance
+            if (getUsdcAllowance(fromAddress) < usdcPrice) {
+                val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, MAX_UINT256)
+                val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
 
-            // Convert Coinbase SDK callback to suspend flow
-            val success = suspendCancellableCoroutine { continuation ->
-                client.makeRequest(RequestContent.Request(listOf(action))) { result ->
-                    result.onSuccess {
-                        continuation.resume(true)
+                val action = Web3JsonRPC.SendTransaction(
+                    fromAddress = fromAddress,
+                    toAddress = USDC_ADDRESS,
+                    weiValue = "0",
+                    data = approveData,
+                    chainId = CHAIN_ID,
+                    nonce = getNonce(fromAddress).toInt(),
+                    gasLimit = gas.gasLimit,
+                    maxFeePerGas = gas.maxFeePerGas,
+                    maxPriorityFeePerGas = gas.maxPriorityFeePerGas,
+                    gasPriceInWei = null,
+                    actionSource = null
+                ).action()
+
+                val txHash = suspendCancellableCoroutine<String?> { continuation ->
+                    client.makeRequest(RequestContent.Request(listOf(action))) { result ->
+                        result.onSuccess { actions ->
+                            val hash = (actions.firstOrNull() as? ActionResult.Result)?.value
+                            continuation.resume(hash) // If hash is null, user likely declined
+                        }
+                        result.onFailure {
+                            continuation.resume(null)
+                        }
                     }
-                    result.onFailure {
-                        onMintFailure.invoke(
-                            DialogContent(
-                                title = "Approval failed",
-                                text = it.message ?: "Unknown error"
-                            )
-                        )
-                        continuation.resume(false)
-                    }
+                }
+
+                if (txHash == null) {
+                    onMintFailure.invoke(DialogContent(title = "Mint process error", text = "Approval declined by user."))
+                    return@withContext false
+                }
+
+                if (!waitForReceipt(txHash)) {
+                    onMintFailure.invoke(DialogContent(title = "Mint process error", text = "Approval transaction failed on the blockchain."))
+                    return@withContext false
                 }
             }
 
-            if (success) {
-                return@withContext executeMint(client, listingId, fromAddress, onMintFailure)
-            }
-            false
+            // 3. Final Minting
+            return@withContext executeMint(client, listingId, fromAddress, onMintFailure)
+
         } catch (e: Exception) {
-            onMintFailure.invoke(
-                DialogContent(
-                    title = "Mint process error",
-                    text = e.message ?: "Unknown error"
-                )
-            )
+            onMintFailure.invoke(DialogContent(title = "Mint process error", text = e.message ?: "Unknown error"))
             false
         }
     }
@@ -197,7 +173,6 @@ object Web3Helper {
         try {
             val mintData = encodeBuyAutoURIData(BigInteger(listingId), fromAddress)
             val gas = calculateGasEstimate(fromAddress, MARKETPLACE_ADDRESS, mintData)
-            val nonce = getNonce(fromAddress)
 
             val action = Web3JsonRPC.SendTransaction(
                 fromAddress = fromAddress,
@@ -205,7 +180,7 @@ object Web3Helper {
                 weiValue = "0",
                 data = mintData,
                 chainId = CHAIN_ID,
-                nonce = nonce,
+                nonce = getNonce(fromAddress).toInt(),
                 gasLimit = gas.gasLimit,
                 maxFeePerGas = gas.maxFeePerGas,
                 maxPriorityFeePerGas = gas.maxPriorityFeePerGas,
@@ -216,33 +191,24 @@ object Web3Helper {
             suspendCancellableCoroutine { continuation ->
                 client.makeRequest(RequestContent.Request(listOf(action))) { result ->
                     result.onSuccess { actions ->
-                        actions.firstOrNull() as? ActionResult.Result
-                        onMintFailure.invoke(
-                            DialogContent(
-                                title = "Mint successful",
-                                text = "Congratulations!"
-                            )
-                        )
-                        continuation.resume(true)
+                        val res = actions.firstOrNull() as? ActionResult.Result
+                        if (res != null) {
+                            // Only show success if we actually have a transaction result
+                            onMintFailure.invoke(DialogContent(title = "Success", text = "Transaction sent successfully!"))
+                            continuation.resume(true)
+                        } else {
+                            onMintFailure.invoke(DialogContent(title = "Mint process error", text = "Transaction was not completed."))
+                            continuation.resume(false)
+                        }
                     }
                     result.onFailure {
-                        onMintFailure.invoke(
-                            DialogContent(
-                                title = "Mint failed",
-                                text = it.message ?: "Unknown error"
-                            )
-                        )
+                        onMintFailure.invoke(DialogContent(title = "Mint process error", text = it.message ?: "Transaction declined or failed"))
                         continuation.resume(false)
                     }
                 }
             }
         } catch (e: Exception) {
-            onMintFailure.invoke(
-                DialogContent(
-                    title = "Minting error",
-                    text = e.message ?: "Unknown error"
-                )
-            )
+            onMintFailure.invoke(DialogContent(title = "Mint process error", text = e.message ?: "Unknown error"))
             false
         }
     }
