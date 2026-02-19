@@ -49,6 +49,47 @@ object Web3Helper {
         return FunctionEncoder.encode(fn)
     }
 
+    // --- Contract State Helpers ---
+
+    private suspend fun canUserMint(listingId: BigInteger, userAddress: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            Timber.tag("GG").d("Simulating mint for Listing: $listingId, User: $userAddress")
+
+            // 1. Prepare the exact data payload for buyAutoURI(listingId, 1, recipient)
+            val mintData = encodeBuyAutoURIData(listingId, userAddress)
+
+            // 2. Simulate the transaction using ethEstimateGas
+            // This doesn't cost any gas and doesn't open the wallet
+            val transaction = Transaction.createEthCallTransaction(
+                userAddress,           // from
+                MARKETPLACE_ADDRESS,   // to
+                mintData               // encoded function call
+            )
+
+            val estimateResponse = web3j.ethEstimateGas(transaction).send()
+
+            if (estimateResponse.hasError()) {
+                val errorMessage = estimateResponse.error.message.lowercase()
+                Timber.tag("GG").w("Simulation failed: $errorMessage")
+
+                // Most marketplace contracts revert with a specific message like "max buy reach" or "already minted"
+                // You can check for specific strings if you want, or just assume failure means limit/sold out
+                if (errorMessage.contains("revert") || errorMessage.contains("limit") || errorMessage.contains("max")) {
+                    Timber.tag("GG").w("BLOCKING: Contract execution would revert (likely limit reached)")
+                    return@withContext false
+                }
+            } else {
+                Timber.tag("GG").d("Simulation success. Gas needed: ${estimateResponse.amountUsed}")
+                return@withContext true
+            }
+
+            true // Default to true if the error isn't a clear revert
+        } catch (e: Exception) {
+            Timber.tag("GG").e(e, "Simulation crashed")
+            true
+        }
+    }
+
     // --- Balance & Allowance Helpers ---
 
     suspend fun getUsdcBalance(address: String): BigInteger = withContext(Dispatchers.IO) {
@@ -105,15 +146,25 @@ object Web3Helper {
         onMintFailure: (DialogContent) -> Unit
     ): Boolean = withContext(Dispatchers.IO) {
         try {
+            // 1. STRICT CHECK: Max count per user (Check this BEFORE anything else)
+            val lid = BigInteger(listingId)
+            if (!canUserMint(lid, fromAddress)) {
+                onMintFailure.invoke(DialogContent(
+                    title = "Minted max count",
+                    text = "You have already reached the maximum allowed mints for this listing."
+                ))
+                return@withContext false
+            }
+
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
 
-            // 1. Check Balance first
+            // 2. Check Balance
             if (getUsdcBalance(fromAddress) < usdcPrice) {
                 onMintFailure.invoke(DialogContent(title = "Mint process error", text = "Insufficient USDC balance."))
                 return@withContext false
             }
 
-            // 2. Check Allowance
+            // 3. Check Allowance
             if (getUsdcAllowance(fromAddress) < usdcPrice) {
                 val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, MAX_UINT256)
                 val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
@@ -136,7 +187,7 @@ object Web3Helper {
                     client.makeRequest(RequestContent.Request(listOf(action))) { result ->
                         result.onSuccess { actions ->
                             val hash = (actions.firstOrNull() as? ActionResult.Result)?.value
-                            continuation.resume(hash) // If hash is null, user likely declined
+                            continuation.resume(hash)
                         }
                         result.onFailure {
                             continuation.resume(null)
@@ -155,7 +206,7 @@ object Web3Helper {
                 }
             }
 
-            // 3. Final Minting
+            // 4. Final Minting
             return@withContext executeMint(client, listingId, fromAddress, onMintFailure)
 
         } catch (e: Exception) {
@@ -193,7 +244,6 @@ object Web3Helper {
                     result.onSuccess { actions ->
                         val res = actions.firstOrNull() as? ActionResult.Result
                         if (res != null) {
-                            // Only show success if we actually have a transaction result
                             onMintFailure.invoke(DialogContent(title = "Success", text = "Transaction sent successfully!"))
                             continuation.resume(true)
                         } else {
