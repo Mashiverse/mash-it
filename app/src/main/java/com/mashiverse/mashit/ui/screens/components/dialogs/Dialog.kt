@@ -1,15 +1,26 @@
 package com.mashiverse.mashit.ui.screens.components.dialogs
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.LineHeightStyle
 import com.mashiverse.mashit.data.models.dialog.DialogContent
+import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 
-// TODO: rework error dialog
 @Composable
 fun Dialog(
     dialogContent: DialogContent,
@@ -17,11 +28,20 @@ fun Dialog(
 ) {
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
-        icon = {
-            Icon(imageVector = dialogContent.icon, contentDescription = null)
-        },
         title = {
-            Text(text = dialogContent.title)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = dialogContent.icon,
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.width(ExtraSmallPaddingSize))
+
+                Text(text = dialogContent.title)
+            }
         },
         text = {
             Text(text = dialogContent.text)
@@ -35,9 +55,12 @@ fun Dialog(
                     onDismissRequest()
                 }
             ) {
-                Text("Close")
+                Text("Close", color = Color.DarkGray)
             }
         },
-        confirmButton = { }
+        confirmButton = { },
+        containerColor = ContainerColor,
+        titleContentColor = ContentAccentColor,
+        textContentColor = ContentColor
     )
 }

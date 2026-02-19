@@ -82,8 +82,8 @@ fun Shop(listingId: String?) {
         } else {
             viewModel.setDialogContent(
                 DialogContent(
-                    title = "No wallet",
-                    text = "Please connect your wallet"
+                    title = "Not Authenticated",
+                    text = "Please connect your wallet to continue"
                 )
             )
         }
