@@ -26,6 +26,7 @@ roomPaging = "2.8.4"
 timber = "5.0.1"
 pagingCommon = "3.4.1"
 navigationRuntimeKtx = "2.9.7"
+workRuntimeKtx = "2.11.1"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
@@ -38,6 +39,7 @@ androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.r
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomPaging" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomPaging" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }

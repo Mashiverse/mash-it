@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.services
+package com.mashiverse.mashit.sys.services
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel

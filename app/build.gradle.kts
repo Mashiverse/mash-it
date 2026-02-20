@@ -129,6 +129,9 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
 
+    // Workers
+    implementation(libs.androidx.work.runtime.ktx)
+
     // Icons
     implementation(libs.androidx.compose.material.icons.extended)
 }
