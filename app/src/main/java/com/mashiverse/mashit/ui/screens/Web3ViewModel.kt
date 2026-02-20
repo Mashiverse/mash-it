@@ -13,9 +13,9 @@ import com.mashiverse.mashit.data.models.dialog.DialogContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
-import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class Web3ViewModel @Inject constructor(

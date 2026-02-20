@@ -2,8 +2,8 @@ package com.mashiverse.mashit.data.repos
 
 import com.mashiverse.mashit.data.models.mashi.MashupResult
 import com.mashiverse.mashit.data.remote.apis.MashiverseApi
-import jakarta.inject.Inject
 import okhttp3.ResponseBody
+import javax.inject.Inject
 
 class MashiverseRepo @Inject constructor(
     private val mashiverseApi: MashiverseApi

@@ -10,11 +10,11 @@ import com.mashiverse.mashit.data.remote.apis.MashiverseApi
 import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
 import com.mashiverse.mashit.utils.MASHIT_BASE_URL
 import com.mashiverse.mashit.utils.MASHIVERSE_BASE_URL
-import jakarta.inject.Named
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module

@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -65,6 +66,7 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
+    val ctx = LocalContext.current
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
 
@@ -86,6 +88,22 @@ fun Mashup() {
     // It resets only if the ViewModel's saved colors change (e.g., after a save or R)
     var colorBuffer by remember(vmDetails) {
         mutableStateOf(vmDetails.colors)
+    }
+
+    LaunchedEffect(walletPreferences.value.wallet) {
+        val wallet = walletPreferences.value.wallet
+        wallet?.let {
+            viewModel.startImageUpload(
+
+                wallet = wallet,
+                imgType = 0
+            )
+
+            viewModel.startImageUpload(
+                wallet = wallet,
+                imgType = 1
+            )
+        }
     }
 
     // 3. Actions

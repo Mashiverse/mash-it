@@ -23,3 +23,8 @@
 -keepclassmembers class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+# Keep the HiltWorker classes and their constructors
+-keepclassmembers class * extends androidx.work.ListenableWorker {
+    @androidx.hilt.work.HiltWorker <init>(android.content.Context, androidx.work.WorkerParameters);
+}
