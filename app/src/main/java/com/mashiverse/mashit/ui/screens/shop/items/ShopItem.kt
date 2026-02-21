@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.shop
+package com.mashiverse.mashit.ui.screens.shop.items
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -29,7 +30,6 @@ import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.min
 
 @Composable
 fun ShopItem(
@@ -38,7 +38,9 @@ fun ShopItem(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: suspend (Int) -> Int,
-    mint: (String, Double) -> Unit
+    onMint: (String, Double) -> Unit,
+    imageWidth: Dp = LargeMashiHolderWidth,
+    imageHeight: Dp = LargeMashiHolderHeight
 ) {
     val scope = rememberCoroutineScope()
     val productInfo = nft.productInfo
@@ -64,8 +66,8 @@ fun ShopItem(
     ) {
         TraitImage(
             modifier = Modifier
-                .width(LargeMashiHolderWidth)
-                .height(LargeMashiHolderHeight)
+                .width(imageWidth)
+                .height(imageHeight)
                 .border(width = 0.3.dp, shape = MashiHolderShape, color = ContentColor),
             onClick = { selectId.invoke(productInfo?.id ?: "") },
             data = nft.compositeUrl,
@@ -106,7 +108,7 @@ fun ShopItem(
             enabled = !isSoldOut && !delisted,
             onClick = {
                 if (nft.productInfo?.listingId != null) {
-                    mint.invoke(nft.productInfo.listingId, nft.productInfo.price)
+                    onMint.invoke(nft.productInfo.listingId, nft.productInfo.price)
                 }
             }
         )

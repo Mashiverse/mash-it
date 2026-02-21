@@ -8,7 +8,7 @@ import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.remote.dtos.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.ListingsDto
 
-fun ListingsDto.toNftsDetails() = this.listings.map { listing ->
+fun ListingsDto.toNfts() = this.listings.map { listing ->
     val productInfo = ProductInfo(
         price = listing.price.toDouble(),
         perWallet = listing.maxPerWallet,
@@ -29,7 +29,7 @@ fun ListingsDto.toNftsDetails() = this.listings.map { listing ->
     )
 }
 
-fun ListingDto.toNftDetails(): Nft {
+fun ListingDto.toNft(): Nft {
     val listing = this.listing
 
     val traits = listing.metadata.assets.filter { asset ->

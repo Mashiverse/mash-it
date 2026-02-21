@@ -1,12 +1,10 @@
-package com.mashiverse.mashit.ui.screens.shop
+package com.mashiverse.mashit.ui.screens.shop.sections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -15,16 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.itemKey
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.PriceCurrency
+import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
-import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 
 @Composable
@@ -34,8 +29,9 @@ fun ShopSection(
     sectionItems: LazyPagingItems<Nft>,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
+    onCategorySelect: (String, LazyPagingItems<Nft>) -> Unit, // TODO: Category select
     getSoldQty: suspend (Int) -> Int,
-    mint: (String, Double) -> Unit
+    onMint: (String, Double) -> Unit
 ) {
     Column {
         Row(
@@ -52,7 +48,9 @@ fun ShopSection(
             Spacer(modifier = Modifier.weight(1F))
 
             TextButton(
-                onClick = { /* TODO */ }
+                onClick = {
+                    onCategorySelect.invoke(sectionName, sectionItems)
+                }
             ) {
                 Text(
                     text = "See all",
@@ -63,18 +61,17 @@ fun ShopSection(
             }
         }
 
-        val appendState = sectionItems.loadState.append
-
         LazyRow(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
         ) {
-            items(
-                count = sectionItems.itemSnapshotList.items.filter { it.productInfo?.priceCurrency != PriceCurrency.POL }.size,
-                key = sectionItems.itemKey { it.name }
-            ) { index ->
+            // Take the smaller of the two: 20 or the actual number of items available
+            val itemCount = minOf(sectionItems.itemCount, 20)
+
+            items(count = itemCount) { index ->
                 val nft = sectionItems[index]
+
+                // Safety check: Paging items can be null if placeholders are enabled
                 if (nft != null && nft.productInfo?.priceCurrency != PriceCurrency.POL) {
                     ShopItem(
                         nft = nft,
@@ -82,28 +79,7 @@ fun ShopSection(
                         getImageType = getImageType,
                         setImageType = setImageType,
                         getSoldQty = getSoldQty,
-                        mint = mint
-                    )
-                }
-            }
-
-            if (appendState is LoadState.Loading) {
-                item {
-                    SectionLoading(
-                        modifier = Modifier
-                            .width(LargeMashiHolderWidth)
-                            .height(LargeMashiHolderHeight)
-                    )
-                }
-            }
-
-            if (appendState is LoadState.Error) {
-                item {
-                    SectionRefresh(
-                        modifier = Modifier
-                            .width(LargeMashiHolderWidth)
-                            .height(LargeMashiHolderHeight),
-                        onRetry = { sectionItems.retry() }
+                        onMint = onMint
                     )
                 }
             }

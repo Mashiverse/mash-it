@@ -9,7 +9,8 @@ import com.mashiverse.mashit.data.models.mashi.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.data.models.mashi.mappers.toNftDetails
+import com.mashiverse.mashit.data.models.mashi.mappers.toNft
+import com.mashiverse.mashit.data.models.mashi.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
 import kotlinx.coroutines.flow.Flow
@@ -32,11 +33,17 @@ class MashitRepo @Inject constructor(
         ).flow
     }
 
+    suspend fun getRecentlyReleased(): List<Nft> {
+        val listingDto = mashitApi.getShopList(limit = 20)
+        val items = listingDto.toNfts()
+        return items
+    }
+
     suspend fun getShopItem(
         id: String
     ): Nft {
         val listingDto = mashitApi.getShopItem(id)
-        return listingDto.toNftDetails()
+        return listingDto.toNft()
     }
 
     suspend fun getMashup(

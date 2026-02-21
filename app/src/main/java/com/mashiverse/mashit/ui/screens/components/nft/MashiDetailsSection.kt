@@ -39,7 +39,7 @@ fun MashiDetailsSection(
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
     getSoldQty: (suspend (Int) -> Int)? = null, // TODO: REWORK TO CALLBACK
-    mint: ((String, Double) -> Unit)? = null
+    onMint: ((String, Double) -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
@@ -122,7 +122,7 @@ fun MashiDetailsSection(
                 ProductInfoSection(
                     nft = nft,
                     getSoldQty = getSoldQty,
-                    mint = mint
+                    onMint = onMint
                 )
             }
         }

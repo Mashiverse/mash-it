@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.shop
+package com.mashiverse.mashit.ui.screens.shop.items
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size

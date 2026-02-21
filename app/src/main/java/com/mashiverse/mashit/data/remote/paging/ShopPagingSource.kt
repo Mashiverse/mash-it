@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.PriceCurrency
-import com.mashiverse.mashit.data.models.mashi.mappers.toNftsDetails
+import com.mashiverse.mashit.data.models.mashi.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.utils.MASHIT_KEY
 
@@ -19,7 +19,7 @@ class ShopPagingSource(
 
         return try {
             val response = api.getShopList(apiKey = apiKey, limit = limit, offset = offset)
-            val listings = response.toNftsDetails()
+            val listings = response.toNfts()
             val hasMore = response.pagination.hasMore
 
             LoadResult.Page(
