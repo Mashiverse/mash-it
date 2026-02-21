@@ -190,15 +190,6 @@ object Web3Helper {
     ): Boolean = withContext(Dispatchers.IO) {
         try {
             val lid = BigInteger(listingId)
-            if (!canUserMint(lid, fromAddress)) {
-                onMintFailure.invoke(
-                    DialogContent(
-                        title = "Limit Reached",
-                        text = "You've reached the limit for the listing"
-                    )
-                )
-                return@withContext false
-            }
 
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
 
@@ -212,22 +203,30 @@ object Web3Helper {
                 return@withContext false
             }
 
-            if (getUsdcAllowance(fromAddress) < usdcPrice) {
-                val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, MAX_UINT256)
-                val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
-
-                val action = createTxAction(fromAddress, USDC_ADDRESS, approveData, gas)
-                val txHash = client.requestAction(action)
-
-                if (txHash == null || !waitForReceipt(txHash)) {
-                    onMintFailure.invoke(
-                        DialogContent(
-                            title = "Process Error",
-                            text = "Something went wrong"
-                        )
+            if (!canUserMint(lid, fromAddress)) {
+                onMintFailure.invoke(
+                    DialogContent(
+                        title = "Limit Reached",
+                        text = "You've reached the limit for the listing"
                     )
-                    return@withContext false
-                }
+                )
+                return@withContext false
+            }
+
+            val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, MAX_UINT256)
+            val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
+
+            val action = createTxAction(fromAddress, USDC_ADDRESS, approveData, gas)
+            val txHash = client.requestAction(action)
+
+            if (txHash == null || !waitForReceipt(txHash)) {
+                onMintFailure.invoke(
+                    DialogContent(
+                        title = "Process Error",
+                        text = "Something went wrong"
+                    )
+                )
+                return@withContext false
             }
 
             return@withContext executeMint(client, listingId, fromAddress, onMintFailure)
