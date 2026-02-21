@@ -114,11 +114,7 @@ fun ShopCategory(
             // 2. Loading State (Spans across both columns)
             if (appendState is LoadState.Loading) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionLoading(
-                        modifier = Modifier
-                            .width(imageWidth)
-                            .height(imageHeight)
-                    )
+                    SectionLoading()
                 }
             }
 
@@ -126,9 +122,6 @@ fun ShopCategory(
             if (appendState is LoadState.Error) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     SectionRefresh(
-                        modifier = Modifier
-                            .width(imageWidth)
-                            .height(imageHeight),
                         onRetry = { categoryItems.retry() }
                     )
                 }
