@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -67,6 +68,10 @@ fun Mashup() {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
+    val config = LocalConfiguration.current
+
+    val compositeWidth = config.screenWidthDp.dp * 0.56f
+    val compositeHeight = (compositeWidth / 3) * 4
 
     // Bottom Sheet States
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -254,11 +259,11 @@ fun Mashup() {
                 MashupActions(
                     mashupDetails = vmDetails.copy(colors = colorBuffer),
                     modifier = Modifier
-                        .height(ExtraLargeMashiHolderHeight)
-                        .width(ExtraLargeMashiHolderWidth)
+                        .height(compositeHeight)
+                        .width(compositeWidth)
                         .clickable { isPreviewBottomSheet = true }
                         .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
-                    holderWidth = ExtraLargeMashiHolderWidth,
+                    holderWidth = compositeWidth,
                     getImageType = { url: String ->
                         var imageType: ImageType? = null
                         viewModel.getTraitTypeEntity(url) { type: ImageType? ->
