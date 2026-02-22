@@ -46,7 +46,7 @@ import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
-import com.mashiverse.mashit.ui.screens.mashup.actions.MashupComposite
+import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
@@ -63,6 +63,8 @@ import com.mashiverse.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.collections.get
+import kotlin.invoke
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,15 +93,19 @@ fun Mashup() {
         mutableStateOf(vmDetails.colors)
     }
 
-    LaunchedEffect(walletPreferences.value.wallet) {
+    val onPngButtonClick = {
         val wallet = walletPreferences.value.wallet
-        wallet?.let {
+        if (wallet != null)  {
             viewModel.startImageUpload(
-
                 wallet = wallet,
                 imgType = 0
             )
+        }
+    }
 
+    val onGifButtonClick = {
+        val wallet = walletPreferences.value.wallet
+        if (wallet != null) {
             viewModel.startImageUpload(
                 wallet = wallet,
                 imgType = 1
@@ -202,6 +208,17 @@ fun Mashup() {
         scope.launch { lazyGridState.scrollToItem(0) }
     }
 
+    val onRandomButtonClick = {
+        if (nfts.isNotEmpty()) {
+            val randomAssets = TraitType.entries.mapNotNull { type ->
+                traitsByType[type]?.randomOrNull()
+            }
+            randomAssets.forEach { asset ->
+                changeMashupTrait.invoke(asset, true)
+            }
+        }
+    }
+
     Column {
         CategoryHeader(title = "Mashup")
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
@@ -212,75 +229,34 @@ fun Mashup() {
                     .fillMaxSize()
                     .padding(horizontal = PaddingSize)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    // Color Picker Trigger
-                    Box(
-                        modifier = Modifier
-                            .width(56.dp)
-                            .height(32.dp)
-                            .align(Alignment.TopStart)
-                            .clip(RoundedCornerShape(90))
-                            .background(
-                                brush = Brush.sweepGradient(
-                                    colors = listOf(
-                                        Color.Red,
-                                        Color.Yellow,
-                                        Color.Green,
-                                        Color.Blue,
-                                        Color.Red
-                                    ).reversed(),
-                                    center = Offset(
-                                        x = with(density) { 28.dp.toPx() },
-                                        y = with(density) { 16.dp.toPx() })
-                                )
-                            )
-                            .border(0.5.dp, Color.White, RoundedCornerShape(90))
-                            .clickable { isBottomSheet = true }
-                    )
-
-                    // Control Buttons
-                    Column(Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End) {
-                        Button(
-                            onClick = {
-                                if (nfts.isNotEmpty()) {
-                                    val randomAssets = TraitType.entries.mapNotNull { type ->
-                                        traitsByType[type]?.randomOrNull()
-                                    }
-                                    randomAssets.forEach { asset ->
-                                        changeMashupTrait.invoke(asset, true)
-                                    }
-                                }
-                            }
-                        ) { Text("R") }
-                    }
-
-                    // MASHUP PREVIEW: We use vmDetails but pass colorBuffer for live feedback
-                    MashupComposite(
-                        mashupDetails = vmDetails.copy(colors = colorBuffer),
-                        modifier = Modifier
-                            .height(ExtraLargeMashiHolderHeight)
-                            .width(ExtraLargeMashiHolderWidth)
-                            .clickable { isPreviewBottomSheet = true }
-                            .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
-                        holderWidth = ExtraLargeMashiHolderWidth,
-                        getImageType = { url: String ->
-                            var imageType: ImageType? = null
-                            viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                                imageType = type
-                            }
-                            imageType
-                        },
-                        setImageType = { imageType: ImageType, data: String ->
-                            viewModel.insertTraitType(
-                                url = data,
-                                imageType = imageType
-                            )
+                MashupActions(
+                    mashupDetails = vmDetails.copy(colors = colorBuffer),
+                    modifier = Modifier
+                        .height(ExtraLargeMashiHolderHeight)
+                        .width(ExtraLargeMashiHolderWidth)
+                        .clickable { isPreviewBottomSheet = true }
+                        .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
+                    holderWidth = ExtraLargeMashiHolderWidth,
+                    getImageType = { url: String ->
+                        var imageType: ImageType? = null
+                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                            imageType = type
                         }
-                    )
-                }
+                        imageType
+                    },
+                    setImageType = { imageType: ImageType, data: String ->
+                        viewModel.insertTraitType(
+                            url = data,
+                            imageType = imageType
+                        )
+                    },
+                    onColorButtonClick = { isBottomSheet = true },
+                    onRandomButtonClick = onRandomButtonClick,
+                    onSaveButtonClick = {},
+                    onPngButtonClick = onPngButtonClick,
+                    onGifButtonClick = onGifButtonClick,
+                    onResetButtonClick = { }
+                )
 
                 Spacer(Modifier.height(SmallPaddingSize))
 
