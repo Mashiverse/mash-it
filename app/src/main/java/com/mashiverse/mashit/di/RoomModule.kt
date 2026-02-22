@@ -25,7 +25,7 @@ object RoomModule {
     ).build()
 
     @Provides
-    fun provideNftDetailsDao(
+    fun provideNftDao(
         db: RoomDb
     ) = db.getNftDao()
 

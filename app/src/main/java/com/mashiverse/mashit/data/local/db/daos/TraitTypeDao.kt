@@ -9,7 +9,7 @@ import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 
 @Dao
 interface TraitTypeDao {
-    @Query("SELECT * FROM trait_types WHERE url = :url")
+    @Query("SELECT * FROM image_types WHERE url = :url")
     fun getImageType(url: String): ImageTypeEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

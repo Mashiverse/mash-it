@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashup
+package com.mashiverse.mashit.ui.screens.mashup.actions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,8 +14,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashupDetails
-import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintText
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.MashiBackground

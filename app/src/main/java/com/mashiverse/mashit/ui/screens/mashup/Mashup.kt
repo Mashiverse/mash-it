@@ -33,20 +33,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.models.color.ColorType
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.Owned
-import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
+import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.Owned
+import com.mashiverse.mashit.data.models.nft.TraitType
+import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
+import com.mashiverse.mashit.ui.screens.mashup.actions.MashupComposite
+import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
+import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -66,7 +68,6 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
-    val ctx = LocalContext.current
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
 

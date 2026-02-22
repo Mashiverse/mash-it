@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.repos
 
-import com.mashiverse.mashit.data.models.mashi.MashupResult
+import com.mashiverse.mashit.data.models.mashup.MashupResult
 import com.mashiverse.mashit.data.remote.apis.MashiverseApi
 import okhttp3.ResponseBody
 import javax.inject.Inject

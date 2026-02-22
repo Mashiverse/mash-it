@@ -10,6 +10,7 @@ import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -24,7 +25,7 @@ class DatastoreRepo @Inject constructor(
                 if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
-                    throw e
+                    Timber.tag("Testing").d(e)
                 }
             }
             .map { preferences ->

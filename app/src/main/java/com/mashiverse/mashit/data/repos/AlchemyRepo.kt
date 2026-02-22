@@ -1,9 +1,9 @@
 package com.mashiverse.mashit.data.repos
 
-import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.Owned
-import com.mashiverse.mashit.data.models.mashi.Trait
-import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.Owned
+import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.MASHI_ADDRESS

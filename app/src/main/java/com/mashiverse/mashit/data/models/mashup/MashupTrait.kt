@@ -1,4 +1,6 @@
-package com.mashiverse.mashit.data.models.mashi
+package com.mashiverse.mashit.data.models.mashup
+
+import com.mashiverse.mashit.data.models.nft.Trait
 
 data class MashupTrait(
     val trait: Trait,

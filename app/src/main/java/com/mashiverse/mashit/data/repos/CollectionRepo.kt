@@ -1,8 +1,8 @@
 package com.mashiverse.mashit.data.repos
 
 import com.mashiverse.mashit.data.local.db.entities.NftEntity
-import com.mashiverse.mashit.data.models.mashi.MashupDetails
-import com.mashiverse.mashit.data.models.mashi.mappers.toEntities
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.nft.mappers.toEntities
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject

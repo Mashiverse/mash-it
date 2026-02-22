@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashup
+package com.mashiverse.mashit.ui.screens.mashup.categories
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +12,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashupTrait
+import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 

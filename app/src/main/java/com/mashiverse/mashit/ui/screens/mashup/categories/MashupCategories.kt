@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashup
+package com.mashiverse.mashit.ui.screens.mashup.categories
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.theme.ActiveMashupButtonBackground
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor

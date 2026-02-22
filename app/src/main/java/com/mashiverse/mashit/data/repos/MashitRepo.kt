@@ -4,13 +4,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.mashiverse.mashit.data.models.color.SelectedColors
-import com.mashiverse.mashit.data.models.mashi.MashupDetails
-import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.Trait
-import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.data.models.mashi.mappers.toNft
-import com.mashiverse.mashit.data.models.mashi.mappers.toNfts
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
+import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.nft.TraitType
+import com.mashiverse.mashit.data.models.nft.mappers.toNft
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
 import kotlinx.coroutines.flow.Flow
@@ -25,18 +24,12 @@ class MashitRepo @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,
-                prefetchDistance = 5, // Trigger next load 5 items before end
+                prefetchDistance = 5,
                 enablePlaceholders = false,
                 initialLoadSize = pageSize
             ),
             pagingSourceFactory = { ShopPagingSource(api = mashitApi) }
         ).flow
-    }
-
-    suspend fun getRecentlyReleased(): List<Nft> {
-        val listingDto = mashitApi.getShopList(limit = 20)
-        val items = listingDto.toNfts()
-        return items
     }
 
     suspend fun getShopItem(

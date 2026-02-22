@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.data.models.color.ColorType
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.screens.components.picker.ColorPicker
 import com.mashiverse.mashit.ui.screens.components.picker.ColorSlideBar
 import com.mashiverse.mashit.ui.theme.*

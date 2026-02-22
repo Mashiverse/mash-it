@@ -1,10 +1,10 @@
-package com.mashiverse.mashit.data.models.mashi.mappers
+package com.mashiverse.mashit.data.models.nft.mappers
 
-import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.PriceCurrency
-import com.mashiverse.mashit.data.models.mashi.ProductInfo
-import com.mashiverse.mashit.data.models.mashi.Trait
-import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.PriceCurrency
+import com.mashiverse.mashit.data.models.nft.ProductInfo
+import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.remote.dtos.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.ListingsDto
 

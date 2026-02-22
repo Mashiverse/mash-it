@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashup
+package com.mashiverse.mashit.ui.screens.mashup.actions
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

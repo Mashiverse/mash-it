@@ -14,12 +14,12 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
-import com.mashiverse.mashit.data.models.color.ColorType
-import com.mashiverse.mashit.data.models.color.SelectedColors
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.mashi.MashupDetails
-import com.mashiverse.mashit.data.models.mashi.MashupTrait
-import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
@@ -47,7 +47,6 @@ class MashupViewModel @Inject constructor(
 
     private val _selectedColorType = mutableStateOf(ColorType.BASE)
     val selectedColorType: State<ColorType> get() = _selectedColorType
-
 
     //Mashup
     private val _mashupDetails = mutableStateOf(MashupDetails())
@@ -149,7 +148,5 @@ class MashupViewModel @Inject constructor(
             ExistingWorkPolicy.REPLACE, // Replace if a new one is started
             uploadRequest
         )
-
-
     }
 }

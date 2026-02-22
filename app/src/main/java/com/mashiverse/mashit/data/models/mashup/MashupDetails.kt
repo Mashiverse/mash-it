@@ -1,6 +1,8 @@
-package com.mashiverse.mashit.data.models.mashi
+package com.mashiverse.mashit.data.models.mashup
 
-import com.mashiverse.mashit.data.models.color.SelectedColors
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
+import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.nft.TraitType
 
 data class MashupDetails(
     val assets: List<Trait> = List(11) { i ->

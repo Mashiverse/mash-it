@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.models.mashi
+package com.mashiverse.mashit.data.models.nft
 
 data class Owned(
     val mint: Int,

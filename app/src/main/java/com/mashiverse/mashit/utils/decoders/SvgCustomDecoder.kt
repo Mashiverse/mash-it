@@ -6,7 +6,7 @@ import coil3.decode.Decoder
 import coil3.fetch.SourceFetchResult
 import coil3.request.Options
 import coil3.svg.SvgDecoder
-import com.mashiverse.mashit.data.models.color.SelectedColors
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.utils.color.helpers.replaceColors
 import okio.Buffer
 

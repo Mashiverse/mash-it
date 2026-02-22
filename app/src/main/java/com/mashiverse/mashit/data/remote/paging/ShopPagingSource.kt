@@ -2,9 +2,9 @@ package com.mashiverse.mashit.data.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.PriceCurrency
-import com.mashiverse.mashit.data.models.mashi.mappers.toNfts
+import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.PriceCurrency
+import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.utils.MASHIT_KEY
 
