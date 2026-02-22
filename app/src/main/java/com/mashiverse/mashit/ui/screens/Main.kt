@@ -25,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -46,6 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Main(navController: NavHostController) {
     val viewModel = hiltViewModel<Web3ViewModel>()
+    val focusManager = LocalFocusManager.current
     val ctx = LocalContext.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -58,12 +60,13 @@ fun Main(navController: NavHostController) {
         }
     }
 
-    var searchQuery = remember { mutableStateOf("") }
+    val searchQuery = remember { mutableStateOf("") }
     val onSearchQueryChange = remember {
         { input: String ->
             searchQuery.value = input
         }
     }
+
     val clearSearchQuery = {
         searchQuery.value = ""
     }
@@ -71,6 +74,7 @@ fun Main(navController: NavHostController) {
     val dialogContent by remember {
         viewModel.dialogContent
     }
+
 
     val openGooglePlay = {
         val packageName = "org.toshi"
@@ -89,6 +93,13 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    var isSearch by remember {
+        mutableStateOf(false)
+    }
+    val onIsSearchChange = remember {
+        { isSearch = !isSearch }
+    }
+
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -102,6 +113,13 @@ fun Main(navController: NavHostController) {
         clientRef = viewModel.getCoinbaseSdk { intent ->
             launcher.launch(intent)
         }
+    }
+
+
+    LaunchedEffect(navBackStackEntry?.destination?.route) {
+        clearSearchQuery.invoke()
+        focusManager.clearFocus(true)
+        isSearch = false
     }
 
     DismissibleNavigationDrawer(
@@ -136,7 +154,9 @@ fun Main(navController: NavHostController) {
                         }
                     },
                     searchQuery = searchQuery.value,
-                    onSearchQueryChange = onSearchQueryChange
+                    onSearchQueryChange = onSearchQueryChange,
+                    isSearch = isSearch,
+                    onIsSearchChange = onIsSearchChange
                 )
             }
         ) { paddingValues ->
