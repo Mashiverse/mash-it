@@ -105,8 +105,8 @@ fun Shop(listingId: String?) {
         }
     }
 
-    val getSoldQty: suspend (Int) -> Int = { listingId ->
-        viewModel.getTotalSold(listingId)
+    val getSoldQty = { listingId: Int, callback: (Int) -> Unit ->
+        viewModel.getTotalSold(listingId, callback)
     }
 
     val dialogContent by remember {

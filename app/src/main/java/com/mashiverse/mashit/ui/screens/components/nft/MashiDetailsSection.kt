@@ -38,7 +38,7 @@ fun MashiDetailsSection(
     scope: CoroutineScope,
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
-    getSoldQty: (suspend (Int) -> Int)? = null, // TODO: REWORK TO CALLBACK
+    getSoldQty: ((Int, (Int) -> Unit) -> Unit)? = null,
     onMint: ((String, Double) -> Unit)? = null
 ) {
     Row(

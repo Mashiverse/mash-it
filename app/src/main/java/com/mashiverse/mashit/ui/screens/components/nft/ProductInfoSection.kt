@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductInfoSection(
     nft: Nft,
-    getSoldQty: (suspend (Int) -> Int)?,
+    getSoldQty: ((Int, (Int) -> Unit) -> Unit)?,
     onMint: ((String, Double) -> Unit)?,
 ) {
     val scope = rememberCoroutineScope()
@@ -42,7 +42,9 @@ fun ProductInfoSection(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty?.invoke(nft.productInfo.listingId.toInt()) ?: 0
+            getSoldQty?.invoke(nft.productInfo.listingId.toInt()) { v ->
+                soldQty = v
+            }
         }
     }
 

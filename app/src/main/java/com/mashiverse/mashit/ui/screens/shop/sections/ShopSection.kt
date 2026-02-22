@@ -30,7 +30,7 @@ fun ShopSection(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     onCategorySelect: (String, LazyPagingItems<Nft>) -> Unit, // TODO: Category select
-    getSoldQty: suspend (Int) -> Int,
+    getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double) -> Unit
 ) {
     Column {
@@ -65,13 +65,10 @@ fun ShopSection(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
         ) {
-            // Take the smaller of the two: 20 or the actual number of items available
             val itemCount = minOf(sectionItems.itemCount, 20)
-
             items(count = itemCount) { index ->
                 val nft = sectionItems[index]
 
-                // Safety check: Paging items can be null if placeholders are enabled
                 if (nft != null && nft.productInfo?.priceCurrency != PriceCurrency.POL) {
                     ShopItem(
                         nft = nft,

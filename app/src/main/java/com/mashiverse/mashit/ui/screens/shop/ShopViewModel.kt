@@ -86,12 +86,13 @@ class ShopViewModel @Inject constructor(
         return web3Repo.getCoinbaseSdk(openIntent)
     }
 
-    suspend fun getTotalSold(listing: Int): Int {
-        return withContext(Dispatchers.IO) {
+    fun getTotalSold(listing: Int, callback: (Int) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                SoldHelper.getTotalSold(listing.toLong()).toInt()
+                val totalSold = SoldHelper.getTotalSold(listing.toLong()).toInt()
+                callback.invoke(totalSold)
             } catch (e: Exception) {
-                0
+                callback.invoke(0)
             }
         }
     }

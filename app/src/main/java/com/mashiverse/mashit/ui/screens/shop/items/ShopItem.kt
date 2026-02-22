@@ -37,7 +37,7 @@ fun ShopItem(
     selectId: (String) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
-    getSoldQty: suspend (Int) -> Int,
+    getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double) -> Unit,
     imageWidth: Dp = LargeMashiHolderWidth,
     imageHeight: Dp = LargeMashiHolderHeight
@@ -51,7 +51,9 @@ fun ShopItem(
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
-            soldQty = getSoldQty(productInfo?.listingId?.toInt() ?: -1)
+            getSoldQty.invoke(productInfo?.listingId?.toInt() ?: -1) { v ->
+                soldQty = v
+            }
         }
     }
 
