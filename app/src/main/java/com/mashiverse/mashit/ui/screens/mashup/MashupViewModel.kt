@@ -81,25 +81,28 @@ class MashupViewModel @Inject constructor(
     }
 
     // --- Undo/Redo Core Logic ---
+    fun hasAnyTrait(): Boolean {
+        return !_mashupDetails.value.assets.all { it.url == null }
+    }
 
     private fun saveStateForUndo() {
-        // Capture a snapshot of the state BEFORE the change occurs
-        undoStack.addLast(_mashupDetails.value.copy())
-
-        // Keep history at exactly 10
-        if (undoStack.size > maxHistory) {
-            undoStack.removeFirst()
+        // ONLY save to history if the current screen isn't empty
+        if (hasAnyTrait()) {
+            undoStack.addLast(_mashupDetails.value.copy())
+            if (undoStack.size > maxHistory) {
+                undoStack.removeFirst()
+            }
+            redoStack.clear()
         }
-
-        // Every new manual action invalidates the "future" redo path
-        redoStack.clear()
     }
 
     fun undo() {
         if (undoStack.isNotEmpty()) {
             val currentState = _mashupDetails.value.copy()
-            redoStack.addLast(currentState)
-
+            // Only push to redo if current state has data
+            if (hasAnyTrait()) {
+                redoStack.addLast(currentState)
+            }
             _mashupDetails.value = undoStack.removeLast()
         }
     }
@@ -107,13 +110,20 @@ class MashupViewModel @Inject constructor(
     fun redo() {
         if (redoStack.isNotEmpty()) {
             val currentState = _mashupDetails.value.copy()
-            undoStack.addLast(currentState)
-
+            // Only push to undo if current state has data
+            if (hasAnyTrait()) {
+                undoStack.addLast(currentState)
+            }
             _mashupDetails.value = redoStack.removeLast()
         }
     }
 
     // --- State Modifiers ---
+
+    fun reset() {
+        saveStateForUndo()
+        _mashupDetails.value = MashupDetails()
+    }
 
     fun updateMashup(mashupTrait: MashupTrait) {
         saveStateForUndo()

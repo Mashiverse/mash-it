@@ -233,13 +233,7 @@ fun Mashup() {
     }
 
     val onResetButtonClick = {
-        val assets = TraitType.entries.map { type ->
-            MashupTrait(
-                trait = Trait(type = type, url = null),
-                avatarName = ""
-            )
-        }
-        viewModel.randomizeMashup(assets)
+        viewModel.reset()
     }
 
     Column {
