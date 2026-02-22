@@ -27,8 +27,6 @@ fun MashupActions(
     onRedoButtonClick: () -> Unit,
     onPreviewButtonClick: () -> Unit,
     onUndoButtonClick: () -> Unit,
-    canUndo: State<Boolean>,
-    canRedo: State<Boolean>
 ) {
     Box(
         modifier = Modifier
@@ -60,8 +58,6 @@ fun MashupActions(
                 onGifButtonClick = onGifButtonClick,
                 onRedoButtonClick = onRedoButtonClick,
                 onUndoButtonClick = onUndoButtonClick,
-                canUndo = canUndo,
-                canRedo = canRedo
             )
         }
     }

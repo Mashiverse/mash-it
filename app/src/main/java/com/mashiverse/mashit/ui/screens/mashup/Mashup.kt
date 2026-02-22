@@ -23,8 +23,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
@@ -61,6 +66,7 @@ import timber.log.Timber
 fun Mashup() {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
 
     // Bottom Sheet States
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -81,6 +87,9 @@ fun Mashup() {
     var colorBuffer by remember(vmDetails) {
         mutableStateOf(vmDetails.colors)
     }
+
+    var height by remember { mutableStateOf(0.dp) }
+    var screenHeight by remember { mutableStateOf(0.dp) }
 
     val onPngButtonClick = {
         val wallet = walletPreferences.value.wallet
@@ -103,9 +112,6 @@ fun Mashup() {
             )
         }
     }
-
-    val canUndo = viewModel.canUndo
-    val canRedo = viewModel.canRedo
 
     // 3. Actions
     val saveColors = {
@@ -149,7 +155,6 @@ fun Mashup() {
 
     LaunchedEffect(collection) {
         val temp = mutableListOf<Nft>()
-        Timber.tag("GG").d(collection.size.toString())
         collection.forEach { nft ->
             nft.owned?.forEach { owned ->
                 Timber.tag("GG").d(owned.toString())
@@ -215,6 +220,7 @@ fun Mashup() {
                     TraitType.BACKGROUND, TraitType.EYES, TraitType.BOTTOM, TraitType.UPPER, TraitType.HEAD -> {
                         traitsByType[type]?.randomOrNull()
                     }
+
                     else -> {
                         val isIncluded = arrayOf(true, false).random()
                         if (isIncluded) {
@@ -236,7 +242,12 @@ fun Mashup() {
         viewModel.reset()
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .onSizeChanged { size ->
+                screenHeight = with(density) { size.height.toDp() }
+            }
+    ) {
         CategoryHeader(title = "Mashup")
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
@@ -252,7 +263,11 @@ fun Mashup() {
                         .height(ExtraLargeMashiHolderHeight)
                         .width(ExtraLargeMashiHolderWidth)
                         .clickable { isPreviewBottomSheet = true }
-                        .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
+                        .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor)
+                        .onSizeChanged { size ->
+                            // TODO: Recalculate
+                            height = screenHeight - PaddingSize - with(density) { size.height.toDp() }
+                        },
                     holderWidth = ExtraLargeMashiHolderWidth,
                     getImageType = { url: String ->
                         var imageType: ImageType? = null
@@ -273,8 +288,6 @@ fun Mashup() {
                     onPngButtonClick = onPngButtonClick,
                     onGifButtonClick = onGifButtonClick,
                     onResetButtonClick = onResetButtonClick,
-                    canUndo = canUndo,
-                    canRedo = canRedo,
                     onUndoButtonClick = onUndoButtonClick,
                     onRedoButtonClick = onRedoButtonClick,
                     onPreviewButtonClick = { isPreviewBottomSheet = true }
@@ -350,7 +363,8 @@ fun Mashup() {
                         url = data,
                         imageType = imageType
                     )
-                }
+                },
+                height = height
             )
         }
     }

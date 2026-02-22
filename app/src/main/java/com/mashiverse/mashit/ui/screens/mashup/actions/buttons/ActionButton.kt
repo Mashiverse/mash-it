@@ -30,7 +30,7 @@ import kotlin.random.Random
 fun ActionButton(
     icon: ImageVector,
     onClick: () -> Unit,
-    isAnimated: Boolean = false
+    isAnimated: Boolean = false,
 ) {
     // 1. State to hold the current random color
     var targetColor by remember { mutableStateOf(ContentAccentColor) }
@@ -66,9 +66,9 @@ fun ActionButton(
         shape = RoundedCornerShape(90),
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = ContainerColor,
-            contentColor = ContentAccentColor
+            contentColor = ContentAccentColor,
         ),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Icon(
             modifier = Modifier

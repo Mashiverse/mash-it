@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.filled.Undo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ActionButton
@@ -22,8 +21,6 @@ fun RightPanel(
     onSaveButtonClick: () -> Unit,
     onRedoButtonClick: () -> Unit,
     onUndoButtonClick: () -> Unit,
-    canUndo: State<Boolean>,
-    canRedo: State<Boolean>
 ) {
     Column {
         Spacer(modifier = Modifier.height(SmallPaddingSize))
@@ -49,22 +46,14 @@ fun RightPanel(
 
         ActionButton(
             icon = Icons.Default.Redo,
-            onClick = {
-                if (canRedo.value) {
-                    onRedoButtonClick.invoke()
-                }
-            },
+            onClick = { onRedoButtonClick.invoke() }
         )
 
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Undo,
-            onClick = {
-                if (canUndo.value) {
-                    onUndoButtonClick.invoke()
-                }
-            },
+            onClick = { onUndoButtonClick.invoke() },
         )
     }
 }

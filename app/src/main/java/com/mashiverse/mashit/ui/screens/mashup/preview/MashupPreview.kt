@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens.mashup.preview
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.R
@@ -46,10 +48,11 @@ fun MashupPreview(
     scope: CoroutineScope,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
-
-    ) {
+    height: Dp
+) {
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
+    val mashiHolderWidth =
+        (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     ModalBottomSheet(
@@ -62,65 +65,59 @@ fun MashupPreview(
         dragHandle = null,
         sheetGesturesEnabled = false
     ) {
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .height((config.screenHeightDp * 0.8).dp)
-                .fillMaxWidth()
-                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
+                .height(height)
+                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize)
         ) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    IconButton(
-                        modifier = Modifier.size(SmallIconSize),
-                        onClick = {
-                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                if (!sheetState.isVisible) {
-                                    closeBottomShit.invoke()
-                                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(
+                    modifier = Modifier.size(SmallIconSize),
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                closeBottomShit.invoke()
                             }
                         }
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(SmallIconSize),
-                            painter = painterResource(R.drawable.close_icon),
-                            contentDescription = "More",
-                            tint = ContentAccentColor
-                        )
                     }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(SmallIconSize),
+                        painter = painterResource(R.drawable.close_icon),
+                        contentDescription = "More",
+                        tint = ContentAccentColor
+                    )
                 }
-//
-//                MashupComposite(
-//                    mashupDetails = mashupDetails,
-//                    modifier = Modifier
-//                        .width(compositeHolderWidth)
-//                        .height(compositeHolderHeight),
-//                    holderWidth = compositeHolderWidth,
-//                    getImageType = getImageType,
-//                    setImageType = setImageType
-//                )
+            }
 
-                Spacer(modifier = Modifier.height(PaddingSize))
+            Spacer(modifier = Modifier.height(PaddingSize))
 
-                mashupDetails.assets.sortedBy { it.type }.let {
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth()
-                            .wrapContentHeight(),
-                        verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                        horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                        maxItemsInEachRow = 3
-                    ) {
-                        it.forEach { i ->
-                            TraitHolder(
-                                trait = i,
-                                width = mashiHolderWidth,
-                                height = mashiHolderHeight,
-                                getImageType = getImageType,
-                                setImageType = setImageType
-                            )
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                item {
+                    mashupDetails.assets.sortedBy { it.type }.let {
+                        FlowRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                            maxItemsInEachRow = 3
+                        ) {
+                            it.forEach { i ->
+                                TraitHolder(
+                                    trait = i,
+                                    width = mashiHolderWidth,
+                                    height = mashiHolderHeight,
+                                    getImageType = getImageType,
+                                    setImageType = setImageType
+                                )
+                            }
                         }
                     }
                 }

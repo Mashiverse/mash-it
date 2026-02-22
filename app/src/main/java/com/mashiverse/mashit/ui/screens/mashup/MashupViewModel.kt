@@ -2,7 +2,6 @@ package com.mashiverse.mashit.ui.screens.mashup
 
 import android.content.Context
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +32,6 @@ import kotlinx.coroutines.withContext
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayDeque
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
@@ -46,12 +44,9 @@ class MashupViewModel @Inject constructor(
     private val _mashupDetails = mutableStateOf(MashupDetails())
     val mashupDetails: State<MashupDetails> get() = _mashupDetails
 
-    private val undoStack = ArrayDeque<MashupDetails>(10)
-    private val redoStack = ArrayDeque<MashupDetails>(10)
-    private val maxHistory = 10
-
-    val canUndo = derivedStateOf { undoStack.isNotEmpty() }
-    val canRedo = derivedStateOf { redoStack.isNotEmpty() }
+    private val undoStack = ArrayDeque<MashupDetails>(5)
+    private val redoStack = ArrayDeque<MashupDetails>(5)
+    private val maxHistory = 5
 
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
     val collectionFlow = collectionRepo.collectionFlow
