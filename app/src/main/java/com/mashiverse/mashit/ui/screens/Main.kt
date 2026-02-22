@@ -70,8 +70,14 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    var isSearch by remember {
+        mutableStateOf(false)
+    }
+
     val clearSearchQuery = {
         searchQuery.value = ""
+        focusManager.clearFocus(true)
+        isSearch = false
     }
 
     val dialogContent by remember {
@@ -96,9 +102,6 @@ fun Main(navController: NavHostController) {
         }
     }
 
-    var isSearch by remember {
-        mutableStateOf(false)
-    }
     val onIsSearchChange = remember {
         { isSearch = !isSearch }
     }
@@ -129,8 +132,6 @@ fun Main(navController: NavHostController) {
 
     LaunchedEffect(navBackStackEntry?.destination?.route) {
         clearSearchQuery.invoke()
-        focusManager.clearFocus(true)
-        isSearch = false
     }
 
     DismissibleNavigationDrawer(

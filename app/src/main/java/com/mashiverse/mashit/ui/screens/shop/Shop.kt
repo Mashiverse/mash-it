@@ -58,13 +58,13 @@ fun Shop(
     var searchedListings by remember { mutableStateOf<List<Nft>>(emptyList()) }
 
     LaunchedEffect(searchQuery, allListings) {
-        if (searchQuery.length >= 3) {
-            searchedListings = allListings.filter {
+        searchedListings = if (searchQuery.length >= 3) {
+            allListings.filter {
                 it.name.lowercase().contains(searchQuery.lowercase()) || it.author.lowercase()
                     .contains(searchQuery.lowercase())
             }
         } else {
-            searchedListings = emptyList()
+            emptyList()
         }
     }
 
