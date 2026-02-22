@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.Data
@@ -20,15 +21,18 @@ import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.TraitType
+import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
+import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.sys.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -37,6 +41,7 @@ import javax.inject.Inject
 class MashupViewModel @Inject constructor(
     collectionRepo: CollectionRepo,
     dataStoreRepo: DatastoreRepo,
+    private val mashitRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
 
@@ -145,6 +150,13 @@ class MashupViewModel @Inject constructor(
         }
 
         _mashupDetails.value = _mashupDetails.value.copy(assets = assets, mint = mint)
+    }
+
+    fun saveMashup(wallet: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val res = mashitRepo.saveMashup(wallet = wallet, mashupDetails = _mashupDetails.value)
+            Timber.tag("GG").d(res.toString())
+        }
     }
 
     fun randomizeMashup(mashupTraits: List<MashupTrait>) {

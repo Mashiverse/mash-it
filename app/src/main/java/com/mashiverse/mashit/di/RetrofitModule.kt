@@ -11,6 +11,7 @@ import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
 import com.mashiverse.mashit.utils.MASHIT_BASE_URL
 import com.mashiverse.mashit.utils.MASHIVERSE_BASE_URL
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -20,6 +21,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
+
+    val logging = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    val client = OkHttpClient.Builder()
+        .addInterceptor(logging)
+        .build()
 
     @Provides
     @Singleton
@@ -39,6 +48,7 @@ object RetrofitModule {
     @Named("MashItClient")
     fun provideMashItClient(): Retrofit = Retrofit
         .Builder()
+        .client(client)
         .baseUrl(MASHIT_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

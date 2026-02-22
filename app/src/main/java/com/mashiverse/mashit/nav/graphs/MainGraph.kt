@@ -12,7 +12,8 @@ import com.mashiverse.mashit.ui.screens.mashup.Mashup
 import com.mashiverse.mashit.ui.screens.shop.Shop
 
 fun NavGraphBuilder.mainGraph(
-    searchQuery: State<String>
+    searchQuery: State<String>,
+    clearSearchQuery: () -> Unit
 ) {
     composable<MainRoutes.Shop>(
         deepLinks = listOf(
@@ -25,7 +26,7 @@ fun NavGraphBuilder.mainGraph(
     ) { backStackEntry ->
         val shopRoute: MainRoutes.Shop = backStackEntry.toRoute()
         val listingId = shopRoute.listingId
-        Shop(listingId = listingId, searchQuery = searchQuery)
+        Shop(listingId = listingId, searchQuery = searchQuery, clearSearchQuery = clearSearchQuery)
     }
 
     composable<MainRoutes.Artists> {

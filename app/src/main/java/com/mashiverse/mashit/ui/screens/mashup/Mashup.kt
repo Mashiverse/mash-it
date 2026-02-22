@@ -255,6 +255,13 @@ fun Mashup(searchQuery: State<String>) {
         viewModel.reset()
     }
 
+    val onSaveButtonClick = {
+        val wallet = walletPreferences.value.wallet
+        if (wallet != null) {
+            viewModel.saveMashup(wallet)
+        }
+    }
+
     Column {
         CategoryHeader(title = "Mashup")
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
@@ -288,7 +295,7 @@ fun Mashup(searchQuery: State<String>) {
                     },
                     onColorButtonClick = { isBottomSheet = true },
                     onRandomButtonClick = onRandomButtonClick,
-                    onSaveButtonClick = {},
+                    onSaveButtonClick = onSaveButtonClick,
                     onPngButtonClick = onPngButtonClick,
                     onGifButtonClick = onGifButtonClick,
                     onResetButtonClick = onResetButtonClick,

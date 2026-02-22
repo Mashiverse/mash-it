@@ -1,18 +1,26 @@
 package com.mashiverse.mashit.data.repos
 
+import SaveMashupRes
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.mashiverse.mashit.data.models.mashup.MashupColors
+import com.mashiverse.mashit.data.models.mashup.MashupData
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.mashup.MashupLayer
+import com.mashiverse.mashit.data.models.mashup.SaveMashupReq
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.toNft
+import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class MashitRepo @Inject constructor(
@@ -32,11 +40,80 @@ class MashitRepo @Inject constructor(
         ).flow
     }
 
+    // TODO: Replace with search api
+    suspend fun getAllListings(): List<Nft> {
+        val allListings = mutableListOf<Nft>()
+        var currentOffset = 0
+        var hasMore = true
+        val limit = 60
+
+        try {
+            while (hasMore) {
+                val response = mashitApi.getShopList(
+                    limit = limit,
+                    offset = currentOffset
+                )
+
+                val listings = response.toNfts()
+                allListings.addAll(listings)
+
+                val hasPol = listings.any { it.productInfo?.priceCurrency == PriceCurrency.POL }
+                hasMore = response.pagination.hasMore &&
+                        listings.isNotEmpty() &&
+                        !hasPol
+
+                if (hasMore) {
+                    currentOffset += listings.size
+                }
+            }
+        } catch (e: Exception) {
+            Timber.tag("Test").d(e)
+        }
+
+        return allListings.filter { it.productInfo?.priceCurrency != PriceCurrency.POL }
+    }
+
     suspend fun getShopItem(
         id: String
     ): Nft {
         val listingDto = mashitApi.getShopItem(id)
         return listingDto.toNft()
+    }
+
+    suspend fun saveMashup(
+        mashupDetails: MashupDetails,
+        wallet: String
+    ): SaveMashupRes {
+        val assets = mashupDetails.assets
+        val layers = assets
+            .filter { it.url != null }
+            .map {
+                MashupLayer(
+                    name = it.type.name.lowercase(),
+                    image = it.url!!.replace("https://ipfs.filebase.","https://ipfs.")
+                )
+            }
+
+        val colors = mashupDetails.colors
+        val mashupColors = MashupColors(
+            base = colors.base,
+            eyes = colors.eyes,
+            hair = colors.hair
+        )
+
+        val mashupData = MashupData(
+            colors = mashupColors,
+            layers = layers
+        )
+
+        val req = SaveMashupReq(
+            walletAddress = wallet,
+            mashup = mashupData
+        )
+
+        Timber.tag("GG").d(req.toString())
+
+        return mashitApi.saveMashup(request = req)
     }
 
     suspend fun getMashup(

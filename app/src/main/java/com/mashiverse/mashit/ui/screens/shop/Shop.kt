@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.room.Query
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -32,6 +31,7 @@ import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
+import com.mashiverse.mashit.ui.screens.shop.sections.SearchCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
 import com.mashiverse.mashit.ui.theme.PaddingSize
@@ -40,9 +40,10 @@ import com.mashiverse.mashit.ui.theme.PaddingSize
 @Composable
 fun Shop(
     searchQuery: State<String>,
+    clearSearchQuery: () -> Unit,
     listingId: String?
 ) {
-    val searchQuery by remember(searchQuery.value) {
+    var searchQuery by remember(searchQuery.value) {
         mutableStateOf(searchQuery.value)
     }
 
@@ -52,6 +53,20 @@ fun Shop(
 
     val viewModel = hiltViewModel<ShopViewModel>()
     val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
+
+    val allListings by remember { viewModel.allListings }
+    var searchedListings by remember { mutableStateOf<List<Nft>>(emptyList()) }
+
+    LaunchedEffect(searchQuery, allListings) {
+        if (searchQuery.length >= 3) {
+            searchedListings = allListings.filter {
+                it.name.lowercase().contains(searchQuery.lowercase()) || it.author.lowercase()
+                    .contains(searchQuery.lowercase())
+            }
+        } else {
+            searchedListings = emptyList()
+        }
+    }
 
     val selectedListing by remember { viewModel.selectedNft }
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
@@ -122,6 +137,11 @@ fun Shop(
         viewModel.dialogContent
     }
 
+    val onSearchClear = {
+        clearSearchQuery.invoke()
+        searchedListings = emptyList()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -129,7 +149,24 @@ fun Shop(
     ) {
         CategoryHeader(title = "Shop")
 
-        if (category == null) {
+        if (searchedListings.isNotEmpty()) {
+            SearchCategory(
+                items = searchedListings,
+                selectId = selectId,
+                getImageType = { url ->
+                    var imageType: ImageType? = null
+                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
+                    imageType
+                },
+                setImageType = { type, data ->
+                    viewModel.insertTraitType(url = data, imageType = type)
+                },
+                getSoldQty = getSoldQty,
+                onMint = onMint,
+                onSearchClear = onSearchClear
+            )
+        }
+        else if (category == null) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(PaddingSize)
