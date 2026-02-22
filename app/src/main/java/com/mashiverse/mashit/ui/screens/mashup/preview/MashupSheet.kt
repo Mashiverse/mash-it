@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun MashupPreview(
+fun MashupSheet(
     mashupDetails: MashupDetails,
     closeBottomShit: () -> Unit,
     sheetState: SheetState,

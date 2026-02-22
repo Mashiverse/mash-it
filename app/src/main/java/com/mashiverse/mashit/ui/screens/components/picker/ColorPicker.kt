@@ -60,7 +60,8 @@ fun ColorPicker(
     Box(modifier = modifier) {
         // 1️⃣ Background gradient (clipped)
         Box(
-            modifier = modifier
+            modifier = Modifier
+                .fillMaxSize()
                 .onSizeChanged {
                     pickerSize = it
                     onPickerSizeChange(it)

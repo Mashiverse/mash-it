@@ -1,14 +1,17 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -23,13 +26,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
@@ -46,7 +46,7 @@ import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
-import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
+import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraLargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.ExtraLargeMashiHolderWidth
@@ -89,7 +89,6 @@ fun Mashup() {
     }
 
     var height by remember { mutableStateOf(0.dp) }
-    var screenHeight by remember { mutableStateOf(0.dp) }
 
     val onPngButtonClick = {
         val wallet = walletPreferences.value.wallet
@@ -242,12 +241,7 @@ fun Mashup() {
         viewModel.reset()
     }
 
-    Column(
-        modifier = Modifier
-            .onSizeChanged { size ->
-                screenHeight = with(density) { size.height.toDp() }
-            }
-    ) {
+    Column {
         CategoryHeader(title = "Mashup")
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
@@ -263,11 +257,7 @@ fun Mashup() {
                         .height(ExtraLargeMashiHolderHeight)
                         .width(ExtraLargeMashiHolderWidth)
                         .clickable { isPreviewBottomSheet = true }
-                        .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor)
-                        .onSizeChanged { size ->
-                            // TODO: Recalculate
-                            height = screenHeight - PaddingSize - with(density) { size.height.toDp() }
-                        },
+                        .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
                     holderWidth = ExtraLargeMashiHolderWidth,
                     getImageType = { url: String ->
                         var imageType: ImageType? = null
@@ -293,33 +283,42 @@ fun Mashup() {
                     onPreviewButtonClick = { isPreviewBottomSheet = true }
                 )
 
-                Spacer(Modifier.height(SmallPaddingSize))
+                Column(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .onSizeChanged { size ->
+                            height = with(density) { size.height.toDp() } - SmallPaddingSize
+                        },
+                ) {
+                    Spacer(Modifier.height(SmallPaddingSize))
 
-                MashupCategories(
-                    onMashupCategorySelect = onMashupCategorySelect,
-                    selectedCategory = selectedCategory
-                )
+                    MashupCategories(
+                        onMashupCategorySelect = onMashupCategorySelect,
+                        selectedCategory = selectedCategory
+                    )
 
-                Spacer(Modifier.height(SmallPaddingSize))
+                    Spacer(Modifier.height(SmallPaddingSize))
 
-                MashupCategoryItems(
-                    lazyGridState = lazyGridState,
-                    traits = traits,
-                    changeMashupTrait = changeMashupTrait,
-                    getImageType = { url: String ->
-                        var imageType: ImageType? = null
-                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                            imageType = type
+                    MashupCategoryItems(
+                        modifier = Modifier.fillMaxHeight(),
+                        lazyGridState = lazyGridState,
+                        traits = traits,
+                        changeMashupTrait = changeMashupTrait,
+                        getImageType = { url: String ->
+                            var imageType: ImageType? = null
+                            viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                                imageType = type
+                            }
+                            imageType
+                        },
+                        setImageType = { imageType: ImageType, data: String ->
+                            viewModel.insertTraitType(
+                                url = data,
+                                imageType = imageType
+                            )
                         }
-                        imageType
-                    },
-                    setImageType = { imageType: ImageType, data: String ->
-                        viewModel.insertTraitType(
-                            url = data,
-                            imageType = imageType
-                        )
-                    }
-                )
+                    )
+                }
             }
         } else {
             NotConnected()
@@ -342,11 +341,12 @@ fun Mashup() {
                 changeColor = changeColor,
                 selectedColorType = selectedColorType,
                 selectColorType = { viewModel.selectColorType(it) },
+                height = height
             )
         }
 
         if (isPreviewBottomSheet) {
-            MashupPreview(
+            MashupSheet(
                 closeBottomShit = { isPreviewBottomSheet = false },
                 sheetState = previewSheetState,
                 scope = scope,

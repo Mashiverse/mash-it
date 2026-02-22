@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
@@ -34,7 +35,7 @@ fun ColorSheet(
     changeColor: (Color) -> Unit,
     selectedColorType: ColorType,
     selectColorType: (ColorType) -> Unit,
-
+    height: Dp
 ) {
     // Picker states
     var pickerLocation by remember { mutableStateOf(Offset.Zero) }
@@ -73,6 +74,7 @@ fun ColorSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(height)
                 .padding(start = PaddingSize, end = PaddingSize, top = SmallPaddingSize)
         ) {
             ColorTypeSelector(
@@ -85,7 +87,7 @@ fun ColorSheet(
             ColorPicker(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .weight(1f),
                 color = color,
                 rangeColor = rangeColor,
                 pickerLocation = pickerLocation,
@@ -143,6 +145,8 @@ fun ColorSheet(
                 closeBottomShit = closeBottomShit,
                 saveColors = saveColors
             )
+
+            Spacer(modifier = Modifier.height(SmallPaddingSize))
         }
     }
 }

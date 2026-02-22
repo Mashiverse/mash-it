@@ -20,6 +20,7 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun MashupCategoryItems(
+    modifier: Modifier,
     lazyGridState: LazyGridState,
     traits: List<MashupTrait>,
     changeMashupTrait: (MashupTrait) -> Unit,
@@ -32,7 +33,7 @@ fun MashupCategoryItems(
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         state = lazyGridState,
         verticalArrangement = Arrangement.spacedBy(PaddingSize),
         horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
