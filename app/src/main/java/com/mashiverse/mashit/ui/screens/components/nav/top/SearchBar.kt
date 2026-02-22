@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -25,6 +27,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.R
 
@@ -108,13 +111,21 @@ fun SearchBar(
                             .offset(x = iconOffset.value)
                             .clickable {
                                 onIsSearchChange.invoke()
-                                onSearchQueryChange.invoke("")
                             },
                         painter = painterResource(R.drawable.search_icon),
                         contentDescription = "Search icon",
                         tint = ContentAccentColor
                     )
                 },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onIsSearchChange.invoke()
+                        defaultKeyboardAction(ImeAction.Done)
+                    }
+                ),
                 colors = TextFieldDefaults.colors().copy(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent

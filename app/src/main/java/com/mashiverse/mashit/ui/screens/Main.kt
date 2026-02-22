@@ -7,7 +7,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerValue
@@ -43,7 +46,7 @@ import com.mashiverse.mashit.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun Main(navController: NavHostController) {
     val viewModel = hiltViewModel<Web3ViewModel>()
@@ -115,6 +118,14 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    val isKeyboardVisible = WindowInsets.isImeVisible
+
+    LaunchedEffect(isKeyboardVisible) {
+        if (!isKeyboardVisible) {
+            focusManager.clearFocus()
+            isSearch = false
+        }
+    }
 
     LaunchedEffect(navBackStackEntry?.destination?.route) {
         clearSearchQuery.invoke()
