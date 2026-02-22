@@ -24,7 +24,7 @@ fun MashupTraitHolder(
     width: Dp,
     height: Dp,
     mashupTrait: MashupTrait,
-    changeMashupTrait: (MashupTrait, Boolean) -> Unit,
+    changeMashupTrait: (MashupTrait) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {
@@ -44,7 +44,7 @@ fun MashupTraitHolder(
                 .width(width)
                 .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
-            onClick = { changeMashupTrait.invoke(mashupTrait, false) },
+            onClick = { changeMashupTrait.invoke(mashupTrait) },
             data = mashupTrait.trait.url ?: "",
             getImageType = getImageType,
             setImageType = setImageType,

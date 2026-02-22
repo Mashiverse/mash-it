@@ -1,22 +1,16 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,20 +21,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
+import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
@@ -63,14 +54,12 @@ import com.mashiverse.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.collections.get
-import kotlin.invoke
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup() {
-    val density = LocalDensity.current
+    val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
     // Bottom Sheet States
@@ -95,10 +84,11 @@ fun Mashup() {
 
     val onPngButtonClick = {
         val wallet = walletPreferences.value.wallet
-        if (wallet != null)  {
+        if (wallet != null) {
             viewModel.startImageUpload(
                 wallet = wallet,
-                imgType = 0
+                imgType = 0,
+                context = ctx
             )
         }
     }
@@ -108,10 +98,14 @@ fun Mashup() {
         if (wallet != null) {
             viewModel.startImageUpload(
                 wallet = wallet,
-                imgType = 1
+                imgType = 1,
+                context = ctx
             )
         }
     }
+
+    val canUndo = viewModel.canUndo
+    val canRedo = viewModel.canRedo
 
     // 3. Actions
     val saveColors = {
@@ -142,8 +136,8 @@ fun Mashup() {
         }
     }
 
-    val changeMashupTrait = { mashupTrait: MashupTrait, isRandom: Boolean ->
-        viewModel.updateMashup(mashupTrait, isRandom)
+    val changeMashupTrait = { mashupTrait: MashupTrait ->
+        viewModel.updateMashup(mashupTrait)
     }
 
     // Collection Data
@@ -171,8 +165,14 @@ fun Mashup() {
         nfts = temp
     }
 
+    val onRedoButtonClick = {
+        viewModel.redo()
+    }
+    val onUndoButtonClick = {
+        viewModel.undo()
+    }
+
     val traitsByType = remember(nfts) {
-        Timber.tag("GG").d(nfts.size.toString())
         val allMashupTraits = nfts.flatMap { nft ->
             nft.traits?.map { trait ->
                 MashupTrait(
@@ -211,12 +211,35 @@ fun Mashup() {
     val onRandomButtonClick = {
         if (nfts.isNotEmpty()) {
             val randomAssets = TraitType.entries.mapNotNull { type ->
-                traitsByType[type]?.randomOrNull()
+                when (type) {
+                    TraitType.BACKGROUND, TraitType.EYES, TraitType.BOTTOM, TraitType.UPPER, TraitType.HEAD -> {
+                        traitsByType[type]?.randomOrNull()
+                    }
+                    else -> {
+                        val isIncluded = arrayOf(true, false).random()
+                        if (isIncluded) {
+                            traitsByType[type]?.randomOrNull()
+                        } else {
+                            MashupTrait(
+                                trait = Trait(type = type, url = null),
+                                avatarName = ""
+                            )
+                        }
+                    }
+                }
             }
-            randomAssets.forEach { asset ->
-                changeMashupTrait.invoke(asset, true)
-            }
+            viewModel.randomizeMashup(randomAssets)
         }
+    }
+
+    val onResetButtonClick = {
+        val assets = TraitType.entries.map { type ->
+            MashupTrait(
+                trait = Trait(type = type, url = null),
+                avatarName = ""
+            )
+        }
+        viewModel.randomizeMashup(assets)
     }
 
     Column {
@@ -255,7 +278,12 @@ fun Mashup() {
                     onSaveButtonClick = {},
                     onPngButtonClick = onPngButtonClick,
                     onGifButtonClick = onGifButtonClick,
-                    onResetButtonClick = { }
+                    onResetButtonClick = onResetButtonClick,
+                    canUndo = canUndo,
+                    canRedo = canRedo,
+                    onUndoButtonClick = onUndoButtonClick,
+                    onRedoButtonClick = onRedoButtonClick,
+                    onPreviewButtonClick = { isPreviewBottomSheet = true }
                 )
 
                 Spacer(Modifier.height(SmallPaddingSize))

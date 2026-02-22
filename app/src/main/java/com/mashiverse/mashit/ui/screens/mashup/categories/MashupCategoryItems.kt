@@ -22,7 +22,7 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 fun MashupCategoryItems(
     lazyGridState: LazyGridState,
     traits: List<MashupTrait>,
-    changeMashupTrait: (MashupTrait, Boolean) -> Unit,
+    changeMashupTrait: (MashupTrait) -> Unit,
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -22,7 +23,12 @@ fun MashupActions(
     onSaveButtonClick: () -> Unit,
     onPngButtonClick: () -> Unit,
     onGifButtonClick: () -> Unit,
-    onResetButtonClick: () -> Unit
+    onResetButtonClick: () -> Unit,
+    onRedoButtonClick: () -> Unit,
+    onPreviewButtonClick: () -> Unit,
+    onUndoButtonClick: () -> Unit,
+    canUndo: State<Boolean>,
+    canRedo: State<Boolean>
 ) {
     Box(
         modifier = Modifier
@@ -32,7 +38,8 @@ fun MashupActions(
             LeftPanel(
                 onColorButtonClick = onColorButtonClick,
                 onRandomButtonClick = onRandomButtonClick,
-                onResetButtonClick = onResetButtonClick
+                onResetButtonClick = onResetButtonClick,
+                onPreviewButtonClick = onPreviewButtonClick
             )
 
             Spacer(modifier = Modifier.weight(1F))
@@ -50,7 +57,11 @@ fun MashupActions(
             RightPanel(
                 onSaveButtonClick = onSaveButtonClick,
                 onPngButtonClick = onPngButtonClick,
-                onGifButtonClick = onGifButtonClick
+                onGifButtonClick = onGifButtonClick,
+                onRedoButtonClick = onRedoButtonClick,
+                onUndoButtonClick = onUndoButtonClick,
+                canUndo = canUndo,
+                canRedo = canRedo
             )
         }
     }
