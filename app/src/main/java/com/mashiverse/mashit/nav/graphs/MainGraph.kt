@@ -1,5 +1,6 @@
 package com.mashiverse.mashit.nav.graphs
 
+import androidx.compose.runtime.State
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
@@ -10,7 +11,9 @@ import com.mashiverse.mashit.ui.screens.collection.Collection
 import com.mashiverse.mashit.ui.screens.mashup.Mashup
 import com.mashiverse.mashit.ui.screens.shop.Shop
 
-fun NavGraphBuilder.mainGraph() {
+fun NavGraphBuilder.mainGraph(
+    searchQuery: State<String>
+) {
     composable<MainRoutes.Shop>(
         deepLinks = listOf(
             navDeepLink<MainRoutes.Shop>(
@@ -22,7 +25,7 @@ fun NavGraphBuilder.mainGraph() {
     ) { backStackEntry ->
         val shopRoute: MainRoutes.Shop = backStackEntry.toRoute()
         val listingId = shopRoute.listingId
-        Shop(listingId = listingId)
+        Shop(listingId = listingId, searchQuery = searchQuery)
     }
 
     composable<MainRoutes.Artists> {
@@ -30,10 +33,10 @@ fun NavGraphBuilder.mainGraph() {
     }
 
     composable<MainRoutes.Collection> {
-        Collection()
+        Collection(searchQuery)
     }
 
     composable<MainRoutes.Mashup> {
-        Mashup()
+        Mashup(searchQuery)
     }
 }

@@ -44,7 +44,9 @@ fun TopNavBar(
     wallet: String?,
     onConnect: () -> Unit,
     drawerState: DrawerState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit
 ) {
     var isSearch by remember {
         mutableStateOf(false)
@@ -53,12 +55,6 @@ fun TopNavBar(
         { isSearch = !isSearch }
     }
 
-    var searchQuery by remember { mutableStateOf("") }
-    val onSearchQueryChange = remember {
-        { input: String ->
-            searchQuery = input
-        }
-    }
 
     Column(
         modifier = Modifier

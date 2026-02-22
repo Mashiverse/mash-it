@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -43,13 +44,16 @@ import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Collection() {
+fun Collection(searchQuery: State<String>) {
+    val searchQuery by remember(searchQuery.value) {
+        mutableStateOf(searchQuery.value)
+    }
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
@@ -61,12 +65,10 @@ fun Collection() {
 
     var ownedNfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
 
-    LaunchedEffect(collection) {
+    LaunchedEffect(collection, searchQuery) {
         val nfts = mutableListOf<Nft>()
-        Timber.tag("GG").d(collection.size.toString())
         collection.forEach { nft ->
             nft.owned?.forEach { owned ->
-                Timber.tag("GG").d(owned.toString())
                 nfts.add(
                     nft.copy(
                         owned = listOf(
@@ -76,8 +78,14 @@ fun Collection() {
                 )
             }
         }
-        ownedNfts = nfts
-        Timber.tag("GG").d(ownedNfts.size.toString())
+        ownedNfts = if (searchQuery.isEmpty()) {
+            nfts
+        } else {
+            nfts.filter {
+                it.name.lowercase().contains(searchQuery.lowercase())
+                        || it.author.lowercase().contains(searchQuery.lowercase())
+            }
+        }
     }
 
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))

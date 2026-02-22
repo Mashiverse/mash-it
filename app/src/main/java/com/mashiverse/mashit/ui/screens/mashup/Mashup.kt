@@ -1,7 +1,6 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -49,8 +49,6 @@ import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraLargeMashiHolderHeight
-import com.mashiverse.mashit.ui.theme.ExtraLargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.PaddingSize
@@ -64,7 +62,11 @@ import timber.log.Timber
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Mashup() {
+fun Mashup(searchQuery: State<String>) {
+    val searchQuery by remember(searchQuery.value) {
+        mutableStateOf(searchQuery.value)
+    }
+
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
@@ -157,7 +159,7 @@ fun Mashup() {
 
     var nfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
 
-    LaunchedEffect(collection) {
+    LaunchedEffect(collection, searchQuery) {
         val temp = mutableListOf<Nft>()
         collection.forEach { nft ->
             nft.owned?.forEach { owned ->
@@ -171,7 +173,14 @@ fun Mashup() {
                 )
             }
         }
-        nfts = temp
+        nfts = if (searchQuery.isEmpty()) {
+            temp
+        } else {
+            temp.filter {
+                it.name.lowercase().contains(searchQuery.lowercase())
+                        || it.author.lowercase().contains(searchQuery.lowercase())
+            }
+        }
     }
 
     val onRedoButtonClick = {

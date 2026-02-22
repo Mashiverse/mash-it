@@ -25,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -34,12 +35,11 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
+import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,6 +58,16 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    var searchQuery = remember { mutableStateOf("") }
+    val onSearchQueryChange = remember {
+        { input: String ->
+            searchQuery.value = input
+        }
+    }
+    val clearSearchQuery = {
+        searchQuery.value = ""
+    }
+
     val dialogContent by remember {
         viewModel.dialogContent
     }
@@ -65,13 +75,16 @@ fun Main(navController: NavHostController) {
     val openGooglePlay = {
         val packageName = "org.toshi"
         try {
-            val intent = Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()).apply {
-                setPackage("com.android.vending")
-            }
+            val intent =
+                Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()).apply {
+                    setPackage("com.android.vending")
+                }
             ctx.startActivity(intent)
         } catch (e: Exception) {
-            val intent = Intent(Intent.ACTION_VIEW,
-                "https://play.google.com/store/apps/details?id=$packageName".toUri())
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                "https://play.google.com/store/apps/details?id=$packageName".toUri()
+            )
             ctx.startActivity(intent)
         }
     }
@@ -122,6 +135,8 @@ fun Main(navController: NavHostController) {
                             }
                         }
                     },
+                    searchQuery = searchQuery.value,
+                    onSearchQueryChange = onSearchQueryChange
                 )
             }
         ) { paddingValues ->
@@ -132,7 +147,7 @@ fun Main(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                mainGraph()
+                mainGraph(searchQuery = searchQuery)
             }
 
             if (drawerState.isOpen) {
