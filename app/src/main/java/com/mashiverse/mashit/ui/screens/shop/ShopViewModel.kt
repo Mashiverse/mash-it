@@ -39,10 +39,6 @@ class ShopViewModel @Inject constructor(
     val shopPagingData: Flow<PagingData<Nft>> = mashItRepo.getShopListPagingData()
         .cachedIn(viewModelScope)
 
-    private val _recentlyReleased = mutableStateOf<List<Nft>>(emptyList())
-    val recentlyReleased: State<List<Nft>> get() = _recentlyReleased
-
-
     private val _selectedId = mutableStateOf<String?>(null)
     private val _selectedNft = mutableStateOf<Nft?>(null)
     val selectedNft: State<Nft?> get() = _selectedNft
@@ -56,16 +52,6 @@ class ShopViewModel @Inject constructor(
 
     fun setDialogContent(dialogContent: DialogContent) {
         _dialogContent.value = dialogContent
-    }
-
-    init {
-        getRecentlyReleased()
-    }
-
-    fun getRecentlyReleased() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _recentlyReleased.value = mashItRepo.getRecentlyReleased()
-        }
     }
 
     fun selectId(id: String) {

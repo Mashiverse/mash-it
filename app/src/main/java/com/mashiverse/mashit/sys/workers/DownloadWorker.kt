@@ -1,6 +1,7 @@
 package com.mashiverse.mashit.sys.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -9,8 +10,6 @@ import com.mashiverse.mashit.utils.helpers.ImageHelper
 import com.mashiverse.mashit.utils.helpers.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @HiltWorker
 class UploadWorker @AssistedInject constructor(
@@ -24,25 +23,23 @@ class UploadWorker @AssistedInject constructor(
             val wallet = inputData.getString(WALLET)
             val imgType = inputData.getInt(IMG_TYPE, 0)
 
-            withContext(Dispatchers.IO) {
-                wallet?.let {
-                    val mashupResult = mashiverseRepo.getMashup(wallet, imgType)
-                    val timestamp = System.currentTimeMillis()
-                    val fileName = if (mashupResult.contentType == "image/png") {
-                        "mashup_$timestamp.png"
-                    } else {
-                        "mashup_$timestamp.gif"
-                    }
-
-                    ImageHelper.saveImageToGallery(
-                        context = applicationContext,
-                        imageBytes = mashupResult.bytes,
-                        fileName = fileName,
-                        mimeType = mashupResult.contentType
-                    )
-
-                    NotificationHelper.showNotification(applicationContext, "Image saved", fileName)
+            wallet?.let {
+                val mashupResult = mashiverseRepo.getMashup(wallet, imgType)
+                val timestamp = System.currentTimeMillis()
+                val fileName = if (mashupResult.contentType == "image/png") {
+                    "mashup_$timestamp.png"
+                } else {
+                    "mashup_$timestamp.gif"
                 }
+
+                ImageHelper.saveImageToGallery(
+                    context = applicationContext,
+                    imageBytes = mashupResult.bytes,
+                    fileName = fileName,
+                    mimeType = mashupResult.contentType
+                )
+
+                NotificationHelper.showNotification(applicationContext, "Image saved", fileName)
             }
             Result.success()
         } catch (e: Exception) {
