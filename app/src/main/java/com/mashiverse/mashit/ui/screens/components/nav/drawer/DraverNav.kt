@@ -49,7 +49,12 @@ fun DrawerNav(
                 modifier = Modifier
                     .height(ContentContainerHeight),
                 onClick = {
-                    navController.navigate(route = navItem.route)
+                    navController.navigate(route = navItem.route) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                     selectedDest = i
                     scope.launch {
                         drawerState.close()
