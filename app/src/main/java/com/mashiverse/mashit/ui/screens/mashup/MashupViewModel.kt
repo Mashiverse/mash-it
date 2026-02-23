@@ -1,6 +1,7 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
+import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
@@ -52,6 +54,13 @@ class MashupViewModel @Inject constructor(
     private val undoStack = ArrayDeque<MashupDetails>(5)
     private val redoStack = ArrayDeque<MashupDetails>(5)
     private val maxHistory = 5
+
+    private val _dialogContent = mutableStateOf<DialogContent?>(null)
+    val dialogContent: State<DialogContent?> = _dialogContent
+
+    fun clearDialog() {
+        _dialogContent.value = null
+    }
 
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
     val collectionFlow = collectionRepo.collectionFlow
@@ -152,10 +161,20 @@ class MashupViewModel @Inject constructor(
         _mashupDetails.value = _mashupDetails.value.copy(assets = assets, mint = mint)
     }
 
-    fun saveMashup(wallet: String) {
+    fun saveMashup(wallet: String, ctx: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val res = mashitRepo.saveMashup(wallet = wallet, mashupDetails = _mashupDetails.value)
-            Timber.tag("GG").d(res.toString())
+            if (res?.success == true) {
+                _dialogContent.value = DialogContent(
+                    title = "Mashup Saved",
+                    text = "Enjoy sharing it with friends"
+                )
+            } else {
+                _dialogContent.value = DialogContent(
+                    title = "Save Error",
+                    text = "Please try again later"
+                )
+            }
         }
     }
 

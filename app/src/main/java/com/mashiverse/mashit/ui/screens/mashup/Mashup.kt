@@ -42,6 +42,7 @@ import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
@@ -99,6 +100,8 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     var height by remember { mutableStateOf(0.dp) }
+
+    val dialogContent by remember { viewModel.dialogContent }
 
     val onPngButtonClick = {
         val wallet = walletPreferences.value.wallet
@@ -261,7 +264,7 @@ fun Mashup(searchQuery: State<String>) {
     val onSaveButtonClick = {
         val wallet = walletPreferences.value.wallet
         if (wallet != null) {
-            viewModel.saveMashup(wallet)
+            viewModel.saveMashup(wallet, ctx)
         }
     }
 
@@ -390,6 +393,12 @@ fun Mashup(searchQuery: State<String>) {
                 },
                 height = height
             )
+        }
+    }
+
+    if (dialogContent != null) {
+        Dialog(dialogContent!!) {
+            viewModel.clearDialog()
         }
     }
 }
