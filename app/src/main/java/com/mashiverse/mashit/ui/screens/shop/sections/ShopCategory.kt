@@ -13,10 +13,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -31,8 +37,13 @@ import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.MaxCollectionItemWidth
+import com.mashiverse.mashit.ui.theme.MaxShopItemWidth
+import com.mashiverse.mashit.ui.theme.MinCollectionItemWidth
+import com.mashiverse.mashit.ui.theme.MinShopItemWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.utils.helpers.GridDimensionsHelper
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -46,9 +57,20 @@ fun ShopCategory(
     onMint: (String, Double, Boolean) -> Unit,
     onCategoryClose: () -> Unit
 ) {
-    val config = LocalConfiguration.current
-    val imageWidth = (config.screenWidthDp.dp - 2 * PaddingSize - SmallPaddingSize) / 2
-    val imageHeight = (imageWidth / 3) * 4
+    var columns by remember { mutableIntStateOf(1) }
+    var width by remember { mutableStateOf(0.dp) }
+    var height by remember { mutableStateOf(0.dp) }
+
+    GridDimensionsHelper(
+        minWidth = MinShopItemWidth,
+        maxWidth = MaxShopItemWidth,
+        horizontalPadding = PaddingSize,
+        gridGap = SmallPaddingSize,
+    ) { w: Dp, h: Dp, col: Int ->
+        columns = col
+        width = w
+        height = h
+    }
 
     val appendState = categoryItems.loadState.append
 
@@ -83,14 +105,14 @@ fun ShopCategory(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(columns),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
             verticalArrangement = Arrangement.spacedBy(PaddingSize)
         ) {
             items(
                 count = categoryItems.itemCount,
-                key = categoryItems.itemKey { it.name }
+                key = categoryItems.itemKey {"${it.name}_${it.author}" }
             ) { index ->
                 val nft = categoryItems[index]
                 nft?.let {
@@ -101,8 +123,8 @@ fun ShopCategory(
                         setImageType = setImageType,
                         getSoldQty = getSoldQty,
                         onMint = onMint,
-                        imageWidth = imageWidth,
-                        imageHeight = imageHeight
+                        imageWidth = width,
+                        imageHeight = height
                     )
                 }
             }

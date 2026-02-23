@@ -7,23 +7,22 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
-import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
-import com.mashiverse.mashit.ui.theme.MaxShopCategoryItemHeight
-import com.mashiverse.mashit.ui.theme.MaxShopCategoryItemWidth
-import com.mashiverse.mashit.ui.theme.MinShopCategoryItemHeight
-import com.mashiverse.mashit.ui.theme.MinShopCategoryItemWidth
+import com.mashiverse.mashit.ui.theme.MaxCollectionItemWidth
+import com.mashiverse.mashit.ui.theme.MinCollectionItemWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.max
+import com.mashiverse.mashit.utils.helpers.GridDimensionsHelper
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -35,27 +34,20 @@ fun MashupCategoryItems(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {
-    val config = LocalConfiguration.current
-    val screenWidth = config.screenWidthDp.dp
+    var columns by remember { mutableIntStateOf(1) }
+    var width by remember { mutableStateOf(0.dp) }
+    var height by remember { mutableStateOf(0.dp) }
 
-    // 1. Calculate how many columns we CAN fit using the Minimum width
-    // Formula: (Available Width + Gap) / (Min Width + Gap)
-    val availableWidth = screenWidth - (2 * PaddingSize)
-    val columns = floor((availableWidth + SmallPaddingSize) / (MinShopCategoryItemWidth + SmallPaddingSize))
-        .toInt()
-        .coerceAtLeast(1)
-
-    // 2. Calculate the dynamic width for each item to fill the row perfectly
-    // This ensures no awkward empty space on the right
-    val totalGaps = (columns - 1) * SmallPaddingSize
-    val calculatedWidth = (availableWidth - totalGaps) / columns
-
-    // 3. Clamp the width and height between your defined Min and Max
-    val finalWidth = calculatedWidth.coerceIn(MinShopCategoryItemWidth, MaxShopCategoryItemWidth)
-
-    // Maintain the 4:3 aspect ratio or use your Min/Max height constants
-    val finalHeight = (finalWidth / 3) * 4
-
+    GridDimensionsHelper(
+        minWidth = MinCollectionItemWidth,
+        maxWidth = MaxCollectionItemWidth,
+        horizontalPadding = PaddingSize,
+        gridGap = SmallPaddingSize,
+    ) { w: Dp, h: Dp, col: Int ->
+        columns = col
+        width = w
+        height = h
+    }
 
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
@@ -66,8 +58,8 @@ fun MashupCategoryItems(
     ) {
         items(traits.size) { i ->
             MashupTraitHolder(
-                height = finalHeight,
-                width = finalWidth,
+                height = height,
+                width = width,
                 mashupTrait = traits[i],
                 changeMashupTrait = changeMashupTrait,
                 getImageType = getImageType,

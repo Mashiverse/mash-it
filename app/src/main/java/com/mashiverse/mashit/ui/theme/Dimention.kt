@@ -17,11 +17,14 @@ val LargeMashiHolderHeight = (736 * 0.3).dp
 val MaxMashiHolderWidth = (552 * 0.42).dp
 val MaxMashiHolderHeight = (736 * 0.42).dp
 
-val MinShopCategoryItemWidth = (380 * 0.36).dp
-val MinShopCategoryItemHeight = (600 * 0.36).dp
+// Collection & Mashup
+val MinCollectionItemWidth = (380 * 0.32).dp
+val MaxCollectionItemWidth = (380 * 0.64).dp
 
-val MaxShopCategoryItemWidth = (380 * 0.42).dp
-val MaxShopCategoryItemHeight = (600 * 0.42).dp
+// Shop
+val MinShopItemWidth = (380 * 0.32).dp
+val MaxShopItemWidth = (380 * 0.64).dp
+
 val ColorPreviewSize = 80.dp
 
 // Paddings
