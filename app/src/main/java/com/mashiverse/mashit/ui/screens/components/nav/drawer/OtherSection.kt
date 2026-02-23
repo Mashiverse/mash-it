@@ -81,20 +81,20 @@ fun OtherSection(
             text = "Settings"
         )
 
-        OtherSectionButton(
-            onClick = {},
-            text = "Mash-It Rules"
-        )
-
-        OtherSectionButton(
-            onClick = {},
-            text = "Help Center",
-            contentColor = Color.Red
-        )
-
-        OtherSectionButton(
-            onClick = {},
-            text = "Sign Out",
-        )
+//        OtherSectionButton(
+//            onClick = {},
+//            text = "Mash-It Rules"
+//        )
+//
+//        OtherSectionButton(
+//            onClick = {},
+//            text = "Help Center",
+//            contentColor = Color.Red
+//        )
+//
+//        OtherSectionButton(
+//            onClick = {},
+//            text = "Sign Out",
+//        )
     }
 }

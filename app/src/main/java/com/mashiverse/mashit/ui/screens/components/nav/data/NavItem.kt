@@ -11,7 +11,7 @@ data class NavItem(
 
 val navItems = listOf(
     NavItem("Shop", MainRoutes.Shop(listingId = null)),
-    NavItem("Artists", MainRoutes.Artists),
+    //NavItem("Artists", MainRoutes.Artists),
     NavItem("Collection", MainRoutes.Collection),
     NavItem("Mashup", MainRoutes.Mashup)
 )

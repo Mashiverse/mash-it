@@ -100,7 +100,6 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     var height by remember { mutableStateOf(0.dp) }
-
     val dialogContent by remember { viewModel.dialogContent }
 
     val onPngButtonClick = {
@@ -169,7 +168,6 @@ fun Mashup(searchQuery: State<String>) {
         val temp = mutableListOf<Nft>()
         collection.forEach { nft ->
             nft.owned?.forEach { owned ->
-                Timber.tag("GG").d(owned.toString())
                 temp.add(
                     nft.copy(
                         owned = listOf(
@@ -202,11 +200,11 @@ fun Mashup(searchQuery: State<String>) {
                 MashupTrait(
                     trait = trait,
                     avatarName = nft.name,
-                    mint = if (trait.type == TraitType.BACKGROUND) {
-                        nft.owned?.getOrNull(0)?.mint
-                    } else {
-                        null
-                    }
+//                    mint = if (trait.type == TraitType.BACKGROUND) {
+//                        nft.owned?.getOrNull(0)?.mint
+//                    } else {
+//                        null
+//                    }
                 )
             } ?: emptyList()
         }
@@ -218,12 +216,12 @@ fun Mashup(searchQuery: State<String>) {
     val traits by remember(selectedCategory, nfts) {
         derivedStateOf {
             val traits = traitsByType[selectedCategory] ?: emptyList()
-
-            if (selectedCategory != TraitType.BACKGROUND) {
-                traits.distinctBy { it.avatarName }
-            } else {
-                traits
-            }
+            traits.distinctBy { it.avatarName }
+//            if (selectedCategory != TraitType.BACKGROUND) {
+//
+//            } else {
+//                traits
+//            }
         }
     }
 

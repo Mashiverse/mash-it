@@ -42,9 +42,9 @@ fun NavDrawer(
         Column(
             verticalArrangement = Arrangement.spacedBy(PaddingSize)
         ) {
-            CreatePostButton(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
-
-            HorizontalDivider()
+//            CreatePostButton(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
+//
+//            HorizontalDivider()
 
             DrawerNav(
                 modifier = Modifier.padding(horizontal = DrawerPaddingSize),
@@ -55,9 +55,9 @@ fun NavDrawer(
 
             HorizontalDivider()
 
-            PinnedArtists(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
-
-            HorizontalDivider()
+//            PinnedArtists(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
+//
+//            HorizontalDivider()
 
             OtherSection(
                 modifier = Modifier.padding(horizontal = DrawerPaddingSize),
