@@ -1,7 +1,9 @@
 package com.mashiverse.mashit.ui.screens
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -138,11 +140,19 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        viewModel.updateNotifications(isGranted)
+    }
+
     val onFirstLaunchDialogClose = {
-        activity?.let {
-            PermissionsHelper.getNotificationsPermission(ctx, activity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            val isGranted = PermissionsHelper.checkNotificationsPermission(ctx)
+            viewModel.updateNotifications(isGranted)
         }
-        viewModel.updateNotifications(PermissionsHelper.checkNotificationsPermission(ctx))
         viewModel.setFirstLaunchCompleted()
         viewModel.clearDialog()
     }

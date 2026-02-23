@@ -73,14 +73,23 @@ class MashitRepo @Inject constructor(
     suspend fun getShopItem(
         id: String
     ): Nft {
-        val listingDto = mashitApi.getShopItem(id)
-        return listingDto.toNft()
+        try {
+            val listingDto = mashitApi.getShopItem(id)
+            return listingDto.toNft()
+        } catch (e: Exception) {
+            return Nft(
+                name = "Unknown",
+                author ="Unknown",
+                compositeUrl = "",
+                description = null
+            )
+        }
     }
 
     suspend fun saveMashup(
         mashupDetails: MashupDetails,
         wallet: String
-    ): SaveMashupRes {
+    ): SaveMashupRes? {
         val assets = mashupDetails.assets
         val layers = assets
             .filter { it.url != null }
@@ -110,40 +119,51 @@ class MashitRepo @Inject constructor(
 
         Timber.tag("GG").d(req.toString())
 
-        return mashitApi.saveMashup(request = req)
+        return try {
+            mashitApi.saveMashup(request = req)
+        } catch (e: Exception) {
+            Timber.tag("Test").d(e)
+            null
+        }
     }
 
     suspend fun getMashup(
         wallet: String
     ): MashupDetails {
-        val mashupDto = mashitApi.getMashup(wallet)
+        try {
 
-        val traits = List(11) { i ->
-            Trait(
-                url = null,
-                type = TraitType.entries[i]
-            )
-        }.toMutableList()
+            val mashupDto = mashitApi.getMashup(wallet)
 
-        mashupDto.assets.forEach { asset ->
-            val assetToUpdate =
-                traits.firstOrNull { TraitType.valueOf(asset.name.uppercase()) == it.type }
-            val i = traits.indexOf(assetToUpdate)
-            traits[i] = Trait(
-                type = TraitType.valueOf(asset.name.uppercase()),
-                url = asset.image.replace("https://ipfs.", "https://ipfs.filebase.")
+            val traits = List(11) { i ->
+                Trait(
+                    url = null,
+                    type = TraitType.entries[i]
+                )
+            }.toMutableList()
+
+            mashupDto.assets.forEach { asset ->
+                val assetToUpdate =
+                    traits.firstOrNull { TraitType.valueOf(asset.name.uppercase()) == it.type }
+                val i = traits.indexOf(assetToUpdate)
+                traits[i] = Trait(
+                    type = TraitType.valueOf(asset.name.uppercase()),
+                    url = asset.image.replace("https://ipfs.", "https://ipfs.filebase.")
+                )
+            }
+
+            val colors = SelectedColors(
+                base = mashupDto.colors.base,
+                eyes = mashupDto.colors.eyes,
+                hair = mashupDto.colors.hair
             )
+
+            return MashupDetails(
+                assets = traits,
+                colors = colors
+            )
+        } catch (e: Exception) {
+            Timber.tag("Test").d(e)
+            return MashupDetails()
         }
-
-        val colors = SelectedColors(
-            base = mashupDto.colors.base,
-            eyes = mashupDto.colors.eyes,
-            hair = mashupDto.colors.hair
-        )
-
-        return MashupDetails(
-            assets = traits,
-            colors = colors
-        )
     }
 }
