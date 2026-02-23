@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 fun ProductInfoSection(
     nft: Nft,
     getSoldQty: ((Int, (Int) -> Unit) -> Unit)?,
-    onMint: ((String, Double) -> Unit)?,
+    onMint: ((String, Double, Boolean) -> Unit)?,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -93,7 +94,7 @@ fun ProductInfoSection(
             },
             textSize = 16.sp,
             onClick = {
-                onMint!!.invoke(nft.productInfo.listingId, nft.productInfo.price)
+                onMint!!.invoke(nft.productInfo.listingId, nft.productInfo.price, nft.productInfo.priceCurrency == PriceCurrency.POL)
             }
         )
     }

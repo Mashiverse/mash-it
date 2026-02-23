@@ -8,26 +8,28 @@ import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.remote.dtos.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.ListingsDto
 
-fun ListingsDto.toNfts() = this.listings.map { listing ->
-    val productInfo = ProductInfo(
-        price = listing.price.toDouble(),
-        perWallet = listing.maxPerWallet,
-        soldQuantity = listing.totalSold,
-        quantity = listing.maxSupply,
-        priceCurrency = PriceCurrency.valueOf(listing.currency),
-        delisted = listing.status == "delisted",
-        id = listing.id,
-        listingId = listing.listingId,
-    )
+fun ListingsDto.toNfts() = this.listings
+    .filter { it.listingId != null }
+    .map { listing ->
+        val productInfo = ProductInfo(
+            price = listing.price.toDouble(),
+            perWallet = listing.maxPerWallet,
+            soldQuantity = listing.totalSold,
+            quantity = listing.maxSupply,
+            priceCurrency = PriceCurrency.valueOf(listing.currency),
+            delisted = listing.status == "delisted",
+            id = listing.id,
+            listingId = listing.listingId!!,
+        )
 
-    Nft(
-        name = listing.title,
-        author = listing.artistName,
-        description = listing.description,
-        productInfo = productInfo,
-        compositeUrl = listing.images.composite
-    )
-}
+        Nft(
+            name = listing.title,
+            author = listing.artistName,
+            description = listing.description,
+            productInfo = productInfo,
+            compositeUrl = listing.images.composite
+        )
+    }
 
 fun ListingDto.toNft(): Nft {
     val listing = this.listing

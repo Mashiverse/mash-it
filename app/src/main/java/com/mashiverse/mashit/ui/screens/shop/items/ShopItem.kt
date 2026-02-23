@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -38,7 +39,7 @@ fun ShopItem(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double) -> Unit,
+    onMint: (String, Double, Boolean) -> Unit,
     imageWidth: Dp = LargeMashiHolderWidth,
     imageHeight: Dp = LargeMashiHolderHeight
 ) {
@@ -110,7 +111,7 @@ fun ShopItem(
             enabled = !isSoldOut && !delisted,
             onClick = {
                 if (nft.productInfo?.listingId != null) {
-                    onMint.invoke(nft.productInfo.listingId, nft.productInfo.price)
+                    onMint.invoke(nft.productInfo.listingId, nft.productInfo.price, nft.productInfo.priceCurrency == PriceCurrency.POL)
                 }
             }
         )

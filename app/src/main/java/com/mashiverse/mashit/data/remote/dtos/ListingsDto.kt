@@ -16,7 +16,7 @@ data class ListingsDto(
         val description: String,
         val id: String,
         val images: Images,
-        val listingId: String,
+        val listingId: String?,
         val marketplace: String,
         val maxPerWallet: Int,
         val maxSupply: Int,

@@ -57,10 +57,8 @@ class MashitRepo @Inject constructor(
                 val listings = response.toNfts()
                 allListings.addAll(listings)
 
-                val hasPol = listings.any { it.productInfo?.priceCurrency == PriceCurrency.POL }
                 hasMore = response.pagination.hasMore &&
-                        listings.isNotEmpty() &&
-                        !hasPol
+                        listings.isNotEmpty()
 
                 if (hasMore) {
                     currentOffset += listings.size
@@ -70,7 +68,7 @@ class MashitRepo @Inject constructor(
             Timber.tag("Test").d(e)
         }
 
-        return allListings.filter { it.productInfo?.priceCurrency != PriceCurrency.POL }
+        return allListings
     }
 
     suspend fun getShopItem(

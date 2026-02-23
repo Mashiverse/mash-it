@@ -111,8 +111,15 @@ fun Shop(
         }
     }
 
-    val onMint = { listingId: String, price: Double ->
-        if (clientRef != null && walletPreferences.value.wallet != null) {
+    val onMint = { listingId: String, price: Double, isPolCurrency: Boolean ->
+        if (isPolCurrency) {
+            viewModel.setDialogContent(
+                DialogContent(
+                    title = "POL Currency",
+                    text = "We currently don't support POL minting"
+                )
+            )
+        } else if (clientRef != null && walletPreferences.value.wallet != null) {
             viewModel.mint(
                 client = clientRef!!,
                 fromAddress = walletPreferences.value.wallet!!,
@@ -165,8 +172,7 @@ fun Shop(
                 onMint = onMint,
                 onSearchClear = onSearchClear
             )
-        }
-        else if (category == null) {
+        } else if (category == null) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(PaddingSize)

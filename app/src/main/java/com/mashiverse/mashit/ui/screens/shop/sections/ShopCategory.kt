@@ -43,7 +43,7 @@ fun ShopCategory(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double) -> Unit,
+    onMint: (String, Double, Boolean) -> Unit,
     onCategoryClose: () -> Unit
 ) {
     val config = LocalConfiguration.current
@@ -83,16 +83,14 @@ fun ShopCategory(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2), // Sets 2 items per row
+            columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
             verticalArrangement = Arrangement.spacedBy(PaddingSize)
         ) {
             items(
-                count = categoryItems.itemSnapshotList.items.filter {
-                    it.productInfo?.priceCurrency != PriceCurrency.POL
-                }.size,
-                key = categoryItems.itemKey { it.name } // Use the item's name as key
+                count = categoryItems.itemCount,
+                key = categoryItems.itemKey { it.name }
             ) { index ->
                 val nft = categoryItems[index]
                 nft?.let {
@@ -109,14 +107,12 @@ fun ShopCategory(
                 }
             }
 
-            // 2. Loading State (Spans across both columns)
             if (appendState is LoadState.Loading) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     SectionLoading()
                 }
             }
 
-            // 3. Error State (Spans across both columns)
             if (appendState is LoadState.Error) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     SectionRefresh(

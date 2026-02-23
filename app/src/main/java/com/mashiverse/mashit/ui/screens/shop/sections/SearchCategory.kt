@@ -35,7 +35,7 @@ fun SearchCategory(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double) -> Unit,
+    onMint: (String, Double, Boolean) -> Unit,
     onSearchClear: () -> Unit
 ) {
     val config = LocalConfiguration.current

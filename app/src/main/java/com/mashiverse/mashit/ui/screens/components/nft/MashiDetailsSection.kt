@@ -39,7 +39,7 @@ fun MashiDetailsSection(
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
     getSoldQty: ((Int, (Int) -> Unit) -> Unit)? = null,
-    onMint: ((String, Double) -> Unit)? = null
+    onMint: ((String, Double, Boolean) -> Unit)? = null
 ) {
     Row(
         modifier = Modifier

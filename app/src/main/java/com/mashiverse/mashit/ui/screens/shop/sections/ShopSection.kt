@@ -31,7 +31,7 @@ fun ShopSection(
     setImageType: (ImageType, String) -> Unit,
     onCategorySelect: (String, LazyPagingItems<Nft>) -> Unit, // TODO: Category select
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double) -> Unit
+    onMint: (String, Double, Boolean) -> Unit
 ) {
     Column {
         Row(

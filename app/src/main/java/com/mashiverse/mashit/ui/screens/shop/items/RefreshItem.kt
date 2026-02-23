@@ -1,6 +1,7 @@
 package com.mashiverse.mashit.ui.screens.shop.items
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,19 +32,18 @@ fun SectionRefresh(
             .height(ContentContainerHeight)
             .clip(ContentContainerShape)
             .background(ContainerColor)
+            .clickable {
+                onRetry.invoke()
+            }
+        , contentAlignment = Alignment.Center
     ) {
-        IconButton(
+        Icon(
             modifier = Modifier
-                .size(48.dp)
-                .align(Alignment.Center),
-            onClick = onRetry
-        ) {
-            Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "Retry",
-                tint = ContentAccentColor
-            )
-        }
+                .size(48.dp),
+            imageVector = Icons.Default.Refresh,
+            contentDescription = "Retry",
+            tint = ContentAccentColor
+        )
     }
 }
 

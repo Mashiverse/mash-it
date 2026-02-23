@@ -7,6 +7,7 @@ import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.utils.MASHIT_KEY
+import timber.log.Timber
 
 class ShopPagingSource(
     private val api: MashitApi,
@@ -27,12 +28,13 @@ class ShopPagingSource(
                 prevKey = if (offset == 0) null else maxOf(0, offset - limit),
                 nextKey = when {
                     // TODO: POL showing and minting
-                    listings.any { it.productInfo?.priceCurrency == PriceCurrency.POL } -> null
+                    //listings.any { it.productInfo?.priceCurrency == PriceCurrency.POL } -> null
                     hasMore && listings.isNotEmpty() -> offset + listings.size
                     else -> null
                 }
             )
         } catch (e: Exception) {
+            Timber.tag("Test").d(e)
             LoadResult.Error(e)
         }
     }
