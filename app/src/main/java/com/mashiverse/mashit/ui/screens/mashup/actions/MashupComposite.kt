@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.TraitType
@@ -20,6 +21,7 @@ import com.mashiverse.mashit.ui.screens.components.nft.trait.MintText
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.MashiBackground
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 
 @Composable
 fun MashupComposite(
@@ -35,12 +37,13 @@ fun MashupComposite(
             .background(MashiBackground),
         contentAlignment = Alignment.Center
     ) {
+        val maxWidth = min(holderWidth, MaxMashiHolderWidth)
         mashupDetails.assets.sortedBy { it.type }.forEach { trait ->
             val traitType = trait.type
             val width =
-                if (traitType == TraitType.BACKGROUND) holderWidth else holderWidth * 380 / 552
+                if (traitType == TraitType.BACKGROUND) maxWidth else maxWidth * 380 / 552
             val height =
-                if (traitType == TraitType.BACKGROUND) holderWidth * 4 / 3 else (holderWidth * 4 / 3) * 600 / 736
+                if (traitType == TraitType.BACKGROUND) maxWidth * 4 / 3 else (maxWidth * 4 / 3) * 600 / 736
             val contentScale =
                 if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
 

@@ -4,10 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 
@@ -32,7 +36,11 @@ fun MashupActions(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Row {
+        Row(
+            Modifier
+                .widthIn(0.dp, 400.dp)
+                .align(Alignment.Center)
+        ){
             LeftPanel(
                 onColorButtonClick = onColorButtonClick,
                 onRandomButtonClick = onRandomButtonClick,

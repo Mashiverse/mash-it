@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
 import com.mashiverse.mashit.ui.theme.PaddingSize
@@ -34,7 +35,7 @@ fun NavDrawer(
     DismissibleDrawerSheet(
         drawerContainerColor = Background,
         drawerShape = RectangleShape,
-        modifier = modifier.width((config.screenWidthDp * 0.80).dp),
+        modifier = modifier.width(min((config.screenWidthDp * 0.80), 328.0).dp),
     ) {
         Spacer(modifier = Modifier.height(PaddingSize))
 

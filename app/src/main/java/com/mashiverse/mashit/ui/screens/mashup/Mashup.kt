@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
@@ -51,6 +52,8 @@ import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
+import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
@@ -275,8 +278,8 @@ fun Mashup(searchQuery: State<String>) {
                 MashupActions(
                     mashupDetails = vmDetails.copy(colors = colorBuffer),
                     modifier = Modifier
-                        .height(compositeHeight)
-                        .width(compositeWidth)
+                        .height(min(compositeHeight, MaxMashiHolderHeight))
+                        .width(min(compositeWidth, MaxMashiHolderWidth))
                         .clickable { isPreviewBottomSheet = true }
                         .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
                     holderWidth = compositeWidth,
