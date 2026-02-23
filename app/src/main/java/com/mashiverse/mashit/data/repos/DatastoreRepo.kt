@@ -34,6 +34,32 @@ class DatastoreRepo @Inject constructor(
                 )
             }
 
+    val firstLaunchPreferencesFlow: Flow<Boolean> =
+        datastore.data
+            .catch { e ->
+                if (e is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    Timber.tag("Test").d(e)
+                }
+            }
+            .map { preferences ->
+                preferences[PreferencesKeys.FIRST_LAUNCH] ?: true
+            }
+
+    val notificationsPreferencesFlow: Flow<Boolean> =
+        datastore.data
+            .catch { e ->
+                if (e is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    Timber.tag("Test").d(e)
+                }
+            }
+            .map { preferences ->
+                preferences[PreferencesKeys.NOTIFICATIONS] ?: false
+            }
+
     suspend fun updateWallet(wallet: String) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.WALLET] = wallet
@@ -43,6 +69,18 @@ class DatastoreRepo @Inject constructor(
     suspend fun removeWallet() {
         datastore.edit { preferences ->
             preferences.remove(PreferencesKeys.WALLET)
+        }
+    }
+
+    suspend fun setFirstLaunchCompleted() {
+        datastore.edit { preferences ->
+            preferences[PreferencesKeys.FIRST_LAUNCH] = false
+        }
+    }
+
+    suspend fun updateNotifications(enabled: Boolean) {
+        datastore.edit { preferences ->
+            preferences[PreferencesKeys.NOTIFICATIONS] = enabled
         }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,12 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.mashiverse.mashit.nav.routes.MainRoutes
 
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
 import com.mashiverse.mashit.ui.theme.ContentTextSize
 import com.mashiverse.mashit.ui.theme.PaddingSize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 private fun OtherSectionButton(
@@ -51,11 +56,31 @@ private fun OtherSectionButton(
 }
 
 @Composable
-fun OtherSection(modifier: Modifier = Modifier) {
+fun OtherSection(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    drawerState: DrawerState,
+    scope: CoroutineScope
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(PaddingSize)
     ) {
+        OtherSectionButton(
+            onClick = {
+                navController.navigate(route = MainRoutes.Settings) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+                scope.launch {
+                    drawerState.close()
+                }
+            },
+            text = "Settings"
+        )
+
         OtherSectionButton(
             onClick = {},
             text = "Mash-It Rules"

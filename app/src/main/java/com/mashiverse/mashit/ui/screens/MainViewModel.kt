@@ -9,25 +9,33 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.coinbase.android.nativesdk.message.request.Account
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
+import com.google.firebase.messaging.FirebaseMessaging
 import com.mashiverse.mashit.data.models.dialog.DialogContent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.web3j.abi.datatypes.Bool
 import javax.inject.Inject
 
 @HiltViewModel
-class Web3ViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val web3Repo: Web3Repo,
-    private val dataStoreRepo: DatastoreRepo
+    private val dataStoreRepo: DatastoreRepo,
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
+    val firstLaunchPreferences = dataStoreRepo.firstLaunchPreferencesFlow
+
     private val _dialogContent = mutableStateOf<DialogContent?>(null)
     val dialogContent: State<DialogContent?> = _dialogContent
 
     fun clearDialog() {
         _dialogContent.value = null
+    }
+
+    fun setDialogContent(dialogContent: DialogContent) {
+        _dialogContent.value = dialogContent
     }
 
     fun getCoinbaseSdk(openIntent: (Intent) -> Unit): CoinbaseWalletSDK {
@@ -43,6 +51,24 @@ class Web3ViewModel @Inject constructor(
     fun disconnect() {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepo.removeWallet()
+        }
+    }
+
+    fun setFirstLaunchCompleted() {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepo.setFirstLaunchCompleted()
+        }
+    }
+
+    fun updateNotifications(enabled: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (enabled) {
+                FirebaseMessaging.getInstance().subscribeToTopic("all_users")
+            } else {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("all_users")
+            }
+
+            dataStoreRepo.updateNotifications(enabled)
         }
     }
 

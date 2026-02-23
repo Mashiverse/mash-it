@@ -5,6 +5,9 @@ import com.mashiverse.mashit.BuildConfig
 // DataStore
 const val WALLET_PREFERENCES = "user_wallet_preferences"
 const val WALLET_KEY = "wallet"
+const val FIRST_LAUNCH_KEY = "first_launch"
+const val NOTIFICATIONS_KEY = "notifications"
+
 
 // API URLs
 const val ALCHEMY_BASE_URL = "https://polygon-mainnet.g.alchemy.com/"

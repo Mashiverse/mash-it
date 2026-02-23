@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.models.mashup
+package com.mashiverse.mashit.data.models.mashup.save
 
 import kotlinx.serialization.Serializable
 import java.time.Instant
@@ -13,7 +13,7 @@ data class SaveMashupReq(
 
 @Serializable
 data class MashupData(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = "draft_${System.currentTimeMillis()}",
     val ts: Long = System.currentTimeMillis(),
     val createdAt: String = DateTimeFormatter.ISO_INSTANT.format(Instant.now()),
     val colors: MashupColors,

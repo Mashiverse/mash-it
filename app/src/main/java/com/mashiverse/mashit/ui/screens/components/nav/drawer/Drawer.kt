@@ -58,7 +58,12 @@ fun NavDrawer(
 
             HorizontalDivider()
 
-            OtherSection(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
+            OtherSection(
+                modifier = Modifier.padding(horizontal = DrawerPaddingSize),
+                navController = navController,
+                drawerState = drawerState,
+                scope = scope
+            )
         }
     }
 }

@@ -15,12 +15,6 @@ import com.mashiverse.mashit.R
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class MessagingService : FirebaseMessagingService() {
 
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        // Automatically re-subscribe this specific device to the broadcast topic
-        FirebaseMessaging.getInstance().subscribeToTopic("all_users")
-    }
-
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // Extract data from the FCM 'data' payload
         // Note: Use data payload primarily to ensure onMessageReceived triggers in background

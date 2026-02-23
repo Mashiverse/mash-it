@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
@@ -43,15 +45,17 @@ import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
+import com.mashiverse.mashit.utils.helpers.PermissionsHelper
 import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun Main(navController: NavHostController) {
-    val viewModel = hiltViewModel<Web3ViewModel>()
+    val viewModel = hiltViewModel<MainViewModel>()
     val focusManager = LocalFocusManager.current
     val ctx = LocalContext.current
+    val activity = LocalActivity.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -119,6 +123,28 @@ fun Main(navController: NavHostController) {
         clientRef = viewModel.getCoinbaseSdk { intent ->
             launcher.launch(intent)
         }
+    }
+
+    val firstLaunch = viewModel.firstLaunchPreferences.collectAsState(false)
+
+    LaunchedEffect(firstLaunch.value) {
+        if (firstLaunch.value) {
+            viewModel.setDialogContent(
+                DialogContent(
+                    title = "Important",
+                    text = "Please grant notifications permission to be notified about new releases. You can disable this functionality in settings later."
+                )
+            )
+        }
+    }
+
+    val onFirstLaunchDialogClose = {
+        activity?.let {
+            PermissionsHelper.getNotificationsPermission(ctx, activity)
+        }
+        viewModel.updateNotifications(PermissionsHelper.checkNotificationsPermission(ctx))
+        viewModel.setFirstLaunchCompleted()
+        viewModel.clearDialog()
     }
 
     val isKeyboardVisible = WindowInsets.isImeVisible
@@ -196,10 +222,10 @@ fun Main(navController: NavHostController) {
             }
         }
 
-        if (dialogContent != null) {
+        if (firstLaunch.value && dialogContent != null) {
             // TODO: rework error dialog
             Dialog(dialogContent!!) {
-                viewModel.clearDialog()
+                onFirstLaunchDialogClose.invoke()
             }
         }
     }

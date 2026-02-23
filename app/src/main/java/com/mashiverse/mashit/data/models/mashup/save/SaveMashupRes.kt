@@ -1,4 +1,4 @@
-import com.mashiverse.mashit.data.models.mashup.MashupData
+import com.mashiverse.mashit.data.models.mashup.save.MashupData
 import kotlinx.serialization.Serializable
 
 @Serializable
