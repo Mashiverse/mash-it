@@ -51,7 +51,7 @@ class DownloadWorker @AssistedInject constructor(
 
                 NotificationHelper.showNotification(
                     applicationContext,
-                    "Image saved",
+                    "Image saved to Pictures",
                     fileName
                 )
 
@@ -63,7 +63,7 @@ class DownloadWorker @AssistedInject constructor(
                 } else {
                     NotificationHelper.showNotification(
                         applicationContext,
-                        "Download failed",
+                        "Generation failed",
                         "Error: ${e.message}"
                     )
                     Result.failure()
