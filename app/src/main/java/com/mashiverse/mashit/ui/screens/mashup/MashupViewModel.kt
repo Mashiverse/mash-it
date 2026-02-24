@@ -1,18 +1,17 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
@@ -23,19 +22,16 @@ import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
-import com.mashiverse.mashit.sys.workers.UploadWorker
+import com.mashiverse.mashit.sys.workers.DownloadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -216,18 +212,18 @@ class MashupViewModel @Inject constructor(
 
     fun startImageUpload(wallet: String, imgType: Int, context: Context) {
         val inputData = Data.Builder()
-            .putString(UploadWorker.WALLET, wallet)
-            .putInt(UploadWorker.IMG_TYPE, imgType)
+            .putString(DownloadWorker.WALLET, wallet)
+            .putInt(DownloadWorker.IMG_TYPE, imgType)
             .build()
 
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true)
             .build()
 
-        val uploadRequest = OneTimeWorkRequestBuilder<UploadWorker>()
+        val uploadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .setInputData(inputData)
             .setConstraints(constraints)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .setBackoffCriteria(
                 BackoffPolicy.EXPONENTIAL,
                 WorkRequest.MIN_BACKOFF_MILLIS,
