@@ -25,7 +25,9 @@ class DownloadWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         // IMPORTANT: This promotes the worker to Foreground immediately.
         // On Android 12+, this is virtually instant; on older versions, it shows the notification.
-        setForeground(getForegroundInfo())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            setForeground(getForegroundInfo())
+        }
 
         return withContext(Dispatchers.IO) {
             try {
