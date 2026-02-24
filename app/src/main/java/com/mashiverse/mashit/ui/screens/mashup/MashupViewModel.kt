@@ -222,21 +222,22 @@ class MashupViewModel @Inject constructor(
 
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
             .build()
 
         val uploadRequest = OneTimeWorkRequestBuilder<UploadWorker>()
             .setInputData(inputData)
             .setConstraints(constraints)
             .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
+                BackoffPolicy.EXPONENTIAL,
                 WorkRequest.MIN_BACKOFF_MILLIS,
                 TimeUnit.MILLISECONDS
             )
             .build()
 
         WorkManager.getInstance(context).enqueueUniqueWork(
-            UUID.randomUUID().toString(),
-            ExistingWorkPolicy.REPLACE,
+            "download-$wallet-$imgType",
+            ExistingWorkPolicy.KEEP,
             uploadRequest
         )
     }
