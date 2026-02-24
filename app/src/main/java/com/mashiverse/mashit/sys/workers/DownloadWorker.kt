@@ -51,7 +51,7 @@ class DownloadWorker @AssistedInject constructor(
 
                 NotificationHelper.showNotification(
                     applicationContext,
-                    "Image saved to Pictures",
+                    "Image saved to Pictures folder",
                     fileName
                 )
 
