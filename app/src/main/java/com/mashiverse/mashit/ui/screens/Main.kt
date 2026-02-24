@@ -4,21 +4,27 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,9 +35,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -39,7 +50,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.models.dialog.DialogContent
+import com.mashiverse.mashit.data.models.ui.DeviceUiType
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
@@ -47,8 +60,12 @@ import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
+import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.utils.helpers.DeviceUiTypeHelper
 import com.mashiverse.mashit.utils.helpers.PermissionsHelper
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -57,7 +74,6 @@ fun Main(navController: NavHostController) {
     val viewModel = hiltViewModel<MainViewModel>()
     val focusManager = LocalFocusManager.current
     val ctx = LocalContext.current
-    val activity = LocalActivity.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -170,72 +186,103 @@ fun Main(navController: NavHostController) {
         clearSearchQuery.invoke()
     }
 
-    DismissibleNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            NavDrawer(
-                navController = navController,
-                drawerState = drawerState,
-                scope = scope
-            )
-        },
-        gesturesEnabled = true
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = Background,
-            topBar = {
-                TopNavBar(
-                    isArtists = isArtists,
-                    drawerState = drawerState,
-                    scope = scope,
-                    wallet = walletPreferences.value.wallet,
-                    onConnect = {
-                        if (walletPreferences.value.wallet != null) {
-                            viewModel.disconnect()
-                        } else {
-                            if (clientRef?.isCoinbaseWalletInstalled == true) {
-                                viewModel.initHandshake(clientRef)
-                            } else {
-                                openGooglePlay.invoke()
-                            }
-                        }
-                    },
-                    searchQuery = searchQuery.value,
-                    onSearchQueryChange = onSearchQueryChange,
-                    isSearch = isSearch,
-                    onIsSearchChange = onIsSearchChange
-                )
-            }
-        ) { paddingValues ->
-            NavHost(
-                navController = navController,
-                startDestination = MainRoutes.Shop(listingId = null),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                mainGraph(searchQuery = searchQuery, clearSearchQuery = clearSearchQuery)
-            }
+    var uiType by remember { mutableStateOf<DeviceUiType?>(null) }
 
-            if (drawerState.isOpen) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            scope.launch { drawerState.close() }
-                        }
+    DeviceUiTypeHelper { type ->
+        uiType = type
+        Timber.tag("Test").d(type.toString())
+    }
+
+    if (uiType != null && uiType == DeviceUiType.PHONE_LANDSCAPE) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    modifier = Modifier.size(32.dp),
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = null,
+                )
+
+                Spacer(modifier = Modifier.width(SmallPaddingSize))
+
+                Text(
+                    text = "Please rotate your phone",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = ContentAccentColor
                 )
             }
         }
+    } else {
+        DismissibleNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                NavDrawer(
+                    navController = navController,
+                    drawerState = drawerState,
+                    scope = scope
+                )
+            },
+            gesturesEnabled = true
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                containerColor = Background,
+                topBar = {
+                    TopNavBar(
+                        isArtists = isArtists,
+                        drawerState = drawerState,
+                        scope = scope,
+                        wallet = walletPreferences.value.wallet,
+                        onConnect = {
+                            if (walletPreferences.value.wallet != null) {
+                                viewModel.disconnect()
+                            } else {
+                                if (clientRef?.isCoinbaseWalletInstalled == true) {
+                                    viewModel.initHandshake(clientRef)
+                                } else {
+                                    openGooglePlay.invoke()
+                                }
+                            }
+                        },
+                        searchQuery = searchQuery.value,
+                        onSearchQueryChange = onSearchQueryChange,
+                        isSearch = isSearch,
+                        onIsSearchChange = onIsSearchChange
+                    )
+                }
+            ) { paddingValues ->
+                NavHost(
+                    navController = navController,
+                    startDestination = MainRoutes.Shop(listingId = null),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    mainGraph(searchQuery = searchQuery, clearSearchQuery = clearSearchQuery)
+                }
 
-        if (firstLaunch.value && dialogContent != null) {
-            // TODO: rework error dialog
-            Dialog(dialogContent!!) {
-                onFirstLaunchDialogClose.invoke()
+                if (drawerState.isOpen) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                scope.launch { drawerState.close() }
+                            }
+                    )
+                }
+            }
+
+            if (firstLaunch.value && dialogContent != null) {
+                // TODO: rework error dialog
+                Dialog(dialogContent!!) {
+                    onFirstLaunchDialogClose.invoke()
+                }
             }
         }
     }
