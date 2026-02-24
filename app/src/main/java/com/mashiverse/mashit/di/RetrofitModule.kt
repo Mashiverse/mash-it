@@ -63,7 +63,7 @@ object RetrofitModule {
     @Named("MashiverseClient")
     fun provideMashiClient(): Retrofit {
         val client = OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(3, TimeUnit.MINUTES)
             .readTimeout(3, TimeUnit.MINUTES)
             .build()
 
@@ -75,6 +75,6 @@ object RetrofitModule {
     }
 
     @Provides
-    fun provideMashiverseApi(@Named("MashiverseClient") retrofit: Retrofit) =
+    fun provideMashiverseApi(@Named("MashiverseClient") retrofit: Retrofit): MashiverseApi =
         retrofit.create(MashiverseApi::class.java)
 }
