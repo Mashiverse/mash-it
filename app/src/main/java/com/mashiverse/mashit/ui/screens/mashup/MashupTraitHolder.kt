@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,12 +29,7 @@ fun MashupTraitHolder(
     getImageType: (String) -> ImageType?,
     setImageType: (ImageType, String) -> Unit,
 ) {
-    var avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
-    avatarName = if (avatarName.length > 16) {
-        "${avatarName.take(13)}..."
-    } else {
-        avatarName
-    }
+    val avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
 
     Column(
         modifier = Modifier
@@ -55,6 +51,7 @@ fun MashupTraitHolder(
 
         Text(
             text = avatarName,
+            overflow = TextOverflow.Ellipsis, maxLines = 1,
             color = ContentAccentColor,
             fontSize = 12.sp
         )

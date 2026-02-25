@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +66,8 @@ fun ShopItem(
     }
 
     Column(
-        modifier = Modifier,
+        modifier = Modifier
+            .width(imageWidth),
     ) {
         TraitImage(
             modifier = Modifier
@@ -81,11 +83,8 @@ fun ShopItem(
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
         Text(
-            text = if (nft.name.length > 20) {
-                "${nft.name.take(17)}..."
-            } else {
-                nft.name
-            }, fontSize = 14.sp, color = ContentAccentColor
+            text = nft.name,
+            overflow = TextOverflow.Ellipsis, maxLines = 1, fontSize = 14.sp, color = ContentAccentColor
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
