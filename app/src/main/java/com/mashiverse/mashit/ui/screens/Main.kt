@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -109,18 +110,20 @@ fun Main(navController: NavHostController) {
 
     val openGooglePlay = {
         val packageName = "org.toshi"
+        val uri = "market://details?id=$packageName".toUri()
+
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
         try {
-            val intent =
-                Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri()).apply {
-                    setPackage("com.android.vending")
-                }
             ctx.startActivity(intent)
-        } catch (e: Exception) {
-            val intent = Intent(
+        } catch (e: ActivityNotFoundException) {
+            val webIntent = Intent(
                 Intent.ACTION_VIEW,
                 "https://play.google.com/store/apps/details?id=$packageName".toUri()
             )
-            ctx.startActivity(intent)
+            ctx.startActivity(webIntent)
         }
     }
 
