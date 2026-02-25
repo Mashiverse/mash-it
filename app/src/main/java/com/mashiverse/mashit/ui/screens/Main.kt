@@ -57,9 +57,9 @@ import com.mashiverse.mashit.data.models.ui.DeviceUiType
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
-import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
+import com.mashiverse.mashit.ui.components.dialogs.Dialog
+import com.mashiverse.mashit.ui.components.nav.drawer.NavDrawer
+import com.mashiverse.mashit.ui.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
@@ -222,7 +222,7 @@ fun Main(navController: NavHostController) {
         DismissibleNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                NavDrawer(
+                _root_ide_package_.com.mashiverse.mashit.ui.components.nav.drawer.NavDrawer(
                     navController = navController,
                     drawerState = drawerState,
                     scope = scope
@@ -234,7 +234,7 @@ fun Main(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(),
                 containerColor = Background,
                 topBar = {
-                    TopNavBar(
+                    _root_ide_package_.com.mashiverse.mashit.ui.components.nav.top.TopNavBar(
                         isArtists = isArtists,
                         drawerState = drawerState,
                         scope = scope,
@@ -283,7 +283,7 @@ fun Main(navController: NavHostController) {
 
             if (firstLaunch.value && dialogContent != null) {
                 // TODO: rework error dialog
-                Dialog(dialogContent!!) {
+                _root_ide_package_.com.mashiverse.mashit.ui.components.dialogs.Dialog(dialogContent!!) {
                     onFirstLaunchDialogClose.invoke()
                 }
             }

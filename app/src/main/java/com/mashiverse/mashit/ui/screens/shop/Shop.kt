@@ -27,10 +27,9 @@ import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
+import com.mashiverse.mashit.ui.components.headers.CategoryHeader
+import com.mashiverse.mashit.ui.components.nfts.MashiBottomSheet
+import com.mashiverse.mashit.ui.components.nfts.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.sections.SearchCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
@@ -244,7 +243,7 @@ fun Shop(
     }
 
     if (dialogContent != null) {
-        Dialog(dialogContent!!) {
+        _root_ide_package_.com.mashiverse.mashit.ui.components.dialogs.Dialog(dialogContent!!) {
             viewModel.clearDialog()
         }
     }

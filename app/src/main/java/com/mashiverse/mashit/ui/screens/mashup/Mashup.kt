@@ -42,9 +42,8 @@ import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
+import com.mashiverse.mashit.ui.components.headers.CategoryHeader
+import com.mashiverse.mashit.ui.components.placeholders.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
@@ -61,7 +60,6 @@ import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -395,7 +393,7 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     if (dialogContent != null) {
-        Dialog(dialogContent!!) {
+        _root_ide_package_.com.mashiverse.mashit.ui.components.dialogs.Dialog(dialogContent!!) {
             viewModel.clearDialog()
         }
     }

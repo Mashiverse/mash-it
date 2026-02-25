@@ -34,11 +34,11 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
-import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
-import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
-import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
+import com.mashiverse.mashit.ui.components.headers.CategoryHeader
+import com.mashiverse.mashit.ui.components.nfts.MashiBottomSheet
+import com.mashiverse.mashit.ui.components.nfts.MashiDetailsSection
+import com.mashiverse.mashit.ui.components.nfts.trait.MintedTrait
+import com.mashiverse.mashit.ui.components.placeholders.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.MaxCollectionItemWidth
@@ -195,6 +195,6 @@ fun Collection(searchQuery: State<String>) {
             }
         }
     } else {
-        NotConnected()
+       NotConnected()
     }
 }

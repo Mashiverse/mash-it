@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
-import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
-import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
+import com.mashiverse.mashit.ui.components.nfts.buttons.BuyButton
+import com.mashiverse.mashit.ui.components.nfts.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
@@ -89,7 +89,7 @@ fun ShopItem(
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = "by ${nft.author}", fontSize = 12.sp, color = ContentColor)
+        Text(text = nft.author, overflow = TextOverflow.Ellipsis, maxLines = 1, fontSize = 12.sp, color = ContentColor)
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
@@ -110,7 +110,11 @@ fun ShopItem(
             enabled = !isSoldOut && !delisted,
             onClick = {
                 if (nft.productInfo?.listingId != null) {
-                    onMint.invoke(nft.productInfo.listingId, nft.productInfo.price, nft.productInfo.priceCurrency == PriceCurrency.POL)
+                    onMint.invoke(
+                        nft.productInfo.listingId,
+                        nft.productInfo.price,
+                        nft.productInfo.priceCurrency == PriceCurrency.POL
+                    )
                 }
             }
         )

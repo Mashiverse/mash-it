@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
-import com.mashiverse.mashit.ui.screens.components.picker.ColorPicker
-import com.mashiverse.mashit.ui.screens.components.picker.ColorSlideBar
+import com.mashiverse.mashit.ui.components.picker.ColorPicker
+import com.mashiverse.mashit.ui.components.picker.ColorSlideBar
 import com.mashiverse.mashit.ui.theme.*
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
@@ -84,7 +84,7 @@ fun ColorSheet(
 
             Spacer(modifier = Modifier.height(SmallPaddingSize))
 
-            ColorPicker(
+            _root_ide_package_.com.mashiverse.mashit.ui.components.picker.ColorPicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -106,7 +106,7 @@ fun ColorSheet(
 
             Spacer(modifier = Modifier.height(PaddingSize))
 
-            ColorSlideBar(
+            _root_ide_package_.com.mashiverse.mashit.ui.components.picker.ColorSlideBar(
                 colors = Colors.gradientColors,
                 progress = hueProgress,
                 onProgressChange = { progress ->
@@ -115,7 +115,8 @@ fun ColorSheet(
 
                     val saturation = (pickerLocation.x / pickerSize.width).coerceIn(0f, 1f)
                     val brightness = (1f - pickerLocation.y / pickerSize.height).coerceIn(0f, 1f)
-                    val newColor = ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
+                    val newColor =
+                        ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
                     changeColor(newColor)
                 }
             )
