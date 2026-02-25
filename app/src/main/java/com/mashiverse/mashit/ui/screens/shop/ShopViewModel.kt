@@ -48,12 +48,12 @@ class ShopViewModel @Inject constructor(
     private val _dialogContent = mutableStateOf<DialogContent?>(null)
     val dialogContent: State<DialogContent?> = _dialogContent
 
-    fun clearDialog() {
-        _dialogContent.value = null
-    }
-
     init {
         getAllListings()
+    }
+
+    fun clearDialog() {
+        _dialogContent.value = null
     }
 
     fun getAllListings() {

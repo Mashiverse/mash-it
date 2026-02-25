@@ -60,9 +60,7 @@ fun SearchCategory(
         height = h
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -76,11 +74,7 @@ fun SearchCategory(
 
             Spacer(modifier = Modifier.weight(1F))
 
-            TextButton(
-                onClick = {
-                    onSearchClear.invoke()
-                }
-            ) {
+            TextButton(onClick = { onSearchClear.invoke() }) {
                 Text(
                     text = "Clear",
                     fontSize = 14.sp,
@@ -91,14 +85,12 @@ fun SearchCategory(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(columns), // Sets 2 items per row
+            columns = GridCells.Fixed(columns),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
             verticalArrangement = Arrangement.spacedBy(PaddingSize)
         ) {
-            items(
-                items.size
-            ) { index ->
+            items(items.size) { index ->
                 val nft = items[index]
                 ShopItem(
                     nft = nft,

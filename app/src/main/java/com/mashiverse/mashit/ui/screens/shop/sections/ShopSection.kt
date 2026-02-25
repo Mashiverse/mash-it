@@ -47,11 +47,7 @@ fun ShopSection(
 
             Spacer(modifier = Modifier.weight(1F))
 
-            TextButton(
-                onClick = {
-                    onCategorySelect.invoke(sectionName, sectionItems)
-                }
-            ) {
+            TextButton(onClick = { onCategorySelect.invoke(sectionName, sectionItems) }) {
                 Text(
                     text = "See all",
                     fontSize = 14.sp,
@@ -68,7 +64,6 @@ fun ShopSection(
             val itemCount = minOf(sectionItems.itemCount, 20)
             items(count = itemCount) { index ->
                 val nft = sectionItems[index]
-
                 if (nft != null && nft.productInfo?.priceCurrency != PriceCurrency.POL) {
                     ShopItem(
                         nft = nft,

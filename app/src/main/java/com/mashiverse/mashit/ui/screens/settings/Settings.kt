@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +31,8 @@ fun Settings() {
     val ctx = LocalContext.current
     val viewModel = hiltViewModel<SettingsViewModel>()
 
+
+    // Notifications
     val notifications = viewModel.notificationsPreferences.collectAsState(false)
     val checked by remember(notifications.value) { mutableStateOf(notifications.value) }
 
@@ -46,16 +47,21 @@ fun Settings() {
         viewModel.updateNotifications(enabled)
     }
 
+
+    // UI
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(PaddingSize),
         contentAlignment = Alignment.TopStart
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Notifications:", fontSize = 14.sp, color = ContentAccentColor, fontWeight = FontWeight.Bold)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Notifications:",
+                fontSize = 14.sp,
+                color = ContentAccentColor,
+                fontWeight = FontWeight.Bold
+            )
 
             Spacer(modifier = Modifier.width(SmallPaddingSize))
 

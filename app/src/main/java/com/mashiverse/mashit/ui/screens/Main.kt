@@ -56,11 +56,11 @@ fun Main(navController: NavHostController) {
     // Initial config
     val focusManager = LocalFocusManager.current
     val ctx = LocalContext.current
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val viewModel = hiltViewModel<MainViewModel>()
+
 
     // First launch
     val firstLaunch = viewModel.firstLaunchPreferences.collectAsState(false)
@@ -93,6 +93,7 @@ fun Main(navController: NavHostController) {
         }
     }
 
+
     // Search
     var isSearch by remember { mutableStateOf(false) }
     val onIsSearchChange = { isSearch = !isSearch }
@@ -112,9 +113,9 @@ fun Main(navController: NavHostController) {
         clearSearchQuery.invoke()
     }
 
+
     // Base and auth
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
-
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -129,6 +130,7 @@ fun Main(navController: NavHostController) {
             launcher.launch(intent)
         }
     }
+
 
     // Connect
     val openGooglePlay = {
@@ -162,6 +164,7 @@ fun Main(navController: NavHostController) {
         }
     }
 
+
     // Keyboard
     val isKeyboardVisible = WindowInsets.isImeVisible
 
@@ -172,16 +175,16 @@ fun Main(navController: NavHostController) {
         }
     }
 
+
     // Other
     val isArtists by remember {
         derivedStateOf {
             navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true
         }
     }
-
     val dialogContent by remember { viewModel.dialogContent }
-
     val closeDrawer = { scope.launch { drawerState.close() } }
+
 
     // UI
     DismissibleNavigationDrawer(

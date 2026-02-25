@@ -4,7 +4,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,15 +28,19 @@ import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.ui.DeviceUiType
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.components.headers.CategoryHeader
 import com.mashiverse.mashit.ui.components.nfts.MashiBottomSheet
 import com.mashiverse.mashit.ui.components.nfts.MashiDetailsSection
+import com.mashiverse.mashit.ui.components.placeholders.WrongOrientation
 import com.mashiverse.mashit.ui.screens.shop.sections.SearchCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
+import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
 import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.utils.helpers.ui.DeviceUiTypeHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,12 +54,12 @@ fun Shop(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
-
     val viewModel = hiltViewModel<ShopViewModel>()
 
 
     // Auth
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
+
 
     // Search
     val allListings by remember { viewModel.allListings }
@@ -78,6 +84,7 @@ fun Shop(
             emptyList()
         }
     }
+
 
     // Listings
     val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
@@ -110,8 +117,7 @@ fun Shop(
     }
 
 
-    val closeBottomShit = { isBottomSheet = false }
-
+    // Minting
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -127,27 +133,33 @@ fun Shop(
     }
 
     val onMint = { listingId: String, price: Double, isPolCurrency: Boolean ->
-        if (isPolCurrency) {
-            viewModel.setDialogContent(
-                DialogContent(
-                    title = "POL Currency",
-                    text = "We currently don't support POL minting"
+        when {
+            isPolCurrency -> {
+                viewModel.setDialogContent(
+                    DialogContent(
+                        title = "POL Currency",
+                        text = "We currently don't support POL minting"
+                    )
                 )
-            )
-        } else if (clientRef != null && walletPreferences.value.wallet != null) {
-            viewModel.mint(
-                client = clientRef!!,
-                fromAddress = walletPreferences.value.wallet!!,
-                listingId = listingId,
-                price = price
-            )
-        } else {
-            viewModel.setDialogContent(
-                DialogContent(
-                    title = "Not Authenticated",
-                    text = "Please connect your wallet to continue"
+            }
+
+            clientRef != null && walletPreferences.value.wallet != null -> {
+                viewModel.mint(
+                    client = clientRef!!,
+                    fromAddress = walletPreferences.value.wallet!!,
+                    listingId = listingId,
+                    price = price
                 )
-            )
+            }
+
+            else -> {
+                viewModel.setDialogContent(
+                    DialogContent(
+                        title = "Not Authenticated",
+                        text = "Please connect your wallet to continue"
+                    )
+                )
+            }
         }
     }
 
@@ -155,12 +167,29 @@ fun Shop(
         viewModel.getTotalSold(listingId, callback)
     }
 
-    val dialogContent by remember {
-        viewModel.dialogContent
+
+    // Images
+    val getImageType = { url: String ->
+        var imageType: ImageType? = null
+        viewModel.getTraitTypeEntity(url) { type -> imageType = type }
+        imageType
+    }
+
+    val setImageType = { type: ImageType, data: String ->
+        viewModel.insertTraitType(url = data, imageType = type)
     }
 
 
+    // Other
+    val dialogContent by remember { viewModel.dialogContent }
+    val clearDialog = { viewModel.clearDialog() }
+    val closeBottomShit = { isBottomSheet = false }
+    var uiType by remember { mutableStateOf<DeviceUiType?>(null) }
 
+    DeviceUiTypeHelper { uiType = it }
+
+
+    // UI
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -168,63 +197,57 @@ fun Shop(
     ) {
         CategoryHeader(title = "Shop")
 
-        if (searchedListings.isNotEmpty()) {
-            SearchCategory(
-                items = searchedListings,
-                selectId = selectId,
-                getImageType = { url ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                    imageType
-                },
-                setImageType = { type, data ->
-                    viewModel.insertTraitType(url = data, imageType = type)
-                },
-                getSoldQty = getSoldQty,
-                onMint = onMint,
-                onSearchClear = onSearchClear
-            )
-        } else if (category == null) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(PaddingSize)
-            ) {
-                item {
-                    ShopSection(
-                        sectionName = "Recently Released",
-                        selectId = selectId,
-                        sectionItems = pagingItems,
-                        getImageType = { url ->
-                            var imageType: ImageType? = null
-                            viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                            imageType
-                        },
-                        setImageType = { type, data ->
-                            viewModel.insertTraitType(url = data, imageType = type)
-                        },
-                        getSoldQty = getSoldQty,
-                        onMint = onMint,
-                        onCategorySelect = onCategorySelect
-                    )
+        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+
+        when {
+            uiType == DeviceUiType.PHONE_LANDSCAPE -> {
+                WrongOrientation()
+            }
+
+            searchedListings.isNotEmpty() -> {
+                SearchCategory(
+                    items = searchedListings,
+                    selectId = selectId,
+                    getImageType = getImageType,
+                    setImageType = setImageType,
+                    getSoldQty = getSoldQty,
+                    onMint = onMint,
+                    onSearchClear = onSearchClear
+                )
+            }
+
+            category == null -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(PaddingSize)
+                ) {
+                    item {
+                        ShopSection(
+                            sectionName = "Recently Released",
+                            selectId = selectId,
+                            sectionItems = pagingItems,
+                            getImageType = getImageType,
+                            setImageType = setImageType,
+                            getSoldQty = getSoldQty,
+                            onMint = onMint,
+                            onCategorySelect = onCategorySelect
+                        )
+                    }
                 }
             }
-        } else {
-            ShopCategory(
-                categoryName = category!!,
-                categoryItems = categoryItems!!,
-                selectId = selectId,
-                getImageType = { url ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                    imageType
-                },
-                setImageType = { type, data ->
-                    viewModel.insertTraitType(url = data, imageType = type)
-                },
-                getSoldQty = getSoldQty,
-                onMint = onMint,
-                onCategoryClose = onCategoryClose
-            )
+
+            else -> {
+                ShopCategory(
+                    categoryName = category!!,
+                    categoryItems = categoryItems!!,
+                    selectId = selectId,
+                    getImageType = getImageType,
+                    setImageType = setImageType,
+                    getSoldQty = getSoldQty,
+                    onMint = onMint,
+                    onCategoryClose = onCategoryClose
+                )
+            }
         }
     }
 
@@ -234,14 +257,8 @@ fun Shop(
                 selectedNft = nft,
                 sheetState = sheetState,
                 closeBottomShit = closeBottomShit,
-                getImageType = { url ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                    imageType
-                },
-                setImageType = { type, data ->
-                    viewModel.insertTraitType(url = data, imageType = type)
-                },
+                getImageType = getImageType,
+                setImageType = setImageType,
             ) {
                 MashiDetailsSection(
                     nft = nft,
@@ -256,6 +273,9 @@ fun Shop(
     }
 
     if (dialogContent != null) {
-        Dialog(dialogContent!!) { viewModel.clearDialog() }
+        Dialog(
+            dialogContent = dialogContent!!,
+            onDismissRequest = clearDialog
+        )
     }
 }

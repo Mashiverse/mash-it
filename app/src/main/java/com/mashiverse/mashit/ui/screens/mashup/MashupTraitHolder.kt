@@ -31,10 +31,7 @@ fun MashupTraitHolder(
 ) {
     val avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
 
-    Column(
-        modifier = Modifier
-            .width(width)
-    ) {
+    Column(modifier = Modifier.width(width)) {
         MintedTrait(
             modifier = Modifier
                 .width(width)

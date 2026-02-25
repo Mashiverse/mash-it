@@ -69,9 +69,7 @@ fun ShopCategory(
 
     val appendState = categoryItems.loadState.append
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -85,11 +83,7 @@ fun ShopCategory(
 
             Spacer(modifier = Modifier.weight(1F))
 
-            TextButton(
-                onClick = {
-                    onCategoryClose.invoke()
-                }
-            ) {
+            TextButton(onClick = { onCategoryClose.invoke() }) {
                 Text(
                     text = "Show less",
                     fontSize = 14.sp,
@@ -107,7 +101,7 @@ fun ShopCategory(
         ) {
             items(
                 count = categoryItems.itemCount,
-                key = categoryItems.itemKey {"${it.name}_${it.author}" }
+                key = categoryItems.itemKey { "${it.name}_${it.author}" }
             ) { index ->
                 val nft = categoryItems[index]
                 nft?.let {
