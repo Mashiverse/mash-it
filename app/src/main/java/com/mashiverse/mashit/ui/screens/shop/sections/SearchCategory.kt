@@ -19,24 +19,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.MaxCollectionItemWidth
 import com.mashiverse.mashit.ui.theme.MaxShopItemWidth
-import com.mashiverse.mashit.ui.theme.MinCollectionItemWidth
 import com.mashiverse.mashit.ui.theme.MinShopItemWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
-import com.mashiverse.mashit.utils.helpers.GridDimensionsHelper
+import com.mashiverse.mashit.utils.helpers.ui.GridDimensionsHelper
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable

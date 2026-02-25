@@ -16,11 +16,8 @@ import com.mashiverse.mashit.R
 class MessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // Extract data from the FCM 'data' payload
-        // Note: Use data payload primarily to ensure onMessageReceived triggers in background
         val listingId = remoteMessage.data["listingId"]
 
-        // Use notification payload if available, otherwise fallback to data or defaults
         val title =
             remoteMessage.notification?.title ?: remoteMessage.data["title"] ?: "New Mashup!"
         val body = remoteMessage.notification?.body ?: remoteMessage.data["body"]

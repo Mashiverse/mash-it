@@ -39,7 +39,7 @@ fun ColorSlideBar(
 
                     // Helper to calculate progress based on X coordinate
                     val updateProgress = { xPos: Float ->
-                        val relative = (xPos - _root_ide_package_.com.mashiverse.mashit.ui.components.picker.thumbRadius).coerceIn(0f, trackWidth)
+                        val relative = (xPos - thumbRadius).coerceIn(0f, trackWidth)
                         onProgressChange(relative / trackWidth)
                     }
 
@@ -66,14 +66,14 @@ fun ColorSlideBar(
             cornerRadius = CornerRadius(barHeight / 2, barHeight / 2)
         )
 
-        val trackWidth = size.width - (_root_ide_package_.com.mashiverse.mashit.ui.components.picker.thumbRadius * 2)
-        val thumbCenterX = _root_ide_package_.com.mashiverse.mashit.ui.components.picker.thumbRadius + (trackWidth * progress)
+        val trackWidth = size.width - (thumbRadius * 2)
+        val thumbCenterX = thumbRadius + (trackWidth * progress)
         val centerY = size.height / 2
 
         // Main Thumb
         drawCircle(
             color = Color.White,
-            radius = _root_ide_package_.com.mashiverse.mashit.ui.components.picker.thumbRadius,
+            radius = thumbRadius,
             center = Offset(thumbCenterX, centerY)
         )
     }

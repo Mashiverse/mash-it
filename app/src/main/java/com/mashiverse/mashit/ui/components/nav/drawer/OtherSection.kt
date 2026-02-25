@@ -66,7 +66,7 @@ fun OtherSection(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(PaddingSize)
     ) {
-        _root_ide_package_.com.mashiverse.mashit.ui.components.nav.drawer.OtherSectionButton(
+        OtherSectionButton(
             onClick = {
                 navController.navigate(route = MainRoutes.Settings) {
                     popUpTo(navController.graph.id) {

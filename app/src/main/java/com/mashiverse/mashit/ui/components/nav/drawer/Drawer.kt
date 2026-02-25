@@ -46,7 +46,7 @@ fun NavDrawer(
 //
 //            HorizontalDivider()
 
-            _root_ide_package_.com.mashiverse.mashit.ui.components.nav.drawer.DrawerNav(
+            DrawerNav(
                 modifier = Modifier.padding(horizontal = DrawerPaddingSize),
                 navController = navController,
                 drawerState = drawerState,
@@ -59,7 +59,7 @@ fun NavDrawer(
 //
 //            HorizontalDivider()
 
-            _root_ide_package_.com.mashiverse.mashit.ui.components.nav.drawer.OtherSection(
+            OtherSection(
                 modifier = Modifier.padding(horizontal = DrawerPaddingSize),
                 navController = navController,
                 drawerState = drawerState,

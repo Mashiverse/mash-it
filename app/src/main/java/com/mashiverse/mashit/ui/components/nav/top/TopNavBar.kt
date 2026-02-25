@@ -59,7 +59,7 @@ fun TopNavBar(
                 .height(NavBarHeight),
             contentAlignment = Alignment.Center
         ) {
-            _root_ide_package_.com.mashiverse.mashit.ui.components.nav.top.TopNavBarActions(
+            TopNavBarActions(
                 isSearch = isSearch,
                 onIsSearchChange = onIsSearchChange,
                 searchQuery = searchQuery,

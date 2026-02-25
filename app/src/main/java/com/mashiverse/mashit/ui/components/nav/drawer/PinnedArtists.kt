@@ -133,7 +133,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.spacedBy(PaddingSize)
             ) {
                 repeat(6) {
-                    _root_ide_package_.com.mashiverse.mashit.ui.components.nav.drawer.PinnedArtist()
+                   PinnedArtist()
                 }
             }
         }

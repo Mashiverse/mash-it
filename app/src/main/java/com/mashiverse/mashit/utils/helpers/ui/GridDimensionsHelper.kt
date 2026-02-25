@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.utils.helpers
+package com.mashiverse.mashit.utils.helpers.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable

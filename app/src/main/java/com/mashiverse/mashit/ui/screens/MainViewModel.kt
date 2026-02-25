@@ -24,22 +24,46 @@ class MainViewModel @Inject constructor(
     private val web3Repo: Web3Repo,
     private val dataStoreRepo: DatastoreRepo,
 ) : ViewModel() {
+
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
+
     val firstLaunchPreferences = dataStoreRepo.firstLaunchPreferencesFlow
 
     private val _dialogContent = mutableStateOf<DialogContent?>(null)
     val dialogContent: State<DialogContent?> = _dialogContent
 
-    fun clearDialog() {
-        _dialogContent.value = null
-    }
-
     fun setDialogContent(dialogContent: DialogContent) {
         _dialogContent.value = dialogContent
     }
 
+    fun clearDialog() {
+        _dialogContent.value = null
+    }
+
     fun getCoinbaseSdk(openIntent: (Intent) -> Unit): CoinbaseWalletSDK {
         return web3Repo.getCoinbaseSdk(openIntent)
+    }
+
+    fun initHandshake(clientRef: CoinbaseWalletSDK?) {
+        val requestAccount = Web3JsonRPC.RequestAccounts().action()
+        val handShakeActions = listOf(requestAccount)
+
+        clientRef?.initiateHandshake(
+            initialActions = handShakeActions
+        ) { result: Result<List<ActionResult>>, account: Account? ->
+            result.onSuccess { _ ->
+                val address = account?.address
+                address?.let {
+                    updateWallet(address)
+                }
+            }
+            result.onFailure { err ->
+                _dialogContent.value = DialogContent(
+                    title = "Base auth error",
+                    text = err.message ?: "Unknown error"
+                )
+            }
+        }
     }
 
     private fun updateWallet(wallet: String) {
@@ -69,28 +93,6 @@ class MainViewModel @Inject constructor(
             }
 
             dataStoreRepo.updateNotifications(enabled)
-        }
-    }
-
-    fun initHandshake(clientRef: CoinbaseWalletSDK?) {
-        val requestAccount = Web3JsonRPC.RequestAccounts().action()
-        val handShakeActions = listOf(requestAccount)
-
-        clientRef?.initiateHandshake(
-            initialActions = handShakeActions
-        ) { result: Result<List<ActionResult>>, account: Account? ->
-            result.onSuccess { actionResults: List<ActionResult> ->
-                val address = account?.address
-                address?.let {
-                    updateWallet(address)
-                }
-            }
-            result.onFailure { err ->
-                _dialogContent.value = DialogContent(
-                    title = "Base auth error",
-                    text = err.message ?: "Unknown error"
-                )
-            }
         }
     }
 }

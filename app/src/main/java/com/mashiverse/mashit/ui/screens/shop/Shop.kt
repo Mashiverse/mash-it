@@ -27,6 +27,7 @@ import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.components.headers.CategoryHeader
 import com.mashiverse.mashit.ui.components.nfts.MashiBottomSheet
 import com.mashiverse.mashit.ui.components.nfts.MashiDetailsSection
@@ -42,19 +43,30 @@ fun Shop(
     clearSearchQuery: () -> Unit,
     listingId: String?
 ) {
-    var searchQuery by remember(searchQuery.value) {
-        mutableStateOf(searchQuery.value)
-    }
 
+    // Initial config
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var isBottomSheet by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<ShopViewModel>()
-    val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
 
+
+    // Auth
+    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
+
+    // Search
     val allListings by remember { viewModel.allListings }
     var searchedListings by remember { mutableStateOf<List<Nft>>(emptyList()) }
+
+    var searchQuery by remember(searchQuery.value) {
+        mutableStateOf(searchQuery.value)
+    }
+
+    val onSearchClear = {
+        clearSearchQuery.invoke()
+        searchedListings = emptyList()
+    }
 
     LaunchedEffect(searchQuery, allListings) {
         searchedListings = if (searchQuery.length >= 3) {
@@ -67,14 +79,24 @@ fun Shop(
         }
     }
 
-    val selectedListing by remember { viewModel.selectedNft }
-    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
+    // Listings
+    val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
 
+    val selectedListing by remember { viewModel.selectedNft }
     val selectId = { id: String ->
         viewModel.selectId(id)
         isBottomSheet = true
     }
 
+    LaunchedEffect(listingId) {
+        if (!listingId.isNullOrEmpty()) {
+            selectId.invoke(listingId)
+            isBottomSheet = true
+        }
+    }
+
+
+    // Category
     var category by remember { mutableStateOf<String?>(null) }
     var categoryItems by remember { mutableStateOf<LazyPagingItems<Nft>?>(null) }
 
@@ -87,12 +109,6 @@ fun Shop(
         category = null
     }
 
-    LaunchedEffect(listingId) {
-        if (!listingId.isNullOrEmpty()) {
-            selectId.invoke(listingId)
-            isBottomSheet = true
-        }
-    }
 
     val closeBottomShit = { isBottomSheet = false }
 
@@ -143,10 +159,7 @@ fun Shop(
         viewModel.dialogContent
     }
 
-    val onSearchClear = {
-        clearSearchQuery.invoke()
-        searchedListings = emptyList()
-    }
+
 
     Column(
         modifier = Modifier
@@ -243,8 +256,6 @@ fun Shop(
     }
 
     if (dialogContent != null) {
-        _root_ide_package_.com.mashiverse.mashit.ui.components.dialogs.Dialog(dialogContent!!) {
-            viewModel.clearDialog()
-        }
+        Dialog(dialogContent!!) { viewModel.clearDialog() }
     }
 }

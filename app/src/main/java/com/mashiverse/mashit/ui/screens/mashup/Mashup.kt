@@ -42,6 +42,7 @@ import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.components.headers.CategoryHeader
 import com.mashiverse.mashit.ui.components.placeholders.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
@@ -393,7 +394,7 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     if (dialogContent != null) {
-        _root_ide_package_.com.mashiverse.mashit.ui.components.dialogs.Dialog(dialogContent!!) {
+        Dialog(dialogContent!!) {
             viewModel.clearDialog()
         }
     }

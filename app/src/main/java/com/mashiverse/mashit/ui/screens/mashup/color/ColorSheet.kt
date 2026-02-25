@@ -84,7 +84,7 @@ fun ColorSheet(
 
             Spacer(modifier = Modifier.height(SmallPaddingSize))
 
-            _root_ide_package_.com.mashiverse.mashit.ui.components.picker.ColorPicker(
+            ColorPicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -106,7 +106,7 @@ fun ColorSheet(
 
             Spacer(modifier = Modifier.height(PaddingSize))
 
-            _root_ide_package_.com.mashiverse.mashit.ui.components.picker.ColorSlideBar(
+            ColorSlideBar(
                 colors = Colors.gradientColors,
                 progress = hueProgress,
                 onProgressChange = { progress ->

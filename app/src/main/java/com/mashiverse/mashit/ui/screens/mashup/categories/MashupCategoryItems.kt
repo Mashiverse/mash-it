@@ -22,7 +22,7 @@ import com.mashiverse.mashit.ui.theme.MaxCollectionItemWidth
 import com.mashiverse.mashit.ui.theme.MinCollectionItemWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
-import com.mashiverse.mashit.utils.helpers.GridDimensionsHelper
+import com.mashiverse.mashit.utils.helpers.ui.GridDimensionsHelper
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable

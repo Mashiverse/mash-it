@@ -70,5 +70,5 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun CreatePostButtonPreview() {
-    _root_ide_package_.com.mashiverse.mashit.ui.components.nav.drawer.CreatePostButton(Modifier)
+    CreatePostButton(Modifier)
 }

@@ -86,7 +86,7 @@ fun TopNavBarActions(
             }
         }
 
-        _root_ide_package_.com.mashiverse.mashit.ui.components.nav.top.SearchBar(
+        SearchBar(
             isSearch = isSearch,
             onIsSearchChange = onIsSearchChange,
             searchQuery = searchQuery,

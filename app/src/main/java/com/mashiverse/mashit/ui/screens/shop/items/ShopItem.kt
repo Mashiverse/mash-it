@@ -84,12 +84,21 @@ fun ShopItem(
 
         Text(
             text = nft.name,
-            overflow = TextOverflow.Ellipsis, maxLines = 1, fontSize = 14.sp, color = ContentAccentColor
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            fontSize = 14.sp,
+            color = ContentAccentColor
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        Text(text = nft.author, overflow = TextOverflow.Ellipsis, maxLines = 1, fontSize = 12.sp, color = ContentColor)
+        Text(
+            text = nft.author,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            fontSize = 12.sp,
+            color = ContentColor
+        )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
