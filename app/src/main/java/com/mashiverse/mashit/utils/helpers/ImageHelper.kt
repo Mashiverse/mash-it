@@ -2,6 +2,8 @@ package com.mashiverse.mashit.utils.helpers
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -42,25 +44,46 @@ object ImageHelper {
         return ImageType.OTHER
     }
 
+    /**
+     * Saves image bytes to the public Pictures/Mashiverse directory.
+     * @return The Uri of the saved image, or null if it failed.
+     */
     fun saveImageToGallery(
         context: Context,
         imageBytes: ByteArray,
         fileName: String,
         mimeType: String
-    ) {
-        val resolver = context.contentResolver
+    ): Uri? {
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
             put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Save to Pictures/Mashiverse folder
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Mashiverse")
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
         }
 
+        val resolver = context.contentResolver
         val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-        uri?.let {
-            resolver.openOutputStream(it)?.use { outputStream ->
-                outputStream.write(imageBytes)
-                outputStream.flush()
+
+        return try {
+            uri?.let { targetUri ->
+                resolver.openOutputStream(targetUri)?.use { outputStream ->
+                    outputStream.write(imageBytes)
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentValues.clear()
+                    contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+                    resolver.update(targetUri, contentValues, null, null)
+                }
+                targetUri
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }

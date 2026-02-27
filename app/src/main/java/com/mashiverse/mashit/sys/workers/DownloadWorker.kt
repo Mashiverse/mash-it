@@ -23,8 +23,6 @@ class DownloadWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        // IMPORTANT: This promotes the worker to Foreground immediately.
-        // On Android 12+, this is virtually instant; on older versions, it shows the notification.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             setForeground(getForegroundInfo())
         }
@@ -34,7 +32,7 @@ class DownloadWorker @AssistedInject constructor(
                 val wallet = inputData.getString(WALLET) ?: return@withContext Result.failure()
                 val imgType = inputData.getInt(IMG_TYPE, 0)
 
-                // 30s API Request
+                // 1. Fetch data
                 val mashupResult = mashiverseRepo.getMashup(wallet, imgType)
 
                 val timestamp = System.currentTimeMillis()
@@ -44,17 +42,21 @@ class DownloadWorker @AssistedInject constructor(
                     "mashup_$timestamp.gif"
                 }
 
-                ImageHelper.saveImageToGallery(
+                // 2. Save image and CAPTURE the Uri
+                // Note: Ensure ImageHelper.saveImageToGallery returns a Uri?
+                val savedUri = ImageHelper.saveImageToGallery(
                     context = applicationContext,
                     imageBytes = mashupResult.bytes,
                     fileName = fileName,
                     mimeType = mashupResult.contentType
                 )
 
+                // 3. Pass Uri to notification
                 NotificationHelper.showNotification(
-                    applicationContext,
-                    "Image saved to Pictures folder",
-                    fileName
+                    ctx = applicationContext,
+                    title = "Image saved to Gallery",
+                    message = "Tap to view $fileName",
+                    imageUri = savedUri
                 )
 
                 Result.success()
@@ -76,9 +78,8 @@ class DownloadWorker @AssistedInject constructor(
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override suspend fun getForegroundInfo(): androidx.work.ForegroundInfo {
-        val notificationId = 1001
         return androidx.work.ForegroundInfo(
-            notificationId,
+            1001,
             NotificationHelper.createDownloadNotification(applicationContext),
             ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
         )

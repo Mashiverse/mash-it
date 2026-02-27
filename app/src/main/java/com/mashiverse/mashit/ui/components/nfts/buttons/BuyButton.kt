@@ -66,7 +66,6 @@ fun BuyButton(
                 Color.Transparent
             }
         ),
-
         contentPadding = PaddingValues(horizontal = SmallPaddingSize),
     ) {
         Text(
