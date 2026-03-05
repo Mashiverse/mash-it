@@ -15,7 +15,6 @@ fun GridDimensionsHelper(
     maxWidth: Dp,
     horizontalPadding: Dp,
     gridGap: Dp,
-    aspectRatio: Float = 3f / 4f,
     onDimensionsCalculated: (itemWidth: Dp, itemHeight: Dp, columns: Int) -> Unit
 ) {
     val config = LocalConfiguration.current
@@ -40,7 +39,7 @@ fun GridDimensionsHelper(
 
         // Final constraints
         val finalWidth = calculatedWidth.coerceIn(0.dp, maxWidth)
-        val finalHeight = finalWidth / aspectRatio
+        val finalHeight = finalWidth * (4 / 3)
 
         onDimensionsCalculated(finalWidth, finalHeight, columns)
     }
