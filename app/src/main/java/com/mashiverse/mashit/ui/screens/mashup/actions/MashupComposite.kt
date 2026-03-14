@@ -19,7 +19,7 @@ import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintText
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
-import com.mashiverse.mashit.ui.theme.MashiBackground
+import com.mashiverse.mashit.ui.theme.Tertiary
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 
@@ -34,7 +34,7 @@ fun MashupComposite(
     Box(
         modifier = modifier
             .clip(MashiHolderShape)
-            .background(MashiBackground),
+            .background(Tertiary),
         contentAlignment = Alignment.Center
     ) {
         val maxWidth = min(holderWidth, MaxMashiHolderWidth)

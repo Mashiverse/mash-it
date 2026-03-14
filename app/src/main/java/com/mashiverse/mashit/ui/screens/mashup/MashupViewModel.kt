@@ -1,12 +1,10 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.Data
@@ -18,12 +16,15 @@ import androidx.work.WorkRequest
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.intents.DialogIntent
+import com.mashiverse.mashit.data.models.intents.ImageIntent
+import com.mashiverse.mashit.data.models.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.remote.apis.MashitApi
+import com.mashiverse.mashit.data.models.states.MashupUiState
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
@@ -34,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -46,21 +46,16 @@ class MashupViewModel @Inject constructor(
     private val mashitRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
+    var mashupUiState = mutableStateOf(MashupUiState())
+        private set
 
-    // --- State & History ---
-    private val _mashupDetails = mutableStateOf(MashupDetails())
-    val mashupDetails: State<MashupDetails> get() = _mashupDetails
+
 
     private val undoStack = ArrayDeque<MashupDetails>(5)
     private val redoStack = ArrayDeque<MashupDetails>(5)
     private val maxHistory = 5
 
-    private val _dialogContent = mutableStateOf<DialogContent?>(null)
-    val dialogContent: State<DialogContent?> = _dialogContent
 
-    fun clearDialog() {
-        _dialogContent.value = null
-    }
 
     val walletPreferences = dataStoreRepo.walletPreferencesFlow
     val collectionFlow = collectionRepo.collectionFlow
@@ -88,6 +83,52 @@ class MashupViewModel @Inject constructor(
                 }
         }
     }
+
+    fun processMashupIntent(intent: MashupIntent) {
+        when (intent) {
+            is MashupIntent.OnColor -> {
+                mashupUiState.value = mashupUiState.value.copy(isColorChange = true)
+            }
+
+            is MashupIntent.OnColorDismiss -> {
+                mashupUiState.value = mashupUiState.value.copy(isColorChange = false)
+            }
+
+            is MashupIntent.OnPreview -> {
+                mashupUiState.value = mashupUiState.value.copy(isPreview = true)
+            }
+
+            is MashupIntent.OnPreviewDismiss -> {
+                mashupUiState.value = mashupUiState.value.copy(isPreview = false)
+            }
+
+            is MashupIntent.OnGifSave -> saveGif(intent.context)
+
+            is MashupIntent.OnPngSave -> savePng(intent.context)
+        }
+    }
+
+    fun processImageIntent(intent: ImageIntent) {
+        when (intent) {
+            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+
+            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+        }
+    }
+
+    fun processDialogIntent(intent: DialogIntent) {
+        when (intent) {
+            is DialogIntent.Clear -> {
+                mashupUiState.value = mashupUiState.value.copy(dialogContent = null)
+            }
+
+            is DialogIntent.SetContent -> {
+                mashupUiState.value = mashupUiState.value.copy(dialogContent = intent.content)
+            }
+        }
+    }
+
+
 
     // --- Undo/Redo Core Logic ---
     fun hasAnyTrait(): Boolean {
@@ -161,7 +202,7 @@ class MashupViewModel @Inject constructor(
         _mashupDetails.value = _mashupDetails.value.copy(assets = assets, mint = mint)
     }
 
-    fun saveMashup(wallet: String, ctx: Context) {
+    fun saveMashup(wallet: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val res = mashitRepo.saveMashup(wallet = wallet, mashupDetails = _mashupDetails.value)
             if (res?.success == true) {
@@ -196,9 +237,12 @@ class MashupViewModel @Inject constructor(
         _selectedColorType.value = colorType
     }
 
-    // --- Repository & Worker Actions ---
 
-    fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
+
+
+    // Image type
+
+    fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
@@ -207,17 +251,39 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun insertTraitType(url: String, imageType: ImageType) {
+    fun setImageType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
             val entity = ImageTypeEntity(url, imageType)
             imageTypeRepo.insertImageType(entity)
         }
     }
 
-    fun startImageUpload(wallet: String, imgType: Int, context: Context) {
+    // Download
+
+    fun savePng(context: Context) {
+        mashupUiState.value.wallet?.let { wallet ->
+            startImageDownload(
+                wallet = wallet,
+                imageType = 0,
+                context = context
+            )
+        }
+    }
+
+    fun saveGif(context: Context) {
+        mashupUiState.value.wallet?.let { wallet ->
+            startImageDownload(
+                wallet = wallet,
+                imageType = 1,
+                context = context
+            )
+        }
+    }
+
+    fun startImageDownload(wallet: String, imageType: Int, context: Context) {
         val inputData = Data.Builder()
             .putString(UploadWorker.WALLET, wallet)
-            .putInt(UploadWorker.IMG_TYPE, imgType)
+            .putInt(UploadWorker.IMG_TYPE, imageType)
             .build()
 
         val constraints = Constraints.Builder()

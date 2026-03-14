@@ -11,16 +11,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.ui.theme.MashiBackground
+import com.mashiverse.mashit.data.models.intents.ImageIntent
+import com.mashiverse.mashit.ui.theme.Tertiary
 
 @Composable
 fun MintedTrait(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     data: String,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
-    background: Color = MashiBackground,
+    processImageIntent: (ImageIntent) -> Unit,
+    background: Color = Tertiary,
     selectedColors: SelectedColors? = null,
     contentScale: ContentScale = ContentScale.Fit,
     mint: Int? = null
@@ -32,8 +32,7 @@ fun MintedTrait(
             modifier = Modifier.fillMaxSize(),
             onClick = onClick,
             data = data,
-            getImageType = getImageType,
-            setImageType = setImageType,
+            processImageIntent = processImageIntent,
             background = background,
             selectedColors = selectedColors,
             contentScale = contentScale

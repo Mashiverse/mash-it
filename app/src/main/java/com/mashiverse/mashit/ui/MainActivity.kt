@@ -1,9 +1,6 @@
 package com.mashiverse.mashit.ui
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,14 +9,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.mashiverse.mashit.ui.screens.Main
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.DarkSystemBarStyle
-import com.mashiverse.mashit.ui.theme.MashItTheme
+import com.mashiverse.mashit.ui.theme.MashitTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -41,8 +37,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             navController = rememberNavController()
+            val viewModel = hiltViewModel<ThemeViewModel>()
 
-            MashItTheme {
+
+            MashitTheme {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

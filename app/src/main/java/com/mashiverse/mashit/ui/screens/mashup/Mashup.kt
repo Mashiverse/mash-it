@@ -33,7 +33,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.intents.DialogIntent
+import com.mashiverse.mashit.data.models.intents.DialogIntent.Clear
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
@@ -88,6 +91,8 @@ fun Mashup(searchQuery: State<String>) {
     val lazyGridState = rememberLazyGridState()
     val viewModel = hiltViewModel<MashupViewModel>()
 
+    val mashupUiState by remember { viewModel.mashupUiState }
+
     // 1. Source of Truth from ViewModel
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
     val vmDetails by viewModel.mashupDetails
@@ -102,28 +107,6 @@ fun Mashup(searchQuery: State<String>) {
     var height by remember { mutableStateOf(0.dp) }
 
     val dialogContent by remember { viewModel.dialogContent }
-
-    val onPngButtonClick = {
-        val wallet = walletPreferences.value.wallet
-        if (wallet != null) {
-            viewModel.startImageUpload(
-                wallet = wallet,
-                imgType = 0,
-                context = ctx
-            )
-        }
-    }
-
-    val onGifButtonClick = {
-        val wallet = walletPreferences.value.wallet
-        if (wallet != null) {
-            viewModel.startImageUpload(
-                wallet = wallet,
-                imgType = 1,
-                context = ctx
-            )
-        }
-    }
 
     // 3. Actions
     val saveColors = {
@@ -264,7 +247,7 @@ fun Mashup(searchQuery: State<String>) {
     val onSaveButtonClick = {
         val wallet = walletPreferences.value.wallet
         if (wallet != null) {
-            viewModel.saveMashup(wallet, ctx)
+            viewModel.saveMashup(wallet)
         }
     }
 
@@ -288,13 +271,13 @@ fun Mashup(searchQuery: State<String>) {
                     holderWidth = compositeWidth,
                     getImageType = { url: String ->
                         var imageType: ImageType? = null
-                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
+                        viewModel.getImageType(url) { type: ImageType? ->
                             imageType = type
                         }
                         imageType
                     },
                     setImageType = { imageType: ImageType, data: String ->
-                        viewModel.insertTraitType(
+                        viewModel.setImageType(
                             url = data,
                             imageType = imageType
                         )
@@ -331,19 +314,7 @@ fun Mashup(searchQuery: State<String>) {
                         lazyGridState = lazyGridState,
                         traits = traits,
                         changeMashupTrait = changeMashupTrait,
-                        getImageType = { url: String ->
-                            var imageType: ImageType? = null
-                            viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                                imageType = type
-                            }
-                            imageType
-                        },
-                        setImageType = { imageType: ImageType, data: String ->
-                            viewModel.insertTraitType(
-                                url = data,
-                                imageType = imageType
-                            )
-                        }
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent)}
                     )
                 }
             }
@@ -372,33 +343,21 @@ fun Mashup(searchQuery: State<String>) {
             )
         }
 
-        if (isPreviewBottomSheet) {
+        if (mashupUiState.isPreview) {
             MashupSheet(
                 closeBottomShit = { isPreviewBottomSheet = false },
                 sheetState = previewSheetState,
                 scope = scope,
-                mashupDetails = vmDetails.copy(colors = colorBuffer),
-                getImageType = { url: String ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                        imageType = type
-                    }
-                    imageType
-                },
-                setImageType = { imageType: ImageType, data: String ->
-                    viewModel.insertTraitType(
-                        url = data,
-                        imageType = imageType
-                    )
-                },
+                mashupDetails = mashupUiState.mashupDetails.copy(colors = colorBuffer),
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 height = height
             )
         }
     }
 
-    if (dialogContent != null) {
-        Dialog(dialogContent!!) {
-            viewModel.clearDialog()
+    mashupUiState.dialogContent?.let { content ->
+        Dialog(content) {
+            viewModel.processDialogIntent(Clear)
         }
     }
 }

@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.R
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
@@ -42,7 +42,7 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
             Toast.makeText(ctx, "Creates post", Toast.LENGTH_SHORT).show()
         },
         colors = ButtonDefaults.buttonColors().copy(
-            containerColor = ContainerColor,
+            containerColor = Surface,
             contentColor = ContentColor
         ),
         contentPadding = PaddingValues(horizontal = SmallPaddingSize),

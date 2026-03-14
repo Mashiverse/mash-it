@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -26,8 +27,7 @@ fun TraitHolder(
     trait: Trait,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit
 ) {
     Column {
         TraitImage(
@@ -36,8 +36,7 @@ fun TraitHolder(
                 .height(height)
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
             data = trait.url ?: "",
-            getImageType = getImageType,
-            setImageType = setImageType
+            processImageIntent = processImageIntent
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))

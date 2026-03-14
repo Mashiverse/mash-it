@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -25,8 +26,7 @@ fun MashupTraitHolder(
     height: Dp,
     mashupTrait: MashupTrait,
     changeMashupTrait: (MashupTrait) -> Unit,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit
 ) {
     var avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
     avatarName = if (avatarName.length > 16) {
@@ -46,8 +46,7 @@ fun MashupTraitHolder(
                 .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
             onClick = { changeMashupTrait.invoke(mashupTrait) },
             data = mashupTrait.trait.url ?: "",
-            getImageType = getImageType,
-            setImageType = setImageType,
+            processImageIntent = processImageIntent,
             mint = mashupTrait.mint
         )
 

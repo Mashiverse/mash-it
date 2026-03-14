@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.ui.theme.ColorSaveButtonBackground
+import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 
 @Composable
@@ -23,7 +23,7 @@ fun SaveActionButton(
             .height(32.dp),
         shape = RoundedCornerShape(90),
         colors = ButtonDefaults.buttonColors().copy(
-            containerColor = ColorSaveButtonBackground,
+            containerColor = Primary,
             contentColor = ContentAccentColor
         ),
         onClick = onSaveButtonClick

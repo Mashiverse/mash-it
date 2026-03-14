@@ -19,7 +19,7 @@ import androidx.navigation.NavHostController
 import com.mashiverse.mashit.ui.screens.components.nav.data.navItems
 
 import com.mashiverse.mashit.ui.theme.Background
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
@@ -65,7 +65,7 @@ fun DrawerNav(
                     Text(text = navItem.label, fontSize = 16.sp)
                 },
                 colors = NavigationDrawerItemDefaults.colors(
-                    selectedContainerColor = ContainerColor,
+                    selectedContainerColor = Surface,
                     unselectedContainerColor = Background,
                     selectedTextColor = ContentColor,
                     unselectedTextColor = ContentColor

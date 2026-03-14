@@ -26,10 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.remote.dtos.AlchemyDto
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.PaddingSize
@@ -46,8 +48,7 @@ fun MashupSheet(
     closeBottomShit: () -> Unit,
     sheetState: SheetState,
     scope: CoroutineScope,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     height: Dp
 ) {
     val config = LocalConfiguration.current
@@ -60,7 +61,7 @@ fun MashupSheet(
         shape = BottomSheetShape,
         onDismissRequest = closeBottomShit,
         sheetState = sheetState,
-        containerColor = ContainerColor,
+        containerColor = Surface,
         contentColor = ContentColor,
         dragHandle = null,
         sheetGesturesEnabled = false
@@ -114,8 +115,7 @@ fun MashupSheet(
                                     trait = i,
                                     width = mashiHolderWidth,
                                     height = mashiHolderHeight,
-                                    getImageType = getImageType,
-                                    setImageType = setImageType
+                                    processImageIntent = processImageIntent
                                 )
                             }
                         }

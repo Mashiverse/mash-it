@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.ui.theme.ActiveMashupButtonBackground
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.InactiveMashupButtonBackground
@@ -36,7 +36,7 @@ fun MashupCategories(
                 onClick = { onMashupCategorySelect.invoke(traitType) },
                 colors = ButtonDefaults.buttonColors().copy(
                     containerColor = if (selectedCategory == traitType) {
-                        ActiveMashupButtonBackground
+                        Secondary
                     } else {
                         InactiveMashupButtonBackground
                     },

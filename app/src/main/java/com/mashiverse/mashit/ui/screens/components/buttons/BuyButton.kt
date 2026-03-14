@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
@@ -54,7 +54,7 @@ fun BuyButton(
             .clip(shape = ButtonDefaults.shape),
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = Color.Transparent,
-            disabledContainerColor = ContainerColor
+            disabledContainerColor = Surface
         ),
         enabled = enabled,
         onClick = onClick,

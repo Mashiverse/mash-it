@@ -3,10 +3,12 @@ package com.mashiverse.mashit.utils
 import com.mashiverse.mashit.BuildConfig
 
 // DataStore
-const val WALLET_PREFERENCES = "user_wallet_preferences"
+const val MASHIT_PREFERENCES = "mashit"
+
 const val WALLET_KEY = "wallet"
 const val FIRST_LAUNCH_KEY = "first_launch"
 const val NOTIFICATIONS_KEY = "notifications"
+const val DYNAMIC_UI_KEY = "dynamic_ui"
 
 
 // API URLs

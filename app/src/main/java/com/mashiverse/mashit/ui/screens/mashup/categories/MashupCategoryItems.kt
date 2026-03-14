@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
 import com.mashiverse.mashit.ui.theme.MaxShopCategoryItemHeight
@@ -32,8 +33,7 @@ fun MashupCategoryItems(
     lazyGridState: LazyGridState,
     traits: List<MashupTrait>,
     changeMashupTrait: (MashupTrait) -> Unit,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit
 ) {
     val config = LocalConfiguration.current
     val screenWidth = config.screenWidthDp.dp
@@ -70,8 +70,7 @@ fun MashupCategoryItems(
                 width = finalWidth,
                 mashupTrait = traits[i],
                 changeMashupTrait = changeMashupTrait,
-                getImageType = getImageType,
-                setImageType = setImageType
+                processImageIntent = processImageIntent
             )
         }
     }

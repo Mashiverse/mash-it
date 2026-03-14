@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 import com.mashiverse.mashit.ui.theme.AccountInfoShape
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentTextSize
 import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
 import com.mashiverse.mashit.ui.theme.SearchHeight
@@ -67,7 +67,7 @@ fun TopNavBarActions(
                         containerColor = Color.Transparent,
                         contentColor = Color.Red,
                     ),
-                    border = BorderStroke(width = (1.3).dp, color = ContainerColor),
+                    border = BorderStroke(width = (1.3).dp, color = Surface),
                     shape = AccountInfoShape,
                     contentPadding = PaddingValues(horizontal = SmallPaddingSize),
                     onClick = onConnect

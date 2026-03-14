@@ -27,7 +27,7 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
@@ -56,7 +56,7 @@ fun MashiBottomSheet(
         shape = BottomSheetShape,
         onDismissRequest = closeBottomShit,
         sheetState = sheetState,
-        containerColor = ContainerColor,
+        containerColor = Surface,
         contentColor = ContentColor,
         dragHandle = null,
         sheetGesturesEnabled = false

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ColorCloseButtonBackground
-import com.mashiverse.mashit.ui.theme.ColorSaveButtonBackground
+import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,8 @@ fun ColorSheetActions(
     closeBottomShit: () -> Unit,
     saveColors: () -> Unit
 ) {
+    val theme = MaterialTheme.colorScheme
+
     Row(modifier = Modifier.fillMaxWidth()) {
         Button(
             modifier = Modifier
@@ -66,8 +69,8 @@ fun ColorSheetActions(
                 }
             },
             colors = ButtonDefaults.buttonColors().copy(
-                containerColor = ColorSaveButtonBackground,
-                contentColor = ContentAccentColor
+                containerColor = theme.primary,
+                contentColor = theme.onPrimary
             ),
             contentPadding = PaddingValues(0.dp)
         ) {

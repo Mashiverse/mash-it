@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.screens.components.picker.ColorPicker
 import com.mashiverse.mashit.ui.screens.components.picker.ColorSlideBar
@@ -67,7 +66,7 @@ fun ColorSheet(
         shape = BottomSheetShape,
         onDismissRequest = closeBottomShit,
         sheetState = sheetState,
-        containerColor = ContainerColor,
+        containerColor = Surface,
         contentColor = ContentColor,
         dragHandle = null,
     ) {

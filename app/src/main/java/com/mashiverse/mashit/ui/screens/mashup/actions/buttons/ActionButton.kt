@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.ui.theme.ContainerColor
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.SmallIconSize
 import kotlinx.coroutines.delay
@@ -65,7 +65,7 @@ fun ActionButton(
             .height(38.dp),
         shape = RoundedCornerShape(90),
         colors = ButtonDefaults.buttonColors().copy(
-            containerColor = ContainerColor,
+            containerColor = Surface,
             contentColor = ContentAccentColor,
         ),
         onClick = onClick,
