@@ -23,7 +23,7 @@ import kotlinx.coroutines.Job
 
 @Composable
 fun MashupCategories(
-    onMashupCategorySelect: (TraitType) -> Job,
+    onCategorySelect: (TraitType) -> Unit,
     selectedCategory: TraitType
 ) {
     LazyRow(
@@ -33,7 +33,7 @@ fun MashupCategories(
             Button(
                 modifier = Modifier
                     .height(32.dp),
-                onClick = { onMashupCategorySelect.invoke(traitType) },
+                onClick = { onCategorySelect.invoke(traitType) },
                 colors = ButtonDefaults.buttonColors().copy(
                     containerColor = if (selectedCategory == traitType) {
                         Secondary

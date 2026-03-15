@@ -6,31 +6,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ActionsIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 
 @Composable
 fun MashupActions(
     mashupDetails: MashupDetails,
     modifier: Modifier = Modifier,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
     holderWidth: Dp,
-    onColorButtonClick: () -> Unit,
-    onRandomButtonClick: () -> Unit,
-    onSaveButtonClick: () -> Unit,
-    onPngButtonClick: () -> Unit,
-    onGifButtonClick: () -> Unit,
-    onResetButtonClick: () -> Unit,
-    onRedoButtonClick: () -> Unit,
-    onPreviewButtonClick: () -> Unit,
-    onUndoButtonClick: () -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
+    processMashupIntent: (ActionsIntent) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -41,32 +31,20 @@ fun MashupActions(
                 .widthIn(0.dp, 400.dp)
                 .align(Alignment.Center)
         ){
-            LeftPanel(
-                onColorButtonClick = onColorButtonClick,
-                onRandomButtonClick = onRandomButtonClick,
-                onResetButtonClick = onResetButtonClick,
-                onPreviewButtonClick = onPreviewButtonClick
-            )
+            LeftPanel(processMashupIntent = processMashupIntent)
 
             Spacer(modifier = Modifier.weight(1F))
 
             MashupComposite(
                 modifier = modifier,
                 mashupDetails = mashupDetails,
-                getImageType = getImageType,
-                setImageType = setImageType,
                 holderWidth = holderWidth,
+                processImageIntent = processImageIntent,
             )
 
             Spacer(modifier = Modifier.weight(1F))
 
-            RightPanel(
-                onSaveButtonClick = onSaveButtonClick,
-                onPngButtonClick = onPngButtonClick,
-                onGifButtonClick = onGifButtonClick,
-                onRedoButtonClick = onRedoButtonClick,
-                onUndoButtonClick = onUndoButtonClick,
-            )
+            RightPanel(processMashupIntent = processMashupIntent)
         }
     }
 }

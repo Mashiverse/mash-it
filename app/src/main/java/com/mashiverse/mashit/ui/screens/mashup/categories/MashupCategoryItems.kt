@@ -10,21 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.times
-import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
-import com.mashiverse.mashit.ui.theme.MaxShopCategoryItemHeight
 import com.mashiverse.mashit.ui.theme.MaxShopCategoryItemWidth
-import com.mashiverse.mashit.ui.theme.MinShopCategoryItemHeight
 import com.mashiverse.mashit.ui.theme.MinShopCategoryItemWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
-import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.max
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -32,7 +27,7 @@ fun MashupCategoryItems(
     modifier: Modifier,
     lazyGridState: LazyGridState,
     traits: List<MashupTrait>,
-    changeMashupTrait: (MashupTrait) -> Unit,
+    processMashupIntent: (MashupIntent) -> Unit,
     processImageIntent: (ImageIntent) -> Unit
 ) {
     val config = LocalConfiguration.current
@@ -69,7 +64,7 @@ fun MashupCategoryItems(
                 height = finalHeight,
                 width = finalWidth,
                 mashupTrait = traits[i],
-                changeMashupTrait = changeMashupTrait,
+                processMashupIntent = processMashupIntent,
                 processImageIntent = processImageIntent
             )
         }

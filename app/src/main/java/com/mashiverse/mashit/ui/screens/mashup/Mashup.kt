@@ -25,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -33,18 +32,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.intents.DialogIntent
-import com.mashiverse.mashit.data.models.intents.DialogIntent.Clear
-import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.DialogIntent.Clear
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
-import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
-import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
@@ -61,9 +56,8 @@ import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
-import com.mashiverse.mashit.utils.color.helpers.toHexString
+import com.mashiverse.mashit.utils.helpers.TraitsHelper
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
@@ -74,7 +68,7 @@ fun Mashup(searchQuery: State<String>) {
         mutableStateOf(searchQuery.value)
     }
 
-    val ctx = LocalContext.current
+    LocalContext.current
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val config = LocalConfiguration.current
@@ -86,47 +80,26 @@ fun Mashup(searchQuery: State<String>) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isBottomSheet by remember { mutableStateOf(false) }
     val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var isPreviewBottomSheet by remember { mutableStateOf(false) }
 
     val lazyGridState = rememberLazyGridState()
     val viewModel = hiltViewModel<MashupViewModel>()
+    var height by remember { mutableStateOf(0.dp) }
+
 
     val mashupUiState by remember { viewModel.mashupUiState }
 
-    // 1. Source of Truth from ViewModel
-    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
-    val vmDetails by viewModel.mashupDetails
-    val selectedColorType by viewModel.selectedColorType
-
-    // 2. The Buffer: This holds unsaved color changes for the UI
-    // It resets only if the ViewModel's saved colors change (e.g., after a save or R)
-    var colorBuffer by remember(vmDetails) {
-        mutableStateOf(vmDetails.colors)
+    val selectedColorType by remember(mashupUiState.selectedColorType) {
+        mutableStateOf(mashupUiState.selectedColorType)
     }
 
-    var height by remember { mutableStateOf(0.dp) }
-
-    val dialogContent by remember { viewModel.dialogContent }
-
-    // 3. Actions
-    val saveColors = {
-        viewModel.changeColors(colorBuffer)
+    var colorBuffer by remember(mashupUiState.mashupDetails) {
+        mutableStateOf(mashupUiState.mashupDetails.colors)
     }
 
-    val resetColors = {
-        colorBuffer = vmDetails.colors
+    val selectedCategory by remember(mashupUiState.selectedCategory) {
+        mutableStateOf(mashupUiState.selectedCategory)
     }
 
-    val changeColor: (Color) -> Unit = { newColor ->
-        val hex = "#" + newColor.toHexString()
-        colorBuffer = when (selectedColorType) {
-            ColorType.BASE -> colorBuffer.copy(base = hex)
-            ColorType.EYES -> colorBuffer.copy(eyes = hex)
-            ColorType.HAIR -> colorBuffer.copy(hair = hex)
-        }
-    }
-
-    // 4. Derived Hex for the Color Picker
     val currentColorHex by remember(selectedColorType, colorBuffer) {
         derivedStateOf {
             when (selectedColorType) {
@@ -137,22 +110,12 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    val changeMashupTrait = { mashupTrait: MashupTrait ->
-        viewModel.updateMashup(mashupTrait)
-    }
-
-    // Collection Data
-    val collection by viewModel.collectionFlow
-        .map { it.fromEntities() }
-        .collectAsState(emptyList())
-
     var nfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
 
-    LaunchedEffect(collection, searchQuery) {
+    LaunchedEffect(mashupUiState.nfts, searchQuery) {
         val temp = mutableListOf<Nft>()
-        collection.forEach { nft ->
+        mashupUiState.nfts.forEach { nft ->
             nft.owned?.forEach { owned ->
-                Timber.tag("GG").d(owned.toString())
                 temp.add(
                     nft.copy(
                         owned = listOf(
@@ -172,37 +135,17 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    val onRedoButtonClick = {
-        viewModel.redo()
-    }
-    val onUndoButtonClick = {
-        viewModel.undo()
-    }
 
-    val traitsByType = remember(nfts) {
-        val allMashupTraits = nfts.flatMap { nft ->
-            nft.traits?.map { trait ->
-                MashupTrait(
-                    trait = trait,
-                    avatarName = nft.name,
-                    mint = if (trait.type == TraitType.BACKGROUND) {
-                        nft.owned?.getOrNull(0)?.mint
-                    } else {
-                        null
-                    }
-                )
-            } ?: emptyList()
-        }
-
-        allMashupTraits.groupBy { it.trait.type }
-    }
-
-    var selectedCategory by remember { mutableStateOf(TraitType.BACKGROUND) }
-    val traits by remember(selectedCategory, nfts) {
+    val traits by remember(
+        mashupUiState.selectedCategory,
+        nfts
+    ) {
         derivedStateOf {
-            val traits = traitsByType[selectedCategory] ?: emptyList()
+            val traits =
+                TraitsHelper.getTraitsByType(mashupUiState.nfts)[mashupUiState.selectedCategory]
+                    ?: emptyList()
 
-            if (selectedCategory != TraitType.BACKGROUND) {
+            if (mashupUiState.selectedCategory != TraitType.BACKGROUND) {
                 traits.distinctBy { it.avatarName }
             } else {
                 traits
@@ -210,87 +153,26 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    val onMashupCategorySelect = { traitType: TraitType ->
-        selectedCategory = traitType
-        scope.launch { lazyGridState.scrollToItem(0) }
-    }
-
-    val onRandomButtonClick = {
-        if (nfts.isNotEmpty()) {
-            val randomAssets = TraitType.entries.mapNotNull { type ->
-                when (type) {
-                    TraitType.BACKGROUND, TraitType.EYES, TraitType.BOTTOM, TraitType.UPPER, TraitType.HEAD -> {
-                        traitsByType[type]?.randomOrNull()
-                    }
-
-                    else -> {
-                        val isIncluded = arrayOf(true, false).random()
-                        if (isIncluded) {
-                            traitsByType[type]?.randomOrNull()
-                        } else {
-                            MashupTrait(
-                                trait = Trait(type = type, url = null),
-                                avatarName = ""
-                            )
-                        }
-                    }
-                }
-            }
-            viewModel.randomizeMashup(randomAssets)
-        }
-    }
-
-    val onResetButtonClick = {
-        viewModel.reset()
-    }
-
-    val onSaveButtonClick = {
-        val wallet = walletPreferences.value.wallet
-        if (wallet != null) {
-            viewModel.saveMashup(wallet)
-        }
-    }
-
     Column {
         CategoryHeader(title = "Mashup")
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
 
-        if (walletPreferences.value.wallet != null) {
+        if (mashupUiState.wallet != null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = PaddingSize)
             ) {
                 MashupActions(
-                    mashupDetails = vmDetails.copy(colors = colorBuffer),
+                    mashupDetails = mashupUiState.mashupDetails.copy(colors = colorBuffer),
                     modifier = Modifier
                         .height(min(compositeHeight, MaxMashiHolderHeight))
                         .width(min(compositeWidth, MaxMashiHolderWidth))
-                        .clickable { isPreviewBottomSheet = true }
+                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) }
                         .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
                     holderWidth = compositeWidth,
-                    getImageType = { url: String ->
-                        var imageType: ImageType? = null
-                        viewModel.getImageType(url) { type: ImageType? ->
-                            imageType = type
-                        }
-                        imageType
-                    },
-                    setImageType = { imageType: ImageType, data: String ->
-                        viewModel.setImageType(
-                            url = data,
-                            imageType = imageType
-                        )
-                    },
-                    onColorButtonClick = { isBottomSheet = true },
-                    onRandomButtonClick = onRandomButtonClick,
-                    onSaveButtonClick = onSaveButtonClick,
-                    onPngButtonClick = onPngButtonClick,
-                    onGifButtonClick = onGifButtonClick,
-                    onResetButtonClick = onResetButtonClick,
-                    onUndoButtonClick = onUndoButtonClick,
-                    onRedoButtonClick = onRedoButtonClick,
-                    onPreviewButtonClick = { isPreviewBottomSheet = true }
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                    processMashupIntent = { intent -> viewModel.processActionsIntent(intent) }
                 )
 
                 Column(
@@ -303,7 +185,15 @@ fun Mashup(searchQuery: State<String>) {
                     Spacer(Modifier.height(SmallPaddingSize))
 
                     MashupCategories(
-                        onMashupCategorySelect = onMashupCategorySelect,
+                        onCategorySelect = {
+                            viewModel.processMashupIntent(
+                                MashupIntent.OnCategorySelect(
+                                    scope = scope,
+                                    state = lazyGridState,
+                                    selectedCategory = selectedCategory
+                                )
+                            )
+                        },
                         selectedCategory = selectedCategory
                     )
 
@@ -313,8 +203,8 @@ fun Mashup(searchQuery: State<String>) {
                         modifier = Modifier.fillMaxHeight(),
                         lazyGridState = lazyGridState,
                         traits = traits,
-                        changeMashupTrait = changeMashupTrait,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent)}
+                        processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                     )
                 }
             }
@@ -325,27 +215,19 @@ fun Mashup(searchQuery: State<String>) {
         // COLOR SHEET
         if (isBottomSheet) {
             ColorSheet(
-                closeBottomShit = {
-                    isBottomSheet = false
-                    resetColors()
-                },
-                saveColors = {
-                    saveColors()
-                    isBottomSheet = false
-                },
                 sheetState = sheetState,
                 color = currentColorHex.toHexColor(),
                 scope = scope,
-                changeColor = changeColor,
                 selectedColorType = selectedColorType,
-                selectColorType = { viewModel.selectColorType(it) },
+                processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                processActionsIntent = { intent -> viewModel.processActionsIntent(intent) },
                 height = height
             )
         }
 
         if (mashupUiState.isPreview) {
             MashupSheet(
-                closeBottomShit = { isPreviewBottomSheet = false },
+                closeBottomShit = { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) },
                 sheetState = previewSheetState,
                 scope = scope,
                 mashupDetails = mashupUiState.mashupDetails.copy(colors = colorBuffer),

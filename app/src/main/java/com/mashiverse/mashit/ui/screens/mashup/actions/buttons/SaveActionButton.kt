@@ -15,7 +15,7 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 
 @Composable
 fun SaveActionButton(
-    onSaveButtonClick: () -> Unit
+    onSave: () -> Unit
 ) {
     Button(
         modifier = Modifier
@@ -26,7 +26,7 @@ fun SaveActionButton(
             containerColor = Primary,
             contentColor = ContentAccentColor
         ),
-        onClick = onSaveButtonClick
+        onClick = onSave
     ) {
         Text(
             modifier = Modifier

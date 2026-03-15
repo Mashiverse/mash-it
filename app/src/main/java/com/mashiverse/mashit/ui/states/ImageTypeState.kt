@@ -6,7 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.utils.helpers.ImageHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore

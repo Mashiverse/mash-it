@@ -26,7 +26,7 @@ import com.mashiverse.mashit.ui.theme.SmallIconSize
 
 @Composable
 fun ColorSelectActionButton(
-    onColorButtonClick: () -> Unit
+    onColor: () -> Unit
 ) {
     val density = LocalDensity.current
 
@@ -50,7 +50,7 @@ fun ColorSelectActionButton(
                 )
             )
             .border(0.5.dp, Color.White, RoundedCornerShape(90))
-            .clickable { onColorButtonClick.invoke() }
+            .clickable { onColor.invoke() }
     ) {
         Icon(
             modifier = Modifier

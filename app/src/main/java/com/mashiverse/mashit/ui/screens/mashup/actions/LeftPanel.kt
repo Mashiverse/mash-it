@@ -10,41 +10,37 @@ import androidx.compose.material.icons.filled.Slideshow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.times
+import com.mashiverse.mashit.data.intents.ActionsIntent
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ActionButton
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ColorSelectActionButton
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 
 @Composable
-fun LeftPanel(
-    onColorButtonClick: () -> Unit,
-    onRandomButtonClick: () -> Unit,
-    onResetButtonClick: () -> Unit,
-    onPreviewButtonClick: () -> Unit
-) {
+fun LeftPanel(processMashupIntent: (ActionsIntent) -> Unit) {
     Column {
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
-        ColorSelectActionButton(onColorButtonClick = onColorButtonClick)
+        ColorSelectActionButton(onColor = { processMashupIntent(ActionsIntent.OnColor) })
 
         Spacer(modifier = Modifier.height(3 * SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Refresh,
-            onClick = onRandomButtonClick
+            onClick = { processMashupIntent(ActionsIntent.OnRandom) }
         )
 
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Slideshow,
-            onClick = onPreviewButtonClick,
+            onClick = { processMashupIntent(ActionsIntent.OnPreview) },
         )
 
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Delete,
-            onClick = onResetButtonClick,
+            onClick = { processMashupIntent(ActionsIntent.OnReset) },
         )
     }
 }

@@ -1,11 +1,23 @@
 package com.mashiverse.mashit.ui.screens.mashup.color
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -13,10 +25,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.screens.components.picker.ColorPicker
 import com.mashiverse.mashit.ui.screens.components.picker.ColorSlideBar
-import com.mashiverse.mashit.ui.theme.*
+import com.mashiverse.mashit.ui.theme.BottomSheetShape
+import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper.toHue
@@ -26,15 +44,13 @@ import kotlinx.coroutines.CoroutineScope
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColorSheet(
-    closeBottomShit: () -> Unit,
     sheetState: SheetState,
     scope: CoroutineScope,
     color: Color,
-    saveColors: () -> Unit,
-    changeColor: (Color) -> Unit,
     selectedColorType: ColorType,
-    selectColorType: (ColorType) -> Unit,
-    height: Dp
+    height: Dp,
+    processMashupIntent: (MashupIntent) -> Unit,
+    processActionsIntent: (ActionsIntent) -> Unit
 ) {
     // Picker states
     var pickerLocation by remember { mutableStateOf(Offset.Zero) }
@@ -42,6 +58,20 @@ fun ColorSheet(
     var hueProgress by remember { mutableFloatStateOf(0f) }
     var pickerSize by remember { mutableStateOf(IntSize(1, 1)) }
     var isDragging by remember { mutableStateOf(false) }
+
+    val closeBottomShit = {
+        processActionsIntent(ActionsIntent.OnColorDismiss)
+        processMashupIntent(MashupIntent.OnColorsReset)
+    }
+
+    val saveColors = {
+        processMashupIntent(MashupIntent.OnColorsSave)
+        processActionsIntent(ActionsIntent.OnColorDismiss)
+    }
+
+    val changeColor = { color: Color ->
+        processMashupIntent(MashupIntent.OnColorChange(color))
+    }
 
     // Update picker gradient and thumb when color or type changes
     LaunchedEffect(color, selectedColorType, pickerSize) {
@@ -78,7 +108,7 @@ fun ColorSheet(
         ) {
             ColorTypeSelector(
                 selectedColorType = selectedColorType,
-                selectColorType = selectColorType
+                processMashupIntent = processMashupIntent
             )
 
             Spacer(modifier = Modifier.height(SmallPaddingSize))
@@ -96,7 +126,7 @@ fun ColorSheet(
                     val hsv = FloatArray(3)
                     android.graphics.Color.colorToHSV(newColor.toArgb(), hsv)
                     val correctedColor = ColorPickerHelper.hsvToColor(hue, hsv[1], hsv[2])
-                    changeColor(correctedColor)
+                    processMashupIntent(MashupIntent.OnColorChange(correctedColor))
                 },
                 onPickerLocationChange = { pickerLocation = it },
                 onDraggingChange = { dragging -> isDragging = dragging },
@@ -114,8 +144,9 @@ fun ColorSheet(
 
                     val saturation = (pickerLocation.x / pickerSize.width).coerceIn(0f, 1f)
                     val brightness = (1f - pickerLocation.y / pickerSize.height).coerceIn(0f, 1f)
-                    val newColor = ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
-                    changeColor(newColor)
+                    val newColor =
+                        ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
+                    processMashupIntent(MashupIntent.OnColorChange(newColor))
                 }
             )
 

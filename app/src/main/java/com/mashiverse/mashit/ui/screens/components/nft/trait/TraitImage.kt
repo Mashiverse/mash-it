@@ -10,7 +10,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.models.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.ui.states.rememberImageType
 import com.mashiverse.mashit.ui.theme.MashiHolderShape

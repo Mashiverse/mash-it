@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -23,13 +24,13 @@ fun ColorTypeButton(
     text: String,
     selectedColorType: ColorType,
     colorType: ColorType,
-    selectColorType: (ColorType) -> Unit
+    processMashupIntent: (MashupIntent) -> Unit
 ) {
     Button(
         modifier = Modifier
             .height(36.dp),
         onClick = {
-            selectColorType.invoke(colorType)
+            processMashupIntent(MashupIntent.OnColorTypeSelect(colorType))
         },
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = if (selectedColorType == colorType) {
@@ -48,7 +49,7 @@ fun ColorTypeButton(
 
 @Composable
 fun ColorTypeSelector(
-    selectColorType: (ColorType) -> Unit,
+    processMashupIntent: (MashupIntent) -> Unit,
     selectedColorType: ColorType
 ) {
     Row(
@@ -60,7 +61,7 @@ fun ColorTypeSelector(
         ColorTypeButton(
             text = "Body",
             selectedColorType = selectedColorType,
-            selectColorType = selectColorType,
+            processMashupIntent = processMashupIntent,
             colorType = ColorType.BASE
         )
 
@@ -69,7 +70,7 @@ fun ColorTypeSelector(
         ColorTypeButton(
             text = "Eyes",
             selectedColorType = selectedColorType,
-            selectColorType = selectColorType,
+            processMashupIntent = processMashupIntent,
             colorType = ColorType.EYES
         )
 
@@ -78,7 +79,7 @@ fun ColorTypeSelector(
         ColorTypeButton(
             text = "Hair",
             selectedColorType = selectedColorType,
-            selectColorType = selectColorType,
+            processMashupIntent = processMashupIntent,
             colorType = ColorType.HAIR
         )
 

@@ -14,7 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
-import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintText
@@ -27,8 +27,7 @@ import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 fun MashupComposite(
     mashupDetails: MashupDetails,
     modifier: Modifier = Modifier,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     holderWidth: Dp
 ) {
     Box(
@@ -55,8 +54,7 @@ fun MashupComposite(
                 selectedColors = mashupDetails.colors,
                 data = trait.url ?: "",
                 contentScale = contentScale,
-                getImageType = getImageType,
-                setImageType = setImageType
+                processImageIntent = processImageIntent
             )
         }
 

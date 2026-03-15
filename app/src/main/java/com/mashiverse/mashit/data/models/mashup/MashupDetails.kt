@@ -11,11 +11,7 @@ data class MashupDetails(
             type = TraitType.entries[i]
         )
     },
-    val colors: SelectedColors = SelectedColors(
-        base = "#00FF00",
-        eyes = "#FFFF00",
-        hair = "#0000FF"
-    ),
+    val colors: SelectedColors = SelectedColors(),
     val name: String? = null,
     val mint: Int? = null
 )
