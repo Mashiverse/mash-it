@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mashiverse.mashit.data.intents.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -52,7 +53,15 @@ class CollectionViewModel @Inject constructor(
         _selectedNft.value = mashi
     }
 
-    fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
+    fun processImageIntent(intent: ImageIntent) {
+        when (intent) {
+            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+
+            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+        }
+    }
+
+    fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
@@ -61,7 +70,7 @@ class CollectionViewModel @Inject constructor(
         }
     }
 
-    fun insertTraitType(url: String, imageType: ImageType) {
+    fun setImageType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
             val entity = ImageTypeEntity(url, imageType)
             imageTypeRepo.insertImageType(entity)

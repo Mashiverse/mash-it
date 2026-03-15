@@ -46,6 +46,7 @@ import kotlinx.coroutines.CoroutineScope
 fun ColorSheet(
     sheetState: SheetState,
     scope: CoroutineScope,
+    initialColor: Color,
     color: Color,
     selectedColorType: ColorType,
     height: Dp,
@@ -162,7 +163,7 @@ fun ColorSheet(
                 Spacer(modifier = Modifier.width(PaddingSize))
 
                 ColorPreviewSection(
-                    initialColor = color,
+                    initialColor = initialColor,
                     updatedColor = color
                 )
             }

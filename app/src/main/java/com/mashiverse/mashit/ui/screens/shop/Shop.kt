@@ -160,14 +160,7 @@ fun Shop(
             SearchCategory(
                 items = searchedListings,
                 selectId = selectId,
-                getImageType = { url ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                    imageType
-                },
-                setImageType = { type, data ->
-                    viewModel.insertTraitType(url = data, imageType = type)
-                },
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 getSoldQty = getSoldQty,
                 onMint = onMint,
                 onSearchClear = onSearchClear
@@ -182,14 +175,7 @@ fun Shop(
                         sectionName = "Recently Released",
                         selectId = selectId,
                         sectionItems = pagingItems,
-                        getImageType = { url ->
-                            var imageType: ImageType? = null
-                            viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                            imageType
-                        },
-                        setImageType = { type, data ->
-                            viewModel.insertTraitType(url = data, imageType = type)
-                        },
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                         getSoldQty = getSoldQty,
                         onMint = onMint,
                         onCategorySelect = onCategorySelect
@@ -201,14 +187,7 @@ fun Shop(
                 categoryName = category!!,
                 categoryItems = categoryItems!!,
                 selectId = selectId,
-                getImageType = { url ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                    imageType
-                },
-                setImageType = { type, data ->
-                    viewModel.insertTraitType(url = data, imageType = type)
-                },
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 getSoldQty = getSoldQty,
                 onMint = onMint,
                 onCategoryClose = onCategoryClose
@@ -222,14 +201,7 @@ fun Shop(
                 selectedNft = nft,
                 sheetState = sheetState,
                 closeBottomShit = closeBottomShit,
-                getImageType = { url ->
-                    var imageType: ImageType? = null
-                    viewModel.getTraitTypeEntity(url) { type -> imageType = type }
-                    imageType
-                },
-                setImageType = { type, data ->
-                    viewModel.insertTraitType(url = data, imageType = type)
-                },
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
             ) {
                 MashiDetailsSection(
                     nft = nft,

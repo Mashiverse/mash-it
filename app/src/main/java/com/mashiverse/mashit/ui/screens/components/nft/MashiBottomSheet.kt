@@ -22,18 +22,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
-import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
-import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Surface
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,8 +41,7 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 fun MashiBottomSheet(
     selectedNft: Nft,
     closeBottomShit: () -> Unit,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     sheetState: SheetState,
     detailsContent: @Composable () -> Unit
 ) {
@@ -75,8 +74,7 @@ fun MashiBottomSheet(
                         .height(LargeMashiHolderHeight)
                         .width(LargeMashiHolderWidth),
                     data = selectedNft.compositeUrl,
-                    getImageType = getImageType,
-                    setImageType = setImageType
+                    processImageIntent = processImageIntent
                 )
 
                 detailsContent()
@@ -103,8 +101,7 @@ fun MashiBottomSheet(
                             trait = selectedNft.traits[i],
                             width = mashiHolderWidth,
                             height = mashiHolderHeight,
-                            getImageType = getImageType,
-                            setImageType = setImageType
+                            processImageIntent = processImageIntent
                         )
                     }
                 }

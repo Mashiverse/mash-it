@@ -18,20 +18,20 @@ import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.SaveActionButton
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 
 @Composable
-fun RightPanel(processMashupIntent: (ActionsIntent) -> Unit) {
+fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
     val context = LocalContext.current
 
     Column {
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
-        SaveActionButton(onSave = { processMashupIntent(ActionsIntent.OnSave) })
+        SaveActionButton(onSave = { processActionsIntent(ActionsIntent.OnSave) })
 
         Spacer(modifier = Modifier.height(3 * SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Download,
             onClick = {
-                processMashupIntent(
+                processActionsIntent(
                     ActionsIntent.OnImageSave(
                         context = context,
                         downloadType = DownloadImageType.PNG
@@ -45,7 +45,7 @@ fun RightPanel(processMashupIntent: (ActionsIntent) -> Unit) {
         ActionButton(
             icon = Icons.Default.Download,
             onClick = {
-                processMashupIntent(
+                processActionsIntent(
                     ActionsIntent.OnImageSave(
                         context = context,
                         downloadType = DownloadImageType.GIF
@@ -59,14 +59,14 @@ fun RightPanel(processMashupIntent: (ActionsIntent) -> Unit) {
 
         ActionButton(
             icon = Icons.Default.Redo,
-            onClick = { processMashupIntent(ActionsIntent.OnRedo) }
+            onClick = { processActionsIntent(ActionsIntent.OnRedo) }
         )
 
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Undo,
-            onClick = { processMashupIntent(ActionsIntent.OnUndo) },
+            onClick = { processActionsIntent(ActionsIntent.OnUndo) },
         )
     }
 }

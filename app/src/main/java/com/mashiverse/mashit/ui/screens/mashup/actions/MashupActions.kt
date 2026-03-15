@@ -20,7 +20,7 @@ fun MashupActions(
     modifier: Modifier = Modifier,
     holderWidth: Dp,
     processImageIntent: (ImageIntent) -> Unit,
-    processMashupIntent: (ActionsIntent) -> Unit
+    processActionsIntent: (ActionsIntent) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -31,7 +31,7 @@ fun MashupActions(
                 .widthIn(0.dp, 400.dp)
                 .align(Alignment.Center)
         ){
-            LeftPanel(processMashupIntent = processMashupIntent)
+            LeftPanel(processActionsIntent = processActionsIntent)
 
             Spacer(modifier = Modifier.weight(1F))
 
@@ -44,7 +44,7 @@ fun MashupActions(
 
             Spacer(modifier = Modifier.weight(1F))
 
-            RightPanel(processMashupIntent = processMashupIntent)
+            RightPanel(processActionsIntent = processActionsIntent)
         }
     }
 }

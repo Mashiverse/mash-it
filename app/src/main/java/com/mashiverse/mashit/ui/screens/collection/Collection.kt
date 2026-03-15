@@ -132,19 +132,7 @@ fun Collection(searchQuery: State<String>) {
                             .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
                         onClick = { selectMashi.invoke(ownedNfts[i]) },
                         data = ownedNfts[i].compositeUrl,
-                        getImageType = { url: String ->
-                            var imageType: ImageType? = null
-                            viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                                imageType = type
-                            }
-                            imageType
-                        },
-                        setImageType = { imageType: ImageType, data: String ->
-                            viewModel.insertTraitType(
-                                url = data,
-                                imageType = imageType
-                            )
-                        },
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                         mint = ownedNfts[i].owned!![0].mint
                     )
                 }
@@ -156,19 +144,7 @@ fun Collection(searchQuery: State<String>) {
                 MashiBottomSheet(
                     selectedNft = selectedMashi!!,
                     closeBottomShit = closeBottomShit,
-                    getImageType = { url: String ->
-                        var imageType: ImageType? = null
-                        viewModel.getTraitTypeEntity(url) { type: ImageType? ->
-                            imageType = type
-                        }
-                        imageType
-                    },
-                    setImageType = { imageType: ImageType, data: String ->
-                        viewModel.insertTraitType(
-                            url = data,
-                            imageType = imageType
-                        )
-                    },
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                     sheetState = sheetState,
                 ) {
                     MashiDetailsSection(

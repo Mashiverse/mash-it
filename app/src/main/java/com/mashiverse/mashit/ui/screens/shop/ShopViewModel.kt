@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -78,7 +79,15 @@ class ShopViewModel @Inject constructor(
         }
     }
 
-    fun getTraitTypeEntity(url: String, onResult: (ImageType?) -> Unit) {
+    fun processImageIntent(intent: ImageIntent) {
+        when (intent) {
+            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+
+            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+        }
+    }
+
+    fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
@@ -87,7 +96,7 @@ class ShopViewModel @Inject constructor(
         }
     }
 
-    fun insertTraitType(url: String, imageType: ImageType) {
+    fun setImageType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
             val entity = ImageTypeEntity(url, imageType)
             imageTypeRepo.insertImageType(entity)

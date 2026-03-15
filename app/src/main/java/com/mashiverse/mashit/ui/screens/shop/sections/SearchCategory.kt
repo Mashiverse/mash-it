@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
@@ -32,8 +33,7 @@ import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 fun SearchCategory(
     items: List<Nft>,
     selectId: (String) -> Unit,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double, Boolean) -> Unit,
     onSearchClear: () -> Unit
@@ -85,8 +85,7 @@ fun SearchCategory(
                 ShopItem(
                     nft = nft,
                     selectId = selectId,
-                    getImageType = getImageType,
-                    setImageType = setImageType,
+                    processImageIntent = processImageIntent,
                     getSoldQty = getSoldQty,
                     onMint = onMint,
                     imageWidth = imageWidth,

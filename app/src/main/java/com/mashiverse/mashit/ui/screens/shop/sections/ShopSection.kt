@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
@@ -27,8 +28,7 @@ fun ShopSection(
     sectionName: String,
     selectId: (String) -> Unit,
     sectionItems: LazyPagingItems<Nft>,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     onCategorySelect: (String, LazyPagingItems<Nft>) -> Unit, // TODO: Category select
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double, Boolean) -> Unit
@@ -73,8 +73,7 @@ fun ShopSection(
                     ShopItem(
                         nft = nft,
                         selectId = selectId,
-                        getImageType = getImageType,
-                        setImageType = setImageType,
+                        processImageIntent = processImageIntent,
                         getSoldQty = getSoldQty,
                         onMint = onMint
                     )

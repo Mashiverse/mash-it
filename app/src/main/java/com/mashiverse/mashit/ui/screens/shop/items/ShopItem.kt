@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
@@ -36,8 +36,7 @@ import kotlinx.coroutines.launch
 fun ShopItem(
     nft: Nft,
     selectId: (String) -> Unit,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double, Boolean) -> Unit,
     imageWidth: Dp = LargeMashiHolderWidth,
@@ -74,8 +73,7 @@ fun ShopItem(
                 .border(width = 0.3.dp, shape = MashiHolderShape, color = ContentColor),
             onClick = { selectId.invoke(productInfo?.id ?: "") },
             data = nft.compositeUrl,
-            getImageType = getImageType,
-            setImageType = setImageType
+            processImageIntent = processImageIntent
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
@@ -111,7 +109,11 @@ fun ShopItem(
             enabled = !isSoldOut && !delisted,
             onClick = {
                 if (nft.productInfo?.listingId != null) {
-                    onMint.invoke(nft.productInfo.listingId, nft.productInfo.price, nft.productInfo.priceCurrency == PriceCurrency.POL)
+                    onMint.invoke(
+                        nft.productInfo.listingId,
+                        nft.productInfo.price,
+                        nft.productInfo.priceCurrency == PriceCurrency.POL
+                    )
                 }
             }
         )

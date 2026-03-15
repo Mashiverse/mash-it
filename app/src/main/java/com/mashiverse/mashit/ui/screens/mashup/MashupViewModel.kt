@@ -50,120 +50,47 @@ class MashupViewModel @Inject constructor(
     val collectionFlow = collectionRepo.collectionFlow
 
 
-    private val undoStack = ArrayDeque<MashupDetails>(5)
-    private val redoStack = ArrayDeque<MashupDetails>(5)
-    private val maxHistory = 5
+    private val undoStack = ArrayDeque<MashupDetails>()
+    private val redoStack = ArrayDeque<MashupDetails>()
+    private val maxHistory = 10
 
     init {
         observeWallet()
         observeCollection()
     }
 
-    fun observeWallet() {
-        viewModelScope.launch(Dispatchers.IO) {
-            walletFlow
-                .distinctUntilChanged()
-                .collect { prefs ->
-                    prefs.wallet?.let { wallet ->
-                        mashupUiState.value = mashupUiState.value.copy(wallet = wallet)
-                        collectionRepo.updateOwnedData(wallet)
-
-                        val initialMashup = collectionRepo.getMashup(wallet)
-                        withContext(Dispatchers.Main) {
-                            mashupUiState.value =
-                                mashupUiState.value.copy(mashupDetails = initialMashup)
-                            // Reset history when the source data changes (new wallet)
-                            undoStack.clear()
-                            redoStack.clear()
-                        }
-                    }
-
-                    if (prefs.wallet.isNullOrEmpty()) {
-                        collectionRepo.clearOwned()
-                    }
-                }
-        }
-    }
-
-    fun observeCollection() {
-        viewModelScope.launch(Dispatchers.IO) {
-            collectionFlow
-                .distinctUntilChanged()
-                .collect { collection ->
-                    mashupUiState.value = mashupUiState.value.copy(nfts = collection.fromEntities())
-                }
-        }
-    }
-
+    // --- Intent Processing ---
 
     fun processActionsIntent(intent: ActionsIntent) {
         when (intent) {
-            is ActionsIntent.OnColor -> {
-                mashupUiState.value = mashupUiState.value.copy(isColorChange = true)
-            }
+            is ActionsIntent.OnColor -> mashupUiState.value =
+                mashupUiState.value.copy(isColorChange = true)
 
-            is ActionsIntent.OnColorDismiss -> {
-                mashupUiState.value = mashupUiState.value.copy(isColorChange = false)
-            }
+            is ActionsIntent.OnColorDismiss -> mashupUiState.value =
+                mashupUiState.value.copy(isColorChange = false)
 
-            is ActionsIntent.OnPreview -> {
-                mashupUiState.value = mashupUiState.value.copy(isPreview = true)
-            }
+            is ActionsIntent.OnPreview -> mashupUiState.value =
+                mashupUiState.value.copy(isPreview = true)
 
-            is ActionsIntent.OnPreviewDismiss -> {
-                mashupUiState.value = mashupUiState.value.copy(isPreview = false)
-            }
+            is ActionsIntent.OnPreviewDismiss -> mashupUiState.value =
+                mashupUiState.value.copy(isPreview = false)
 
             is ActionsIntent.OnImageSave -> onImageSave(intent.context, intent.downloadType)
-
-
             is ActionsIntent.OnRandom -> onRandom()
-
             is ActionsIntent.OnSave -> onSave()
-
             is ActionsIntent.OnReset -> onReset()
-
-            ActionsIntent.OnRedo -> onRedo()
-
-            ActionsIntent.OnUndo -> onUndo()
-        }
-    }
-
-
-    fun onRandom() {
-        if (mashupUiState.value.nfts.isNotEmpty()) {
-            val randomAssets = TraitType.entries.mapNotNull { type ->
-                when (type) {
-                    TraitType.BACKGROUND, TraitType.EYES, TraitType.BOTTOM, TraitType.UPPER, TraitType.HEAD -> {
-                        TraitsHelper.getTraitsByType(mashupUiState.value.nfts)[type]?.randomOrNull()
-                    }
-
-                    else -> {
-                        val isIncluded = arrayOf(true, false).random()
-                        if (isIncluded) {
-                            TraitsHelper.getTraitsByType(mashupUiState.value.nfts)[type]?.randomOrNull()
-                        } else {
-                            MashupTrait(
-                                trait = Trait(type = type, url = null),
-                                avatarName = ""
-                            )
-                        }
-                    }
-                }
-            }
-            randomizeMashup(randomAssets)
+            is ActionsIntent.OnRedo -> onRedo()
+            is ActionsIntent.OnUndo -> onUndo()
         }
     }
 
     fun processMashupIntent(intent: MashupIntent) {
         when (intent) {
-            is MashupIntent.OnCategorySelect -> {
-                onCategorySelect(
-                    scope = intent.scope,
-                    state = intent.state,
-                    selectedCategory = intent.selectedCategory
-                )
-            }
+            is MashupIntent.OnCategorySelect -> onCategorySelect(
+                intent.scope,
+                intent.state,
+                intent.selectedCategory
+            )
 
             is MashupIntent.OnColorChange -> onColorChange(intent.color)
             is MashupIntent.OnColorsReset -> onColorsReset()
@@ -173,181 +100,127 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun onCategorySelect(
-        scope: CoroutineScope,
-        state: LazyGridState,
-        selectedCategory: TraitType,
-    ) {
-        viewModelScope.launch(Dispatchers.Main) {
-            mashupUiState.value = mashupUiState.value.copy(selectedCategory = selectedCategory)
-            scope.launch { state.scrollToItem(0) }
+    private fun recordStateForUndo() {
+
+        val currentState = mashupUiState.value.mashupDetails.copy()
+
+        undoStack.addLast(currentState)
+
+        if (undoStack.size > maxHistory) {
+            undoStack.removeFirst()
         }
-    }
-
-
-    fun processImageIntent(intent: ImageIntent) {
-        when (intent) {
-            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
-
-            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
-        }
-    }
-
-    fun processDialogIntent(intent: DialogIntent) {
-        when (intent) {
-            is DialogIntent.Clear -> {
-                mashupUiState.value = mashupUiState.value.copy(dialogContent = null)
-            }
-
-            is DialogIntent.SetContent -> {
-                mashupUiState.value = mashupUiState.value.copy(dialogContent = intent.content)
-            }
-        }
-    }
-
-
-    // --- Undo/Redo Core Logic ---
-    fun hasAnyTrait(): Boolean {
-        return !mashupUiState.value.mashupDetails.assets.all { asset -> asset.url == null }
-    }
-
-    private fun saveStateForUndo() {
-        // ONLY save to history if the current screen isn't empty
-        if (hasAnyTrait()) {
-            undoStack.addLast(mashupUiState.value.mashupDetails.copy())
-            if (undoStack.size > maxHistory) {
-                undoStack.removeFirst()
-            }
-            redoStack.clear()
-        }
+        // New user actions always invalidate the redo history
+        redoStack.clear()
     }
 
     fun onUndo() {
         if (undoStack.isNotEmpty()) {
-            val currentState = mashupUiState.value.mashupDetails.copy()
-            // Only push to redo if current state has data
-            if (hasAnyTrait()) {
-                redoStack.addLast(currentState)
-            }
-            mashupUiState.value =
-                mashupUiState.value.copy(mashupDetails = undoStack.removeLast())
+            // Save current state to Redo before moving back
+            redoStack.addLast(mashupUiState.value.mashupDetails.copy())
+
+            val previousState = undoStack.removeLast()
+            mashupUiState.value = mashupUiState.value.copy(
+                mashupDetails = previousState,
+                colors = previousState.colors
+            )
         }
     }
 
     fun onRedo() {
         if (redoStack.isNotEmpty()) {
-            val currentState = mashupUiState.value.mashupDetails.copy()
-            // Only push to undo if current state has data
-            if (hasAnyTrait()) {
-                undoStack.addLast(currentState)
-            }
+            // Save current state to Undo before moving forward
+            undoStack.addLast(mashupUiState.value.mashupDetails.copy())
+
+            val nextState = redoStack.removeLast()
             mashupUiState.value =
-                mashupUiState.value.copy(mashupDetails = redoStack.removeLast())
+                mashupUiState.value.copy(mashupDetails = nextState, colors = nextState.colors)
         }
     }
 
-// --- State Modifiers ---
+    // --- State Modifiers ---
 
     fun onReset() {
-        saveStateForUndo()
+        recordStateForUndo()
         mashupUiState.value = mashupUiState.value.copy(mashupDetails = MashupDetails())
     }
 
     fun onMashupUpdate(mashupTrait: MashupTrait) {
-        saveStateForUndo()
+        recordStateForUndo()
 
         val trait = mashupTrait.trait
         var mint = mashupUiState.value.mashupDetails.mint
-
         val assets = (mashupUiState.value.mashupDetails.assets).toMutableList()
-        val assetToUpdate = assets.firstOrNull { it.type == trait.type }
-        val i = assets.indexOf(assetToUpdate)
+        val assetIndex = assets.indexOfFirst { it.type == trait.type }
 
-        if (assetToUpdate?.url != trait.url) {
-            assets[i] = trait
-            if (assets[i].type == TraitType.BACKGROUND) {
-                mint = mashupTrait.mint
-            }
-        } else if (mint != mashupTrait.mint) {
-            mint = mashupTrait.mint
-        } else {
-            assets[i] = assets[i].copy(url = null)
-            if (assets[i].type == TraitType.BACKGROUND) {
-                mint = null
+        if (assetIndex != -1) {
+            if (assets[assetIndex].url != trait.url) {
+                assets[assetIndex] = trait
+                if (trait.type == TraitType.BACKGROUND) mint = mashupTrait.mint
+            } else {
+                assets[assetIndex] = assets[assetIndex].copy(url = null)
+                if (trait.type == TraitType.BACKGROUND) mint = null
             }
         }
-
-        mashupUiState.value =
-            mashupUiState.value.copy(
-                mashupDetails = mashupUiState.value.mashupDetails.copy(
-                    assets = assets,
-                    mint = mint
-                )
-            )
-    }
-
-    fun onSave() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val res = mashupUiState.value.let { uiState ->
-                if (uiState.wallet.isNullOrEmpty())
-                    return@launch
-
-                mashitRepo.saveMashup(
-                    wallet = uiState.wallet,
-                    mashupDetails = uiState.mashupDetails
-                )
-            }
-
-            mashupUiState.value = mashupUiState.value.copy(
-                dialogContent = when {
-                    res?.success == true -> DialogContent(
-                        title = "Mashup Saved",
-                        text = "Enjoy sharing it with friends"
-                    )
-
-                    else -> DialogContent(
-                        title = "Save Error",
-                        text = "Please try again later"
-                    )
-                }
-            )
-        }
-    }
-
-    fun randomizeMashup(mashupTraits: List<MashupTrait>) {
-        saveStateForUndo()
-
-        val mint = mashupTraits.firstOrNull { it.trait.type == TraitType.BACKGROUND }?.mint
-        val traits = mashupTraits.map { it.trait }
 
         mashupUiState.value = mashupUiState.value.copy(
-            mashupDetails = mashupUiState.value.mashupDetails.copy(assets = traits, mint = mint)
+            mashupDetails = mashupUiState.value.mashupDetails.copy(
+                assets = assets,
+                mint = mint
+            )
         )
     }
 
+    fun onRandom() {
+        if (mashupUiState.value.nfts.isNotEmpty()) {
+            recordStateForUndo()
 
-    fun onColorTypeSelect(colorType: ColorType) {
-        mashupUiState.value = mashupUiState.value.copy(selectedColorType = colorType)
+            val randomAssets = TraitType.entries.map { type ->
+                val available = TraitsHelper.getTraitsByType(mashupUiState.value.nfts)[type]
+                if (type in listOf(
+                        TraitType.BACKGROUND,
+                        TraitType.EYES,
+                        TraitType.BOTTOM,
+                        TraitType.UPPER,
+                        TraitType.HEAD
+                    )
+                ) {
+                    available?.randomOrNull() ?: MashupTrait(Trait(type, null), "")
+                } else {
+                    if ((0..1).random() == 1) available?.randomOrNull() ?: MashupTrait(
+                        Trait(
+                            type,
+                            null
+                        ), ""
+                    )
+                    else MashupTrait(Trait(type, null), "")
+                }
+            }
+
+            val mint = randomAssets.firstOrNull { it.trait.type == TraitType.BACKGROUND }?.mint
+            mashupUiState.value = mashupUiState.value.copy(
+                mashupDetails = mashupUiState.value.mashupDetails.copy(
+                    assets = randomAssets.map { it.trait },
+                    mint = mint
+                )
+            )
+        }
     }
 
-    // Colors
-
     fun onColorChange(color: Color) {
-        saveStateForUndo()
         val hex = "#" + color.toHexString()
-        mashupUiState.value =
-            mashupUiState.value.copy(
-                colors =
-                    when (mashupUiState.value.selectedColorType) {
-                        ColorType.BASE -> mashupUiState.value.colors.copy(base = hex)
-                        ColorType.EYES -> mashupUiState.value.colors.copy(eyes = hex)
-                        ColorType.HAIR -> mashupUiState.value.colors.copy(hair = hex)
-                    }
-            )
+        val currentColors = mashupUiState.value.colors
+
+        mashupUiState.value = mashupUiState.value.copy(
+            colors = when (mashupUiState.value.selectedColorType) {
+                ColorType.BASE -> currentColors.copy(base = hex)
+                ColorType.EYES -> currentColors.copy(eyes = hex)
+                ColorType.HAIR -> currentColors.copy(hair = hex)
+            }
+        )
     }
 
     fun onColorsSave() {
-        saveStateForUndo()
+        recordStateForUndo()
         mashupUiState.value = mashupUiState.value.copy(
             mashupDetails = mashupUiState.value.mashupDetails.copy(
                 colors = mashupUiState.value.colors
@@ -356,39 +229,109 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onColorsReset() {
-        saveStateForUndo()
         mashupUiState.value = mashupUiState.value.copy(
             colors = mashupUiState.value.mashupDetails.colors
         )
     }
 
-    // Image type
+    // --- Repository & Flow Observers ---
+
+    private fun observeWallet() {
+        viewModelScope.launch(Dispatchers.IO) {
+            walletFlow.distinctUntilChanged().collect { prefs ->
+                val wallet = prefs.wallet
+
+                if (!wallet.isNullOrEmpty()) {
+                    mashupUiState.value = mashupUiState.value.copy(wallet = wallet)
+                    val initialMashup = collectionRepo.getMashup(wallet)
+                    mashupUiState.value =
+                        mashupUiState.value.copy(mashupDetails = initialMashup)
+                    undoStack.clear()
+                    redoStack.clear()
+                    collectionRepo.updateOwnedData(wallet)
+                } else {
+                    mashupUiState.value = mashupUiState.value.copy(wallet = null)
+                    collectionRepo.clearOwned()
+                }
+            }
+        }
+    }
+
+    private fun observeCollection() {
+        viewModelScope.launch(Dispatchers.IO) {
+            collectionFlow.distinctUntilChanged().collect { collection ->
+                mashupUiState.value = mashupUiState.value.copy(nfts = collection.fromEntities())
+            }
+        }
+    }
+
+    // --- Helper UI Methods ---
+
+    fun onCategorySelect(scope: CoroutineScope, state: LazyGridState, selectedCategory: TraitType) {
+        mashupUiState.value = mashupUiState.value.copy(selectedCategory = selectedCategory)
+        scope.launch { state.scrollToItem(0) }
+    }
+
+    fun onColorTypeSelect(colorType: ColorType) {
+        mashupUiState.value = mashupUiState.value.copy(selectedColorType = colorType)
+    }
+
+    fun onSave() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val uiState = mashupUiState.value
+            if (uiState.wallet.isNullOrEmpty()) return@launch
+
+            val res = mashitRepo.saveMashup(
+                wallet = uiState.wallet,
+                mashupDetails = uiState.mashupDetails
+            )
+
+            mashupUiState.value = mashupUiState.value.copy(
+                dialogContent = if (res?.success == true) {
+                    DialogContent(
+                        title = "Mashup Saved",
+                        text = "Enjoy sharing it with friends"
+                    )
+                } else {
+                    DialogContent(title = "Save Error", text = "Please try again later")
+                }
+            )
+        }
+    }
 
     fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = imageTypeRepo.getImageType(url)?.type
-            withContext(Dispatchers.Main) {
-                onResult.invoke(result)
-            }
+            withContext(Dispatchers.Main) { onResult(result) }
         }
     }
 
     fun setImageType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
-            val entity = ImageTypeEntity(url, imageType)
-            imageTypeRepo.insertImageType(entity)
+            imageTypeRepo.insertImageType(ImageTypeEntity(url, imageType))
         }
     }
 
-    // Download
-
     fun onImageSave(context: Context, downloadType: DownloadImageType) {
         mashupUiState.value.wallet?.let { wallet ->
-            DownloadHelper.startImageDownload(
-                wallet = wallet,
-                imageType = downloadType.type,
-                context = context
-            )
+            DownloadHelper.startImageDownload(wallet, downloadType.type, context)
+        }
+    }
+
+    fun processDialogIntent(intent: DialogIntent) {
+        when (intent) {
+            is DialogIntent.Clear -> mashupUiState.value =
+                mashupUiState.value.copy(dialogContent = null)
+
+            is DialogIntent.SetContent -> mashupUiState.value =
+                mashupUiState.value.copy(dialogContent = intent.content)
+        }
+    }
+
+    fun processImageIntent(intent: ImageIntent) {
+        when (intent) {
+            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
         }
     }
 }

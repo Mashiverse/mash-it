@@ -16,31 +16,31 @@ import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ColorSelectAction
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 
 @Composable
-fun LeftPanel(processMashupIntent: (ActionsIntent) -> Unit) {
+fun LeftPanel(processActionsIntent: (ActionsIntent) -> Unit) {
     Column {
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
-        ColorSelectActionButton(onColor = { processMashupIntent(ActionsIntent.OnColor) })
+        ColorSelectActionButton(onColor = { processActionsIntent(ActionsIntent.OnColor) })
 
         Spacer(modifier = Modifier.height(3 * SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Refresh,
-            onClick = { processMashupIntent(ActionsIntent.OnRandom) }
+            onClick = { processActionsIntent(ActionsIntent.OnRandom) }
         )
 
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Slideshow,
-            onClick = { processMashupIntent(ActionsIntent.OnPreview) },
+            onClick = { processActionsIntent(ActionsIntent.OnPreview) },
         )
 
         Spacer(modifier = Modifier.height(SmallPaddingSize))
 
         ActionButton(
             icon = Icons.Default.Delete,
-            onClick = { processMashupIntent(ActionsIntent.OnReset) },
+            onClick = { processActionsIntent(ActionsIntent.OnReset) },
         )
     }
 }

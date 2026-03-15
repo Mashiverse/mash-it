@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.times
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
@@ -40,8 +41,7 @@ fun ShopCategory(
     categoryName: String,
     categoryItems: LazyPagingItems<Nft>,
     selectId: (String) -> Unit,
-    getImageType: (String) -> ImageType?,
-    setImageType: (ImageType, String) -> Unit,
+    processImageIntent: (ImageIntent) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double, Boolean) -> Unit,
     onCategoryClose: () -> Unit
@@ -97,8 +97,7 @@ fun ShopCategory(
                     ShopItem(
                         nft = nft,
                         selectId = selectId,
-                        getImageType = getImageType,
-                        setImageType = setImageType,
+                        processImageIntent = processImageIntent,
                         getSoldQty = getSoldQty,
                         onMint = onMint,
                         imageWidth = imageWidth,

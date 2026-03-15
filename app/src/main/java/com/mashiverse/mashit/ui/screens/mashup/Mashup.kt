@@ -17,7 +17,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +38,6 @@ import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
@@ -57,8 +55,6 @@ import com.mashiverse.mashit.ui.theme.PaddingSize
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.TraitsHelper
-import kotlinx.coroutines.flow.map
-import timber.log.Timber
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +74,6 @@ fun Mashup(searchQuery: State<String>) {
 
     // Bottom Sheet States
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var isBottomSheet by remember { mutableStateOf(false) }
     val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val lazyGridState = rememberLazyGridState()
@@ -92,21 +87,20 @@ fun Mashup(searchQuery: State<String>) {
         mutableStateOf(mashupUiState.selectedColorType)
     }
 
-    var colorBuffer by remember(mashupUiState.mashupDetails) {
-        mutableStateOf(mashupUiState.mashupDetails.colors)
+
+    val currentColor = remember(selectedColorType, mashupUiState.colors) {
+        when (selectedColorType) {
+            ColorType.BASE -> mashupUiState.colors.base
+            ColorType.EYES -> mashupUiState.colors.eyes
+            ColorType.HAIR -> mashupUiState.colors.hair
+        }
     }
 
-    val selectedCategory by remember(mashupUiState.selectedCategory) {
-        mutableStateOf(mashupUiState.selectedCategory)
-    }
-
-    val currentColorHex by remember(selectedColorType, colorBuffer) {
-        derivedStateOf {
-            when (selectedColorType) {
-                ColorType.BASE -> colorBuffer.base
-                ColorType.EYES -> colorBuffer.eyes
-                ColorType.HAIR -> colorBuffer.hair
-            }
+    val previousColor = remember(mashupUiState.mashupDetails, selectedColorType) {
+        when (selectedColorType) {
+            ColorType.BASE -> mashupUiState.mashupDetails.colors.base
+            ColorType.EYES -> mashupUiState.mashupDetails.colors.eyes
+            ColorType.HAIR -> mashupUiState.mashupDetails.colors.hair
         }
     }
 
@@ -142,7 +136,7 @@ fun Mashup(searchQuery: State<String>) {
     ) {
         derivedStateOf {
             val traits =
-                TraitsHelper.getTraitsByType(mashupUiState.nfts)[mashupUiState.selectedCategory]
+                TraitsHelper.getTraitsByType(nfts)[mashupUiState.selectedCategory]
                     ?: emptyList()
 
             if (mashupUiState.selectedCategory != TraitType.BACKGROUND) {
@@ -164,15 +158,15 @@ fun Mashup(searchQuery: State<String>) {
                     .padding(horizontal = PaddingSize)
             ) {
                 MashupActions(
-                    mashupDetails = mashupUiState.mashupDetails.copy(colors = colorBuffer),
+                    mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),
                     modifier = Modifier
                         .height(min(compositeHeight, MaxMashiHolderHeight))
                         .width(min(compositeWidth, MaxMashiHolderWidth))
-                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) }
+                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) }
                         .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
                     holderWidth = compositeWidth,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                    processMashupIntent = { intent -> viewModel.processActionsIntent(intent) }
+                    processActionsIntent = { intent -> viewModel.processActionsIntent(intent) }
                 )
 
                 Column(
@@ -185,16 +179,16 @@ fun Mashup(searchQuery: State<String>) {
                     Spacer(Modifier.height(SmallPaddingSize))
 
                     MashupCategories(
-                        onCategorySelect = {
+                        onCategorySelect = { category ->
                             viewModel.processMashupIntent(
                                 MashupIntent.OnCategorySelect(
                                     scope = scope,
                                     state = lazyGridState,
-                                    selectedCategory = selectedCategory
+                                    selectedCategory = category
                                 )
                             )
                         },
-                        selectedCategory = selectedCategory
+                        selectedCategory = mashupUiState.selectedCategory
                     )
 
                     Spacer(Modifier.height(SmallPaddingSize))
@@ -213,10 +207,11 @@ fun Mashup(searchQuery: State<String>) {
         }
 
         // COLOR SHEET
-        if (isBottomSheet) {
+        if (mashupUiState.isColorChange) {
             ColorSheet(
                 sheetState = sheetState,
-                color = currentColorHex.toHexColor(),
+                initialColor = previousColor.toHexColor(),
+                color = currentColor.toHexColor(),
                 scope = scope,
                 selectedColorType = selectedColorType,
                 processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
@@ -230,7 +225,7 @@ fun Mashup(searchQuery: State<String>) {
                 closeBottomShit = { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) },
                 sheetState = previewSheetState,
                 scope = scope,
-                mashupDetails = mashupUiState.mashupDetails.copy(colors = colorBuffer),
+                mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 height = height
             )

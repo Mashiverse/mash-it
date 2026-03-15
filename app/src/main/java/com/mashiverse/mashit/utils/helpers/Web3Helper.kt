@@ -34,17 +34,17 @@ object Web3Helper {
     private val web3j =
         Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
 
-    // --- Coinbase SDK Coroutine Bridge ---
+    // --- Coinbase SDK Batch Bridge ---
 
-    private suspend fun CoinbaseWalletSDK.requestAction(action: Action): String? =
+    private suspend fun CoinbaseWalletSDK.requestActions(actions: List<Action>): List<String?> =
         suspendCancellableCoroutine { continuation ->
-            this.makeRequest(RequestContent.Request(listOf(action))) { result ->
-                result.onSuccess { actions ->
-                    val hash = (actions.firstOrNull() as? ActionResult.Result)?.value
-                    if (continuation.isActive) continuation.resume(hash)
+            this.makeRequest(RequestContent.Request(actions)) { result ->
+                result.onSuccess { actionResults ->
+                    val hashes = actionResults.map { (it as? ActionResult.Result)?.value }
+                    if (continuation.isActive) continuation.resume(hashes)
                 }
                 result.onFailure {
-                    if (continuation.isActive) continuation.resume(null)
+                    if (continuation.isActive) continuation.resume(emptyList())
                 }
             }
         }
@@ -132,8 +132,6 @@ object Web3Helper {
         }
     }
 
-    // --- Gas & Nonce Helpers ---
-
     private suspend fun getNonce(fromAddress: String): BigInteger = withContext(Dispatchers.IO) {
         web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING)
             .send().transactionCount
@@ -170,16 +168,7 @@ object Web3Helper {
         }
     }
 
-    private suspend fun waitForReceipt(txHash: String): Boolean = withContext(Dispatchers.IO) {
-        repeat(30) {
-            val receipt = web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt
-            if (receipt.isPresent) return@withContext receipt.get().isStatusOK
-            delay(4000)
-        }
-        false
-    }
-
-    // --- Main Optimized Action ---
+    // --- The Refactored Mint Action (Batched) ---
 
     suspend fun mint(
         client: CoinbaseWalletSDK,
@@ -190,104 +179,60 @@ object Web3Helper {
     ): Boolean = withContext(Dispatchers.IO) {
         try {
             val lid = BigInteger(listingId)
-
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
 
+            // 1. Validations
             if (getUsdcBalance(fromAddress) < usdcPrice) {
-                onMintFailure.invoke(
-                    DialogContent(
-                        title = "Insufficient balance",
-                        text = "Please top up the wallet to continue"
-                    )
-                )
+                onMintFailure(DialogContent(title = "Insufficient balance", text = "Please top up the wallet"))
                 return@withContext false
             }
 
             if (!canUserMint(lid, fromAddress)) {
-                onMintFailure.invoke(
-                    DialogContent(
-                        title = "Limit Reached",
-                        text = "You've reached the limit for the listing"
-                    )
-                )
+                onMintFailure(DialogContent(title = "Limit Reached", text = "You've reached the limit"))
                 return@withContext false
             }
 
-            val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, MAX_UINT256)
-            val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
+            val actions = mutableListOf<Action>()
+            var nonce = getNonce(fromAddress)
 
-            val action = createTxAction(fromAddress, USDC_ADDRESS, approveData, gas)
-            val txHash = client.requestAction(action)
-
-            if (txHash == null || !waitForReceipt(txHash)) {
-                onMintFailure.invoke(
-                    DialogContent(
-                        title = "Process Error",
-                        text = "Something went wrong"
-                    )
-                )
-                return@withContext false
+            // 2. Check Allowance and prepare Approve Action if needed
+            if (getUsdcAllowance(fromAddress) < usdcPrice) {
+                val approveData = encodeERC20Approve(MARKETPLACE_ADDRESS, MAX_UINT256)
+                val gas = calculateGasEstimate(fromAddress, USDC_ADDRESS, approveData)
+                actions.add(createTxAction(fromAddress, USDC_ADDRESS, approveData, gas, nonce))
+                nonce = nonce.add(BigInteger.ONE)
             }
 
-            return@withContext executeMint(client, listingId, fromAddress, onMintFailure)
+            // 3. Prepare Mint Action
+            val mintData = encodeBuyAutoURIData(lid, fromAddress)
+            val mintGas = calculateGasEstimate(fromAddress, MARKETPLACE_ADDRESS, mintData)
+            actions.add(createTxAction(fromAddress, MARKETPLACE_ADDRESS, mintData, mintGas, nonce))
 
-        } catch (e: Exception) {
-            onMintFailure.invoke(
-                DialogContent(
-                    title = "Process Error",
-                    text = "Something went wrong"
-                )
-            )
-            false
-        }
-    }
+            // 4. Send Batch (Single Wallet Popup)
+            val txHashes = client.requestActions(actions)
 
-    suspend fun executeMint(
-        client: CoinbaseWalletSDK,
-        listingId: String,
-        fromAddress: String,
-        onMintFailure: (DialogContent) -> Unit
-    ): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val mintData = encodeBuyAutoURIData(BigInteger(listingId), fromAddress)
-            val gas = calculateGasEstimate(fromAddress, MARKETPLACE_ADDRESS, mintData)
-
-            val action = createTxAction(fromAddress, MARKETPLACE_ADDRESS, mintData, gas)
-            val txHash = client.requestAction(action)
-
-            if (txHash != null) {
-                onMintFailure.invoke(
-                    DialogContent(
-                        title = "Success!",
-                        text = "You've just minted new Mashi!"
-                    )
-                )
+            return@withContext if (txHashes.isNotEmpty() && txHashes.all { it != null }) {
+                onMintFailure(DialogContent(title = "Success!", text =  "You've just minted new Mashi!"))
                 true
             } else {
-                onMintFailure.invoke(
-                    DialogContent(
-                        title = "Process Error",
-                        text = "Something went wrong"
-                    )
-                )
+                onMintFailure(DialogContent(title = "Process Error", text = "Something went wrong"))
                 false
             }
+
         } catch (e: Exception) {
-            onMintFailure.invoke(
-                DialogContent(
-                    title = "Process Error",
-                    text = "Something went wrong"
-                )
-            )
+            onMintFailure(DialogContent(title = "Process Error", text = "Something went wrong"))
             false
         }
     }
 
-    private suspend fun createTxAction(
+    // --- Parameters Kept Identical to original Web3JsonRPC ---
+
+    private fun createTxAction(
         from: String,
         to: String,
         data: String,
-        gas: GasEstimate
+        gas: GasEstimate,
+        nonce: BigInteger
     ): Action =
         Web3JsonRPC.SendTransaction(
             fromAddress = from,
@@ -295,11 +240,19 @@ object Web3Helper {
             weiValue = "0",
             data = data,
             chainId = CHAIN_ID,
-            nonce = getNonce(from).toInt(),
+            nonce = nonce.toInt(),
             gasLimit = gas.gasLimit,
             maxFeePerGas = gas.maxFeePerGas,
             maxPriorityFeePerGas = gas.maxPriorityFeePerGas,
             gasPriceInWei = null,
             actionSource = null
         ).action()
+
+    // Unused in batch mode but kept for compatibility if needed elsewhere
+    suspend fun executeMint(
+        client: CoinbaseWalletSDK,
+        listingId: String,
+        fromAddress: String,
+        onMintFailure: (DialogContent) -> Unit
+    ): Boolean = mint(client, fromAddress, listingId, 0.0, onMintFailure)
 }
