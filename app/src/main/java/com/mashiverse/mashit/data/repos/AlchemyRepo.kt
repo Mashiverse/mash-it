@@ -7,7 +7,7 @@ import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.MASHI_ADDRESS
 import com.mashiverse.mashit.utils.helpers.parseName
-import com.mashiverse.mashit.utils.helpers.toFilebaseHttp
+import com.mashiverse.mashit.utils.helpers.fromIpfsScheme
 import javax.inject.Inject
 
 class AlchemyRepo @Inject constructor(
@@ -37,7 +37,7 @@ class AlchemyRepo @Inject constructor(
                     val description = metadata.description
 
                     val assets = metadata.assets
-                    val compositeUrl = metadata.image.toFilebaseHttp()
+                    val compositeUrl = metadata.image.fromIpfsScheme()
                     val traits = assets.toTraits()
 
                     val currentOwned = Owned(

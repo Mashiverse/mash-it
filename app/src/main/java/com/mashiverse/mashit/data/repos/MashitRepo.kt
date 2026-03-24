@@ -5,12 +5,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.mashup.save.MashupColors
 import com.mashiverse.mashit.data.models.mashup.save.MashupData
-import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.save.MashupLayer
 import com.mashiverse.mashit.data.models.mashup.save.SaveMashupReq
-import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
@@ -18,6 +18,8 @@ import com.mashiverse.mashit.data.models.nft.mappers.toNft
 import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
+import com.mashiverse.mashit.utils.helpers.toFilebaseUri
+import com.mashiverse.mashit.utils.helpers.toIpfsUri
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -76,10 +78,10 @@ class MashitRepo @Inject constructor(
         try {
             val listingDto = mashitApi.getShopItem(id)
             return listingDto.toNft()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return Nft(
                 name = "Unknown",
-                author ="Unknown",
+                author = "Unknown",
                 compositeUrl = "",
                 description = null
             )
@@ -93,10 +95,10 @@ class MashitRepo @Inject constructor(
         val assets = mashupDetails.assets
         val layers = assets
             .filter { it.url != null }
-            .map {
+            .map { asset ->
                 MashupLayer(
-                    name = it.type.name.lowercase(),
-                    image = it.url!!.replace("https://ipfs.filebase.","https://ipfs.")
+                    name = asset.type.name.lowercase(),
+                    image = asset.url!!.toIpfsUri()
                 )
             }
 
@@ -106,7 +108,6 @@ class MashitRepo @Inject constructor(
             eyes = colors.eyes,
             hair = colors.hair
         )
-
         val mashupData = MashupData(
             colors = mashupColors,
             layers = layers
@@ -116,13 +117,9 @@ class MashitRepo @Inject constructor(
             walletAddress = wallet,
             mashup = mashupData
         )
-
-        Timber.tag("GG").d(req.toString())
-
         return try {
             mashitApi.saveMashup(request = req)
-        } catch (e: Exception) {
-            Timber.tag("Test").d(e)
+        } catch (_: Exception) {
             null
         }
     }
@@ -146,7 +143,7 @@ class MashitRepo @Inject constructor(
                 val i = traits.indexOf(assetToUpdate)
                 traits[i] = Trait(
                     type = TraitType.valueOf(asset.name.uppercase()),
-                    url = asset.image.replace("https://ipfs.", "https://ipfs.filebase.")
+                    url = asset.image.toFilebaseUri()
                 )
             }
 
@@ -160,8 +157,7 @@ class MashitRepo @Inject constructor(
                 assets = traits,
                 colors = colors
             )
-        } catch (e: Exception) {
-            Timber.tag("Test").d(e)
+        } catch (_: Exception) {
             return MashupDetails()
         }
     }
