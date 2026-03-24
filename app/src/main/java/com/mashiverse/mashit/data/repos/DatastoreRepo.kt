@@ -19,7 +19,7 @@ class DatastoreRepo @Inject constructor(
     private val datastore: DataStore<Preferences>
 ) {
 
-    val walletPreferencesFlow: Flow<WalletPreferences> =
+    val walletFlow: Flow<WalletPreferences> =
         datastore.data
             .catch { e ->
                 if (e is IOException) {
@@ -34,7 +34,7 @@ class DatastoreRepo @Inject constructor(
                 )
             }
 
-    val firstLaunchPreferencesFlow: Flow<Boolean> =
+    val firstLaunchFlow: Flow<Boolean> =
         datastore.data
             .catch { e ->
                 if (e is IOException) {
@@ -47,7 +47,7 @@ class DatastoreRepo @Inject constructor(
                 preferences[PreferencesKeys.FIRST_LAUNCH] ?: true
             }
 
-    val notificationsPreferencesFlow: Flow<Boolean> =
+    val notificationsFlow: Flow<Boolean> =
         datastore.data
             .catch { e ->
                 if (e is IOException) {
@@ -58,6 +58,19 @@ class DatastoreRepo @Inject constructor(
             }
             .map { preferences ->
                 preferences[PreferencesKeys.NOTIFICATIONS] ?: false
+            }
+
+    val dynamicThemeFlow: Flow<Boolean> =
+        datastore.data
+            .catch { e ->
+                if (e is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    Timber.tag("Test").d(e)
+                }
+            }
+            .map { preferences ->
+                preferences[PreferencesKeys.DYNAMIC_UI] ?: false
             }
 
     suspend fun updateWallet(wallet: String) {
@@ -81,6 +94,12 @@ class DatastoreRepo @Inject constructor(
     suspend fun updateNotifications(enabled: Boolean) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.NOTIFICATIONS] = enabled
+        }
+    }
+
+    suspend fun updateDynamicTheme(enabled: Boolean) {
+        datastore.edit { preferences ->
+            preferences[PreferencesKeys.DYNAMIC_UI] = enabled
         }
     }
 }

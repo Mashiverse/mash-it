@@ -22,8 +22,8 @@ import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
+import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -55,7 +55,7 @@ fun ProductInfoSection(
         fontSize = 14.sp
     )
 
-    Spacer(modifier = Modifier.height(PaddingSize))
+    Spacer(modifier = Modifier.height(Padding))
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -68,7 +68,7 @@ fun ProductInfoSection(
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+            Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
             Text(
                 text = "$soldQty/${productInfo.quantity} sold",

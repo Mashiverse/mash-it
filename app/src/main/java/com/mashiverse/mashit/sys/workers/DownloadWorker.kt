@@ -7,7 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.mashiverse.mashit.data.repos.MashiverseRepo
 import com.mashiverse.mashit.utils.helpers.ImageHelper
-import com.mashiverse.mashit.utils.helpers.NotificationHelper
+import com.mashiverse.mashit.utils.helpers.sys.NotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

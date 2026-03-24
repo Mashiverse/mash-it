@@ -16,7 +16,7 @@ import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.MashiHolderWidth
@@ -38,7 +38,7 @@ fun TraitHolder(
             processImageIntent = processImageIntent
         )
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(
             fontSize = 14.sp,

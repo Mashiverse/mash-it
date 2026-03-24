@@ -16,7 +16,7 @@ import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 
 @Composable
 fun Dialog(
@@ -35,7 +35,7 @@ fun Dialog(
                     contentDescription = null
                 )
 
-                Spacer(modifier = Modifier.width(ExtraSmallPaddingSize))
+                Spacer(modifier = Modifier.width(ExtraSmallPadding))
 
                 Text(text = dialogContent.title)
             }

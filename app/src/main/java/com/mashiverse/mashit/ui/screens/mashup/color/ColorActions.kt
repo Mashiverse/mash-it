@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ColorPreviewSize
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import com.mashiverse.mashit.utils.color.helpers.toRGB
@@ -94,7 +94,7 @@ fun ColorActions(modifier: Modifier = Modifier, changePreviewColor: (Color) -> U
                 height = 32.dp,
                 filterStrategy = rgbFilterStrategy
             )
-            Spacer(modifier = Modifier.width(SmallPaddingSize))
+            Spacer(modifier = Modifier.width(SmallPadding))
             ColorActionsField(
                 text = g.intValue.toString(),
                 onTextChange = { g.intValue = it.toIntOrNull() ?: 0 },
@@ -102,7 +102,7 @@ fun ColorActions(modifier: Modifier = Modifier, changePreviewColor: (Color) -> U
                 height = 32.dp,
                 filterStrategy = rgbFilterStrategy
             )
-            Spacer(modifier = Modifier.width(SmallPaddingSize))
+            Spacer(modifier = Modifier.width(SmallPadding))
             ColorActionsField(
                 text = b.intValue.toString(),
                 onTextChange = { b.intValue = it.toIntOrNull() ?: 0 },

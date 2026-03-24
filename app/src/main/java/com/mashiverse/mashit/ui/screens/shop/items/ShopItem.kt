@@ -25,7 +25,7 @@ import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
@@ -76,7 +76,7 @@ fun ShopItem(
             processImageIntent = processImageIntent
         )
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(
             text = if (nft.name.length > 20) {
@@ -86,11 +86,11 @@ fun ShopItem(
             }, fontSize = 14.sp, color = ContentAccentColor
         )
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(text = "by ${nft.author}", fontSize = 12.sp, color = ContentColor)
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(
             text = "$soldQty of ${productInfo?.quantity ?: -1} sold",
@@ -98,7 +98,7 @@ fun ShopItem(
             color = ContentColor
         )
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         BuyButton(
             text = when {

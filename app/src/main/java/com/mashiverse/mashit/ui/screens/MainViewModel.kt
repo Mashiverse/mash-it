@@ -16,7 +16,6 @@ import com.mashiverse.mashit.data.repos.Web3Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.web3j.abi.datatypes.Bool
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +23,8 @@ class MainViewModel @Inject constructor(
     private val web3Repo: Web3Repo,
     private val dataStoreRepo: DatastoreRepo,
 ) : ViewModel() {
-    val walletPreferences = dataStoreRepo.walletPreferencesFlow
-    val firstLaunchPreferences = dataStoreRepo.firstLaunchPreferencesFlow
+    val walletPreferences = dataStoreRepo.walletFlow
+    val firstLaunchPreferences = dataStoreRepo.firstLaunchFlow
 
     private val _dialogContent = mutableStateOf<DialogContent?>(null)
     val dialogContent: State<DialogContent?> = _dialogContent

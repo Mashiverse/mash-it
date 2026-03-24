@@ -11,9 +11,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataStoreRepo: DatastoreRepo,
+    private val datastoreRepo: DatastoreRepo
 ) : ViewModel() {
-    val notificationsPreferences = dataStoreRepo.notificationsPreferencesFlow
+    val notificationsFlow = datastoreRepo.notificationsFlow
+    val dynamicThemeFlow = datastoreRepo.dynamicThemeFlow
 
     fun updateNotifications(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -23,7 +24,13 @@ class SettingsViewModel @Inject constructor(
                 FirebaseMessaging.getInstance().unsubscribeFromTopic("all_users")
             }
 
-            dataStoreRepo.updateNotifications(enabled)
+            datastoreRepo.updateNotifications(enabled)
+        }
+    }
+
+    fun updateDynamicTheme(enabled: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            datastoreRepo.updateDynamicTheme(enabled)
         }
     }
 }

@@ -30,8 +30,8 @@ import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.PaddingSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -45,7 +45,7 @@ fun ShopCategory(
     onCategoryClose: () -> Unit
 ) {
     val config = LocalConfiguration.current
-    val imageWidth = (config.screenWidthDp.dp - 2 * PaddingSize - SmallPaddingSize) / 2
+    val imageWidth = (config.screenWidthDp.dp - 2 * Padding - SmallPadding) / 2
     val imageHeight = (imageWidth / 3) * 4
 
     val appendState = categoryItems.loadState.append
@@ -83,8 +83,8 @@ fun ShopCategory(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-            verticalArrangement = Arrangement.spacedBy(PaddingSize)
+            horizontalArrangement = Arrangement.spacedBy(SmallPadding),
+            verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             items(
                 count = categoryItems.itemCount,

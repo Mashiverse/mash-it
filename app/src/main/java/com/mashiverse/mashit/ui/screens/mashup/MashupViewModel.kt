@@ -47,7 +47,7 @@ class MashupViewModel @Inject constructor(
         private set
     private val stackManager = StackManager<MashupDetails>()
 
-    private val walletFlow = dataStoreRepo.walletPreferencesFlow
+    private val walletFlow = dataStoreRepo.walletFlow
     private val collectionFlow = collectionRepo.collectionFlow
 
     init {

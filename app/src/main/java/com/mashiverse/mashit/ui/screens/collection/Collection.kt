@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
@@ -41,8 +40,8 @@ import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
-import com.mashiverse.mashit.ui.theme.PaddingSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.flow.map
 
 
@@ -105,23 +104,23 @@ fun Collection(searchQuery: State<String>) {
     }
 
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     if (walletPreferences.value.wallet != null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = PaddingSize),
+                .padding(horizontal = Padding),
         ) {
             CategoryHeader("Collection")
 
-            Spacer(modifier = Modifier.height(SmallPaddingSize))
+            Spacer(modifier = Modifier.height(SmallPadding))
 
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                verticalArrangement = Arrangement.spacedBy(SmallPadding),
+                horizontalArrangement = Arrangement.spacedBy(SmallPadding),
                 columns = GridCells.Fixed(3)
             ) {
                 items(ownedNfts.size) { i ->

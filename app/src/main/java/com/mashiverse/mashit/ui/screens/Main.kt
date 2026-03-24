@@ -47,7 +47,7 @@ import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
-import com.mashiverse.mashit.utils.helpers.PermissionsHelper
+import com.mashiverse.mashit.utils.helpers.sys.PermissionsHelper
 import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
@@ -57,7 +57,6 @@ fun Main(navController: NavHostController) {
     val viewModel = hiltViewModel<MainViewModel>()
     val focusManager = LocalFocusManager.current
     val ctx = LocalContext.current
-    val activity = LocalActivity.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

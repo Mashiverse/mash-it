@@ -28,7 +28,7 @@ import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
 import com.mashiverse.mashit.ui.theme.ContentTextSize
 import com.mashiverse.mashit.ui.theme.SmallIconSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun CreatePostButton(modifier: Modifier = Modifier) {
@@ -45,7 +45,7 @@ fun CreatePostButton(modifier: Modifier = Modifier) {
             containerColor = Surface,
             contentColor = ContentColor
         ),
-        contentPadding = PaddingValues(horizontal = SmallPaddingSize),
+        contentPadding = PaddingValues(horizontal = SmallPadding),
         shape = ContentContainerShape
     ) {
         Row(

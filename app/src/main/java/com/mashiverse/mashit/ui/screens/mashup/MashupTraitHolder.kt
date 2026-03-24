@@ -17,7 +17,7 @@ import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 
 @Composable
@@ -50,7 +50,7 @@ fun MashupTraitHolder(
             mint = mashupTrait.mint
         )
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(
             text = avatarName,

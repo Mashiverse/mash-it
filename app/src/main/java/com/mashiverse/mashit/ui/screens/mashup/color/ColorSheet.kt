@@ -32,8 +32,8 @@ import com.mashiverse.mashit.ui.screens.components.picker.ColorPicker
 import com.mashiverse.mashit.ui.screens.components.picker.ColorSlideBar
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.PaddingSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
@@ -105,14 +105,14 @@ fun ColorSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height)
-                .padding(start = PaddingSize, end = PaddingSize, top = SmallPaddingSize)
+                .padding(start = Padding, end = Padding, top = SmallPadding)
         ) {
             ColorTypeSelector(
                 selectedColorType = selectedColorType,
                 processMashupIntent = processMashupIntent
             )
 
-            Spacer(modifier = Modifier.height(SmallPaddingSize))
+            Spacer(modifier = Modifier.height(SmallPadding))
 
             ColorPicker(
                 modifier = Modifier
@@ -134,7 +134,7 @@ fun ColorSheet(
                 onPickerSizeChange = { pickerSize = it }
             )
 
-            Spacer(modifier = Modifier.height(PaddingSize))
+            Spacer(modifier = Modifier.height(Padding))
 
             ColorSlideBar(
                 colors = Colors.gradientColors,
@@ -151,7 +151,7 @@ fun ColorSheet(
                 }
             )
 
-            Spacer(modifier = Modifier.height(PaddingSize))
+            Spacer(modifier = Modifier.height(Padding))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ColorActions(
@@ -160,7 +160,7 @@ fun ColorSheet(
                     changePreviewColor = changeColor
                 )
 
-                Spacer(modifier = Modifier.width(PaddingSize))
+                Spacer(modifier = Modifier.width(Padding))
 
                 ColorPreviewSection(
                     initialColor = initialColor,
@@ -168,7 +168,7 @@ fun ColorSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(PaddingSize))
+            Spacer(modifier = Modifier.height(Padding))
 
             ColorSheetActions(
                 scope = scope,
@@ -177,7 +177,7 @@ fun ColorSheet(
                 saveColors = saveColors
             )
 
-            Spacer(modifier = Modifier.height(SmallPaddingSize))
+            Spacer(modifier = Modifier.height(SmallPadding))
         }
     }
 }

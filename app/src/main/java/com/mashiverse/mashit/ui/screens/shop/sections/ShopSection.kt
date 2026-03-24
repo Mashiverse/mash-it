@@ -20,7 +20,7 @@ import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun ShopSection(
@@ -62,7 +62,7 @@ fun ShopSection(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize)
+            horizontalArrangement = Arrangement.spacedBy(SmallPadding)
         ) {
             val itemCount = minOf(sectionItems.itemCount, 20)
             items(count = itemCount) { index ->

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 
 @Composable
 fun CategoryHeader(title: String) {
@@ -19,10 +19,10 @@ fun CategoryHeader(title: String) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(text = title, fontWeight = FontWeight.Bold, color = ContentAccentColor)
 
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
     }
 }

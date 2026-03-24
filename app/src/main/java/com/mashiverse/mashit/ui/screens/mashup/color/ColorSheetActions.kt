@@ -17,9 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ColorCloseButtonBackground
-import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -54,7 +53,7 @@ fun ColorSheetActions(
             Text(text = "Cancel", fontSize = 14.sp)
         }
 
-        Spacer(modifier = Modifier.width(PaddingSize))
+        Spacer(modifier = Modifier.width(Padding))
 
         Button(
             modifier = Modifier

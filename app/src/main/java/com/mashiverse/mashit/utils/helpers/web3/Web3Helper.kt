@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.utils.helpers
+package com.mashiverse.mashit.utils.helpers.web3
 
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.coinbase.android.nativesdk.message.request.Action
@@ -9,7 +9,6 @@ import com.mashiverse.mashit.BuildConfig
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.minting.GasEstimate
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.web3j.abi.FunctionEncoder
@@ -183,12 +182,22 @@ object Web3Helper {
 
             // 1. Validations
             if (getUsdcBalance(fromAddress) < usdcPrice) {
-                onMintFailure(DialogContent(title = "Insufficient balance", text = "Please top up the wallet"))
+                onMintFailure(
+                    DialogContent(
+                        title = "Insufficient balance",
+                        text = "Please top up the wallet"
+                    )
+                )
                 return@withContext false
             }
 
             if (!canUserMint(lid, fromAddress)) {
-                onMintFailure(DialogContent(title = "Limit Reached", text = "You've reached the limit"))
+                onMintFailure(
+                    DialogContent(
+                        title = "Limit Reached",
+                        text = "You've reached the limit"
+                    )
+                )
                 return@withContext false
             }
 
@@ -212,7 +221,12 @@ object Web3Helper {
             val txHashes = client.requestActions(actions)
 
             return@withContext if (txHashes.isNotEmpty() && txHashes.all { it != null }) {
-                onMintFailure(DialogContent(title = "Success!", text =  "You've just minted new Mashi!"))
+                onMintFailure(
+                    DialogContent(
+                        title = "Success!",
+                        text = "You've just minted new Mashi!"
+                    )
+                )
                 true
             } else {
                 onMintFailure(DialogContent(title = "Process Error", text = "Something went wrong"))

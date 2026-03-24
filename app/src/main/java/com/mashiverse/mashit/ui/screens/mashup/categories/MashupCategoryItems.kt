@@ -17,8 +17,8 @@ import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
 import com.mashiverse.mashit.ui.theme.MaxShopCategoryItemWidth
 import com.mashiverse.mashit.ui.theme.MinShopCategoryItemWidth
-import com.mashiverse.mashit.ui.theme.PaddingSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlin.math.floor
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -35,14 +35,14 @@ fun MashupCategoryItems(
 
     // 1. Calculate how many columns we CAN fit using the Minimum width
     // Formula: (Available Width + Gap) / (Min Width + Gap)
-    val availableWidth = screenWidth - (2 * PaddingSize)
-    val columns = floor((availableWidth + SmallPaddingSize) / (MinShopCategoryItemWidth + SmallPaddingSize))
+    val availableWidth = screenWidth - (2 * Padding)
+    val columns = floor((availableWidth + SmallPadding) / (MinShopCategoryItemWidth + SmallPadding))
         .toInt()
         .coerceAtLeast(1)
 
     // 2. Calculate the dynamic width for each item to fill the row perfectly
     // This ensures no awkward empty space on the right
-    val totalGaps = (columns - 1) * SmallPaddingSize
+    val totalGaps = (columns - 1) * SmallPadding
     val calculatedWidth = (availableWidth - totalGaps) / columns
 
     // 3. Clamp the width and height between your defined Min and Max
@@ -55,8 +55,8 @@ fun MashupCategoryItems(
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
         state = lazyGridState,
-        verticalArrangement = Arrangement.spacedBy(PaddingSize),
-        horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+        verticalArrangement = Arrangement.spacedBy(Padding),
+        horizontalArrangement = Arrangement.spacedBy(SmallPadding),
         columns = GridCells.Fixed(columns)
     ) {
         items(traits.size) { i ->

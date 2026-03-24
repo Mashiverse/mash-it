@@ -19,7 +19,7 @@ import androidx.navigation.NavHostController
 import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -37,10 +37,10 @@ fun NavDrawer(
         drawerShape = RectangleShape,
         modifier = modifier.width(min((config.screenWidthDp * 0.80), 328.0).dp),
     ) {
-        Spacer(modifier = Modifier.height(PaddingSize))
+        Spacer(modifier = Modifier.height(Padding))
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(PaddingSize)
+            verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             CreatePostButton(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
 

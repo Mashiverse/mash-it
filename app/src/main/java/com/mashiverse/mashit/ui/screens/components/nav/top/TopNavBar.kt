@@ -30,7 +30,7 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
 import com.mashiverse.mashit.ui.theme.NavBarHeight
 import com.mashiverse.mashit.ui.theme.SmallIconSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -94,7 +94,7 @@ fun TopNavBar(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(SmallPaddingSize))
+                Spacer(modifier = Modifier.width(SmallPadding))
 
                 AnimatedVisibility(
                     visible = !isSearch,

@@ -15,18 +15,18 @@ import com.mashiverse.mashit.data.states.intents.ActionsIntent
 import com.mashiverse.mashit.data.models.image.DownloadType
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ActionButton
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.SaveActionButton
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
     val context = LocalContext.current
 
     Column {
-        Spacer(modifier = Modifier.height(SmallPaddingSize))
+        Spacer(modifier = Modifier.height(SmallPadding))
 
         SaveActionButton(onSave = { processActionsIntent(ActionsIntent.OnSave) })
 
-        Spacer(modifier = Modifier.height(3 * SmallPaddingSize))
+        Spacer(modifier = Modifier.height(3 * SmallPadding))
 
         ActionButton(
             icon = Icons.Default.Download,
@@ -40,7 +40,7 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
             }
         )
 
-        Spacer(modifier = Modifier.height(SmallPaddingSize))
+        Spacer(modifier = Modifier.height(SmallPadding))
 
         ActionButton(
             icon = Icons.Default.Download,
@@ -55,14 +55,14 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
             isAnimated = true
         )
 
-        Spacer(modifier = Modifier.height(SmallPaddingSize))
+        Spacer(modifier = Modifier.height(SmallPadding))
 
         ActionButton(
             icon = Icons.Default.Redo,
             onClick = { processActionsIntent(ActionsIntent.OnRedo) }
         )
 
-        Spacer(modifier = Modifier.height(SmallPaddingSize))
+        Spacer(modifier = Modifier.height(SmallPadding))
 
         ActionButton(
             icon = Icons.Default.Undo,

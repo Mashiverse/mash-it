@@ -32,9 +32,9 @@ import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallIconSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -51,7 +51,7 @@ fun MashupSheet(
 ) {
     val config = LocalConfiguration.current
     val mashiHolderWidth =
-        (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3 - 0.2.dp
+        (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3 - 0.2.dp
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     ModalBottomSheet(
@@ -67,7 +67,7 @@ fun MashupSheet(
         Column(
             modifier = Modifier
                 .height(height)
-                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize)
+                .padding(start = Padding, end = Padding, top = Padding)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -93,7 +93,7 @@ fun MashupSheet(
                 }
             }
 
-            Spacer(modifier = Modifier.height(PaddingSize))
+            Spacer(modifier = Modifier.height(Padding))
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
@@ -104,8 +104,8 @@ fun MashupSheet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight(),
-                            verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                            horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                            verticalArrangement = Arrangement.spacedBy(SmallPadding),
+                            horizontalArrangement = Arrangement.spacedBy(SmallPadding),
                             maxItemsInEachRow = 3
                         ) {
                             it.forEach { i ->

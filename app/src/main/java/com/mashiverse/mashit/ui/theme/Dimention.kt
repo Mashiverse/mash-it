@@ -25,9 +25,9 @@ val MaxShopCategoryItemHeight = (600 * 0.42).dp
 val ColorPreviewSize = 80.dp
 
 // Paddings
-val PaddingSize = 16.dp
-val ExtraSmallPaddingSize = 4.dp
-val SmallPaddingSize = 8.dp
+val Padding = 16.dp
+val ExtraSmallPadding = 4.dp
+val SmallPadding = 8.dp
 val LargePaddingSize = 32.dp
 val DrawerPaddingSize = 12.dp
 

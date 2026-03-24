@@ -34,9 +34,9 @@ import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentTextSize
 import com.mashiverse.mashit.ui.theme.IconsShape
 import com.mashiverse.mashit.ui.theme.LargePaddingSize
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallIconSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 private fun PinnedArtist() {
@@ -46,7 +46,7 @@ private fun PinnedArtist() {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.width(PaddingSize))
+        Spacer(modifier = Modifier.width(Padding))
 
         Box(
             modifier = Modifier
@@ -55,7 +55,7 @@ private fun PinnedArtist() {
                 .background(ContentAccentColor)
         )
 
-        Spacer(modifier = Modifier.width(SmallPaddingSize))
+        Spacer(modifier = Modifier.width(SmallPadding))
 
         Text(
             text = "Ervindas rocks!",
@@ -94,7 +94,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(PaddingSize))
+            Spacer(modifier = Modifier.width(Padding))
 
             Text(
                 text = "Pinned Artists",
@@ -130,7 +130,7 @@ fun PinnedArtists(modifier: Modifier = Modifier) {
             exit = shrinkVertically()
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(PaddingSize)
+                verticalArrangement = Arrangement.spacedBy(Padding)
             ) {
                 repeat(6) {
                     PinnedArtist()

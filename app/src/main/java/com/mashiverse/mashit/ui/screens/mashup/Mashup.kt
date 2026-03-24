@@ -47,12 +47,12 @@ import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
-import com.mashiverse.mashit.ui.theme.PaddingSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.TraitsHelper
 
@@ -146,13 +146,13 @@ fun Mashup(searchQuery: State<String>) {
 
     Column {
         CategoryHeader(title = "Mashup")
-        Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+        Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         if (mashupUiState.wallet != null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = PaddingSize)
+                    .padding(horizontal = Padding)
             ) {
                 MashupActions(
                     mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),
@@ -170,10 +170,10 @@ fun Mashup(searchQuery: State<String>) {
                     modifier = Modifier
                         .wrapContentHeight()
                         .onSizeChanged { size ->
-                            height = with(density) { size.height.toDp() } - SmallPaddingSize
+                            height = with(density) { size.height.toDp() } - SmallPadding
                         },
                 ) {
-                    Spacer(Modifier.height(SmallPaddingSize))
+                    Spacer(Modifier.height(SmallPadding))
 
                     MashupCategories(
                         onCategorySelect = { category ->
@@ -188,7 +188,7 @@ fun Mashup(searchQuery: State<String>) {
                         selectedCategory = mashupUiState.selectedCategory
                     )
 
-                    Spacer(Modifier.height(SmallPaddingSize))
+                    Spacer(Modifier.height(SmallPadding))
 
                     MashupCategoryItems(
                         modifier = Modifier.fillMaxHeight(),

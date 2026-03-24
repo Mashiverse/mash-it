@@ -17,7 +17,7 @@ import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.InactiveMashupButtonBackground
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun ColorTypeButton(
@@ -65,7 +65,7 @@ fun ColorTypeSelector(
             colorType = ColorType.BASE
         )
 
-        Spacer(Modifier.width(SmallPaddingSize))
+        Spacer(Modifier.width(SmallPadding))
 
         ColorTypeButton(
             text = "Eyes",
@@ -74,7 +74,7 @@ fun ColorTypeSelector(
             colorType = ColorType.EYES
         )
 
-        Spacer(Modifier.width(SmallPaddingSize))
+        Spacer(Modifier.width(SmallPadding))
 
         ColorTypeButton(
             text = "Hair",

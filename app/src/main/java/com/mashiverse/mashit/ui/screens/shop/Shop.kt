@@ -24,7 +24,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
@@ -34,7 +33,7 @@ import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.sections.SearchCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -152,7 +151,7 @@ fun Shop(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = PaddingSize)
+            .padding(horizontal = Padding)
     ) {
         CategoryHeader(title = "Shop")
 
@@ -168,7 +167,7 @@ fun Shop(
         } else if (category == null) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(PaddingSize)
+                verticalArrangement = Arrangement.spacedBy(Padding)
             ) {
                 item {
                     ShopSection(

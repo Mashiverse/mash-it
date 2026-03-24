@@ -28,7 +28,7 @@ import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentTextSize
 import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
 import com.mashiverse.mashit.ui.theme.SearchHeight
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun TopNavBarActions(
@@ -49,7 +49,7 @@ fun TopNavBarActions(
 
     Row(
         modifier = Modifier
-            .padding(horizontal = SmallPaddingSize),
+            .padding(horizontal = SmallPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.weight(1F))
@@ -69,7 +69,7 @@ fun TopNavBarActions(
                     ),
                     border = BorderStroke(width = (1.3).dp, color = Surface),
                     shape = AccountInfoShape,
-                    contentPadding = PaddingValues(horizontal = SmallPaddingSize),
+                    contentPadding = PaddingValues(horizontal = SmallPadding),
                     onClick = onConnect
                 ) {
                     Text(

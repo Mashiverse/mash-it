@@ -131,7 +131,6 @@ class MashitRepo @Inject constructor(
         wallet: String
     ): MashupDetails {
         try {
-
             val mashupDto = mashitApi.getMashup(wallet)
 
             val traits = List(11) { i ->

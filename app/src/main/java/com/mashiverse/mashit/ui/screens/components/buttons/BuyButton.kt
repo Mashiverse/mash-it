@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun BuyButton(
@@ -67,7 +67,7 @@ fun BuyButton(
             }
         ),
 
-        contentPadding = PaddingValues(horizontal = SmallPaddingSize),
+        contentPadding = PaddingValues(horizontal = SmallPadding),
     ) {
         Text(
             text = text,

@@ -24,10 +24,10 @@ import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPaddingSize
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.SmallIconSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -80,7 +80,7 @@ fun MashiDetailsSection(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(SmallPaddingSize))
+                Spacer(modifier = Modifier.width(SmallPadding))
 
                 IconButton(
                     modifier = Modifier.size(SmallIconSize),
@@ -104,7 +104,7 @@ fun MashiDetailsSection(
 
             Text(text = "by ${nft.author}", color = ContentColor, fontSize = 12.sp)
 
-            Spacer(modifier = Modifier.height(ExtraSmallPaddingSize))
+            Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
             nft.description?.let {
                 Text(

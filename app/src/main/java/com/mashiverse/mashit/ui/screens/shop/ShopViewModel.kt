@@ -17,8 +17,8 @@ import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
-import com.mashiverse.mashit.utils.helpers.SoldHelper
-import com.mashiverse.mashit.utils.helpers.Web3Helper
+import com.mashiverse.mashit.utils.helpers.web3.SoldHelper
+import com.mashiverse.mashit.utils.helpers.web3.Web3Helper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ class ShopViewModel @Inject constructor(
     private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo
 ) : ViewModel() {
-    val walletPreferences = dataStoreRepo.walletPreferencesFlow
+    val walletPreferences = dataStoreRepo.walletFlow
 
     val shopPagingData: Flow<PagingData<Nft>> = mashItRepo.getShopListPagingData()
         .cachedIn(viewModelScope)

@@ -26,7 +26,7 @@ class CollectionViewModel @Inject constructor(
     dataStoreRepo: DatastoreRepo,
     private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
-    val walletPreferences = dataStoreRepo.walletPreferencesFlow
+    val walletPreferences = dataStoreRepo.walletFlow
     val collectionFlow = collectionRepo.collectionFlow
         .stateIn(
             scope = viewModelScope,

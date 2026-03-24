@@ -23,7 +23,7 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
 import com.mashiverse.mashit.ui.theme.ContentTextSize
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -64,7 +64,7 @@ fun OtherSection(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(PaddingSize)
+        verticalArrangement = Arrangement.spacedBy(Padding)
     ) {
         OtherSectionButton(
             onClick = {

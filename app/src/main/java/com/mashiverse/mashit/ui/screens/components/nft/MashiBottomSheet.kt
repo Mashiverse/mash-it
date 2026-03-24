@@ -31,8 +31,8 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
-import com.mashiverse.mashit.ui.theme.PaddingSize
-import com.mashiverse.mashit.ui.theme.SmallPaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -46,7 +46,7 @@ fun MashiBottomSheet(
     detailsContent: @Composable () -> Unit
 ) {
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * PaddingSize - 2 * SmallPaddingSize) / 3
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     ModalBottomSheet(
@@ -64,7 +64,7 @@ fun MashiBottomSheet(
             modifier = Modifier
                 .height((config.screenHeightDp * 0.8).dp)
                 .fillMaxWidth()
-                .padding(start = PaddingSize, end = PaddingSize, top = PaddingSize),
+                .padding(start = Padding, end = Padding, top = Padding),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -80,7 +80,7 @@ fun MashiBottomSheet(
                 detailsContent()
             }
 
-            Spacer(modifier = Modifier.height(PaddingSize))
+            Spacer(modifier = Modifier.height(Padding))
 
             Text(
                 fontSize = 14.sp,
@@ -92,8 +92,8 @@ fun MashiBottomSheet(
             selectedNft.traits?.let {
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(SmallPaddingSize),
-                    horizontalArrangement = Arrangement.spacedBy(SmallPaddingSize),
+                    verticalArrangement = Arrangement.spacedBy(SmallPadding),
+                    horizontalArrangement = Arrangement.spacedBy(SmallPadding),
                     columns = GridCells.Fixed(3)
                 ) {
                     items(selectedNft.traits.size) { i ->

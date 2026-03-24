@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.utils.helpers
+package com.mashiverse.mashit.utils.helpers.web3
 
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.CONTRACT_ADDRESS
@@ -9,6 +9,7 @@ import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Bool
 import org.web3j.abi.datatypes.Function
 import org.web3j.abi.datatypes.Type
+import org.web3j.abi.datatypes.generated.Bytes32
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.abi.datatypes.generated.Uint32
 import org.web3j.abi.datatypes.generated.Uint64
@@ -23,7 +24,7 @@ import java.math.BigInteger
  * Reads marketplace.listings(listingId).totalSold using Alchemy Polygon RPC.
  */
 object SoldHelper {
-    private const val RPC_URL = "https://polygon-mainnet.g.alchemy.com/v2/$ALCHEMY_KEY"
+    private const val RPC_URL = "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}"
 
     // totalSold is the 5th element (0-based index 4) in Listing struct
     private const val TOTAL_SOLD_INDEX = 4
@@ -40,7 +41,7 @@ object SoldHelper {
         object : TypeReference<Uint64>() {},    // end
         object : TypeReference<Uint32>() {},    // maxPerWallet
         object : TypeReference<Uint64>() {},    // defaultAssetId
-        object : TypeReference<org.web3j.abi.datatypes.generated.Bytes32>() {}, // merkleRoot
+        object : TypeReference<Bytes32>() {}, // merkleRoot
         object : TypeReference<Bool>() {}       // active
     )
 

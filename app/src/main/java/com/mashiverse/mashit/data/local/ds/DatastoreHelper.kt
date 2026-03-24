@@ -14,7 +14,7 @@ val Context.datastore by preferencesDataStore(
     name = MASHIT_PREFERENCES
 )
 
-object  PreferencesKeys {
+object PreferencesKeys {
     val WALLET = stringPreferencesKey(WALLET_KEY)
     val FIRST_LAUNCH = booleanPreferencesKey(FIRST_LAUNCH_KEY)
     val NOTIFICATIONS = booleanPreferencesKey(NOTIFICATIONS_KEY)

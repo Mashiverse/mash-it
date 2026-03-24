@@ -12,7 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.mashiverse.mashit.ui.theme.ColorPreviewShape
 import com.mashiverse.mashit.ui.theme.ColorPreviewSize
-import com.mashiverse.mashit.ui.theme.PaddingSize
+import com.mashiverse.mashit.ui.theme.Padding
 
 @Composable
 fun ColorPreviewSection(
@@ -27,7 +27,7 @@ fun ColorPreviewSection(
                 .background(updatedColor)
         )
 
-        Spacer(modifier = Modifier.width(PaddingSize))
+        Spacer(modifier = Modifier.width(Padding))
 
         Box(
             modifier = Modifier
