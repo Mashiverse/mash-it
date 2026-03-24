@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.di
+package com.mashiverse.mashit.data.di
 
 import dagger.Module
 import dagger.Provides

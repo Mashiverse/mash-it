@@ -10,8 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.states.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.ActionsIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 
 @Composable

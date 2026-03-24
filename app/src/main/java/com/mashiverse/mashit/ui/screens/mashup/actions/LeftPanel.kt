@@ -10,7 +10,7 @@ import androidx.compose.material.icons.filled.Slideshow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.times
-import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.states.intents.ActionsIntent
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ActionButton
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ColorSelectActionButton
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize

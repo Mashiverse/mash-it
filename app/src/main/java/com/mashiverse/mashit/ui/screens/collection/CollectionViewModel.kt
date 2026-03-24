@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType

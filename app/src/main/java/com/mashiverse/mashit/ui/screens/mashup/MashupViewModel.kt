@@ -6,11 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mashiverse.mashit.data.states.utils.StackManager
-import com.mashiverse.mashit.data.intents.ActionsIntent
-import com.mashiverse.mashit.data.intents.DialogIntent
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.DownloadType
@@ -18,7 +13,6 @@ import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
-import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.repos.CollectionRepo
@@ -26,6 +20,11 @@ import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.states.MashupUiState
+import com.mashiverse.mashit.data.states.intents.ActionsIntent
+import com.mashiverse.mashit.data.states.intents.DialogIntent
+import com.mashiverse.mashit.data.states.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.MashupIntent
+import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import com.mashiverse.mashit.utils.helpers.DownloadHelper
 import com.mashiverse.mashit.utils.helpers.TraitsHelper
@@ -116,13 +115,16 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onMashupUpdate(mashupTrait: MashupTrait) {
+        val uiState = mashupUiState.value
+        val mashupDetails = uiState.mashupDetails
+
         recordState()
 
         val trait = mashupTrait.trait
-        var mint = mashupUiState.value.mashupDetails.mint
-        val assets = (mashupUiState.value.mashupDetails.assets).toMutableList()
-        val assetIndex = assets.indexOfFirst { it.type == trait.type }
+        var mint = mashupDetails.mint
+        val assets = mashupDetails.assets.toMutableList()
 
+        val assetIndex = assets.indexOfFirst { it.type == trait.type }
         if (assetIndex != -1) {
             if (assets[assetIndex].url != trait.url) {
                 assets[assetIndex] = trait
@@ -133,8 +135,8 @@ class MashupViewModel @Inject constructor(
             }
         }
 
-        mashupUiState.value = mashupUiState.value.copy(
-            mashupDetails = mashupUiState.value.mashupDetails.copy(
+        mashupUiState.value = uiState.copy(
+            mashupDetails = mashupDetails.copy(
                 assets = assets,
                 mint = mint
             )
@@ -142,39 +144,20 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onRandom() {
-        if (mashupUiState.value.nfts.isNotEmpty()) {
-            recordState()
+        val uiState = mashupUiState.value
+        if (uiState.nfts.isEmpty()) return
 
-            val randomAssets = TraitType.entries.map { type ->
-                val available = TraitsHelper.getTraitsByType(mashupUiState.value.nfts)[type]
-                if (type in listOf(
-                        TraitType.BACKGROUND,
-                        TraitType.EYES,
-                        TraitType.BOTTOM,
-                        TraitType.UPPER,
-                        TraitType.HEAD
-                    )
-                ) {
-                    available?.randomOrNull() ?: MashupTrait(Trait(type, null), "")
-                } else {
-                    if ((0..1).random() == 1) available?.randomOrNull() ?: MashupTrait(
-                        Trait(
-                            type,
-                            null
-                        ), ""
-                    )
-                    else MashupTrait(Trait(type, null), "")
-                }
-            }
+        recordState()
 
-            val mint = randomAssets.firstOrNull { it.trait.type == TraitType.BACKGROUND }?.mint
-            mashupUiState.value = mashupUiState.value.copy(
-                mashupDetails = mashupUiState.value.mashupDetails.copy(
-                    assets = randomAssets.map { it.trait },
-                    mint = mint
-                )
+        val randomAssets = TraitsHelper.getRandomTraits(uiState.nfts)
+        val mint = randomAssets.firstOrNull { it.trait.type == TraitType.BACKGROUND }?.mint
+
+        mashupUiState.value = uiState.copy(
+            mashupDetails = uiState.mashupDetails.copy(
+                assets = randomAssets.map { it.trait },
+                mint = mint
             )
-        }
+        )
     }
 
     fun onSave() {
@@ -187,15 +170,17 @@ class MashupViewModel @Inject constructor(
                 mashupDetails = uiState.mashupDetails
             )
 
-            mashupUiState.value = mashupUiState.value.copy(
-                dialogContent = if (res?.success == true) {
-                    DialogContent(
-                        title = "Mashup Saved",
-                        text = "Enjoy sharing it with friends"
-                    )
-                } else {
-                    DialogContent(title = "Save Error", text = "Please try again later")
-                }
+            val dialogContent = if (res?.success == true) {
+                DialogContent(
+                    title = "Mashup Saved",
+                    text = "Enjoy sharing it with friends"
+                )
+            } else {
+                DialogContent(title = "Save Error", text = "Please try again later")
+            }
+
+            mashupUiState.value = uiState.copy(
+                dialogContent = dialogContent
             )
         }
     }
@@ -203,9 +188,11 @@ class MashupViewModel @Inject constructor(
     // Colors
     fun onColorsSave() {
         recordState()
-        mashupUiState.value = mashupUiState.value.copy(
-            mashupDetails = mashupUiState.value.mashupDetails.copy(
-                colors = mashupUiState.value.colors
+        val uiState = mashupUiState.value
+
+        mashupUiState.value = uiState.copy(
+            mashupDetails = uiState.mashupDetails.copy(
+                colors = uiState.colors
             )
         )
     }
@@ -221,11 +208,13 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onColorChange(color: Color) {
-        val hex = "#" + color.toHexString()
-        val currentColors = mashupUiState.value.colors
+        val uiState = mashupUiState.value
 
-        mashupUiState.value = mashupUiState.value.copy(
-            colors = when (mashupUiState.value.selectedColorType) {
+        val hex = "#" + color.toHexString()
+        val currentColors = uiState.colors
+
+        mashupUiState.value = uiState.copy(
+            colors = when (uiState.selectedColorType) {
                 ColorType.BASE -> currentColors.copy(base = hex)
                 ColorType.EYES -> currentColors.copy(eyes = hex)
                 ColorType.HAIR -> currentColors.copy(hair = hex)
@@ -261,18 +250,20 @@ class MashupViewModel @Inject constructor(
 
     // Intents
     fun processActionsIntent(intent: ActionsIntent) {
+        val uiState = mashupUiState.value
+
         when (intent) {
             is ActionsIntent.OnColor -> mashupUiState.value =
-                mashupUiState.value.copy(isColorChange = true)
+                uiState.copy(isColorChange = true)
 
             is ActionsIntent.OnColorDismiss -> mashupUiState.value =
-                mashupUiState.value.copy(isColorChange = false)
+                uiState.copy(isColorChange = false)
 
             is ActionsIntent.OnPreview -> mashupUiState.value =
-                mashupUiState.value.copy(isPreview = true)
+                uiState.copy(isPreview = true)
 
             is ActionsIntent.OnPreviewDismiss -> mashupUiState.value =
-                mashupUiState.value.copy(isPreview = false)
+                uiState.copy(isPreview = false)
 
             is ActionsIntent.OnImageSave -> onImageSave(intent.context, intent.downloadType)
             is ActionsIntent.OnRandom -> onRandom()

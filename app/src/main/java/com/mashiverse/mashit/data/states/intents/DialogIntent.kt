@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.intents
+package com.mashiverse.mashit.data.states.intents
 
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 

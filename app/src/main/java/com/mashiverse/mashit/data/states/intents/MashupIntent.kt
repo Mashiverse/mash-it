@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.intents
+package com.mashiverse.mashit.data.states.intents
 
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.ui.graphics.Color

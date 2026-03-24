@@ -23,4 +23,12 @@ enum class TraitType {
     RIGHT_ACCESSORY
 }
 
+val activeTraits = listOf(
+    TraitType.BACKGROUND,
+    TraitType.EYES,
+    TraitType.BOTTOM,
+    TraitType.UPPER,
+    TraitType.HEAD
+)
+
 

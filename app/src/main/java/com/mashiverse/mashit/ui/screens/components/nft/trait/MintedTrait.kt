@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
-import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.theme.Tertiary
 
 @Composable

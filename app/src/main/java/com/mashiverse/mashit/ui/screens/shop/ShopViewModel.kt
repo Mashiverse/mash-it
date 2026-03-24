@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType

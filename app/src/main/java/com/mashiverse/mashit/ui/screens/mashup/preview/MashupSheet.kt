@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.R
-import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape

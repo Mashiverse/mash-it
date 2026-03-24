@@ -31,9 +31,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.intents.ActionsIntent
-import com.mashiverse.mashit.data.intents.DialogIntent.Clear
-import com.mashiverse.mashit.data.intents.MashupIntent
+import com.mashiverse.mashit.data.states.intents.ActionsIntent
+import com.mashiverse.mashit.data.states.intents.DialogIntent.Clear
+import com.mashiverse.mashit.data.states.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
@@ -130,10 +130,7 @@ fun Mashup(searchQuery: State<String>) {
     }
 
 
-    val traits by remember(
-        mashupUiState.selectedCategory,
-        nfts
-    ) {
+    val traits by remember(mashupUiState.selectedCategory, nfts) {
         derivedStateOf {
             val traits =
                 TraitsHelper.getTraitsByType(nfts)[mashupUiState.selectedCategory]

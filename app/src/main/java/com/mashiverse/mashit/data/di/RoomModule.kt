@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.di
+package com.mashiverse.mashit.data.di
 
 import android.content.Context
 import androidx.room.Room
