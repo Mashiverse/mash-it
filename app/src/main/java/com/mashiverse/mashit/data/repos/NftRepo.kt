@@ -11,34 +11,27 @@ class NftRepo @Inject constructor(
 ) {
     val ownedNftsFlow: Flow<List<NftEntity>> = nftDao.getOwnedNfts()
 
-    suspend fun deleteNfts(nfts: List<NftEntity>) = nftDao.deleteNfts(nfts)
+    suspend fun insertNfts(nfts: List<NftEntity>) {
+        nfts.forEach { nft ->
+            insertNft(nft)
+        }
+    }
 
     suspend fun insertNft(nft: NftEntity) {
         val currentNft = nftDao.getNftByName(nft.name)
 
         if (currentNft == null) {
             nftDao.insertNft(nft)
-        } else {
-            var tempNft: NftEntity = currentNft
-
-            nft.productInfo?.let {
-                tempNft = tempNft.copy(productInfo = nft.productInfo)
-            }
-
-            nft.traits?.let {
-                tempNft = tempNft.copy(traits = nft.traits)
-            }
-
-            nft.owned?.let {
-                tempNft = tempNft.copy(owned = nft.owned)
-            }
-
-            if (nft.isOwned) {
-                tempNft = tempNft.copy(isOwned = true)
-            }
-
-            nftDao.insertNft(tempNft)
+            return
         }
+
+        val updatedNft = currentNft.copy(
+            productInfo = nft.productInfo ?: currentNft.productInfo,
+            traits = nft.traits ?: currentNft.traits,
+            owned = nft.owned ?: currentNft.owned,
+            isOwned = true
+        )
+        nftDao.insertNft(updatedNft)
     }
 
     suspend fun clearOwned() {
@@ -46,9 +39,5 @@ class NftRepo @Inject constructor(
         nftDao.deleteNfts(ownedNfts)
     }
 
-    suspend fun insertNfts(nfts: List<NftEntity>) {
-        nfts.forEach { nft ->
-            insertNft(nft)
-        }
-    }
+    suspend fun deleteNfts(nfts: List<NftEntity>) = nftDao.deleteNfts(nfts)
 }
