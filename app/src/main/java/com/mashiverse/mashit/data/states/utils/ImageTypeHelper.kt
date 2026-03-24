@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.states
+package com.mashiverse.mashit.data.states.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

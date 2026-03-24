@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data
+package com.mashiverse.mashit.data.states.utils
 
 class StackManager<T> {
     private val undoStack = ArrayDeque<T>()
@@ -31,7 +31,7 @@ class StackManager<T> {
 
     val canUndo: Boolean get() = undoStack.isNotEmpty()
     val canRedo: Boolean get() = redoStack.isNotEmpty()
-    
+
     companion object {
         const val STACK_SIZE = 10
     }

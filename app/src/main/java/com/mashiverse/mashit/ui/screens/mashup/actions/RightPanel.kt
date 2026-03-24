@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.intents.ActionsIntent
-import com.mashiverse.mashit.data.models.image.DownloadImageType
+import com.mashiverse.mashit.data.models.image.DownloadType
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.ActionButton
 import com.mashiverse.mashit.ui.screens.mashup.actions.buttons.SaveActionButton
 import com.mashiverse.mashit.ui.theme.SmallPaddingSize
@@ -34,7 +34,7 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
                 processActionsIntent(
                     ActionsIntent.OnImageSave(
                         context = context,
-                        downloadType = DownloadImageType.PNG
+                        downloadType = DownloadType.PNG
                     )
                 )
             }
@@ -48,7 +48,7 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
                 processActionsIntent(
                     ActionsIntent.OnImageSave(
                         context = context,
-                        downloadType = DownloadImageType.GIF
+                        downloadType = DownloadType.GIF
                     )
                 )
             },

@@ -1,7 +1,7 @@
 package com.mashiverse.mashit.data.intents
 
 import android.content.Context
-import com.mashiverse.mashit.data.models.image.DownloadImageType
+import com.mashiverse.mashit.data.models.image.DownloadType
 
 sealed class ActionsIntent {
     object OnColor : ActionsIntent()
@@ -16,6 +16,6 @@ sealed class ActionsIntent {
 
     data class OnImageSave(
         val context: Context,
-        val downloadType: DownloadImageType
+        val downloadType: DownloadType
     ) : ActionsIntent()
 }

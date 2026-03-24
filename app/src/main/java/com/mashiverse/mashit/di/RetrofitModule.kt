@@ -75,6 +75,6 @@ object RetrofitModule {
     }
 
     @Provides
-    fun provideMashiverseApi(@Named("MashiverseClient") retrofit: Retrofit) =
+    fun provideMashiverseApi(@Named("MashiverseClient") retrofit: Retrofit): MashiverseApi =
         retrofit.create(MashiverseApi::class.java)
 }

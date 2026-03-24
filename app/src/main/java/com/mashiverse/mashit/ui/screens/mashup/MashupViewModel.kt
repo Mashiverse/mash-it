@@ -6,14 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mashiverse.mashit.data.StackManager
+import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.data.intents.ActionsIntent
 import com.mashiverse.mashit.data.intents.DialogIntent
 import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.models.image.DownloadImageType
+import com.mashiverse.mashit.data.models.image.DownloadType
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
@@ -253,7 +253,7 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun onImageSave(context: Context, downloadType: DownloadImageType) {
+    fun onImageSave(context: Context, downloadType: DownloadType) {
         mashupUiState.value.wallet?.let { wallet ->
             DownloadHelper.startImageDownload(wallet, downloadType.type, context)
         }
