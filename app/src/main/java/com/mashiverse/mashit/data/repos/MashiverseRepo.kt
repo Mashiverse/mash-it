@@ -11,12 +11,8 @@ class MashiverseRepo @Inject constructor(
     suspend fun getMashup(wallet: String, imgType: Int = 0): MashupResult {
         val responseBody: ResponseBody = mashiverseApi.getMashup(wallet, imgType)
 
-        // Read bytes from the response
-        val bytes = responseBody.byteStream().use { it.readBytes() }
-
-        // Get content type as string (e.g., "image/png" or "image/gif")
         val contentType = responseBody.contentType()?.toString() ?: "image/png"
-
+        val bytes = responseBody.byteStream().use { it.readBytes() }
         return MashupResult(bytes, contentType)
     }
 }

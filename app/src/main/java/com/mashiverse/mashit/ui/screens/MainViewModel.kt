@@ -78,7 +78,7 @@ class MainViewModel @Inject constructor(
         clientRef?.initiateHandshake(
             initialActions = handShakeActions
         ) { result: Result<List<ActionResult>>, account: Account? ->
-            result.onSuccess { actionResults: List<ActionResult> ->
+            result.onSuccess { _ ->
                 val address = account?.address
                 address?.let {
                     updateWallet(address)

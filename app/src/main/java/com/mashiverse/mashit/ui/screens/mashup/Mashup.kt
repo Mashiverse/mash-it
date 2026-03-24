@@ -54,7 +54,7 @@ import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
-import com.mashiverse.mashit.utils.helpers.TraitsHelper
+import com.mashiverse.mashit.utils.helpers.getTraitsByType
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,7 +133,7 @@ fun Mashup(searchQuery: State<String>) {
     val traits by remember(mashupUiState.selectedCategory, nfts) {
         derivedStateOf {
             val traits =
-                TraitsHelper.getTraitsByType(nfts)[mashupUiState.selectedCategory]
+                getTraitsByType(nfts)[mashupUiState.selectedCategory]
                     ?: emptyList()
 
             if (mashupUiState.selectedCategory != TraitType.BACKGROUND) {

@@ -47,7 +47,7 @@ import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
-import com.mashiverse.mashit.utils.helpers.sys.PermissionsHelper
+import com.mashiverse.mashit.utils.helpers.sys.checkNotificationsPermission
 import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
@@ -149,7 +149,7 @@ fun Main(navController: NavHostController) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
-            val isGranted = PermissionsHelper.checkNotificationsPermission(ctx)
+            val isGranted = checkNotificationsPermission(ctx)
             viewModel.updateNotifications(isGranted)
         }
         viewModel.setFirstLaunchCompleted()

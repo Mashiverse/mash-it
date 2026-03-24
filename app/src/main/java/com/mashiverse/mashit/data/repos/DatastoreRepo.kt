@@ -25,7 +25,7 @@ class DatastoreRepo @Inject constructor(
                 if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
-                    Timber.tag("Testing").d(e)
+                    Timber.Forest.tag("Testing").d(e)
                 }
             }
             .map { preferences ->
@@ -40,7 +40,7 @@ class DatastoreRepo @Inject constructor(
                 if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
-                    Timber.tag("Test").d(e)
+                    Timber.Forest.tag("Test").d(e)
                 }
             }
             .map { preferences ->
@@ -53,7 +53,7 @@ class DatastoreRepo @Inject constructor(
                 if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
-                    Timber.tag("Test").d(e)
+                    Timber.Forest.tag("Test").d(e)
                 }
             }
             .map { preferences ->
@@ -66,7 +66,7 @@ class DatastoreRepo @Inject constructor(
                 if (e is IOException) {
                     emit(emptyPreferences())
                 } else {
-                    Timber.tag("Test").d(e)
+                    Timber.Forest.tag("Test").d(e)
                 }
             }
             .map { preferences ->

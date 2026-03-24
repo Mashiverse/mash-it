@@ -2,11 +2,12 @@ package com.mashiverse.mashit.data.repos
 
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
-import com.mashiverse.mashit.data.models.nft.Trait
-import com.mashiverse.mashit.data.models.nft.TraitType
+import com.mashiverse.mashit.data.models.nft.mappers.toTraits
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.MASHI_ADDRESS
+import com.mashiverse.mashit.utils.helpers.parseName
+import com.mashiverse.mashit.utils.helpers.toFilebaseHttp
 import javax.inject.Inject
 
 class AlchemyRepo @Inject constructor(
@@ -30,59 +31,23 @@ class AlchemyRepo @Inject constructor(
                 val ownedNfts = data.ownedNfts
                 if (ownedNfts.isEmpty()) return emptyList()
 
-                for (i in 0 until ownedNfts.size) {
-                    val nft = ownedNfts[i]
-
+                ownedNfts.forEach { nft ->
                     val metadata = nft.raw.metadata
-
-                    val name = metadata.name
-                    val (nftMintedName: String, authorName: String) = if (" by " in name) {
-                        val parts = name.split(" by ", limit = 2)
-                        parts[0] to parts[1]
-                    } else {
-                        "" to ""
-                    }
-
-                    val (nftName: String, mint: Int) = if (" #" in nftMintedName) {
-                        val parts = nftMintedName.split(" #", limit = 2)
-                        parts[0] to parts[1].toInt()
-                    } else {
-                        "" to -1
-                    }
-
-
+                    val details = parseName(metadata.name)
                     val description = metadata.description
-                    val compositeUrl =
-                        metadata.image.replace("ipfs://", "https://ipfs.filebase.io/ipfs/")
 
                     val assets = metadata.assets
-
-                    val traits = assets.map { asset ->
-                        Trait(
-                            url = asset.uri.replace("ipfs://", "https://ipfs.filebase.io/ipfs/"),
-                            type = TraitType.valueOf(asset.label.uppercase())
-                        )
-                    }
+                    val compositeUrl = metadata.image.toFilebaseHttp()
+                    val traits = assets.toTraits()
 
                     val currentOwned = Owned(
-                        mint = mint,
+                        mint = details.mint,
                         timestamp = nft.timeLastUpdated
                     )
 
-                    val tempNft = nfts.firstOrNull { nft -> nft.name == nftName }
+                    val tempNft = nfts.firstOrNull { nft -> nft.name == details.name }
 
-                    if (tempNft == null) {
-                        nfts.add(
-                            Nft(
-                                name = nftName,
-                                description = description,
-                                compositeUrl = compositeUrl,
-                                traits = traits,
-                                author = authorName,
-                                owned = listOf(currentOwned)
-                            )
-                        )
-                    } else {
+                    tempNft?.let {
                         val owned = tempNft.owned?.toMutableList() ?: mutableListOf()
                         owned.add(currentOwned)
 
@@ -90,14 +55,26 @@ class AlchemyRepo @Inject constructor(
 
                         nfts.remove(tempNft)
                         nfts.add(updatedNft)
+
+                        return@forEach
                     }
+
+                    nfts.add(
+                        Nft(
+                            name = details.name,
+                            description = description,
+                            compositeUrl = compositeUrl,
+                            traits = traits,
+                            author = details.authorName,
+                            owned = listOf(currentOwned)
+                        )
+                    )
                 }
 
                 key = data.pageKey
                 if (key == null) return nfts
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             return emptyList()
         }
     }

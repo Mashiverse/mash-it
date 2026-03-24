@@ -6,8 +6,8 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.mashiverse.mashit.data.repos.MashiverseRepo
-import com.mashiverse.mashit.utils.helpers.ImageHelper
-import com.mashiverse.mashit.utils.helpers.sys.NotificationHelper
+import com.mashiverse.mashit.utils.helpers.saveImageToGallery
+import com.mashiverse.mashit.utils.helpers.sys.showNotification
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
@@ -32,21 +32,21 @@ class UploadWorker @AssistedInject constructor(
                     "mashup_$timestamp.gif"
                 }
 
-                ImageHelper.saveImageToGallery(
+                saveImageToGallery(
                     context = applicationContext,
                     imageBytes = mashupResult.bytes,
                     fileName = fileName,
                     mimeType = mashupResult.contentType
                 )
 
-                NotificationHelper.showNotification(applicationContext, "Image saved", fileName)
+                showNotification(applicationContext, "Image saved", fileName)
             }
             Result.success()
         } catch (e: Exception) {
             if (runAttemptCount < 3) {
                 Result.retry()
             } else {
-                NotificationHelper.showNotification(
+                showNotification(
                     applicationContext,
                     "Download failed",
                     "Error: ${e.message}"

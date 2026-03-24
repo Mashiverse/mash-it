@@ -26,8 +26,8 @@ import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.states.intents.MashupIntent
 import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
-import com.mashiverse.mashit.utils.helpers.DownloadHelper
-import com.mashiverse.mashit.utils.helpers.TraitsHelper
+import com.mashiverse.mashit.utils.helpers.getRandomTraits
+import com.mashiverse.mashit.utils.helpers.startImageDownload
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -149,7 +149,7 @@ class MashupViewModel @Inject constructor(
 
         recordState()
 
-        val randomAssets = TraitsHelper.getRandomTraits(uiState.nfts)
+        val randomAssets = getRandomTraits(uiState.nfts)
         val mint = randomAssets.firstOrNull { it.trait.type == TraitType.BACKGROUND }?.mint
 
         mashupUiState.value = uiState.copy(
@@ -244,7 +244,7 @@ class MashupViewModel @Inject constructor(
 
     fun onImageSave(context: Context, downloadType: DownloadType) {
         mashupUiState.value.wallet?.let { wallet ->
-            DownloadHelper.startImageDownload(wallet, downloadType.type, context)
+            startImageDownload(wallet, downloadType.type, context)
         }
     }
 

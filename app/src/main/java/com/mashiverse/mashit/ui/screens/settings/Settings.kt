@@ -16,7 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.utils.helpers.sys.PermissionsHelper
+import com.mashiverse.mashit.utils.helpers.sys.checkNotificationsPermission
+import com.mashiverse.mashit.utils.helpers.sys.getNotificationsPermission
 
 @Composable
 fun Settings() {
@@ -32,9 +33,9 @@ fun Settings() {
 
     val updateNotifications = { enabled: Boolean ->
         if (enabled) {
-            if (!PermissionsHelper.checkNotificationsPermission(ctx)) {
+            if (!checkNotificationsPermission(ctx)) {
                 activity?.let {
-                    PermissionsHelper.getNotificationsPermission(ctx, activity)
+                    getNotificationsPermission(ctx, activity)
                 }
             }
         }

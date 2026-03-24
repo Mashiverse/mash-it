@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.utils.helpers.ImageHelper
+import com.mashiverse.mashit.utils.helpers.detectImageType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -45,7 +45,7 @@ fun rememberImageType(
                     }
 
                     connection.inputStream.use { stream ->
-                        ImageHelper.detectImageType(stream)
+                        detectImageType(stream)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
