@@ -74,7 +74,7 @@ class AlchemyRepo @Inject constructor(
                 key = data.pageKey
                 if (key == null) return nfts
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return emptyList()
         }
     }

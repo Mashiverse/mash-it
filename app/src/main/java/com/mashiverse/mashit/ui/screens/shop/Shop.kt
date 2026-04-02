@@ -153,8 +153,6 @@ fun Shop(
             .fillMaxSize()
             .padding(horizontal = Padding)
     ) {
-        CategoryHeader(title = "Shop")
-
         if (searchedListings.isNotEmpty()) {
             SearchCategory(
                 items = searchedListings,

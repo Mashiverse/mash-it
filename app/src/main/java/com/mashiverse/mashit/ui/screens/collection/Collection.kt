@@ -113,10 +113,6 @@ fun Collection(searchQuery: State<String>) {
                 .fillMaxSize()
                 .padding(horizontal = Padding),
         ) {
-            CategoryHeader("Collection")
-
-            Spacer(modifier = Modifier.height(SmallPadding))
-
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(SmallPadding),

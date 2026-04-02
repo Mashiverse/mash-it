@@ -1,5 +1,6 @@
-package com.mashiverse.mashit.ui.screens.components.nav.top
+package com.mashiverse.mashit.ui.screens.components.nav.search
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -9,12 +10,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -25,18 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.R
+import androidx.compose.ui.unit.sp
 
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
-import com.mashiverse.mashit.ui.theme.ContentTextSize
 import com.mashiverse.mashit.ui.theme.SearchHeight
 import com.mashiverse.mashit.ui.theme.SearchShape
-import com.mashiverse.mashit.ui.theme.SmallIconSize
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun SearchBar(
     isSearch: Boolean,
@@ -44,9 +47,12 @@ fun SearchBar(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit
 ) {
+    val density = LocalDensity.current
+    val config = LocalConfiguration.current
+
     val width = animateDpAsState(
         targetValue = if (isSearch) {
-            272.dp
+            config.screenWidthDp.dp - 32.dp
         } else {
             SearchHeight
         }
@@ -65,13 +71,6 @@ fun SearchBar(
         }
     )
 
-    val iconOffset = animateDpAsState(
-        targetValue = if (isSearch) {
-            0.dp
-        } else {
-            (-12).dp
-        },
-    )
 
     Row(
         modifier = Modifier
@@ -79,7 +78,7 @@ fun SearchBar(
             .width(width.value)
             .clip(shape = SearchShape)
             .border(
-                border = BorderStroke(width = 1.dp, color = borderColor.value),
+                border = BorderStroke(width = 2.dp, color = borderColor.value),
                 shape = SearchShape
             )
             .wrapContentSize(unbounded = true, align = Alignment.CenterStart)
@@ -87,52 +86,21 @@ fun SearchBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        if (width.value <= SearchHeight) {
+        if (width.value <= SearchHeight * 4) {
             Icon(
                 modifier = Modifier
-                    .size(SmallIconSize)
+                    .size(32.dp)
                     .clickable { onIsSearchChange.invoke() },
-                painter = painterResource(R.drawable.search_icon),
+                imageVector = Icons.Default.Search,
                 contentDescription = "Search icon",
                 tint = ContentAccentColor
             )
         } else {
-            TextField(
-                modifier = Modifier
-                    .width(width.value)
-                    .wrapContentSize(unbounded = true, align = Alignment.CenterStart)
-                    .clipToBounds(),
-                value = searchQuery,
-                onValueChange = { input -> onSearchQueryChange.invoke(input) },
-                leadingIcon = {
-                    Icon(
-                        modifier = Modifier
-                            .size(SmallIconSize)
-                            .offset(x = iconOffset.value)
-                            .clickable {
-                                onIsSearchChange.invoke()
-                            },
-                        painter = painterResource(R.drawable.search_icon),
-                        contentDescription = "Search icon",
-                        tint = ContentAccentColor
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        onIsSearchChange.invoke()
-                        defaultKeyboardAction(ImeAction.Done)
-                    }
-                ),
-                colors = TextFieldDefaults.colors().copy(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent
-                ),
-                singleLine = true,
-                textStyle = TextStyle(fontSize = ContentTextSize),
-                placeholder = { Text(text = "Search Mash It", fontSize = ContentTextSize) }
+            SearchTextField(
+                width = width.value,
+                onIsSearchChange = onIsSearchChange,
+                searchQuery = searchQuery,
+                onSearchQueryChange = onSearchQueryChange
             )
         }
     }

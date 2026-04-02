@@ -145,9 +145,6 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     Column {
-        CategoryHeader(title = "Mashup")
-        Spacer(modifier = Modifier.height(ExtraSmallPadding))
-
         if (mashupUiState.wallet != null) {
             Column(
                 modifier = Modifier

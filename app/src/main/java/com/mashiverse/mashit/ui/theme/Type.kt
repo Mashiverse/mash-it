@@ -20,6 +20,10 @@ val Geist = FontFamily(
     Font(R.font.geist_black, FontWeight.Black)
 )
 
+val Cooper = FontFamily(
+    Font(R.font.cooper_black_std, FontWeight.Normal)
+)
+
 val GeistBaseStyle = TextStyle(
     fontFamily = Geist,
     platformStyle = PlatformTextStyle(

@@ -11,6 +11,5 @@ fun Artists() {
     Column(
         modifier = Modifier
     ) {
-        CategoryHeader("Artists")
     }
 }

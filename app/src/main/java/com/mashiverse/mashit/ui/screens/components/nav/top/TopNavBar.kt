@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,32 +12,30 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.R
+import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.Cooper
 import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
-import com.mashiverse.mashit.ui.theme.NavBarHeight
-import com.mashiverse.mashit.ui.theme.SmallIconSize
-import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun TopNavBar(
-    isArtists: Boolean,
-    wallet: String?,
-    onConnect: () -> Unit,
+    tabName: String,
     drawerState: DrawerState,
     scope: CoroutineScope,
     searchQuery: String,
@@ -51,12 +48,10 @@ fun TopNavBar(
             .fillMaxWidth()
             .statusBarsPadding()
     ) {
-        Spacer(modifier = Modifier.height(DrawerPaddingSize))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(NavBarHeight),
+                .height(64.dp),
             contentAlignment = Alignment.Center
         ) {
             TopNavBarActions(
@@ -64,68 +59,60 @@ fun TopNavBar(
                 onIsSearchChange = onIsSearchChange,
                 searchQuery = searchQuery,
                 onSearchQueryChange = onSearchQueryChange,
-                wallet = wallet,
-                onConnect = onConnect
             )
 
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(horizontal = DrawerPaddingSize),
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(SmallIconSize)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.menu_icon),
-                        modifier = Modifier
-                            .size(SmallIconSize)
-                            .clickable(onClick = {
-                                scope.launch {
-                                    drawerState.apply {
-                                        if (isClosed) open() else close()
-                                    }
-                                }
-                            }),
-                        tint = ContentAccentColor,
-                        contentDescription = "menu icon"
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(SmallPadding))
-
                 AnimatedVisibility(
                     visible = !isSearch,
                     enter = fadeIn(tween(durationMillis = 150)),
-                    exit = fadeOut(tween(durationMillis = 75))
+                    exit = fadeOut(tween(durationMillis = 150))
                 ) {
-                    if (isArtists) {
-                        Image(
-                            painter = painterResource(R.drawable.text_logo),
+                    Box(modifier = Modifier.fillMaxWidth()){
+                        Icon(
+                            imageVector = Icons.Default.Menu,
                             modifier = Modifier
-                                .height(NavBarHeight)
-                                .width((48 * 2).dp),
-                            contentDescription = null
+                                .size(32.dp)
+                                .align(Alignment.CenterStart)
+                                .clickable(onClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            if (isClosed) open() else close()
+                                        }
+                                    }
+                                }),
+                            tint = ContentAccentColor,
+                            contentDescription = "menu icon"
                         )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.logo),
+
+                        Text(
                             modifier = Modifier
-                                .size(NavBarHeight),
-                            contentDescription = "logo"
+                                .align(Alignment.Center)
+                                .offset(y = 2.dp),
+                            text = "mash-it · $tabName",
+                            fontSize = 20.sp,
+                            fontFamily = Cooper,
+                            color = ContentAccentColor
                         )
                     }
+
+
                 }
             }
+
         }
 
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height((1.3).dp)
+                .height(1.dp)
                 .background(Color.DarkGray)
         )
+
+        Spacer(Modifier.height(16.dp))
     }
 }

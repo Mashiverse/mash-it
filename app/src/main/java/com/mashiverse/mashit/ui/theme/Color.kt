@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 // Primary
 val Primary = Color(255, 0, 0)
 
-val Background = Color(22, 22, 22)
+val Background = Color(16, 16, 16)
 val ColorFieldBackground = Color(29, 29, 29)
 val Surface = Color(45, 45, 45)
 

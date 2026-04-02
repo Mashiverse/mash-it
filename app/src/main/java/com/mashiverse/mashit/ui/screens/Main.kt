@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -62,9 +61,17 @@ fun Main(navController: NavHostController) {
     val scope = rememberCoroutineScope()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val isArtists by remember {
+    val tabName by remember {
         derivedStateOf {
-            navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true
+            val name = when {
+                navBackStackEntry?.destination?.hasRoute<MainRoutes.Shop>() == true -> "shop"
+                navBackStackEntry?.destination?.hasRoute<MainRoutes.Collection>() == true -> "collection"
+                navBackStackEntry?.destination?.hasRoute<MainRoutes.Mashup>() == true -> "mashup"
+                navBackStackEntry?.destination?.hasRoute<MainRoutes.Settings>() == true -> "settings"
+                else -> "artists"
+            }
+
+            name
         }
     }
 
@@ -175,7 +182,19 @@ fun Main(navController: NavHostController) {
             NavDrawer(
                 navController = navController,
                 drawerState = drawerState,
-                scope = scope
+                scope = scope,
+                wallet = walletPreferences.value.wallet,
+                onConnect = {
+                    if (walletPreferences.value.wallet != null) {
+                        viewModel.disconnect()
+                    } else {
+                        if (clientRef?.isCoinbaseWalletInstalled == true) {
+                            viewModel.initHandshake(clientRef)
+                        } else {
+                            openGooglePlay.invoke()
+                        }
+                    }
+                },
             )
         },
         gesturesEnabled = true
@@ -185,26 +204,15 @@ fun Main(navController: NavHostController) {
             containerColor = Background,
             topBar = {
                 TopNavBar(
-                    isArtists = isArtists,
+                    tabName = tabName,
                     drawerState = drawerState,
                     scope = scope,
-                    wallet = walletPreferences.value.wallet,
-                    onConnect = {
-                        if (walletPreferences.value.wallet != null) {
-                            viewModel.disconnect()
-                        } else {
-                            if (clientRef?.isCoinbaseWalletInstalled == true) {
-                                viewModel.initHandshake(clientRef)
-                            } else {
-                                openGooglePlay.invoke()
-                            }
-                        }
-                    },
                     searchQuery = searchQuery.value,
                     onSearchQueryChange = onSearchQueryChange,
                     isSearch = isSearch,
                     onIsSearchChange = onIsSearchChange
                 )
+
             }
         ) { paddingValues ->
             NavHost(

@@ -1,20 +1,31 @@
 package com.mashiverse.mashit.ui.screens.components.nav.drawer
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DismissibleDrawerSheet
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.R
 import androidx.navigation.NavHostController
 import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.ui.theme.Background
@@ -28,7 +39,9 @@ fun NavDrawer(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     drawerState: DrawerState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    wallet: String?,
+    onConnect: () -> Unit,
 ) {
     val config = LocalConfiguration.current
 
@@ -42,6 +55,34 @@ fun NavDrawer(
         Column(
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(32.dp),
+                    painter = painterResource(com.mashiverse.mashit.R.drawable.logo),
+                    contentDescription = ""
+                )
+
+                Spacer(Modifier.width(16.dp))
+
+                BaseButton(
+                    onConnect = onConnect,
+                    wallet = wallet
+                )
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.DarkGray)
+            )
+
+
+
             CreatePostButton(modifier = Modifier.padding(horizontal = DrawerPaddingSize))
 
             HorizontalDivider()
