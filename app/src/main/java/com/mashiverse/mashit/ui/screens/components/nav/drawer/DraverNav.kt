@@ -16,8 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.mashiverse.mashit.ui.screens.components.nav.data.navItems
-
+import com.mashiverse.mashit.data.models.nav.navItems
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Surface

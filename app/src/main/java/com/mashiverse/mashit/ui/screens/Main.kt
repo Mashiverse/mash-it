@@ -70,7 +70,6 @@ fun Main(navController: NavHostController) {
                 navBackStackEntry?.destination?.hasRoute<MainRoutes.Settings>() == true -> "settings"
                 else -> "artists"
             }
-
             name
         }
     }

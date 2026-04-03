@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.mashiverse.mashit.ui.screens.Main
@@ -37,9 +36,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             navController = rememberNavController()
-            val viewModel = hiltViewModel<ThemeViewModel>()
-
-
             MashitTheme {
                 Box(
                     modifier = Modifier

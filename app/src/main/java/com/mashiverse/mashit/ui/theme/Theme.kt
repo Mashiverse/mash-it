@@ -12,23 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 
-private val MashitColorScheme = darkColorScheme(
-    primary = Primary,
-    onPrimary = ContentAccentColor,
-
-    secondary = Secondary,
-    onSecondary = ContentAccentColor,
-
-    background = Background,
-    onBackground = ContentColor,
-
-    surface = Surface,
-    onSurface = ContentColor,
-
-    tertiary = Tertiary,
-    onTertiary = ContentAccentColor
-)
-
 @Composable
 fun MashitTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -41,7 +24,7 @@ fun MashitTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        else -> MashitColorScheme
+        else -> darkColorScheme()
     }
 
     MaterialTheme(

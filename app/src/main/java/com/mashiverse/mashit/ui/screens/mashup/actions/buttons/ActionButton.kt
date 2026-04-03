@@ -32,10 +32,7 @@ fun ActionButton(
     onClick: () -> Unit,
     isAnimated: Boolean = false,
 ) {
-    // 1. State to hold the current random color
     var targetColor by remember { mutableStateOf(ContentAccentColor) }
-
-    // 2. Effect to change the color periodically when isAnimated is true
     LaunchedEffect(isAnimated) {
         if (isAnimated) {
             while (true) {
@@ -45,14 +42,13 @@ fun ActionButton(
                     blue = Random.nextFloat(),
                     alpha = 1f
                 )
-                delay(600) // Change color every 600ms
+                delay(600)
             }
         } else {
-            targetColor = ContentAccentColor // Reset to default
+            targetColor = ContentAccentColor
         }
     }
 
-    // 3. Animate the transition to the new target color
     val animatedTint by animateColorAsState(
         targetValue = targetColor,
         animationSpec = tween(durationMillis = 500),

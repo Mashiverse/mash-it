@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.components.nav.data
+package com.mashiverse.mashit.data.models.nav
 
 import com.mashiverse.mashit.nav.routes.MainRoutes
 import kotlinx.serialization.Serializable
