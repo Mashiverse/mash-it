@@ -27,9 +27,7 @@ import com.mashiverse.mashit.ui.theme.SmallPadding
 fun BuyButton(
     text: String,
     enabled: Boolean,
-    height: Dp = 32.dp,
-    width: Dp = 72.dp,
-    textSize: TextUnit = 12.sp,
+    textSize: TextUnit = 10.sp,
     onClick: () -> Unit
 ) {
     val gradient = Brush.horizontalGradient(
@@ -41,8 +39,8 @@ fun BuyButton(
 
     Button(
         modifier = Modifier
-            .height(height)
-            .width(width)
+            .height(32.dp)
+            .width(72.dp)
             .background(
                 brush = if (enabled) {
                     gradient
@@ -66,7 +64,6 @@ fun BuyButton(
                 Color.Transparent
             }
         ),
-
         contentPadding = PaddingValues(horizontal = SmallPadding),
     ) {
         Text(

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
-import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
+import com.mashiverse.mashit.ui.screens.components.nft.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.ContentAccentColor

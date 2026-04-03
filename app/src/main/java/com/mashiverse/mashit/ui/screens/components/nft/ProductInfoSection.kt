@@ -63,7 +63,7 @@ fun ProductInfoSection(
     ) {
         Column {
             Text(
-                text = "Per-wallet: ${productInfo.perWallet}",
+                text = "Max: ${productInfo.perWallet}",
                 color = ContentColor,
                 fontSize = 12.sp
             )
@@ -85,14 +85,12 @@ fun ProductInfoSection(
                 soldQty < productInfo.quantity -> "Buy"
                 else -> "Sold"
             },
-            height = 32.dp,
-            width = 88.dp,
             enabled = when {
                 productInfo.delisted -> false
                 soldQty < productInfo.quantity -> true
                 else -> false
             },
-            textSize = 16.sp,
+            textSize = 14.sp,
             onClick = {
                 onMint!!.invoke(nft.productInfo.listingId, nft.productInfo.price, nft.productInfo.priceCurrency == PriceCurrency.POL)
             }

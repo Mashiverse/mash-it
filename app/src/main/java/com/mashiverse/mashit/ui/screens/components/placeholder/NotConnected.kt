@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,21 +34,21 @@ fun NotConnected() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "You need to connect your wallet to see \n" +
-                        "this page!",
-                fontSize = 14.sp,
+                text = "Connect your wallet\n" +
+                        "to see this section!",
+                fontSize = 16.sp,
                 color = Color.Red,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
 
             Image(
                 painter = painterResource(R.drawable.logo),
-                modifier = Modifier.size(128.dp)
-                    .offset(y = (-16).dp),
+                modifier = Modifier.size(128.dp),
                 contentDescription = null
             )
 
-            Spacer(modifier = Modifier.height(96.dp))
+            Spacer(Modifier.height(64.dp))
         }
     }
 }
