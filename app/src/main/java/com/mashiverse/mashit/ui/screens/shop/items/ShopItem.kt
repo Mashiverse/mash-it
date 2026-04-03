@@ -1,8 +1,9 @@
 package com.mashiverse.mashit.ui.screens.shop.items
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -14,21 +15,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
-import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
-import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
-import com.mashiverse.mashit.ui.theme.TraitShape
+import com.mashiverse.mashit.ui.theme.ShopHolderHeight
+import com.mashiverse.mashit.ui.theme.ShopHolderWidth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -39,8 +40,8 @@ fun ShopItem(
     processImageIntent: (ImageIntent) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
     onMint: (String, Double, Boolean) -> Unit,
-    imageWidth: Dp = LargeMashiHolderWidth,
-    imageHeight: Dp = LargeMashiHolderHeight
+    imageWidth: Dp = ShopHolderWidth,
+    imageHeight: Dp = ShopHolderHeight
 ) {
     val scope = rememberCoroutineScope()
     val productInfo = nft.productInfo
@@ -64,13 +65,13 @@ fun ShopItem(
     }
 
     Column(
-        modifier = Modifier,
+        modifier = Modifier
+            .width(imageWidth),
     ) {
         TraitImage(
             modifier = Modifier
                 .width(imageWidth)
-                .height(imageHeight)
-                .border(width = 0.3.dp, shape = TraitShape, color = ContentColor),
+                .height(imageHeight),
             onClick = { selectId.invoke(productInfo?.id ?: "") },
             data = nft.compositeUrl,
             processImageIntent = processImageIntent
@@ -79,43 +80,50 @@ fun ShopItem(
         Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Text(
-            text = if (nft.name.length > 20) {
-                "${nft.name.take(17)}..."
-            } else {
-                nft.name
-            }, fontSize = 14.sp, color = ContentAccentColor
+            text = nft.name,
+            fontSize = 14.sp,
+            color = ContentAccentColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
-        Text(text = "by ${nft.author}", fontSize = 12.sp, color = ContentColor)
+        Row(
+            modifier = Modifier.fillMaxWidth( ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(text = "by ${nft.author}", fontSize = 12.sp, color = ContentColor)
 
-        Spacer(modifier = Modifier.height(ExtraSmallPadding))
+                Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
-        Text(
-            text = "$soldQty of ${productInfo?.quantity ?: -1} sold",
-            fontSize = 12.sp,
-            color = ContentColor
-        )
-
-        Spacer(modifier = Modifier.height(ExtraSmallPadding))
-
-        BuyButton(
-            text = when {
-                isSoldOut -> "Sold out"
-                delisted -> "Delisted"
-                else -> "${productInfo?.price?.toInt()} ${productInfo?.priceCurrency?.name}"
-            },
-            enabled = !isSoldOut && !delisted,
-            onClick = {
-                if (nft.productInfo?.listingId != null) {
-                    onMint.invoke(
-                        nft.productInfo.listingId,
-                        nft.productInfo.price,
-                        nft.productInfo.priceCurrency == PriceCurrency.POL
-                    )
-                }
+                Text(
+                    text = "$soldQty of ${productInfo?.quantity ?: -1} sold",
+                    fontSize = 12.sp,
+                    color = ContentColor
+                )
             }
-        )
+            
+            Spacer(Modifier.weight(1F))
+
+            BuyButton(
+                text = when {
+                    isSoldOut -> "Sold out"
+                    delisted -> "Delisted"
+                    else -> "${productInfo?.price?.toInt()} ${productInfo?.priceCurrency?.name}"
+                },
+                enabled = !isSoldOut && !delisted,
+                onClick = {
+                    if (nft.productInfo?.listingId != null) {
+                        onMint.invoke(
+                            nft.productInfo.listingId,
+                            nft.productInfo.price,
+                            nft.productInfo.priceCurrency == PriceCurrency.POL
+                        )
+                    }
+                }
+            )
+        }
     }
 }

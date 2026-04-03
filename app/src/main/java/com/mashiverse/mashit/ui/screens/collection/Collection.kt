@@ -102,7 +102,7 @@ fun Collection(searchQuery: State<String>) {
     }
 
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * 8.dp) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     if (walletPreferences.value.wallet != null) {
@@ -113,8 +113,8 @@ fun Collection(searchQuery: State<String>) {
         ) {
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(SmallPadding),
-                horizontalArrangement = Arrangement.spacedBy(SmallPadding),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 columns = GridCells.Fixed(3)
             ) {
                 items(ownedNfts.size) { i ->

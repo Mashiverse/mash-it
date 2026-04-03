@@ -74,7 +74,7 @@ fun SearchCategory(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // Sets 2 items per row
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SmallPadding),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             items(

@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -151,7 +152,8 @@ fun Shop(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = Padding)
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp)
     ) {
         if (searchedListings.isNotEmpty()) {
             SearchCategory(

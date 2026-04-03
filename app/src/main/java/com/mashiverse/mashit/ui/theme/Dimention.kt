@@ -5,14 +5,13 @@ import androidx.compose.ui.unit.sp
 
 // Components
 val ContentContainerHeight = 40.dp
-val NavBarHeight = 48.dp
-val IconSize = 32.dp
 val SmallIconSize = 24.dp
 val SearchHeight = 48.dp
 val MashiHolderWidth = (552 * 0.24).dp
 val MashiHolderHeight = (736 * 0.24).dp
-val LargeMashiHolderWidth = (552 * 0.3).dp
-val LargeMashiHolderHeight = (736 * 0.3).dp
+
+val ShopHolderWidth = (552 * 0.36).dp
+val ShopHolderHeight = (736 * 0.36).dp
 
 val MaxMashiHolderWidth = (552 * 0.42).dp
 val MaxMashiHolderHeight = (736 * 0.42).dp

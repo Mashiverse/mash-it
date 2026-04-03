@@ -27,7 +27,7 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
-import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
+import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -45,7 +45,7 @@ fun MashiDetailsSection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(LargeMashiHolderHeight)
+            .height(ShopHolderHeight)
     ) {
         Column(
             modifier = Modifier

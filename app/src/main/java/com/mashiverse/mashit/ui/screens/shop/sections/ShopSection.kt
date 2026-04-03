@@ -20,6 +20,7 @@ import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
@@ -39,7 +40,7 @@ fun ShopSection(
         ) {
             Text(
                 text = sectionName,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
             )
@@ -53,7 +54,7 @@ fun ShopSection(
             ) {
                 Text(
                     text = "See all",
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     color = ContentColor,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
@@ -62,7 +63,7 @@ fun ShopSection(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(SmallPadding)
+            horizontalArrangement = Arrangement.spacedBy(Padding)
         ) {
             val itemCount = minOf(sectionItems.itemCount, 20)
             items(count = itemCount) { index ->
