@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.states.intents.ActionsIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.ui.screens.components.nft.MashupComposite
 
 @Composable
 fun MashupActions(
@@ -37,7 +38,8 @@ fun MashupActions(
 
             MashupComposite(
                 modifier = modifier,
-                mashupDetails = mashupDetails,
+                colors = mashupDetails.colors,
+                assets = mashupDetails.assets,
                 holderWidth = holderWidth,
                 processImageIntent = processImageIntent,
             )

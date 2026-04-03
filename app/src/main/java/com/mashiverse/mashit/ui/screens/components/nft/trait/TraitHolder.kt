@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Trait
@@ -20,20 +22,27 @@ import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.MashiHolderWidth
+import org.bouncycastle.math.raw.Mod
 
 @Composable
 fun TraitHolder(
+    modifier: Modifier = Modifier,
     trait: Trait,
+    isSelected: Boolean = false,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
     processImageIntent: (ImageIntent) -> Unit
 ) {
     Column {
         TraitImage(
-            modifier = Modifier
+            modifier = modifier
                 .width(width)
                 .height(height)
-                .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
+                .border(
+                    width = 1.dp,
+                    shape = MashiHolderShape,
+                    color = if (isSelected) Color.Red else ContentColor
+                ),
             data = trait.url ?: "",
             processImageIntent = processImageIntent
         )

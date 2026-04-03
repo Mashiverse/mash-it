@@ -99,7 +99,7 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = true
     }
 
-    val closeBottomShit = {
+    val closeBottomSheet = {
         isBottomSheet = false
     }
 
@@ -138,14 +138,14 @@ fun Collection(searchQuery: State<String>) {
             selectedMashi?.let {
                 MashiBottomSheet(
                     selectedNft = selectedMashi!!,
-                    closeBottomShit = closeBottomShit,
+                    closeBottomSheet = closeBottomSheet,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                     sheetState = sheetState,
                 ) {
                     MashiDetailsSection(
                         nft = selectedMashi!!,
                         scope = scope,
-                        closeBottomShit = closeBottomShit,
+                        closeBottomSheet = closeBottomSheet,
                         sheetState = sheetState,
                     )
                 }

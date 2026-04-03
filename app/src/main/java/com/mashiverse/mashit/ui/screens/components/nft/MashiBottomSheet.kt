@@ -1,7 +1,9 @@
 package com.mashiverse.mashit.ui.screens.components.nft
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,16 +18,20 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
-import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.OptionalTrait
+import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
-import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -33,14 +39,13 @@ import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
-import com.mashiverse.mashit.ui.theme.Surface
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MashiBottomSheet(
     selectedNft: Nft,
-    closeBottomShit: () -> Unit,
+    closeBottomSheet: () -> Unit, // Renamed from closeBottomSheet
     processImageIntent: (ImageIntent) -> Unit,
     sheetState: SheetState,
     detailsContent: @Composable () -> Unit
@@ -49,15 +54,34 @@ fun MashiBottomSheet(
     val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
+    // FIX 1 & 3: Use toMutableStateList and add selectedNft as a key
+    // so the state resets if the NFT changes.
+    val optionalTraits = remember(selectedNft) {
+        selectedNft.traits?.map { trait ->
+            OptionalTrait(trait = trait, selected = true)
+        }?.toMutableStateList() // This makes the list observable
+    }
+
+    // FIX 2: Updated selection logic to work with Compose state
+    val selectTrait = { trait: Trait ->
+        val index = optionalTraits?.indexOfFirst { it.trait == trait } ?: -1
+        if (index != -1) {
+            val item = optionalTraits!![index]
+            // We replace the element to trigger the observable list update
+            optionalTraits[index] = item.copy(selected = !item.selected)
+        }
+    }
+
     ModalBottomSheet(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = BottomSheetShape,
-        onDismissRequest = closeBottomShit,
+        onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
-        containerColor = Surface,
+        containerColor = Color(32, 32, 32),
         contentColor = ContentColor,
         dragHandle = null,
+        // Warning: Ensure you really want gestures disabled,
+        // otherwise users can't swipe down to close.
         sheetGesturesEnabled = false
     ) {
         Column(
@@ -66,17 +90,21 @@ fun MashiBottomSheet(
                 .fillMaxWidth()
                 .padding(start = Padding, end = Padding, top = Padding),
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                TraitImage(
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(
                     modifier = Modifier
                         .height(LargeMashiHolderHeight)
                         .width(LargeMashiHolderWidth),
-                    data = selectedNft.compositeUrl,
-                    processImageIntent = processImageIntent
-                )
+                ) {
+                    // Filter the observable list
+                    val selectedTraits = optionalTraits?.filter { it.selected }?.map { it.trait } ?: emptyList()
 
+                    MashupComposite(
+                        assets = selectedTraits,
+                        holderWidth = LargeMashiHolderWidth,
+                        processImageIntent = processImageIntent
+                    )
+                }
                 detailsContent()
             }
 
@@ -89,16 +117,21 @@ fun MashiBottomSheet(
                 fontWeight = FontWeight.Bold
             )
 
-            selectedNft.traits?.let {
+            optionalTraits?.let { traits ->
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(SmallPadding),
                     horizontalArrangement = Arrangement.spacedBy(SmallPadding),
                     columns = GridCells.Fixed(3)
                 ) {
-                    items(selectedNft.traits.size) { i ->
+                    items(traits.size) { i ->
+                        val isSelected = traits[i].selected
                         TraitHolder(
-                            trait = selectedNft.traits[i],
+                            modifier = Modifier
+                                .clickable { selectTrait(traits[i].trait) },
+                            isSelected = isSelected,
+                            // Pass selection state to TraitHolder if it supports visual feedback
+                            trait = traits[i].trait,
                             width = mashiHolderWidth,
                             height = mashiHolderHeight,
                             processImageIntent = processImageIntent

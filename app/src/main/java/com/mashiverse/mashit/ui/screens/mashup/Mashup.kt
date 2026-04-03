@@ -216,7 +216,7 @@ fun Mashup(searchQuery: State<String>) {
 
         if (mashupUiState.isPreview) {
             MashupSheet(
-                closeBottomShit = { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) },
+                closeBottomSheet = { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) },
                 sheetState = previewSheetState,
                 scope = scope,
                 mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),

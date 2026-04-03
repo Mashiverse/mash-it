@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MashupSheet(
     mashupDetails: MashupDetails,
-    closeBottomShit: () -> Unit,
+    closeBottomSheet: () -> Unit,
     sheetState: SheetState,
     scope: CoroutineScope,
     processImageIntent: (ImageIntent) -> Unit,
@@ -57,7 +57,7 @@ fun MashupSheet(
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
         shape = BottomSheetShape,
-        onDismissRequest = closeBottomShit,
+        onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
         containerColor = Surface,
         contentColor = ContentColor,
@@ -78,7 +78,7 @@ fun MashupSheet(
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
-                                closeBottomShit.invoke()
+                                closeBottomSheet.invoke()
                             }
                         }
                     }

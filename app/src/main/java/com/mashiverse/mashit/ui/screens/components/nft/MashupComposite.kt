@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.mashup.actions
+package com.mashiverse.mashit.ui.screens.components.nft
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
+import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintText
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
@@ -25,8 +27,9 @@ import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 
 @Composable
 fun MashupComposite(
-    mashupDetails: MashupDetails,
     modifier: Modifier = Modifier,
+    assets: List<Trait>,
+    colors: SelectedColors? = null,
     processImageIntent: (ImageIntent) -> Unit,
     holderWidth: Dp
 ) {
@@ -37,7 +40,7 @@ fun MashupComposite(
         contentAlignment = Alignment.Center
     ) {
         val maxWidth = min(holderWidth, MaxMashiHolderWidth)
-        mashupDetails.assets.sortedBy { it.type }.forEach { trait ->
+        assets.sortedBy { it.type }.forEach { trait ->
             val traitType = trait.type
             val width =
                 if (traitType == TraitType.BACKGROUND) maxWidth else maxWidth * 380 / 552
@@ -51,19 +54,10 @@ fun MashupComposite(
                     .width(width)
                     .height(height),
                 background = Color.Transparent,
-                selectedColors = mashupDetails.colors,
+                selectedColors = colors,
                 data = trait.url ?: "",
                 contentScale = contentScale,
                 processImageIntent = processImageIntent
-            )
-        }
-
-        mashupDetails.mint?.let {
-            MintText(
-                modifier = Modifier
-                    .padding(end = 2.dp)
-                    .align(Alignment.BottomEnd),
-                mint = mashupDetails.mint
             )
         }
     }

@@ -60,7 +60,7 @@ fun ColorSheet(
     var pickerSize by remember { mutableStateOf(IntSize(1, 1)) }
     var isDragging by remember { mutableStateOf(false) }
 
-    val closeBottomShit = {
+    val closeBottomSheet = {
         processActionsIntent(ActionsIntent.OnColorDismiss)
         processMashupIntent(MashupIntent.OnColorsReset)
     }
@@ -95,7 +95,7 @@ fun ColorSheet(
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
         shape = BottomSheetShape,
-        onDismissRequest = closeBottomShit,
+        onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
         containerColor = Surface,
         contentColor = ContentColor,
@@ -173,7 +173,7 @@ fun ColorSheet(
             ColorSheetActions(
                 scope = scope,
                 sheetState = sheetState,
-                closeBottomShit = closeBottomShit,
+                closeBottomSheet = closeBottomSheet,
                 saveColors = saveColors
             )
 

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 fun MashiDetailsSection(
     nft: Nft,
     scope: CoroutineScope,
-    closeBottomShit: () -> Unit,
+    closeBottomSheet: () -> Unit,
     sheetState: SheetState,
     getSoldQty: ((Int, (Int) -> Unit) -> Unit)? = null,
     onMint: ((String, Double, Boolean) -> Unit)? = null
@@ -87,7 +87,7 @@ fun MashiDetailsSection(
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
-                                closeBottomShit.invoke()
+                                closeBottomSheet.invoke()
                             }
                         }
                     }

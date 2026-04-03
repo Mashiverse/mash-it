@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 fun ColorSheetActions(
     scope: CoroutineScope,
     sheetState: SheetState,
-    closeBottomShit: () -> Unit,
+    closeBottomSheet: () -> Unit,
     saveColors: () -> Unit
 ) {
     val theme = MaterialTheme.colorScheme
@@ -40,7 +40,7 @@ fun ColorSheetActions(
             onClick = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                     if (!sheetState.isVisible) {
-                        closeBottomShit.invoke()
+                        closeBottomSheet.invoke()
                     }
                 }
             },
@@ -63,7 +63,7 @@ fun ColorSheetActions(
                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                     if (!sheetState.isVisible) {
                         saveColors.invoke()
-                        closeBottomShit.invoke()
+                        closeBottomSheet.invoke()
                     }
                 }
             },

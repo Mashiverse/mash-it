@@ -94,7 +94,7 @@ fun Shop(
         }
     }
 
-    val closeBottomShit = { isBottomSheet = false }
+    val closeBottomSheet = { isBottomSheet = false }
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -197,13 +197,13 @@ fun Shop(
             MashiBottomSheet(
                 selectedNft = nft,
                 sheetState = sheetState,
-                closeBottomShit = closeBottomShit,
+                closeBottomSheet = closeBottomSheet,
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) }
             ) {
                 MashiDetailsSection(
                     nft = nft,
                     scope = scope,
-                    closeBottomShit = closeBottomShit,
+                    closeBottomSheet = closeBottomSheet,
                     sheetState = sheetState,
                     getSoldQty = getSoldQty,
                     onMint = onMint
