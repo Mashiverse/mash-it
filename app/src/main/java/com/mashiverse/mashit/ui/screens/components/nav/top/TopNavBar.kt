@@ -109,6 +109,7 @@ fun TopNavBar(
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp)
                 .height(1.dp)
                 .background(Color.DarkGray)
         )

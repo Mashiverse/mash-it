@@ -13,5 +13,6 @@ val navItems = listOf(
     NavItem("Shop", MainRoutes.Shop(listingId = null)),
     NavItem("Artists", MainRoutes.Artists),
     NavItem("Collection", MainRoutes.Collection),
-    NavItem("Mashup", MainRoutes.Mashup)
+    NavItem("Mashup", MainRoutes.Mashup),
+    NavItem("Settings", MainRoutes.Settings)
 )
