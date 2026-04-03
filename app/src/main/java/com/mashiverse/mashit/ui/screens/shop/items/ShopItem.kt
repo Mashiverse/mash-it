@@ -28,7 +28,7 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderWidth
-import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.TraitShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -70,7 +70,7 @@ fun ShopItem(
             modifier = Modifier
                 .width(imageWidth)
                 .height(imageHeight)
-                .border(width = 0.3.dp, shape = MashiHolderShape, color = ContentColor),
+                .border(width = 0.3.dp, shape = TraitShape, color = ContentColor),
             onClick = { selectId.invoke(productInfo?.id ?: "") },
             data = nft.compositeUrl,
             processImageIntent = processImageIntent

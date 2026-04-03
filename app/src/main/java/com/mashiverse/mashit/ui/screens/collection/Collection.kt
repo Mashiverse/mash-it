@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,13 +32,12 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.flow.map
@@ -124,7 +122,7 @@ fun Collection(searchQuery: State<String>) {
                         modifier = Modifier
                             .height(mashiHolderHeight)
                             .width(mashiHolderWidth)
-                            .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
+                            .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
                         onClick = { selectMashi.invoke(ownedNfts[i]) },
                         data = ownedNfts[i].compositeUrl,
                         processImageIntent = { intent -> viewModel.processImageIntent(intent) },

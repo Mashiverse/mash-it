@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,17 +19,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.LargeMashiHolderHeight
-import com.mashiverse.mashit.ui.theme.SmallIconSize
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -54,27 +55,35 @@ fun MashiDetailsSection(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = if (nft.name.length > 20) {
-                        "${nft.name.take(17)}..."
-                    } else {
-                        nft.name
-                    },
-                    color = ContentAccentColor,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = nft.name,
+                        maxLines = 1,
+                        color = ContentAccentColor,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
-                Spacer(modifier = Modifier.weight(1F))
+                    Text(
+                        text = "by ${nft.author}",
+                        color = ContentColor,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Spacer(Modifier.width(SmallPadding))
 
                 IconButton(
-                    modifier = Modifier.size(SmallIconSize),
+                    modifier = Modifier.size(32.dp),
                     onClick = {}
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(SmallIconSize),
-                        painter = painterResource(R.drawable.expand_icon),
+                            .size(32.dp),
+                        imageVector = Icons.Default.MoreHoriz,
                         contentDescription = "More",
                         tint = ContentAccentColor
                     )
@@ -83,7 +92,7 @@ fun MashiDetailsSection(
                 Spacer(modifier = Modifier.width(SmallPadding))
 
                 IconButton(
-                    modifier = Modifier.size(SmallIconSize),
+                    modifier = Modifier.size(32.dp),
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
@@ -94,15 +103,15 @@ fun MashiDetailsSection(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(SmallIconSize),
-                        painter = painterResource(R.drawable.close_icon),
+                            .size(32.dp),
+                        imageVector = Icons.Default.Clear,
                         contentDescription = "More",
                         tint = ContentAccentColor
                     )
                 }
             }
 
-            Text(text = "by ${nft.author}", color = ContentColor, fontSize = 12.sp)
+
 
             Spacer(modifier = Modifier.height(ExtraSmallPadding))
 

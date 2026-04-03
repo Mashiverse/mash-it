@@ -19,7 +19,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
-import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.decoders.SvgCustomDecoder
 
 @Composable
@@ -51,7 +51,7 @@ fun SvgImage(
 
     Box(
         modifier = modifier
-            .clip(MashiHolderShape)
+            .clip(TraitShape)
     ) {
         cachedPainter?.let {
             Image(

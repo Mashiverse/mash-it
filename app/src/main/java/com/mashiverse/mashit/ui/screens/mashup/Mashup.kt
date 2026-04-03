@@ -39,7 +39,6 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.header.CategoryHeader
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
@@ -47,8 +46,7 @@ import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
-import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
@@ -157,7 +155,7 @@ fun Mashup(searchQuery: State<String>) {
                         .height(min(compositeHeight, MaxMashiHolderHeight))
                         .width(min(compositeWidth, MaxMashiHolderWidth))
                         .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) }
-                        .border(width = 0.4.dp, shape = MashiHolderShape, color = ContentColor),
+                        .border(width = 0.4.dp, shape = TraitShape, color = ContentColor),
                     holderWidth = compositeWidth,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                     processActionsIntent = { intent -> viewModel.processActionsIntent(intent) }

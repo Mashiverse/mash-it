@@ -1,62 +1,73 @@
 package com.mashiverse.mashit.ui.screens.components.nft.trait
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MashiHolderHeight
-import com.mashiverse.mashit.ui.theme.MashiHolderShape
 import com.mashiverse.mashit.ui.theme.MashiHolderWidth
-import org.bouncycastle.math.raw.Mod
+import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
 fun TraitHolder(
-    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
     trait: Trait,
     isSelected: Boolean = false,
     width: Dp = MashiHolderWidth,
     height: Dp = MashiHolderHeight,
     processImageIntent: (ImageIntent) -> Unit
 ) {
-    Column {
-        TraitImage(
-            modifier = modifier
+    Column(
+        modifier = Modifier.width(width),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
                 .width(width)
                 .height(height)
                 .border(
                     width = 1.dp,
-                    shape = MashiHolderShape,
+                    shape = TraitShape,
                     color = if (isSelected) Color.Red else ContentColor
-                ),
-            data = trait.url ?: "",
-            processImageIntent = processImageIntent
-        )
+                )
+                .padding(4.dp),
+        ) {
+            TraitImage(
+                modifier = Modifier,
+                data = trait.url ?: "",
+                onClick = onClick,
+                processImageIntent = processImageIntent
+            )
+        }
 
-        Spacer(modifier = Modifier.height(ExtraSmallPadding))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            fontSize = 14.sp,
             text = trait.type.name
                 .lowercase()
                 .replace("_", " ")
                 .replaceFirstChar { c -> c.uppercaseChar() },
             color = ContentAccentColor,
-            fontWeight = FontWeight.Bold
+            fontSize = 12.sp
         )
     }
 }

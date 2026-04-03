@@ -1,9 +1,7 @@
 package com.mashiverse.mashit.ui.screens.components.nft
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.OptionalTrait
 import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
@@ -51,7 +50,7 @@ fun MashiBottomSheet(
     detailsContent: @Composable () -> Unit
 ) {
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3
+    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * Padding) / 3
     val mashiHolderHeight = mashiHolderWidth * 4 / 3
 
     // FIX 1 & 3: Use toMutableStateList and add selectedNft as a key
@@ -68,7 +67,9 @@ fun MashiBottomSheet(
         if (index != -1) {
             val item = optionalTraits!![index]
             // We replace the element to trigger the observable list update
-            optionalTraits[index] = item.copy(selected = !item.selected)
+            if (item.trait.type != TraitType.BACKGROUND) {
+                optionalTraits[index] = item.copy(selected = !item.selected)
+            }
         }
     }
 
@@ -90,45 +91,37 @@ fun MashiBottomSheet(
                 .fillMaxWidth()
                 .padding(start = Padding, end = Padding, top = Padding),
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
+            Row(horizontalArrangement = Arrangement.spacedBy(Padding)) {
+                val selectedTraits =
+                    optionalTraits?.filter { it.selected }?.map { it.trait } ?: emptyList()
+
+                MashupComposite(
                     modifier = Modifier
                         .height(LargeMashiHolderHeight)
                         .width(LargeMashiHolderWidth),
-                ) {
-                    // Filter the observable list
-                    val selectedTraits = optionalTraits?.filter { it.selected }?.map { it.trait } ?: emptyList()
+                    assets = selectedTraits,
+                    holderWidth = LargeMashiHolderWidth,
+                    processImageIntent = processImageIntent
+                )
 
-                    MashupComposite(
-                        assets = selectedTraits,
-                        holderWidth = LargeMashiHolderWidth,
-                        processImageIntent = processImageIntent
-                    )
-                }
                 detailsContent()
             }
 
             Spacer(modifier = Modifier.height(Padding))
 
-            Text(
-                fontSize = 14.sp,
-                text = "Traits",
-                color = ContentAccentColor,
-                fontWeight = FontWeight.Bold
-            )
-
             optionalTraits?.let { traits ->
                 LazyVerticalGrid(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(SmallPadding),
-                    horizontalArrangement = Arrangement.spacedBy(SmallPadding),
+                    verticalArrangement = Arrangement.spacedBy(Padding),
+                    horizontalArrangement = Arrangement.spacedBy(Padding),
                     columns = GridCells.Fixed(3)
                 ) {
                     items(traits.size) { i ->
                         val isSelected = traits[i].selected
                         TraitHolder(
-                            modifier = Modifier
-                                .clickable { selectTrait(traits[i].trait) },
+                            onClick = {
+                                selectTrait(traits[i].trait)
+                            },
                             isSelected = isSelected,
                             // Pass selection state to TraitHolder if it supports visual feedback
                             trait = traits[i].trait,

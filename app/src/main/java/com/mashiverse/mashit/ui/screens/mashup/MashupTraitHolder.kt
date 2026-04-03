@@ -18,7 +18,7 @@ import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
-import com.mashiverse.mashit.ui.theme.MashiHolderShape
+import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
 fun MashupTraitHolder(
@@ -43,7 +43,7 @@ fun MashupTraitHolder(
             modifier = Modifier
                 .width(width)
                 .height(height)
-                .border(width = 0.2.dp, shape = MashiHolderShape, color = ContentColor),
+                .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
             onClick = { processMashupIntent(MashupIntent.OnMashupUpdate(mashupTrait)) },
             data = mashupTrait.trait.url ?: "",
             processImageIntent = processImageIntent,

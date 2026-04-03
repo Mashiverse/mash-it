@@ -113,7 +113,8 @@ fun MashupSheet(
                                     trait = i,
                                     width = mashiHolderWidth,
                                     height = mashiHolderHeight,
-                                    processImageIntent = processImageIntent
+                                    processImageIntent = processImageIntent,
+                                    onClick = {}
                                 )
                             }
                         }
