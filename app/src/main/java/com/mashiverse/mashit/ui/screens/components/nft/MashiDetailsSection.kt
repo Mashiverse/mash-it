@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
@@ -55,26 +55,7 @@ fun MashiDetailsSection(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = nft.name,
-                        maxLines = 1,
-                        color = ContentAccentColor,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Text(
-                        text = "by ${nft.author}",
-                        color = ContentColor,
-                        fontSize = 12.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-                Spacer(Modifier.width(SmallPadding))
+                Spacer(Modifier.weight(1f))
 
                 IconButton(
                     modifier = Modifier.size(32.dp),
@@ -111,13 +92,32 @@ fun MashiDetailsSection(
                 }
             }
 
+            Spacer(Modifier.height(Padding))
 
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = nft.name,
+                    maxLines = 1,
+                    color = ContentAccentColor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Spacer(modifier = Modifier.height(ExtraSmallPadding))
+                Text(
+                    text = "by ${nft.author}",
+                    color = ContentColor,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Spacer(modifier = Modifier.height(Padding))
 
             nft.description?.let {
                 Text(
-                    maxLines = 6,
+                    maxLines = 5,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 12.sp,
                     color = ContentAccentColor,
