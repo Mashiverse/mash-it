@@ -34,7 +34,7 @@ import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
-import com.mashiverse.mashit.ui.theme.Surface
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper.toHue
@@ -97,7 +97,7 @@ fun ColorSheet(
         shape = BottomSheetShape,
         onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
-        containerColor = Surface,
+        containerColor = Secondary,
         contentColor = ContentColor,
         dragHandle = null,
     ) {

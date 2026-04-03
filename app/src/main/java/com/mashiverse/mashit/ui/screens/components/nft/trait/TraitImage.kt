@@ -3,23 +3,17 @@ package com.mashiverse.mashit.ui.screens.components.nft.trait
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.states.utils.rememberImageType
 import com.mashiverse.mashit.ui.theme.TraitShape
-import com.mashiverse.mashit.ui.theme.Tertiary
 import com.mashiverse.mashit.utils.MASHIVERSE_BASE_URL
 
 
@@ -29,7 +23,6 @@ fun TraitImage(
     onClick: (() -> Unit)? = null,
     data: String,
     processImageIntent: (ImageIntent) -> Unit,
-    background: Color = Tertiary,
     selectedColors: SelectedColors? = null,
     contentScale: ContentScale = ContentScale.FillHeight
 ) {

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.SearchHeight
 import com.mashiverse.mashit.ui.theme.SearchShape
 
@@ -48,7 +49,7 @@ fun SearchBar(
 
     val borderColor = animateColorAsState(
         targetValue = if (isSearch) {
-            Color.Red
+            Primary
         } else {
             Color.Transparent
         },

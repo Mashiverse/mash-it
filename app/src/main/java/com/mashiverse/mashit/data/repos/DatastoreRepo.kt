@@ -60,19 +60,6 @@ class DatastoreRepo @Inject constructor(
                 preferences[PreferencesKeys.NOTIFICATIONS] ?: false
             }
 
-    val dynamicThemeFlow: Flow<Boolean> =
-        datastore.data
-            .catch { e ->
-                if (e is IOException) {
-                    emit(emptyPreferences())
-                } else {
-                    Timber.tag("Test").d(e)
-                }
-            }
-            .map { preferences ->
-                preferences[PreferencesKeys.DYNAMIC_UI] ?: false
-            }
-
     suspend fun updateWallet(wallet: String) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.WALLET] = wallet
@@ -94,12 +81,6 @@ class DatastoreRepo @Inject constructor(
     suspend fun updateNotifications(enabled: Boolean) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.NOTIFICATIONS] = enabled
-        }
-    }
-
-    suspend fun updateDynamicTheme(enabled: Boolean) {
-        datastore.edit { preferences ->
-            preferences[PreferencesKeys.DYNAMIC_UI] = enabled
         }
     }
 }

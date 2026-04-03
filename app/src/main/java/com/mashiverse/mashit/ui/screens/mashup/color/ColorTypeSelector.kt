@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.states.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
-import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.ActiveButtonBackground
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.InactiveMashupButtonBackground
+import com.mashiverse.mashit.ui.theme.ButtonBackground
 import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
@@ -34,9 +34,9 @@ fun ColorTypeButton(
         },
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = if (selectedColorType == colorType) {
-                Secondary
+                ActiveButtonBackground
             } else {
-                InactiveMashupButtonBackground
+                ButtonBackground
             },
             contentColor = if (selectedColorType == colorType) ContentAccentColor else ContentColor
         )

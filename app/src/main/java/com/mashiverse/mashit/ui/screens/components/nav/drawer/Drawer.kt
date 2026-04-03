@@ -31,6 +31,8 @@ import androidx.navigation.NavHostController
 import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.ui.screens.components.buttons.BaseButton
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.Primary
+import com.mashiverse.mashit.ui.theme.Surface
 import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -46,7 +48,7 @@ fun NavDrawer(
     val config = LocalConfiguration.current
 
     DismissibleDrawerSheet(
-        drawerContainerColor = Color(32, 32, 32),
+        drawerContainerColor = Surface,
         drawerShape = RectangleShape,
         modifier = modifier
             .width(min((config.screenWidthDp * 0.80), 328.0).dp)
@@ -73,7 +75,7 @@ fun NavDrawer(
                     Text(
                         text = wallet.lowercase(),
                         fontSize = 20.sp,
-                        color = Color.Red,
+                        color = Primary,
                         maxLines = 1,
                         overflow = TextOverflow.MiddleEllipsis
                     )

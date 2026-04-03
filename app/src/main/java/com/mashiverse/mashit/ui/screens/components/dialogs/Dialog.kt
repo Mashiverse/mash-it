@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.ui.theme.Surface
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
@@ -56,7 +56,7 @@ fun Dialog(
             }
         },
         confirmButton = { },
-        containerColor = Surface,
+        containerColor = Secondary,
         titleContentColor = ContentAccentColor,
         textContentColor = ContentColor
     )

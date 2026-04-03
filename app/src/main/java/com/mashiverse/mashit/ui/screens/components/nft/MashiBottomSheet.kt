@@ -32,6 +32,7 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.ShopHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.Surface
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +73,7 @@ fun MashiBottomSheet(
         shape = BottomSheetShape,
         onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
-        containerColor = Color(32, 32, 32),
+        containerColor = Surface,
         contentColor = ContentColor,
         dragHandle = null,
         // Warning: Ensure you really want gestures disabled,

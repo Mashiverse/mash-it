@@ -28,9 +28,6 @@ fun Settings() {
     val notifications = viewModel.notificationsFlow.collectAsState(false)
     val isNotifications by remember(notifications.value) { mutableStateOf(notifications.value) }
 
-    val dynamicTheme = viewModel.dynamicThemeFlow.collectAsState(false)
-    val isDynamicTheme by remember(dynamicTheme.value) { mutableStateOf(dynamicTheme.value) }
-
     val updateNotifications = { enabled: Boolean ->
         if (enabled) {
             if (!checkNotificationsPermission(ctx)) {
@@ -53,15 +50,6 @@ fun Settings() {
             checked = isNotifications
         ) { checked ->
             updateNotifications.invoke(checked)
-        }
-
-        Spacer(modifier = Modifier.height(Padding))
-
-        CheckRow(
-            title = "Dynamic Theme",
-            checked = isDynamicTheme
-        ) { checked ->
-            viewModel.updateDynamicTheme(checked)
         }
     }
 }

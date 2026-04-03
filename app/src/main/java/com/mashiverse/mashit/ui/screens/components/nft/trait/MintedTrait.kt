@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.ui.theme.Tertiary
 
 @Composable
 fun MintedTrait(
@@ -19,7 +17,6 @@ fun MintedTrait(
     onClick: (() -> Unit)? = null,
     data: String,
     processImageIntent: (ImageIntent) -> Unit,
-    background: Color = Tertiary,
     selectedColors: SelectedColors? = null,
     contentScale: ContentScale = ContentScale.Fit,
     mint: Int? = null
@@ -32,7 +29,6 @@ fun MintedTrait(
             onClick = onClick,
             data = data,
             processImageIntent = processImageIntent,
-            background = background,
             selectedColors = selectedColors,
             contentScale = contentScale
         )

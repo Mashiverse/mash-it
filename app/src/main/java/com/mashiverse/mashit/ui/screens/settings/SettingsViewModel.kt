@@ -14,7 +14,6 @@ class SettingsViewModel @Inject constructor(
     private val datastoreRepo: DatastoreRepo
 ) : ViewModel() {
     val notificationsFlow = datastoreRepo.notificationsFlow
-    val dynamicThemeFlow = datastoreRepo.dynamicThemeFlow
 
     fun updateNotifications(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -25,12 +24,6 @@ class SettingsViewModel @Inject constructor(
             }
 
             datastoreRepo.updateNotifications(enabled)
-        }
-    }
-
-    fun updateDynamicTheme(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            datastoreRepo.updateDynamicTheme(enabled)
         }
     }
 }

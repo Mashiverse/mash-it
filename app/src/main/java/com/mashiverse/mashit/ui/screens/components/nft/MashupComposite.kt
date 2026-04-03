@@ -12,14 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.min
-import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
+import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
-import com.mashiverse.mashit.ui.theme.Tertiary
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
+import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
 fun MashupComposite(
@@ -48,7 +47,6 @@ fun MashupComposite(
                 modifier = Modifier
                     .width(width)
                     .height(height),
-                background = Color.Transparent,
                 selectedColors = colors,
                 data = trait.url ?: "",
                 contentScale = contentScale,

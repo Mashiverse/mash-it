@@ -1,5 +1,6 @@
 package com.mashiverse.mashit.ui.screens.mashup.color
 
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.ui.theme.ColorCloseButtonBackground
+import com.mashiverse.mashit.ui.theme.ButtonBackground
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +46,7 @@ fun ColorSheetActions(
                 }
             },
             colors = ButtonDefaults.buttonColors().copy(
-                containerColor = ColorCloseButtonBackground,
+                containerColor = ButtonBackground,
                 contentColor = ContentAccentColor
             ),
             contentPadding = PaddingValues(0.dp)

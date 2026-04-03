@@ -22,6 +22,7 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MashiHolderWidth
+import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
@@ -44,7 +45,7 @@ fun TraitHolder(
                 .border(
                     width = 1.dp,
                     shape = TraitShape,
-                    color = if (isSelected) Color.Red else ContentColor
+                    color = if (isSelected) Primary else ContentColor
                 )
                 .padding(4.dp),
         ) {

@@ -14,11 +14,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.ui.theme.Surface
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.SmallPadding
@@ -52,7 +51,7 @@ fun BuyButton(
             .clip(shape = ButtonDefaults.shape),
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = Color.Transparent,
-            disabledContainerColor = Surface
+            disabledContainerColor = Secondary
         ),
         enabled = enabled,
         onClick = onClick,

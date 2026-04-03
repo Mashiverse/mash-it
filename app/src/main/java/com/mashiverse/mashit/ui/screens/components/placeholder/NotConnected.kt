@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.R
+import com.mashiverse.mashit.ui.theme.Primary
 
 @Composable
 fun NotConnected() {
@@ -37,7 +38,7 @@ fun NotConnected() {
                 text = "Connect your wallet\n" +
                         "to see this section!",
                 fontSize = 16.sp,
-                color = Color.Red,
+                color = Primary,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )

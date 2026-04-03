@@ -29,7 +29,7 @@ import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.ui.screens.components.nft.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
-import com.mashiverse.mashit.ui.theme.Surface
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
@@ -59,7 +59,7 @@ fun MashupSheet(
         shape = BottomSheetShape,
         onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
-        containerColor = Surface,
+        containerColor = Secondary,
         contentColor = ContentColor,
         dragHandle = null,
         sheetGesturesEnabled = false
