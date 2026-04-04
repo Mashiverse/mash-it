@@ -19,11 +19,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.mashiverse.mashit.data.models.ScreenType
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
@@ -32,7 +30,6 @@ import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.detectScreenType
 import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 
@@ -49,8 +46,7 @@ fun ShopCategory(
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val columnCount = if (screenType == ScreenType.COMPACT) 2 else 4
-    val (width, height) = config.getItemWidthAndHeight(screenType, 2, 4)
+    val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
 
     val appendState = categoryItems.loadState.append
 
@@ -85,7 +81,7 @@ fun ShopCategory(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(columnCount),
+            columns = GridCells.Fixed(screenType.shopColumns),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(Padding)

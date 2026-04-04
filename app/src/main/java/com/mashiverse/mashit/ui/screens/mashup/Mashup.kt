@@ -31,13 +31,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.states.intents.ActionsIntent
 import com.mashiverse.mashit.data.states.intents.DialogIntent.Clear
 import com.mashiverse.mashit.data.states.intents.MashupIntent
-import com.mashiverse.mashit.data.models.mashup.colors.ColorType
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.nft.Owned
-import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
@@ -46,11 +45,11 @@ import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.getTraitsByType
 
@@ -107,16 +106,9 @@ fun Mashup(searchQuery: State<String>) {
     LaunchedEffect(mashupUiState.nfts, searchQuery) {
         val temp = mutableListOf<Nft>()
         mashupUiState.nfts.forEach { nft ->
-            nft.owned?.forEach { owned ->
-                temp.add(
-                    nft.copy(
-                        owned = listOf(
-                            Owned(mint = owned.mint, timestamp = owned.timestamp)
-                        )
-                    )
-                )
-            }
+            temp.add(nft)
         }
+
         nfts = if (searchQuery.isEmpty()) {
             temp
         } else {
@@ -142,6 +134,13 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
+    val selectedTraitUrl by remember(mashupUiState.mashupDetails, mashupUiState.selectedCategory) {
+        derivedStateOf {
+            mashupUiState.mashupDetails.assets.first { it.type == mashupUiState.selectedCategory }.url
+                ?: ""
+        }
+    }
+
     Column {
         if (mashupUiState.wallet != null) {
             Column(
@@ -154,8 +153,7 @@ fun Mashup(searchQuery: State<String>) {
                     modifier = Modifier
                         .height(min(compositeHeight, MaxMashiHolderHeight))
                         .width(min(compositeWidth, MaxMashiHolderWidth))
-                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) }
-                        .border(width = 0.4.dp, shape = TraitShape, color = ContentColor),
+                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview)},
                     holderWidth = compositeWidth,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                     processActionsIntent = { intent -> viewModel.processActionsIntent(intent) }
@@ -168,7 +166,7 @@ fun Mashup(searchQuery: State<String>) {
                             height = with(density) { size.height.toDp() } - SmallPadding
                         },
                 ) {
-                    Spacer(Modifier.height(SmallPadding))
+                    Spacer(Modifier.height(Padding))
 
                     MashupCategories(
                         onCategorySelect = { category ->
@@ -183,12 +181,13 @@ fun Mashup(searchQuery: State<String>) {
                         selectedCategory = mashupUiState.selectedCategory
                     )
 
-                    Spacer(Modifier.height(SmallPadding))
+                    Spacer(Modifier.height(12.dp))
 
                     MashupCategoryItems(
                         modifier = Modifier.fillMaxHeight(),
                         lazyGridState = lazyGridState,
                         traits = traits,
+                        selectedTraitUrl = selectedTraitUrl,
                         processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
                         processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                     )

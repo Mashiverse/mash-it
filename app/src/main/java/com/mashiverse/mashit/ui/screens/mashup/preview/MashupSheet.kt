@@ -12,17 +12,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.data.states.intents.ImageIntent
@@ -35,6 +41,9 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallIconSize
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.ui.theme.Surface
+import com.mashiverse.mashit.utils.helpers.detectScreenType
+import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -50,16 +59,15 @@ fun MashupSheet(
     height: Dp
 ) {
     val config = LocalConfiguration.current
-    val mashiHolderWidth =
-        (config.screenWidthDp.dp - 2 * Padding - 2 * SmallPadding) / 3 - 0.2.dp
-    val mashiHolderHeight = mashiHolderWidth * 4 / 3
+    val screenType = config.detectScreenType()
+    val (itemWidth, itemHeight) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
 
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
         shape = BottomSheetShape,
         onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
-        containerColor = Secondary,
+        containerColor = Surface,
         contentColor = ContentColor,
         dragHandle = null,
         sheetGesturesEnabled = false
@@ -67,14 +75,16 @@ fun MashupSheet(
         Column(
             modifier = Modifier
                 .height(height)
-                .padding(start = Padding, end = Padding, top = Padding)
+                .padding(start = Padding, end = Padding, top = Padding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
             ) {
+                Spacer(Modifier.weight(1F))
+
                 IconButton(
-                    modifier = Modifier.size(SmallIconSize),
+                    modifier = Modifier.size(32.dp),
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
@@ -85,15 +95,15 @@ fun MashupSheet(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(SmallIconSize),
-                        painter = painterResource(R.drawable.close_icon),
+                            .size(32.dp),
+                        imageVector = Icons.Default.Clear,
                         contentDescription = "More",
                         tint = ContentAccentColor
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(Padding))
+            Spacer(modifier = Modifier.height(SmallPadding))
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
@@ -104,15 +114,15 @@ fun MashupSheet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight(),
-                            verticalArrangement = Arrangement.spacedBy(SmallPadding),
-                            horizontalArrangement = Arrangement.spacedBy(SmallPadding),
-                            maxItemsInEachRow = 3
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(11.5.dp),
+                            maxItemsInEachRow = screenType.collectionColumns
                         ) {
                             it.forEach { i ->
                                 TraitHolder(
                                     trait = i,
-                                    width = mashiHolderWidth,
-                                    height = mashiHolderHeight,
+                                    width = itemWidth,
+                                    height = itemHeight,
                                     processImageIntent = processImageIntent,
                                     onClick = {}
                                 )

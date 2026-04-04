@@ -26,9 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.models.ScreenType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Owned
 import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
@@ -40,7 +38,6 @@ import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.detectScreenType
 import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 import kotlinx.coroutines.flow.map
@@ -107,8 +104,7 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = false
     }
 
-    val columnCount = if (screenType == ScreenType.COMPACT) 3 else 5
-    val (width, height) = config.getItemWidthAndHeight(screenType, 3, 5)
+    val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, padding = 12.dp)
 
     if (walletPreferences.value.wallet != null) {
         Column(
@@ -118,9 +114,9 @@ fun Collection(searchQuery: State<String>) {
         ) {
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                columns = GridCells.Fixed(columnCount)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                columns = GridCells.Fixed(screenType.collectionColumns)
             ) {
                 items(ownedNfts.size) { i ->
                     MintedTrait(

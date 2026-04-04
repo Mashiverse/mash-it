@@ -121,24 +121,20 @@ class MashupViewModel @Inject constructor(
         recordState()
 
         val trait = mashupTrait.trait
-        var mint = mashupDetails.mint
         val assets = mashupDetails.assets.toMutableList()
 
         val assetIndex = assets.indexOfFirst { it.type == trait.type }
         if (assetIndex != -1) {
             if (assets[assetIndex].url != trait.url) {
                 assets[assetIndex] = trait
-                if (trait.type == TraitType.BACKGROUND) mint = mashupTrait.mint
             } else {
                 assets[assetIndex] = assets[assetIndex].copy(url = null)
-                if (trait.type == TraitType.BACKGROUND) mint = null
             }
         }
 
         mashupUiState.value = uiState.copy(
             mashupDetails = mashupDetails.copy(
                 assets = assets,
-                mint = mint
             )
         )
     }
@@ -150,12 +146,9 @@ class MashupViewModel @Inject constructor(
         recordState()
 
         val randomAssets = getRandomTraits(uiState.nfts)
-        val mint = randomAssets.firstOrNull { it.trait.type == TraitType.BACKGROUND }?.mint
-
         mashupUiState.value = uiState.copy(
             mashupDetails = uiState.mashupDetails.copy(
                 assets = randomAssets.map { it.trait },
-                mint = mint
             )
         )
     }
