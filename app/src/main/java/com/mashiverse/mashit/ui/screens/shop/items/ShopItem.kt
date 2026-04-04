@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +31,7 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.ShopHolderWidth
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -84,7 +86,8 @@ fun ShopItem(
             fontSize = 14.sp,
             color = ContentAccentColor,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPadding))
@@ -93,8 +96,16 @@ fun ShopItem(
             modifier = Modifier.fillMaxWidth( ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(text = "by ${nft.author}", fontSize = 12.sp, color = ContentColor)
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = nft.author,
+                    fontSize = 12.sp,
+                    color = ContentColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
@@ -105,7 +116,7 @@ fun ShopItem(
                 )
             }
             
-            Spacer(Modifier.weight(1F))
+            Spacer(Modifier.width(ExtraSmallPadding))
 
             BuyButton(
                 text = when {
