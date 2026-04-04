@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Cooper
-import com.mashiverse.mashit.ui.theme.DrawerPaddingSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -72,7 +71,7 @@ fun TopNavBar(
                     enter = fadeIn(tween(durationMillis = 150)),
                     exit = fadeOut(tween(durationMillis = 150))
                 ) {
-                    Box(modifier = Modifier.fillMaxWidth()){
+                    Box(modifier = Modifier.fillMaxWidth()) {
                         Icon(
                             imageVector = Icons.Default.Menu,
                             modifier = Modifier

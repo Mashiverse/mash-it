@@ -53,7 +53,6 @@ fun ColorSheet(
     processMashupIntent: (MashupIntent) -> Unit,
     processActionsIntent: (ActionsIntent) -> Unit
 ) {
-    // Picker states
     var pickerLocation by remember { mutableStateOf(Offset.Zero) }
     var rangeColor by remember { mutableStateOf(color) }
     var hueProgress by remember { mutableFloatStateOf(0f) }

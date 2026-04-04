@@ -36,8 +36,8 @@ import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.components.nft.trait.MintedTrait
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.detectScreenType
 import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 import kotlinx.coroutines.flow.map
@@ -104,7 +104,10 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = false
     }
 
-    val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, padding = 12.dp)
+    val (width, height) = config.getItemWidthAndHeight(
+        screenType.collectionColumns,
+        padding = 12.dp
+    )
 
     if (walletPreferences.value.wallet != null) {
         Column(

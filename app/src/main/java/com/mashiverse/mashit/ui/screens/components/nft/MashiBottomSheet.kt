@@ -18,10 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.OptionalTrait
 import com.mashiverse.mashit.data.models.nft.Trait
@@ -29,9 +27,9 @@ import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.ShopHolderWidth
-import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.detectScreenType
 import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
@@ -41,29 +39,25 @@ import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 @Composable
 fun MashiBottomSheet(
     selectedNft: Nft,
-    closeBottomSheet: () -> Unit, // Renamed from closeBottomSheet
+    closeBottomSheet: () -> Unit,
     processImageIntent: (ImageIntent) -> Unit,
     sheetState: SheetState,
     detailsContent: @Composable () -> Unit
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
+    val (width, _) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
 
-    // FIX 1 & 3: Use toMutableStateList and add selectedNft as a key
-    // so the state resets if the NFT changes.
     val optionalTraits = remember(selectedNft) {
         selectedNft.traits?.map { trait ->
             OptionalTrait(trait = trait, selected = true)
-        }?.toMutableStateList() // This makes the list observable
+        }?.toMutableStateList()
     }
 
-    // FIX 2: Updated selection logic to work with Compose state
     val selectTrait = { trait: Trait ->
         val index = optionalTraits?.indexOfFirst { it.trait == trait } ?: -1
         if (index != -1) {
             val item = optionalTraits!![index]
-            // We replace the element to trigger the observable list update
             if (item.trait.type != TraitType.BACKGROUND) {
                 optionalTraits[index] = item.copy(selected = !item.selected)
             }
@@ -78,8 +72,6 @@ fun MashiBottomSheet(
         containerColor = Surface,
         contentColor = ContentColor,
         dragHandle = null,
-        // Warning: Ensure you really want gestures disabled,
-        // otherwise users can't swipe down to close.
         sheetGesturesEnabled = false
     ) {
         Column(
@@ -116,14 +108,10 @@ fun MashiBottomSheet(
                     items(traits.size) { i ->
                         val isSelected = traits[i].selected
                         TraitHolder(
-                            onClick = {
-                                selectTrait(traits[i].trait)
-                            },
+                            modifier = Modifier.width(width),
+                            onClick = { selectTrait(traits[i].trait) },
                             isSelected = isSelected,
-                            // Pass selection state to TraitHolder if it supports visual feedback
                             trait = traits[i].trait,
-                            width = width,
-                            height = height,
                             processImageIntent = processImageIntent
                         )
                     }

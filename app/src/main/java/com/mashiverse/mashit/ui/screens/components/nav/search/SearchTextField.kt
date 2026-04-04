@@ -53,7 +53,11 @@ fun SearchTextField(
                     .clickable {
                         onIsSearchChange.invoke()
                         onSearchQueryChange.invoke("")
-                    }, imageVector = Icons.Default.Clear, tint = ContentAccentColor, contentDescription = "")
+                    },
+                imageVector = Icons.Default.Clear,
+                tint = ContentAccentColor,
+                contentDescription = ""
+            )
         },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done

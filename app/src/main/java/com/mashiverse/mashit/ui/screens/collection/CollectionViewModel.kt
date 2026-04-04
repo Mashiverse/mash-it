@@ -4,14 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.repos.CollectionRepo
 import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
+import com.mashiverse.mashit.data.states.intents.ImageIntent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -42,10 +42,10 @@ class CollectionViewModel @Inject constructor(
             walletPreferences
                 .distinctUntilChanged()
                 .collect { prefs ->
-                if (prefs.wallet != null) {
-                    collectionRepo.updateOwnedData(prefs.wallet)
+                    if (prefs.wallet != null) {
+                        collectionRepo.updateOwnedData(prefs.wallet)
+                    }
                 }
-            }
         }
     }
 

@@ -10,12 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.states.intents.MashupIntent
-import com.mashiverse.mashit.data.models.mashup.MashupTrait
-import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
-import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.utils.helpers.detectScreenType
 import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 

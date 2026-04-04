@@ -43,13 +43,11 @@ fun ColorPicker(
     var isDragging by remember { mutableStateOf(false) }
     var pickerSize by remember { mutableStateOf(IntSize(1, 1)) }
 
-    // Always update picker thumb when color changes (if not dragging)
     LaunchedEffect(color, rangeColor, pickerSize) {
         if (!isDragging && pickerSize.width > 1 && pickerSize.height > 1) {
             val hsv = FloatArray(3)
             android.graphics.Color.colorToHSV(color.toArgb(), hsv)
 
-            // thumb position
             internalLocation = Offset(
                 x = hsv[1] * pickerSize.width,
                 y = (1f - hsv[2]) * pickerSize.height
@@ -58,7 +56,6 @@ fun ColorPicker(
     }
 
     Box(modifier = modifier) {
-        // 1️⃣ Background gradient (clipped)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -73,7 +70,6 @@ fun ColorPicker(
                     if (pickerSize.width <= 0 || pickerSize.height <= 0) return@pointerInput
 
                     awaitEachGesture {
-                        // 1. Wait for the initial touch down
                         val down = awaitFirstDown()
 
                         isDragging = true
@@ -99,23 +95,19 @@ fun ColorPicker(
                             onPickedColor(newColor)
                         }
 
-                        // Initial update on tap
                         updatePosition(down.position)
 
-                        // 2. Track the drag until release or cancellation
                         drag(down.id) { change ->
                             updatePosition(change.position)
                             change.consume()
                         }
 
-                        // 3. Cleanup state when finger is lifted or gesture is lost
                         isDragging = false
                         onDraggingChange(false)
                     }
                 }
         )
 
-        // 2️⃣ Selector circle (drawn outside clipped background)
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawColorSelector(color = color, location = internalLocation)
         }

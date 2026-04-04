@@ -15,7 +15,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
@@ -92,7 +91,11 @@ fun ProductInfoSection(
             },
             textSize = 14.sp,
             onClick = {
-                onMint!!.invoke(nft.productInfo.listingId, nft.productInfo.price, nft.productInfo.priceCurrency == PriceCurrency.POL)
+                onMint!!.invoke(
+                    nft.productInfo.listingId,
+                    nft.productInfo.price,
+                    nft.productInfo.priceCurrency == PriceCurrency.POL
+                )
             }
         )
     }

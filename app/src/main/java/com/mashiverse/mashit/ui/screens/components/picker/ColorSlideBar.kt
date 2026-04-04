@@ -37,19 +37,15 @@ fun ColorSlideBar(
 
                     val trackWidth = size.width - (thumbRadius * 2)
 
-                    // Helper to calculate progress based on X coordinate
                     val updateProgress = { xPos: Float ->
                         val relative = (xPos - thumbRadius).coerceIn(0f, trackWidth)
                         onProgressChange(relative / trackWidth)
                     }
 
-                    // Update immediately on tap
                     updateProgress(down.position.x)
 
-                    // 2. Track the drag until finger is lifted or cancelled
                     drag(down.id) { change ->
                         updateProgress(change.position.x)
-                        // Important: consume the event so parents (like Nav drawers) don't steal it
                         change.consume()
                     }
                 }
@@ -58,7 +54,6 @@ fun ColorSlideBar(
         val barHeight = 8.dp.toPx()
         val barTop = (size.height - barHeight) / 2
 
-        // Draw the background track
         drawRoundRect(
             brush = Brush.horizontalGradient(colors),
             topLeft = Offset(0f, barTop),
@@ -70,7 +65,6 @@ fun ColorSlideBar(
         val thumbCenterX = thumbRadius + (trackWidth * progress)
         val centerY = size.height / 2
 
-        // Main Thumb
         drawCircle(
             color = Color.White,
             radius = thumbRadius,

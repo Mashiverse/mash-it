@@ -14,9 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.theme.ActiveButtonBackground
+import com.mashiverse.mashit.ui.theme.ButtonBackground
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ButtonBackground
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 
@@ -44,7 +44,8 @@ fun MashupCategories(
                 contentPadding = PaddingValues(horizontal = Padding)
             ) {
                 Text(
-                    text = traitType.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() }},
+                    text = traitType.name.lowercase().replace("_", " ").split(" ")
+                        .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
                     fontSize = 14.sp,
                 )
             }

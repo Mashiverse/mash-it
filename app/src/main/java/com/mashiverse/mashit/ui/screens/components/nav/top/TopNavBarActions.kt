@@ -32,35 +32,3 @@ fun TopNavBarActions(
         )
     }
 }
-
-//AnimatedVisibility(
-//visible = !isSearch,
-//enter = expandHorizontally() + fadeIn(tween(delayMillis = 300, durationMillis = 150)),
-//exit = shrinkOut() + fadeOut(tween(durationMillis = 0))
-//) {
-//    Row {
-//        OutlinedButton(
-//            modifier = Modifier
-//                .height(SearchHeight),
-//            colors = ButtonDefaults.outlinedButtonColors().copy(
-//                containerColor = Color.Transparent,
-//                contentColor = Color.Red,
-//            ),
-//            border = BorderStroke(width = 2.dp, color = Surface),
-//            shape = AccountInfoShape,
-//            contentPadding = PaddingValues(horizontal = Padding),
-//            onClick = onConnect
-//        ) {
-//            Text(
-//                text = if (wallet != null) {
-//                    "${wallet.take(6).lowercase()}...${wallet.substring(wallet.length - 4).lowercase()}"
-//                } else {
-//                    "Connect Base"
-//                },
-//                fontSize = 20.sp
-//            )
-//        }
-//
-//        Spacer(Modifier.width(DrawerPaddingSize))
-//    }
-//}
