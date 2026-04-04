@@ -31,7 +31,6 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.ShopHolderWidth
-import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -93,7 +92,7 @@ fun ShopItem(
         Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Row(
-            modifier = Modifier.fillMaxWidth( ),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -115,7 +114,7 @@ fun ShopItem(
                     color = ContentColor
                 )
             }
-            
+
             Spacer(Modifier.width(ExtraSmallPadding))
 
             BuyButton(
