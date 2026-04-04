@@ -33,6 +33,8 @@ import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.ShopHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Surface
+import com.mashiverse.mashit.utils.helpers.detectScreenType
+import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,8 +47,8 @@ fun MashiBottomSheet(
     detailsContent: @Composable () -> Unit
 ) {
     val config = LocalConfiguration.current
-    val mashiHolderWidth = (config.screenWidthDp.dp - 2 * Padding - 2 * 12.dp) / 3
-    val mashiHolderHeight = mashiHolderWidth * 4 / 3
+    val screenType = config.detectScreenType()
+    val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
 
     // FIX 1 & 3: Use toMutableStateList and add selectedNft as a key
     // so the state resets if the NFT changes.
@@ -109,7 +111,7 @@ fun MashiBottomSheet(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(Padding),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    columns = GridCells.Fixed(3)
+                    columns = GridCells.Fixed(screenType.collectionColumns)
                 ) {
                     items(traits.size) { i ->
                         val isSelected = traits[i].selected
@@ -120,8 +122,8 @@ fun MashiBottomSheet(
                             isSelected = isSelected,
                             // Pass selection state to TraitHolder if it supports visual feedback
                             trait = traits[i].trait,
-                            width = mashiHolderWidth,
-                            height = mashiHolderHeight,
+                            width = width,
+                            height = height,
                             processImageIntent = processImageIntent
                         )
                     }
