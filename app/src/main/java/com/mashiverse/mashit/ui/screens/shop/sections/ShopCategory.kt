@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.times
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
+import com.mashiverse.mashit.data.models.ScreenType
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
@@ -32,6 +33,8 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.utils.helpers.detectScreenType
+import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -45,8 +48,9 @@ fun ShopCategory(
     onCategoryClose: () -> Unit
 ) {
     val config = LocalConfiguration.current
-    val imageWidth = (config.screenWidthDp.dp - 2 * Padding - SmallPadding) / 2
-    val imageHeight = (imageWidth / 3) * 4
+    val screenType = config.detectScreenType()
+    val columnCount = if (screenType == ScreenType.COMPACT) 2 else 4
+    val (width, height) = config.getItemWidthAndHeight(screenType, 2, 4)
 
     val appendState = categoryItems.loadState.append
 
@@ -59,7 +63,7 @@ fun ShopCategory(
         ) {
             Text(
                 text = categoryName,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
             )
@@ -73,7 +77,7 @@ fun ShopCategory(
             ) {
                 Text(
                     text = "Show less",
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     color = ContentColor,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
@@ -81,7 +85,7 @@ fun ShopCategory(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(columnCount),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(Padding)
@@ -98,8 +102,8 @@ fun ShopCategory(
                         processImageIntent = processImageIntent,
                         getSoldQty = getSoldQty,
                         onMint = onMint,
-                        imageWidth = imageWidth,
-                        imageHeight = imageHeight
+                        imageWidth = width,
+                        imageHeight = height
                     )
                 }
             }

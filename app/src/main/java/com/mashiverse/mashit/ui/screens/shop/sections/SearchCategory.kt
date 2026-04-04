@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import com.mashiverse.mashit.data.models.ScreenType
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
@@ -26,6 +27,8 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.utils.helpers.detectScreenType
+import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -38,8 +41,9 @@ fun SearchCategory(
     onSearchClear: () -> Unit
 ) {
     val config = LocalConfiguration.current
-    val imageWidth = (config.screenWidthDp.dp - 2 * Padding - SmallPadding) / 2
-    val imageHeight = (imageWidth / 3) * 4
+    val screenType = config.detectScreenType()
+    val columnCount = if (screenType == ScreenType.COMPACT) 2 else 4
+    val (width, height) = config.getItemWidthAndHeight(screenType, 2, 4)
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -50,7 +54,7 @@ fun SearchCategory(
         ) {
             Text(
                 text = "Search",
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
             )
@@ -64,7 +68,7 @@ fun SearchCategory(
             ) {
                 Text(
                     text = "Clear",
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     color = ContentColor,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
@@ -72,7 +76,7 @@ fun SearchCategory(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2), // Sets 2 items per row
+            columns = GridCells.Fixed(columnCount),
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(Padding)
@@ -87,8 +91,8 @@ fun SearchCategory(
                     processImageIntent = processImageIntent,
                     getSoldQty = getSoldQty,
                     onMint = onMint,
-                    imageWidth = imageWidth,
-                    imageHeight = imageHeight
+                    imageWidth = width,
+                    imageHeight = height
                 )
             }
         }
