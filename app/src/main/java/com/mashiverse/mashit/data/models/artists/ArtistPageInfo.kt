@@ -5,5 +5,6 @@ data class ArtistPageInfo(
     val name: String,
     val bio: String,
     val bannerUrl: String,
+    val desktopBannerUrl: String,
     val mashup: ArtistMashup
 )

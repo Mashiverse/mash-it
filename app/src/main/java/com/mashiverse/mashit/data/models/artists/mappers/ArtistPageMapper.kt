@@ -24,6 +24,7 @@ fun ArtistPageDto.toArtistPage(): ArtistPageInfo {
     val alias = artist.alias
     val name = artist.name
     val bio = artist.bio
+    val desktopBannerUrl = artist.bannerUrlDesktop
     val bannerUrl = artist.bannerUrlMobile
 
     return ArtistPageInfo(
@@ -31,6 +32,7 @@ fun ArtistPageDto.toArtistPage(): ArtistPageInfo {
         name = name,
         bio = bio ?: "",
         bannerUrl = bannerUrl ?: "",
+        desktopBannerUrl = desktopBannerUrl ?: "",
         mashup = mashup
     )
 }
