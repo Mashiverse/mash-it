@@ -69,7 +69,7 @@ fun ShopSection(
             items(count = itemCount) { index ->
                 val nft = sectionItems[index]
 
-                if (nft != null && nft.productInfo?.priceCurrency != PriceCurrency.POL) {
+                if (nft != null) {
                     ShopItem(
                         nft = nft,
                         selectId = selectId,

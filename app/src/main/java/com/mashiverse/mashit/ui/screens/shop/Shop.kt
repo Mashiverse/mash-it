@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
@@ -34,6 +35,7 @@ import com.mashiverse.mashit.ui.screens.shop.sections.SearchCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopCategory
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
 import com.mashiverse.mashit.ui.theme.Padding
+import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,20 +54,13 @@ fun Shop(
 
     val viewModel = hiltViewModel<ShopViewModel>()
     val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
-
-    val allListings by remember { viewModel.allListings }
-    var searchedListings by remember { mutableStateOf<List<Nft>>(emptyList()) }
-
-    LaunchedEffect(searchQuery, allListings) {
-        searchedListings = if (searchQuery.length >= 3) {
-            allListings.filter {
-                it.name.lowercase().contains(searchQuery.lowercase()) || it.author.lowercase()
-                    .contains(searchQuery.lowercase())
-            }
+    val searchPagingItems = remember(searchQuery) {
+        if (searchQuery.isEmpty()) {
+            flowOf(PagingData.empty())
         } else {
-            emptyList()
+            viewModel.getSearchPagingData(q = searchQuery)
         }
-    }
+    }.collectAsLazyPagingItems()
 
     val selectedListing by remember { viewModel.selectedNft }
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
@@ -145,7 +140,6 @@ fun Shop(
 
     val onSearchClear = {
         clearSearchQuery.invoke()
-        searchedListings = emptyList()
     }
 
     Column(
@@ -154,9 +148,9 @@ fun Shop(
             .padding(horizontal = 16.dp)
             .padding(bottom = 16.dp)
     ) {
-        if (searchedListings.isNotEmpty()) {
+        if (searchQuery.isNotEmpty()) {
             SearchCategory(
-                items = searchedListings,
+                items = searchPagingItems,
                 selectId = selectId,
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 getSoldQty = getSoldQty,

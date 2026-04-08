@@ -7,7 +7,9 @@ import com.mashiverse.mashit.data.remote.dtos.HealthDto
 import com.mashiverse.mashit.data.remote.dtos.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.ListingsDto
 import com.mashiverse.mashit.data.remote.dtos.MashupDto
+import com.mashiverse.mashit.data.remote.dtos.SearchDto
 import com.mashiverse.mashit.utils.MASHIT_KEY
+import jnr.ffi.annotations.In
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -18,7 +20,7 @@ interface MashitApi {
     @GET("api/v1/mashers/shop")
     suspend fun getShopList(
         @Query("apiKey") apiKey: String = MASHIT_KEY,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0,
     ): ListingsDto
 
@@ -27,6 +29,14 @@ interface MashitApi {
         @Path("id") id: String,
         @Query("apiKey") apiKey: String = MASHIT_KEY,
     ): ListingDto
+
+    @GET("api/v1/search")
+    suspend fun getSearchList(
+        @Query("q") q: String,
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0,
+        @Query("apiKey") apiKey: String = MASHIT_KEY
+    ): SearchDto
 
     @GET("api/v1/artists")
     suspend fun getArtists(

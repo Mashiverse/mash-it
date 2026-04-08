@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -18,8 +19,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
+import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
+import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -30,7 +36,7 @@ import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun SearchCategory(
-    items: List<Nft>,
+    items: LazyPagingItems<Nft>,
     selectId: (String) -> Unit,
     processImageIntent: (ImageIntent) -> Unit,
     getSoldQty: (Int, (Int) -> Unit) -> Unit,
@@ -40,6 +46,8 @@ fun SearchCategory(
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
     val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
+
+    val appendState = items.loadState.append
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -78,18 +86,35 @@ fun SearchCategory(
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             items(
-                items.size
+                count = items.itemCount,
+                key = items.itemKey { it.name }
             ) { index ->
                 val nft = items[index]
-                ShopItem(
-                    nft = nft,
-                    selectId = selectId,
-                    processImageIntent = processImageIntent,
-                    getSoldQty = getSoldQty,
-                    onMint = onMint,
-                    imageWidth = width,
-                    imageHeight = height
-                )
+                nft?.let {
+                    ShopItem(
+                        nft = nft,
+                        selectId = selectId,
+                        processImageIntent = processImageIntent,
+                        getSoldQty = getSoldQty,
+                        onMint = onMint,
+                        imageWidth = width,
+                        imageHeight = height
+                    )
+                }
+            }
+
+            if (appendState is LoadState.Loading) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    SectionLoading()
+                }
+            }
+
+            if (appendState is LoadState.Error) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    SectionRefresh(
+                        onRetry = { items.retry() }
+                    )
+                }
             }
         }
     }

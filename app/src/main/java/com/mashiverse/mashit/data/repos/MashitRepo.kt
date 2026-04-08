@@ -17,6 +17,7 @@ import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.toNft
 import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
+import com.mashiverse.mashit.data.remote.paging.SearchPagingSource
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
 import com.mashiverse.mashit.utils.helpers.toFilebaseUri
 import com.mashiverse.mashit.utils.helpers.toIpfsUri
@@ -28,7 +29,6 @@ class MashitRepo @Inject constructor(
     private val mashitApi: MashitApi,
 ) {
 
-    @OptIn(ExperimentalPagingApi::class)
     fun getShopListPagingData(pageSize: Int = 20): Flow<PagingData<Nft>> {
         return Pager(
             config = PagingConfig(
@@ -41,35 +41,24 @@ class MashitRepo @Inject constructor(
         ).flow
     }
 
-    // TODO: Replace with search api
-    suspend fun getAllListings(): List<Nft> {
-        val allListings = mutableListOf<Nft>()
-        var currentOffset = 0
-        var hasMore = true
-        val limit = 60
-
-        try {
-            while (hasMore) {
-                val response = mashitApi.getShopList(
-                    limit = limit,
-                    offset = currentOffset
+    fun getSearchListPagingData(
+        q: String,
+        pageSize: Int = 20
+    ) : Flow<PagingData<Nft>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = pageSize,
+                prefetchDistance = 5,
+                enablePlaceholders = false,
+                initialLoadSize = pageSize
+            ),
+            pagingSourceFactory = {
+                SearchPagingSource(
+                    api = mashitApi,
+                    query = q
                 )
-
-                val listings = response.toNfts()
-                allListings.addAll(listings)
-
-                hasMore = response.pagination.hasMore &&
-                        listings.isNotEmpty()
-
-                if (hasMore) {
-                    currentOffset += listings.size
-                }
             }
-        } catch (e: Exception) {
-            Timber.tag("Test").d(e)
-        }
-
-        return allListings
+        ).flow
     }
 
     suspend fun getShopItem(
