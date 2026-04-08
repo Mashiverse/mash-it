@@ -14,12 +14,12 @@ data class ArtistsDto(
         val bannerUrlMobile: String,
         val bio: String,
         val listingCount: Int,
-        val mashupPfp: MashupPfp,
+        val mashupPfp: MashupPfp?,
         val name: String,
         val wallet: String
     ) {
         data class MashupPfp(
-            val colors: Colors,
+            val colors: Colors?,
             val layers: List<String>
         ) {
             data class Colors(

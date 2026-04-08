@@ -6,12 +6,9 @@ import androidx.paging.PagingData
 import com.mashiverse.mashit.data.models.artists.ArtistInfo
 import com.mashiverse.mashit.data.models.artists.mappers.toArtistPage
 import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.paging.ArtistListingsPagingSource
 import com.mashiverse.mashit.data.remote.paging.ArtistsPagingSource
-import com.mashiverse.mashit.data.remote.paging.SearchPagingSource
-import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -31,7 +28,7 @@ class ArtistsRepo @Inject constructor(
         ).flow
     }
 
-    fun getListingsPagingSource(
+    fun getListingsPagingData(
         alias: String,
         pageSize: Int = 20
     ) : Flow<PagingData<Nft>> {
