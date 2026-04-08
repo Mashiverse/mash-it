@@ -33,7 +33,7 @@ fun NavGraphBuilder.mainGraph(
     }
 
     composable<MainRoutes.Artists> {
-        Artists(navController, searchQuery)
+        Artists(navController)
     }
 
     composable<MainRoutes.Collection> {

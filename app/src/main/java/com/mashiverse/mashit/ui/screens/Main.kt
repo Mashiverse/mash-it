@@ -74,6 +74,12 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    val hasSearch by remember {
+        derivedStateOf {
+            if (navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true) false else true
+        }
+    }
+
     val searchQuery = remember { mutableStateOf("") }
     val onSearchQueryChange = remember {
         { input: String ->
@@ -209,7 +215,8 @@ fun Main(navController: NavHostController) {
                     searchQuery = searchQuery.value,
                     onSearchQueryChange = onSearchQueryChange,
                     isSearch = isSearch,
-                    onIsSearchChange = onIsSearchChange
+                    onIsSearchChange = onIsSearchChange,
+                    hasSearch = hasSearch
                 )
 
             }

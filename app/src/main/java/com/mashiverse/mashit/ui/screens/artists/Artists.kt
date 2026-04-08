@@ -12,7 +12,7 @@ import com.mashiverse.mashit.nav.routes.ArtistsRoutes
 
 
 @Composable
-fun Artists(parentNavController: NavHostController, searchQuery: State<String>) {
+fun Artists(parentNavController: NavHostController) {
 
     val innerNavController = rememberNavController()
 
@@ -22,7 +22,6 @@ fun Artists(parentNavController: NavHostController, searchQuery: State<String>) 
         startDestination = ArtistsRoutes.List
     ) {
         artistsGraph(
-            searchQuery = searchQuery,
             innerNavController = innerNavController,
             parentNavController = parentNavController
         )

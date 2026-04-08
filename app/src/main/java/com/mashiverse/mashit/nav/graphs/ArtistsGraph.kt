@@ -12,12 +12,10 @@ import com.mashiverse.mashit.ui.screens.artists.preview.ArtistsPreview
 fun NavGraphBuilder.artistsGraph(
     innerNavController: NavHostController,
     parentNavController: NavHostController,
-    searchQuery: State<String>
 ) {
     composable<ArtistsRoutes.List> {
         ArtistsPreview(
             navController = innerNavController,
-            searchQuery = searchQuery
         )
     }
 

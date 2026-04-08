@@ -40,7 +40,8 @@ fun TopNavBar(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onIsSearchChange: () -> Unit,
-    isSearch: Boolean
+    isSearch: Boolean,
+    hasSearch: Boolean = true
 ) {
     Column(
         modifier = Modifier
@@ -53,12 +54,14 @@ fun TopNavBar(
                 .height(64.dp),
             contentAlignment = Alignment.Center
         ) {
-            TopNavBarActions(
-                isSearch = isSearch,
-                onIsSearchChange = onIsSearchChange,
-                searchQuery = searchQuery,
-                onSearchQueryChange = onSearchQueryChange,
-            )
+            if (hasSearch) {
+                TopNavBarActions(
+                    isSearch = isSearch,
+                    onIsSearchChange = onIsSearchChange,
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = onSearchQueryChange,
+                )
+            }
 
             Row(
                 modifier = Modifier
@@ -98,11 +101,8 @@ fun TopNavBar(
                             color = ContentAccentColor
                         )
                     }
-
-
                 }
             }
-
         }
 
         Spacer(
