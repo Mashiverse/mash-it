@@ -13,6 +13,7 @@ val ShopHolderWidth = (552 * 0.36).dp
 val ShopHolderHeight = (736 * 0.36).dp
 
 val MaxMashiHolderWidth = (552 * 0.42).dp
+val MaxMashiHolderHeight = (736 * 0.42).dp
 
 val ColorPreviewSize = 80.dp
 

@@ -1,7 +1,6 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,12 +43,10 @@ import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
-import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.getTraitsByType
 
@@ -153,7 +150,7 @@ fun Mashup(searchQuery: State<String>) {
                     modifier = Modifier
                         .height(min(compositeHeight, MaxMashiHolderHeight))
                         .width(min(compositeWidth, MaxMashiHolderWidth))
-                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview)},
+                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) },
                     holderWidth = compositeWidth,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                     processActionsIntent = { intent -> viewModel.processActionsIntent(intent) }
