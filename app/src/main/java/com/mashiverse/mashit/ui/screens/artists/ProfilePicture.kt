@@ -16,12 +16,13 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 
 @Composable
 fun ProfilePicture(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     artistMashup: ArtistMashup,
     processImageIntent: (ImageIntent) -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(80.dp)
             .border(
                 width = 2.dp,

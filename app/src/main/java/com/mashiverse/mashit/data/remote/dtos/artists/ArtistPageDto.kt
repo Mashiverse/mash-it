@@ -7,11 +7,11 @@ data class ArtistPageDto(
     data class Artist(
         val alias: String,
         val avatarUrl: Any,
-        val bannerUrlDesktop: String,
-        val bannerUrlMobile: String,
-        val bio: String,
+        val bannerUrlDesktop: String?,
+        val bannerUrlMobile: String?,
+        val bio: String?,
         val listingCount: Int,
-        val mashupPfp: MashupPfp,
+        val mashupPfp: MashupPfp?,
         val name: String,
         val wallet: String
     ) {

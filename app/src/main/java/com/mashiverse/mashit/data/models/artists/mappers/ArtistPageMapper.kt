@@ -1,22 +1,24 @@
 package com.mashiverse.mashit.data.models.artists.mappers
 
 import com.mashiverse.mashit.data.models.artists.ArtistMashup
-import com.mashiverse.mashit.data.models.artists.ArtistPage
+import com.mashiverse.mashit.data.models.artists.ArtistPageInfo
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.remote.dtos.artists.ArtistPageDto
 
-fun ArtistPageDto.toArtistPage(): ArtistPage {
+fun ArtistPageDto.toArtistPage(): ArtistPageInfo {
     val pfp = artist.mashupPfp
-    val pfpColors = pfp.colors
-    val mashupColors = SelectedColors(
-        base = pfpColors.base,
-        eyes = pfpColors.eyes,
-        hair = pfpColors.hair
-    )
+    val pfpColors = pfp?.colors
+    val mashupColors = if (pfpColors != null) {
+        SelectedColors(
+            base = pfpColors.base,
+            eyes = pfpColors.eyes,
+            hair = pfpColors.hair
+        )
+    } else SelectedColors()
 
     val mashup = ArtistMashup(
         colors = mashupColors,
-        layers = pfp.layers
+        layers = pfp?.layers?.map { it.replace("/https://ipfs.io/ipfs", "") } ?: emptyList()
     )
 
     val alias = artist.alias
@@ -24,11 +26,11 @@ fun ArtistPageDto.toArtistPage(): ArtistPage {
     val bio = artist.bio
     val bannerUrl = artist.bannerUrlMobile
 
-    return ArtistPage(
+    return ArtistPageInfo(
         alias = alias,
         name = name,
-        bio = bio,
-        bannerUrl = bannerUrl,
+        bio = bio ?: "",
+        bannerUrl = bannerUrl ?: "",
         mashup = mashup
     )
 }

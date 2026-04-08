@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.models.artists
 
-data class ArtistPage(
+data class ArtistPageInfo(
     val alias: String,
     val name: String,
     val bio: String,
