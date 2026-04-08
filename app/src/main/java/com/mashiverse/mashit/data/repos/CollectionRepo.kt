@@ -5,6 +5,7 @@ import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.mappers.toEntities
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 
 class CollectionRepo @Inject constructor(
@@ -23,6 +24,18 @@ class CollectionRepo @Inject constructor(
 
         val toAdd = newCollection.filter { it.name !in oldNames }
         val toRemove = oldCollection.filter { it.name !in newNames }
+        val toUpdate = newCollection.mapNotNull { new ->
+            val old = oldCollection.find { it.name == new.name }
+
+            if (old != null && new.owned != old.owned) {
+                new
+            } else null
+        }
+
+        if (toUpdate.isNotEmpty()) {
+            val list = toUpdate.toEntities().map { it.copy(isOwned = true) }
+            nftRepo.insertNfts(list)
+        }
 
         if (toAdd.isNotEmpty()) {
             val list = toAdd.toEntities().map { it.copy(isOwned = true) }

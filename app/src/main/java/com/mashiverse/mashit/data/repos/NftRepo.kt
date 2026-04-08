@@ -4,6 +4,7 @@ import com.mashiverse.mashit.data.local.db.daos.NftDao
 import com.mashiverse.mashit.data.local.db.entities.NftEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 
 class NftRepo @Inject constructor(
@@ -31,7 +32,8 @@ class NftRepo @Inject constructor(
             owned = nft.owned ?: currentNft.owned,
             isOwned = true
         )
-        nftDao.insertNft(updatedNft)
+
+        nftDao.updateNft(updatedNft)
     }
 
     suspend fun clearOwned() {
