@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.remote.dtos
+package com.mashiverse.mashit.data.remote.dtos.listings
 
 data class SearchDto(
     val count: Int,

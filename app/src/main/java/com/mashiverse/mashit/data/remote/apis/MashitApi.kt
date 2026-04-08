@@ -2,14 +2,15 @@ package com.mashiverse.mashit.data.remote.apis
 
 import SaveMashupRes
 import com.mashiverse.mashit.data.models.mashup.save.SaveMashupReq
-import com.mashiverse.mashit.data.remote.dtos.ArtistsDto
 import com.mashiverse.mashit.data.remote.dtos.HealthDto
-import com.mashiverse.mashit.data.remote.dtos.ListingDto
-import com.mashiverse.mashit.data.remote.dtos.ListingsDto
+import com.mashiverse.mashit.data.remote.dtos.listings.ListingDto
+import com.mashiverse.mashit.data.remote.dtos.listings.ListingsDto
 import com.mashiverse.mashit.data.remote.dtos.MashupDto
-import com.mashiverse.mashit.data.remote.dtos.SearchDto
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistPageDto
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistListingsDto
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistsDto
+import com.mashiverse.mashit.data.remote.dtos.listings.SearchDto
 import com.mashiverse.mashit.utils.MASHIT_KEY
-import jnr.ffi.annotations.In
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -41,7 +42,23 @@ interface MashitApi {
     @GET("api/v1/artists")
     suspend fun getArtists(
         @Query("apiKey") apiKey: String = MASHIT_KEY,
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0
     ): ArtistsDto
+
+    @GET("api/v1/artists/{alias}")
+    suspend fun getArtistPage(
+        @Path("alias") alias: String,
+        @Query("apiKey") apiKey: String = MASHIT_KEY
+    ): ArtistPageDto
+
+    @GET("api/v1/artists/{alias}/listings")
+    suspend fun getArtistList(
+        @Path("alias") alias: String,
+        @Query("apiKey") apiKey: String = MASHIT_KEY,
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0
+    ): ArtistListingsDto
 
     @GET("api/v1/health")
     suspend fun getStatus(): HealthDto

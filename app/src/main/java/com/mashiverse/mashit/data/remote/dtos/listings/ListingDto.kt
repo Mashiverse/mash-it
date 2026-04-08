@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.remote.dtos
+package com.mashiverse.mashit.data.remote.dtos.listings
 
 @Suppress("PropertyName")
 data class ListingDto(

@@ -5,8 +5,8 @@ import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.data.models.nft.ProductInfo
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.remote.dtos.ListingDto
-import com.mashiverse.mashit.data.remote.dtos.ListingsDto
+import com.mashiverse.mashit.data.remote.dtos.listings.ListingDto
+import com.mashiverse.mashit.data.remote.dtos.listings.ListingsDto
 
 fun ListingsDto.toNfts() = this.listings
     .filter { it.listingId != null }

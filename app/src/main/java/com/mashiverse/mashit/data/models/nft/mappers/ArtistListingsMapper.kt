@@ -3,9 +3,9 @@ package com.mashiverse.mashit.data.models.nft.mappers
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.data.models.nft.ProductInfo
-import com.mashiverse.mashit.data.remote.dtos.listings.SearchDto
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistListingsDto
 
-fun SearchDto.toNfts() = this.listings
+fun ArtistListingsDto.toNfts() = this.listings
     .filter { it.listingId != null }
     .map { listing ->
         val productInfo = ProductInfo(

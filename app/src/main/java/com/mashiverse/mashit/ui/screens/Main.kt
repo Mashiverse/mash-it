@@ -221,7 +221,11 @@ fun Main(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                mainGraph(searchQuery = searchQuery, clearSearchQuery = clearSearchQuery)
+                mainGraph(
+                    searchQuery = searchQuery,
+                    clearSearchQuery = clearSearchQuery,
+                    navController = navController
+                )
             }
 
             if (drawerState.isOpen) {

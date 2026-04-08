@@ -2,6 +2,7 @@ package com.mashiverse.mashit.nav.graphs
 
 import androidx.compose.runtime.State
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
@@ -14,7 +15,8 @@ import com.mashiverse.mashit.ui.screens.shop.Shop
 
 fun NavGraphBuilder.mainGraph(
     searchQuery: State<String>,
-    clearSearchQuery: () -> Unit
+    clearSearchQuery: () -> Unit,
+    navController: NavHostController
 ) {
     composable<MainRoutes.Shop>(
         deepLinks = listOf(
@@ -31,7 +33,7 @@ fun NavGraphBuilder.mainGraph(
     }
 
     composable<MainRoutes.Artists> {
-        Artists()
+        Artists(navController, searchQuery)
     }
 
     composable<MainRoutes.Collection> {

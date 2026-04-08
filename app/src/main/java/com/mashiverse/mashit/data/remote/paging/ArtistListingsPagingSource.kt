@@ -8,7 +8,8 @@ import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.utils.MASHIT_KEY
 import timber.log.Timber
 
-class ShopPagingSource(
+class ArtistListingsPagingSource(
+    val alias: String,
     private val api: MashitApi,
     private val apiKey: String = MASHIT_KEY
 ) : PagingSource<Int, Nft>() {
@@ -18,7 +19,12 @@ class ShopPagingSource(
         val limit = params.loadSize
 
         return try {
-            val response = api.getShopList(apiKey = apiKey, limit = limit, offset = offset)
+            val response = api.getArtistList(
+                alias = alias,
+                apiKey = apiKey,
+                limit = limit,
+                offset = offset
+            )
             val listings = response.toNfts()
             val hasMore = response.pagination.hasMore
 
@@ -26,8 +32,6 @@ class ShopPagingSource(
                 data = listings,
                 prevKey = if (offset == 0) null else maxOf(0, offset - limit),
                 nextKey = when {
-                    // TODO: POL showing and minting
-                    //listings.any { it.productInfo?.priceCurrency == PriceCurrency.POL } -> null
                     hasMore && listings.isNotEmpty() -> offset + listings.size
                     else -> null
                 }
