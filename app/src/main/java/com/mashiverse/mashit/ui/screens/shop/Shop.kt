@@ -146,7 +146,6 @@ fun Shop(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 16.dp)
     ) {
         if (searchQuery.isNotEmpty()) {
             SearchCategory(

@@ -32,7 +32,7 @@ fun ArtistsPreview(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
         val appendState = artists.loadState.append
 
