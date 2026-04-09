@@ -14,8 +14,8 @@ interface NftDao {
     @Query("SELECT * FROM nfts WHERE name = :name LIMIT 1")
     suspend fun getNftByName(name: String): NftEntity?
 
-    @Query("SELECT * FROM nfts WHERE isOwned=1")
-    fun getOwnedNfts(): Flow<List<NftEntity>>
+    @Query("SELECT * FROM nfts")
+    fun getNfts(): Flow<List<NftEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNft(nfts: NftEntity)

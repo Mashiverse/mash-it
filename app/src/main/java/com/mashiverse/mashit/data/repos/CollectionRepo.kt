@@ -33,12 +33,12 @@ class CollectionRepo @Inject constructor(
         }
 
         if (toUpdate.isNotEmpty()) {
-            val list = toUpdate.toEntities().map { it.copy(isOwned = true) }
+            val list = toUpdate.toEntities()
             nftRepo.insertNfts(list)
         }
 
         if (toAdd.isNotEmpty()) {
-            val list = toAdd.toEntities().map { it.copy(isOwned = true) }
+            val list = toAdd.toEntities()
             nftRepo.insertNfts(list)
         }
 

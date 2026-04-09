@@ -18,5 +18,4 @@ data class NftEntity(
     @Embedded(prefix = "product_")
     val productInfo: ProductInfo? = null,
     val owned: List<Owned>? = null,
-    val isOwned: Boolean = false
 )
