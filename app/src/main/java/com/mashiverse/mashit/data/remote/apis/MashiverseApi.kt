@@ -9,6 +9,6 @@ interface MashiverseApi {
     @GET("/api/mashi/mashup/{wallet}")
     suspend fun getMashup(
         @Path("wallet") wallet: String,
-        @Query("img_type") imgType: Int = 0,
+        @Query("download_type") imgType: String = "png",
     ): ResponseBody
 }
