@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
 import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
+import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCollectiblesCategory
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
@@ -49,6 +51,7 @@ import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.getTraitsByType
+import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,6 +74,7 @@ fun Mashup(searchQuery: State<String>) {
     val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val lazyGridState = rememberLazyGridState()
+    val collectiblesColumnState = rememberLazyListState()
     val viewModel = hiltViewModel<MashupViewModel>()
     var height by remember { mutableStateOf(0.dp) }
 
@@ -138,6 +142,8 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
+    var isCollectibles by remember { mutableStateOf(false) }
+
     Column {
         if (mashupUiState.wallet != null) {
             Column(
@@ -174,20 +180,37 @@ fun Mashup(searchQuery: State<String>) {
                                     selectedCategory = category
                                 )
                             )
+                            isCollectibles = false
+                            scope.launch { collectiblesColumnState.scrollToItem(0) }
                         },
-                        selectedCategory = mashupUiState.selectedCategory
+                        selectedCategory = mashupUiState.selectedCategory,
+                        isCollectibles = isCollectibles,
+                        onCollectiblesSelect = {
+                            isCollectibles = true
+                            scope.launch { lazyGridState.scrollToItem(0) }
+                        }
                     )
 
                     Spacer(Modifier.height(12.dp))
 
-                    MashupCategoryItems(
-                        modifier = Modifier.fillMaxHeight(),
-                        lazyGridState = lazyGridState,
-                        traits = traits,
-                        selectedTraitUrl = selectedTraitUrl,
-                        processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                    )
+                    if (isCollectibles) {
+                        MashupCollectiblesCategory(
+                            nfts = nfts,
+                            state = collectiblesColumnState,
+                            mashupDetails = mashupUiState.mashupDetails,
+                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                        )
+                    } else {
+                        MashupCategoryItems(
+                            modifier = Modifier.fillMaxHeight(),
+                            lazyGridState = lazyGridState,
+                            traits = traits,
+                            selectedTraitUrl = selectedTraitUrl,
+                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                        )
+                    }
                 }
             }
         } else {

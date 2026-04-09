@@ -39,7 +39,7 @@ fun MashupTraitHolder(
     processMashupIntent: (MashupIntent) -> Unit,
     processImageIntent: (ImageIntent) -> Unit
 ) {
-    var avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
+    val avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
 
     Column {
         Box(

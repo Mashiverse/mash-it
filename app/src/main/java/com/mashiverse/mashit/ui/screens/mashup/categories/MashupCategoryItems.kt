@@ -31,7 +31,6 @@ fun MashupCategoryItems(
     val screenType = config.detectScreenType()
     val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
 
-
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
         state = lazyGridState,

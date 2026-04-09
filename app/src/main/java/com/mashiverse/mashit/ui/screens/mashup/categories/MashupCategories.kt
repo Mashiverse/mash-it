@@ -22,24 +22,48 @@ import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun MashupCategories(
+    isCollectibles: Boolean,
+    onCollectiblesSelect: () -> Unit,
     onCategorySelect: (TraitType) -> Unit,
     selectedCategory: TraitType
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(SmallPadding)
     ) {
+        item {
+            Button(
+                modifier = Modifier
+                    .height(32.dp),
+                onClick = onCollectiblesSelect,
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = if (isCollectibles) {
+                        ActiveButtonBackground
+                    } else {
+                        ButtonBackground
+                    },
+                    contentColor = if (isCollectibles) ContentAccentColor else ContentColor
+                ),
+                contentPadding = PaddingValues(horizontal = Padding)
+            ) {
+                Text(
+                    text = "Collectibles",
+                    fontSize = 14.sp,
+                )
+            }
+        }
+
         items(TraitType.entries) { traitType ->
             Button(
                 modifier = Modifier
                     .height(32.dp),
                 onClick = { onCategorySelect.invoke(traitType) },
                 colors = ButtonDefaults.buttonColors().copy(
-                    containerColor = if (selectedCategory == traitType) {
+                    containerColor = if (!isCollectibles && selectedCategory == traitType) {
                         ActiveButtonBackground
                     } else {
                         ButtonBackground
                     },
-                    contentColor = if (selectedCategory == traitType) ContentAccentColor else ContentColor
+                    contentColor = if (!isCollectibles && selectedCategory == traitType) ContentAccentColor else ContentColor
                 ),
                 contentPadding = PaddingValues(horizontal = Padding)
             ) {
