@@ -40,7 +40,7 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.states.intents.MashupIntent
-import com.mashiverse.mashit.ui.screens.mashup.MashupTraitHolder
+import com.mashiverse.mashit.ui.screens.components.nft.TraitHolder
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.TraitShape
@@ -58,7 +58,7 @@ fun MashupCollectiblesCategoryItem(
 
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
+    val (width, _) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
 
     val isSelected = { trait: Trait ->
         val sameTypeTrait = mashupDetails.assets.find { it.type == trait.type }
@@ -127,13 +127,19 @@ fun MashupCollectiblesCategoryItem(
                     maxItemsInEachRow = screenType.collectionColumns
                 ) {
                     nft.traits?.forEach { trait ->
-                        MashupTraitHolder(
-                            height = height,
-                            width = width,
+                        TraitHolder(
+                            modifier = Modifier
+                                .width(width),
                             isSelected = isSelected.invoke(trait),
-                            mashupTrait = MashupTrait(trait = trait, avatarName = nft.name),
-                            processMashupIntent = processMashupIntent,
-                            processImageIntent = processImageIntent
+                            trait = trait,
+                            processImageIntent = processImageIntent,
+                            onClick = {
+                                processMashupIntent.invoke(
+                                    MashupIntent.OnMashupUpdate(
+                                        MashupTrait(trait = trait, avatarName = nft.name)
+                                    )
+                                )
+                            }
                         )
                     }
                 }
