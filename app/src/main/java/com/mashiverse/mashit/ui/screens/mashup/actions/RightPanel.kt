@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Redo
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.filled.Undo
@@ -58,14 +60,14 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
         Spacer(modifier = Modifier.height(SmallPadding))
 
         ActionButton(
-            icon = Icons.Default.Redo,
+            icon = Icons.AutoMirrored.Filled.Redo,
             onClick = { processActionsIntent(ActionsIntent.OnRedo) }
         )
 
         Spacer(modifier = Modifier.height(SmallPadding))
 
         ActionButton(
-            icon = Icons.Default.Undo,
+            icon = Icons.AutoMirrored.Filled.Undo,
             onClick = { processActionsIntent(ActionsIntent.OnUndo) },
         )
     }
