@@ -88,7 +88,7 @@ fun ShopCategory(
         ) {
             items(
                 count = categoryItems.itemCount,
-                key = categoryItems.itemKey { it.name }
+                key = categoryItems.itemKey { it.compositeUrl }
             ) { index ->
                 val nft = categoryItems[index]
                 nft?.let {

@@ -87,7 +87,7 @@ fun SearchCategory(
         ) {
             items(
                 count = items.itemCount,
-                key = items.itemKey { it.name }
+                key = items.itemKey { it.compositeUrl }
             ) { index ->
                 val nft = items[index]
                 nft?.let {
