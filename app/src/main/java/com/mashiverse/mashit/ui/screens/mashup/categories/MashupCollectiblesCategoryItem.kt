@@ -108,7 +108,7 @@ fun MashupCollectiblesCategoryItem(
                     modifier = Modifier
                         .size(32.dp),
                     tint = ContentAccentColor,
-                    imageVector = if (isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
+                    imageVector = if (!isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
                     contentDescription = null
                 )
             }

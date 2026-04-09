@@ -142,7 +142,7 @@ fun ArtistPage(alias: String, parentNavController: NavHostController) {
         ) {
             items(
                 count = listings.itemCount,
-                key = listings.itemKey { it.compositeUrl }
+                key = listings.itemKey { it.name + it.compositeUrl }
             ) { index ->
                 val nft = listings[index]
                 nft?.let {
