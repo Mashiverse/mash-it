@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.utils.helpers
+package com.mashiverse.mashit.utils.helpers.nft
 
 import android.content.ContentValues
 import android.content.Context

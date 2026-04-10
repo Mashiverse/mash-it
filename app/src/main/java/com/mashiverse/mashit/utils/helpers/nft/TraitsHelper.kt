@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.utils.helpers
+package com.mashiverse.mashit.utils.helpers.nft
 
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.nft.Nft

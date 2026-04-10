@@ -38,8 +38,8 @@ import com.mashiverse.mashit.ui.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.TraitShape
-import com.mashiverse.mashit.utils.helpers.detectScreenType
-import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
+import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
+import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.flow.map
 
 

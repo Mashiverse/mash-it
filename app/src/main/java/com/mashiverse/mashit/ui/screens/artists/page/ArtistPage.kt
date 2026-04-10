@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -46,8 +45,8 @@ import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.utils.helpers.detectScreenType
-import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
+import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
+import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
 @Composable
 fun ArtistPage(alias: String, parentNavController: NavHostController) {

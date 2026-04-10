@@ -1,12 +1,11 @@
 package com.mashiverse.mashit.sys.workers
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.mashiverse.mashit.data.repos.MashiverseRepo
-import com.mashiverse.mashit.utils.helpers.saveImageToGallery
+import com.mashiverse.mashit.utils.helpers.nft.saveImageToGallery
 import com.mashiverse.mashit.utils.helpers.sys.showNotification
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

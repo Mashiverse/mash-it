@@ -6,8 +6,8 @@ import com.mashiverse.mashit.data.models.nft.mappers.toTraits
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.MASHI_ADDRESS
-import com.mashiverse.mashit.utils.helpers.parseName
-import com.mashiverse.mashit.utils.helpers.fromIpfsScheme
+import com.mashiverse.mashit.utils.helpers.nft.parseName
+import com.mashiverse.mashit.utils.helpers.nft.fromIpfsScheme
 import javax.inject.Inject
 
 class AlchemyRepo @Inject constructor(

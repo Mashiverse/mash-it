@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.utils.helpers
+package com.mashiverse.mashit.utils.helpers.sys
 
 import android.content.res.Configuration
 import androidx.compose.ui.unit.Dp

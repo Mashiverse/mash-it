@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
@@ -29,8 +28,8 @@ import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
-import com.mashiverse.mashit.utils.helpers.getRandomTraits
-import com.mashiverse.mashit.utils.helpers.startImageDownload
+import com.mashiverse.mashit.utils.helpers.nft.getRandomTraits
+import com.mashiverse.mashit.utils.helpers.sys.startImageDownload
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

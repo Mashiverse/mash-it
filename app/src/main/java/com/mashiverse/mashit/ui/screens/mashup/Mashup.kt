@@ -47,7 +47,7 @@ import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
-import com.mashiverse.mashit.utils.helpers.getTraitsByType
+import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)

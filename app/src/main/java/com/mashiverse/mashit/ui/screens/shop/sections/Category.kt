@@ -29,8 +29,8 @@ import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.utils.helpers.detectScreenType
-import com.mashiverse.mashit.utils.helpers.getItemWidthAndHeight
+import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
+import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
 @Composable
 fun Category(
