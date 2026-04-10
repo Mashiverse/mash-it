@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.states.intents.ImageIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -17,6 +16,8 @@ import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
+import com.mashiverse.mashit.data.states.intents.ImageIntent
+import com.mashiverse.mashit.data.states.intents.Web3Intent
 import com.mashiverse.mashit.utils.helpers.web3.SoldHelper
 import com.mashiverse.mashit.utils.helpers.web3.Web3Helper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,7 +51,7 @@ class ShopViewModel @Inject constructor(
         _dialogContent.value = null
     }
 
-    fun getSearchPagingData(q: String) : Flow<PagingData<Nft>> = mashItRepo
+    fun getSearchPagingData(q: String): Flow<PagingData<Nft>> = mashItRepo
         .getSearchListPagingData(q = q)
         .cachedIn(viewModelScope)
 
@@ -72,9 +73,9 @@ class ShopViewModel @Inject constructor(
 
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
-            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+            is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
 
-            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+            is ImageIntent.OnTypeSet -> setImageType(intent.url, intent.type)
         }
     }
 
@@ -91,6 +92,26 @@ class ShopViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val entity = ImageTypeEntity(url, imageType)
             imageTypeRepo.insertImageType(entity)
+        }
+    }
+
+    fun processWeb3Intent(intent: Web3Intent) {
+        when (intent) {
+            is Web3Intent.OnCoinbaseGet -> getCoinbaseSdk(
+                openIntent = intent.onOpen
+            )
+
+            is Web3Intent.OnTotalSoldGet -> getTotalSold(
+                listing = intent.listingId,
+                callback = intent.callback
+            )
+
+            is Web3Intent.OnMint -> mint(
+                listingId = intent.listingId,
+                fromAddress = intent.from,
+                price = intent.price,
+                client = intent.client
+            )
         }
     }
 

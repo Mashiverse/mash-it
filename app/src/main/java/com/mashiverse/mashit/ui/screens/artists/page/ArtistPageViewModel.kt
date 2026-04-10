@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.artists.ArtistPageInfo
 import com.mashiverse.mashit.data.models.image.ImageType
@@ -42,9 +41,9 @@ class ArtistPageViewModel @Inject constructor(
 
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
-            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+            is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
 
-            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+            is ImageIntent.OnTypeSet -> setImageType(intent.url, intent.type)
         }
     }
 

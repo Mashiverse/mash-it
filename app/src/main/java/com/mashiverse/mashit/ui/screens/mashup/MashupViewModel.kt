@@ -272,7 +272,7 @@ class MashupViewModel @Inject constructor(
             is MashupIntent.OnCategorySelect -> onCategorySelect(
                 intent.scope,
                 intent.state,
-                intent.selectedCategory
+                intent.selected
             )
 
             is MashupIntent.OnColorChange -> onColorChange(intent.color)
@@ -285,18 +285,18 @@ class MashupViewModel @Inject constructor(
 
     fun processDialogIntent(intent: DialogIntent) {
         when (intent) {
-            is DialogIntent.Clear -> mashupUiState.value =
+            is DialogIntent.OnClear -> mashupUiState.value =
                 mashupUiState.value.copy(dialogContent = null)
 
-            is DialogIntent.SetContent -> mashupUiState.value =
+            is DialogIntent.OnChange -> mashupUiState.value =
                 mashupUiState.value.copy(dialogContent = intent.content)
         }
     }
 
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
-            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
-            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+            is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
+            is ImageIntent.OnTypeSet -> setImageType(intent.url, intent.type)
         }
     }
 }

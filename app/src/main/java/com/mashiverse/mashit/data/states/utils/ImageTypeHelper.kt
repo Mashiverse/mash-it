@@ -28,7 +28,7 @@ fun rememberImageType(
 
     LaunchedEffect(data) {
         processImageIntent(
-            ImageIntent.GetImageType(
+            ImageIntent.OnTypeGet(
                 url = data,
                 onResult = { type ->
                     imageType.value = type
@@ -55,7 +55,7 @@ fun rememberImageType(
         }
 
         imageType.value = type
-        processImageIntent(ImageIntent.SetImageType(url = data, imageType = type))
+        processImageIntent(ImageIntent.OnTypeSet(url = data, type = type))
     }
 
     return imageType

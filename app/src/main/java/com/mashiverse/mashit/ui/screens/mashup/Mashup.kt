@@ -35,7 +35,7 @@ import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.states.intents.ActionsIntent
-import com.mashiverse.mashit.data.states.intents.DialogIntent.Clear
+import com.mashiverse.mashit.data.states.intents.DialogIntent.OnClear
 import com.mashiverse.mashit.data.states.intents.MashupIntent
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
@@ -177,7 +177,7 @@ fun Mashup(searchQuery: State<String>) {
                                 MashupIntent.OnCategorySelect(
                                     scope = scope,
                                     state = lazyGridState,
-                                    selectedCategory = category
+                                    selected = category
                                 )
                             )
                             isCollectibles = false
@@ -245,7 +245,7 @@ fun Mashup(searchQuery: State<String>) {
 
     mashupUiState.dialogContent?.let { content ->
         Dialog(content) {
-            viewModel.processDialogIntent(Clear)
+            viewModel.processDialogIntent(OnClear)
         }
     }
 }

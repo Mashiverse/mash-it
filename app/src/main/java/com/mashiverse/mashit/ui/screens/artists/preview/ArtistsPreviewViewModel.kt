@@ -27,9 +27,9 @@ class ArtistsPreviewViewModel @Inject constructor(
 
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
-            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+            is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
 
-            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+            is ImageIntent.OnTypeSet -> setImageType(intent.url, intent.type)
         }
     }
 
