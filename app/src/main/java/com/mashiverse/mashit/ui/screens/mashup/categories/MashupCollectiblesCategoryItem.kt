@@ -38,8 +38,8 @@ import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Trait
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.data.states.intents.MashupIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.ui.screens.components.nft.TraitHolder
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Secondary

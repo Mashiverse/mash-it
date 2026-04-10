@@ -34,9 +34,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.states.intents.ActionsIntent
-import com.mashiverse.mashit.data.states.intents.DialogIntent.OnClear
-import com.mashiverse.mashit.data.states.intents.MashupIntent
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.DialogIntent.OnClear
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
 import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
@@ -81,10 +81,7 @@ fun Mashup(searchQuery: State<String>) {
 
     val mashupUiState by remember { viewModel.mashupUiState }
 
-    val selectedColorType by remember(mashupUiState.selectedColorType) {
-        mutableStateOf(mashupUiState.selectedColorType)
-    }
-
+    val selectedColorType by remember(mashupUiState.selectedColorType) { mutableStateOf(mashupUiState.selectedColorType) }
 
     val currentColor = remember(selectedColorType, mashupUiState.colors) {
         when (selectedColorType) {
@@ -142,8 +139,6 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    var isCollectibles by remember { mutableStateOf(false) }
-
     Column {
         if (mashupUiState.wallet != null) {
             Column(
@@ -172,28 +167,15 @@ fun Mashup(searchQuery: State<String>) {
                     Spacer(Modifier.height(Padding))
 
                     MashupCategories(
-                        onCategorySelect = { category ->
-                            viewModel.processMashupIntent(
-                                MashupIntent.OnCategorySelect(
-                                    scope = scope,
-                                    state = lazyGridState,
-                                    selected = category
-                                )
-                            )
-                            isCollectibles = false
-                            scope.launch { collectiblesColumnState.scrollToItem(0) }
-                        },
-                        selectedCategory = mashupUiState.selectedCategory,
-                        isCollectibles = isCollectibles,
-                        onCollectiblesSelect = {
-                            isCollectibles = true
-                            scope.launch { lazyGridState.scrollToItem(0) }
-                        }
+                        mashupUiState = mashupUiState,
+                        processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                        gridState = lazyGridState,
+                        scope = scope
                     )
 
                     Spacer(Modifier.height(12.dp))
 
-                    if (isCollectibles) {
+                    if (mashupUiState.isCollectibles) {
                         MashupCollectiblesCategory(
                             nfts = nfts,
                             state = collectiblesColumnState,

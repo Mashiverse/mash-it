@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.states.intents
+package com.mashiverse.mashit.data.intents
 
 import android.content.Intent
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK

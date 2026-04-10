@@ -25,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import com.mashiverse.mashit.data.states.intents.ActionsIntent
-import com.mashiverse.mashit.data.states.intents.MashupIntent
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.screens.components.picker.ColorPicker
 import com.mashiverse.mashit.ui.screens.components.picker.ColorSlideBar

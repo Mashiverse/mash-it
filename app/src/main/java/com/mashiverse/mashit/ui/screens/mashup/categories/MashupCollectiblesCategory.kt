@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.data.states.intents.MashupIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 
 @Composable
 fun MashupCollectiblesCategory(

@@ -1,9 +1,12 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
 import android.content.Context
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
@@ -20,10 +23,10 @@ import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.states.MashupUiState
-import com.mashiverse.mashit.data.states.intents.ActionsIntent
-import com.mashiverse.mashit.data.states.intents.DialogIntent
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.data.states.intents.MashupIntent
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.DialogIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import com.mashiverse.mashit.utils.helpers.getRandomTraits
@@ -217,7 +220,10 @@ class MashupViewModel @Inject constructor(
 
     // Category
     fun onCategorySelect(scope: CoroutineScope, state: LazyGridState, selectedCategory: TraitType) {
-        mashupUiState.value = mashupUiState.value.copy(selectedCategory = selectedCategory)
+        mashupUiState.value = mashupUiState.value.copy(
+            selectedCategory = selectedCategory,
+            isCollectibles = false
+        )
         scope.launch { state.scrollToItem(0) }
     }
 
@@ -267,6 +273,20 @@ class MashupViewModel @Inject constructor(
         }
     }
 
+    fun onCollectiblesSelect() {
+        mashupUiState.value = mashupUiState.value.copy(
+            isCollectibles = true
+        )
+    }
+
+    fun onCollectibleExpand(
+        height: Float,
+        scope: CoroutineScope,
+        state: LazyListState
+    ) {
+        scope.launch { state.scrollBy(height) }
+    }
+
     fun processMashupIntent(intent: MashupIntent) {
         when (intent) {
             is MashupIntent.OnCategorySelect -> onCategorySelect(
@@ -275,6 +295,13 @@ class MashupViewModel @Inject constructor(
                 intent.selected
             )
 
+            is MashupIntent.OnCollectibleExpand -> onCollectibleExpand(
+                intent.height,
+                intent.scope,
+                intent.state
+            )
+
+            is MashupIntent.OnCollectiblesSelect -> onCollectiblesSelect()
             is MashupIntent.OnColorChange -> onColorChange(intent.color)
             is MashupIntent.OnColorsReset -> onColorsReset()
             is MashupIntent.OnMashupUpdate -> onMashupUpdate(intent.trait)

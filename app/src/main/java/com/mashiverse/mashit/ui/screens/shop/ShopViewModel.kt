@@ -16,8 +16,8 @@ import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.repos.Web3Repo
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.data.states.intents.Web3Intent
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.Web3Intent
 import com.mashiverse.mashit.utils.helpers.web3.SoldHelper
 import com.mashiverse.mashit.utils.helpers.web3.Web3Helper
 import dagger.hilt.android.lifecycle.HiltViewModel

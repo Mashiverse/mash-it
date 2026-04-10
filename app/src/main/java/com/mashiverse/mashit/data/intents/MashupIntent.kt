@@ -1,7 +1,9 @@
-package com.mashiverse.mashit.data.states.intents
+package com.mashiverse.mashit.data.intents
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.TraitType
@@ -13,6 +15,14 @@ sealed class MashupIntent {
         val scope: CoroutineScope,
         val state: LazyGridState,
         val selected: TraitType
+    ) : MashupIntent()
+
+    data object OnCollectiblesSelect : MashupIntent()
+
+    data class OnCollectibleExpand(
+        val height: Float,
+        val scope: CoroutineScope,
+        val state: LazyListState
     ) : MashupIntent()
 
     data class OnColorTypeSelect(
