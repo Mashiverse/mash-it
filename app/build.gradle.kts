@@ -125,6 +125,11 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
 
+    // Reown
+    implementation(platform("com.reown:android-bom:1.3.0"))
+    implementation("com.reown:android-core")
+    implementation("com.reown:appkit")
+
     // Workers
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
