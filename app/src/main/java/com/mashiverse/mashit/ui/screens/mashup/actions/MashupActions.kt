@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.intents.ActionsIntent
 import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.ui.screens.components.nft.MashupComposite
+import com.mashiverse.mashit.ui.nft.MashupComposite
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.TraitShape
 

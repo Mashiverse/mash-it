@@ -11,7 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.artists.ArtistMashup
 import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
+import com.mashiverse.mashit.ui.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 
 @Composable

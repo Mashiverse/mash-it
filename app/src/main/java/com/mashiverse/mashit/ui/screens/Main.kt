@@ -42,9 +42,9 @@ import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
-import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
+import com.mashiverse.mashit.ui.dialogs.Dialog
+import com.mashiverse.mashit.ui.nav.drawer.NavDrawer
+import com.mashiverse.mashit.ui.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.utils.helpers.sys.checkNotificationsPermission
 import kotlinx.coroutines.launch

@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
-import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
+import com.mashiverse.mashit.ui.buttons.BuyButton
+import com.mashiverse.mashit.ui.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
