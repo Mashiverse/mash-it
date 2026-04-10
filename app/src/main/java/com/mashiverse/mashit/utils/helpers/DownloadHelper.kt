@@ -13,7 +13,7 @@ import com.mashiverse.mashit.sys.workers.UploadWorker
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-fun startImageDownload(wallet: String, imageType: Int, context: Context) {
+fun startImageDownload(wallet: String, imageType: Int, worker: WorkManager) {
     val inputData = Data.Builder()
         .putString(UploadWorker.WALLET, wallet)
         .putInt(UploadWorker.IMG_TYPE, imageType)
@@ -33,8 +33,8 @@ fun startImageDownload(wallet: String, imageType: Int, context: Context) {
         )
         .build()
 
-    WorkManager.getInstance(context).enqueueUniqueWork(
-        UUID.randomUUID().toString(),
+    worker.enqueueUniqueWork(
+        "image_download_work",
         ExistingWorkPolicy.REPLACE,
         uploadRequest
     )

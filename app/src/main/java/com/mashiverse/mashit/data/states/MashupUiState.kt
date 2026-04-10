@@ -17,5 +17,6 @@ data class MashupUiState(
     val colors: SelectedColors = SelectedColors(),
     val dialogContent: DialogContent? = null,
     val isColorChange: Boolean = false,
-    val isPreview: Boolean = false
+    val isPreview: Boolean = false,
+    val isDownloading: Boolean = false
 )

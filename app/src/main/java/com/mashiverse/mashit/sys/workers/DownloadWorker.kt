@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.mashiverse.mashit.data.repos.MashiverseRepo
 import com.mashiverse.mashit.utils.helpers.saveImageToGallery
 import com.mashiverse.mashit.utils.helpers.sys.showNotification
@@ -20,6 +21,8 @@ class UploadWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
+            setProgress(workDataOf("STATE" to "LOADING"))
+
             val wallet = inputData.getString(WALLET)
             val imgType = inputData.getInt(IMG_TYPE, 0)
 

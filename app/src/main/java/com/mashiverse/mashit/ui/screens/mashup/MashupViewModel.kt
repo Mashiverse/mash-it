@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.DownloadType
@@ -32,17 +34,23 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
+    private val worker: WorkManager,
     val collectionRepo: CollectionRepo,
     dataStoreRepo: DatastoreRepo,
     private val mashitRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
+
+    val downloadWorkInfo = worker.getWorkInfosForUniqueWorkFlow("image_download_work")
+        .map { it.firstOrNull() }
+
     var mashupUiState = mutableStateOf(MashupUiState())
         private set
     private val stackManager = StackManager<MashupDetails>()
@@ -53,9 +61,26 @@ class MashupViewModel @Inject constructor(
     init {
         observeWallet()
         observeCollection()
+        observeDownloadStatus()
     }
 
     // Observers
+    private fun observeDownloadStatus() {
+        viewModelScope.launch {
+            downloadWorkInfo.collect { info ->
+                when (info?.state) {
+                    WorkInfo.State.RUNNING -> {
+                        mashupUiState.value = mashupUiState.value.copy(isDownloading = true)
+                    }
+                    WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        mashupUiState.value = mashupUiState.value.copy(isDownloading = false)
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun observeWallet() {
         viewModelScope.launch(Dispatchers.IO) {
             walletFlow.distinctUntilChanged().collect { prefs ->
@@ -237,7 +262,7 @@ class MashupViewModel @Inject constructor(
 
     fun onImageSave(context: Context, downloadType: DownloadType) {
         mashupUiState.value.wallet?.let { wallet ->
-            startImageDownload(wallet, downloadType.type, context)
+            startImageDownload(wallet, downloadType.type, worker = worker)
         }
     }
 
