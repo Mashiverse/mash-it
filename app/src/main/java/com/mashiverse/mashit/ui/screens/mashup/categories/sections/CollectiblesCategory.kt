@@ -12,7 +12,6 @@ import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.intents.MashupIntent
-import com.mashiverse.mashit.data.states.MashupUiState
 
 @Composable
 fun CollectiblesCategory(

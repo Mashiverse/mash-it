@@ -11,11 +11,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.intents.Web3Intent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
 import com.mashiverse.mashit.ui.buttons.BuyButton
@@ -23,17 +24,13 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.Padding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProductInfoSection(
     nft: Nft,
-    getSoldQty: ((Int, (Int) -> Unit) -> Unit)?,
-    onMint: ((String, Double, Boolean) -> Unit)?,
+    processWeb3Intent: (Web3Intent) -> Unit,
+    clientRef: CoinbaseWalletSDK
 ) {
-    val scope = rememberCoroutineScope()
-
     val productInfo = nft.productInfo!!
 
     var soldQty by remember {
@@ -41,11 +38,13 @@ fun ProductInfoSection(
     }
 
     LaunchedEffect(Unit) {
-        scope.launch(Dispatchers.IO) {
-            getSoldQty?.invoke(nft.productInfo.listingId.toInt()) { v ->
+        processWeb3Intent.invoke(
+            Web3Intent.OnTotalSoldGet(
+                nft.productInfo.listingId.toInt()
+            ) { v ->
                 soldQty = v
             }
-        }
+        )
     }
 
     Text(
@@ -91,10 +90,13 @@ fun ProductInfoSection(
             },
             textSize = 14.sp,
             onClick = {
-                onMint!!.invoke(
-                    nft.productInfo.listingId,
-                    nft.productInfo.price,
-                    nft.productInfo.priceCurrency == PriceCurrency.POL
+                processWeb3Intent.invoke(
+                    Web3Intent.OnMint(
+                        client = clientRef,
+                        listingId = nft.productInfo.listingId,
+                        price = nft.productInfo.price,
+                        isPolCurrency = nft.productInfo.priceCurrency == PriceCurrency.POL
+                    )
                 )
             }
         )

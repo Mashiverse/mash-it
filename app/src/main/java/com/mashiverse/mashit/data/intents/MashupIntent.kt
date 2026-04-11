@@ -3,7 +3,6 @@ package com.mashiverse.mashit.data.intents
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.TraitType

@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.intents.Web3Intent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -39,8 +41,8 @@ fun MashiDetailsSection(
     scope: CoroutineScope,
     closeBottomSheet: () -> Unit,
     sheetState: SheetState,
-    getSoldQty: ((Int, (Int) -> Unit) -> Unit)? = null,
-    onMint: ((String, Double, Boolean) -> Unit)? = null
+    processWeb3Intent: ((Web3Intent) -> Unit)? = null,
+    clientRef: CoinbaseWalletSDK? = null
 ) {
     Row(
         modifier = Modifier
@@ -130,8 +132,8 @@ fun MashiDetailsSection(
             if (nft.productInfo != null) {
                 ProductInfoSection(
                     nft = nft,
-                    getSoldQty = getSoldQty,
-                    onMint = onMint
+                    processWeb3Intent = processWeb3Intent!!,
+                    clientRef = clientRef!!
                 )
             }
         }

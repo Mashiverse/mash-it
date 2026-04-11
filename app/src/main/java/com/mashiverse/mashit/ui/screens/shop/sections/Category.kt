@@ -19,10 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.mashiverse.mashit.data.models.nft.Nft
+import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ShopIntent
+import com.mashiverse.mashit.data.intents.Web3Intent
+import com.mashiverse.mashit.data.states.ShopUiState
 import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
 import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
@@ -34,14 +37,15 @@ import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
 @Composable
 fun Category(
-    items: LazyPagingItems<Nft>,
-    title: String,
-    selectId: (String) -> Unit,
+    shopUiState: ShopUiState,
+    clientRef: CoinbaseWalletSDK,
     processImageIntent: (ImageIntent) -> Unit,
-    getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double, Boolean) -> Unit,
-    dismissButton
+    onSearchQueryClear: (() -> Unit)? = null,
+    processShopIntent: (ShopIntent) -> Unit,
+    processWeb3Intent: (Web3Intent) -> Unit,
 ) {
+    val items = shopUiState.itemsData.collectAsLazyPagingItems()
+
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
     val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
@@ -56,7 +60,7 @@ fun Category(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Search",
+                text = shopUiState.category.name.uppercase(),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
@@ -66,11 +70,12 @@ fun Category(
 
             TextButton(
                 onClick = {
-                    onSearchClear.invoke()
+                    onSearchQueryClear?.invoke()
+                        ?: processShopIntent.invoke(ShopIntent.OnCategoryClose)
                 }
             ) {
                 Text(
-                    text = "Clear",
+                    text = "Dismiss",
                     fontSize = 16.sp,
                     color = ContentColor,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -92,10 +97,10 @@ fun Category(
                 nft?.let {
                     ShopItem(
                         nft = nft,
-                        selectId = selectId,
+                        processShopIntent = processShopIntent,
                         processImageIntent = processImageIntent,
-                        getSoldQty = getSoldQty,
-                        onMint = onMint,
+                        clientRef = clientRef,
+                        processWeb3Intent = processWeb3Intent,
                         imageWidth = width,
                         imageHeight = height
                     )

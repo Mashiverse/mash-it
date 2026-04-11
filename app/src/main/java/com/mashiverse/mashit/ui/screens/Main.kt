@@ -76,7 +76,7 @@ fun Main(navController: NavHostController) {
 
     val hasSearch by remember {
         derivedStateOf {
-            if (navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true) false else true
+            navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() != true
         }
     }
 
@@ -110,7 +110,7 @@ fun Main(navController: NavHostController) {
                     setPackage("com.android.vending")
                 }
             ctx.startActivity(intent)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             val intent = Intent(
                 Intent.ACTION_VIEW,
                 "https://play.google.com/store/apps/details?id=$packageName".toUri()

@@ -29,9 +29,6 @@ class StackManager<T> {
         redoStack.clear()
     }
 
-    val canUndo: Boolean get() = undoStack.isNotEmpty()
-    val canRedo: Boolean get() = redoStack.isNotEmpty()
-
     companion object {
         const val STACK_SIZE = 10
     }

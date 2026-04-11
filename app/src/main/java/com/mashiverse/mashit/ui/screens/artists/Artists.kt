@@ -2,9 +2,7 @@ package com.mashiverse.mashit.ui.screens.artists
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.mashiverse.mashit.nav.graphs.artistsGraph
@@ -12,7 +10,7 @@ import com.mashiverse.mashit.nav.routes.ArtistsRoutes
 
 
 @Composable
-fun Artists(parentNavController: NavHostController) {
+fun Artists() {
 
     val innerNavController = rememberNavController()
 
@@ -23,7 +21,6 @@ fun Artists(parentNavController: NavHostController) {
     ) {
         artistsGraph(
             innerNavController = innerNavController,
-            parentNavController = parentNavController
         )
     }
 }

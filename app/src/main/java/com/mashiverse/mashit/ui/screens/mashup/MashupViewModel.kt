@@ -45,6 +45,7 @@ class MashupViewModel @Inject constructor(
     private val mashitRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
+
     var mashupUiState = mutableStateOf(MashupUiState())
         private set
     private val stackManager = StackManager<MashupDetails>()
