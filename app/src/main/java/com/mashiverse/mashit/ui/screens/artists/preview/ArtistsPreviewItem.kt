@@ -45,7 +45,7 @@ fun ArtistsPreviewItem(
             processImageIntent = processImageIntent
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = artistInfo.name,

@@ -24,7 +24,6 @@ sealed class ActionsIntent {
     object OnPreviewDismiss : ActionsIntent()
 
     data class OnImageSave(
-        val context: Context,
         val downloadType: DownloadType
     ) : ActionsIntent()
 }

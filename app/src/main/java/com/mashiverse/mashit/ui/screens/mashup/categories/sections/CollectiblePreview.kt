@@ -78,8 +78,8 @@ fun CollectiblePreview(
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .width((552 * 0.06).dp)
-                    .height((736 * 0.06).dp)
+                    .width((36).dp)
+                    .height(48.dp)
                     .clip(TraitShape),
                 model = nft.compositeUrl,
                 contentDescription = null
@@ -116,7 +116,7 @@ fun CollectiblePreview(
 
         AnimatedVisibility(isExpanded) {
             Column {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 FlowRow(
                     modifier = Modifier

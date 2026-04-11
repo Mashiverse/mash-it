@@ -19,8 +19,6 @@ import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
-    val context = LocalContext.current
-
     Column {
         Spacer(modifier = Modifier.height(SmallPadding))
 
@@ -33,7 +31,6 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
             onClick = {
                 processActionsIntent(
                     ActionsIntent.OnImageSave(
-                        context = context,
                         downloadType = DownloadType.PNG
                     )
                 )
@@ -47,7 +44,6 @@ fun RightPanel(processActionsIntent: (ActionsIntent) -> Unit) {
             onClick = {
                 processActionsIntent(
                     ActionsIntent.OnImageSave(
-                        context = context,
                         downloadType = DownloadType.GIF
                     )
                 )

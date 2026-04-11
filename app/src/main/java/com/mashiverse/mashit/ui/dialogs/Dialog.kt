@@ -52,7 +52,7 @@ fun Dialog(
                     onDismissRequest()
                 }
             ) {
-                Text("Close", color = Color.DarkGray)
+                Text("Close", color = ContentColor)
             }
         },
         confirmButton = { },

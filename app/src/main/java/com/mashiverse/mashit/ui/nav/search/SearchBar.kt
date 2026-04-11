@@ -66,7 +66,7 @@ fun SearchBar(
             .width(width.value)
             .clip(shape = SearchShape)
             .border(
-                border = BorderStroke(width = 2.dp, color = borderColor.value),
+                border = BorderStroke(width = 1.dp, color = borderColor.value),
                 shape = SearchShape
             )
             .wrapContentSize(unbounded = true, align = Alignment.CenterStart)

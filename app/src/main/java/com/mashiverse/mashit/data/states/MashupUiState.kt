@@ -17,5 +17,6 @@ data class MashupUiState(
     val dialogContent: DialogContent? = null,
     val isColorChange: Boolean = false,
     val isPreview: Boolean = false,
-    val isCollectibles: Boolean = true
+    val isCollectibles: Boolean = true,
+    val isDownloading: Boolean = false
 )

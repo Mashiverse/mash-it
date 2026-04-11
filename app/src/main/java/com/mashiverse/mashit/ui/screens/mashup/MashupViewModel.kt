@@ -1,6 +1,5 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
-import android.content.Context
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -8,6 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.DialogIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.image.DownloadType
@@ -22,10 +27,6 @@ import com.mashiverse.mashit.data.repos.DatastoreRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.MashitRepo
 import com.mashiverse.mashit.data.states.MashupUiState
-import com.mashiverse.mashit.data.intents.ActionsIntent
-import com.mashiverse.mashit.data.intents.DialogIntent
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import com.mashiverse.mashit.utils.helpers.nft.getRandomTraits
@@ -34,17 +35,22 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
+    private val worker: WorkManager,
     val collectionRepo: CollectionRepo,
     dataStoreRepo: DatastoreRepo,
     private val mashitRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo
 ) : ViewModel() {
+
+    val downloadWorkInfo = worker.getWorkInfosForUniqueWorkFlow("image_download_work")
+        .map { it.firstOrNull() }
 
     var mashupUiState = mutableStateOf(MashupUiState())
         private set
@@ -56,9 +62,26 @@ class MashupViewModel @Inject constructor(
     init {
         observeWallet()
         observeCollection()
+        observeDownloadStatus()
     }
 
     // Observers
+    private fun observeDownloadStatus() {
+        viewModelScope.launch {
+            downloadWorkInfo.collect { info ->
+                when (info?.state) {
+                    WorkInfo.State.RUNNING -> {
+                        mashupUiState.value = mashupUiState.value.copy(isDownloading = true)
+                    }
+                    WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        mashupUiState.value = mashupUiState.value.copy(isDownloading = false)
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun observeWallet() {
         viewModelScope.launch(Dispatchers.IO) {
             walletFlow.distinctUntilChanged().collect { prefs ->
@@ -241,9 +264,9 @@ class MashupViewModel @Inject constructor(
         }
     }
 
-    fun onImageSave(context: Context, downloadType: DownloadType) {
+    fun onImageSave(downloadType: DownloadType) {
         mashupUiState.value.wallet?.let { wallet ->
-            startImageDownload(wallet, downloadType.type, context)
+            startImageDownload(wallet, downloadType.type, worker = worker)
         }
     }
 
@@ -264,7 +287,7 @@ class MashupViewModel @Inject constructor(
             is ActionsIntent.OnPreviewDismiss -> mashupUiState.value =
                 uiState.copy(isPreview = false)
 
-            is ActionsIntent.OnImageSave -> onImageSave(intent.context, intent.downloadType)
+            is ActionsIntent.OnImageSave -> onImageSave(intent.downloadType)
             is ActionsIntent.OnRandom -> onRandom()
             is ActionsIntent.OnSave -> onSave()
             is ActionsIntent.OnReset -> onReset()

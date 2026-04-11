@@ -16,7 +16,6 @@ import com.mashiverse.mashit.ui.screens.shop.Shop
 fun NavGraphBuilder.mainGraph(
     searchQuery: State<String>,
     clearSearchQuery: () -> Unit,
-    navController: NavHostController
 ) {
     composable<MainRoutes.Shop>(
         deepLinks = listOf(
@@ -33,7 +32,7 @@ fun NavGraphBuilder.mainGraph(
     }
 
     composable<MainRoutes.Artists> {
-        Artists(navController)
+        Artists()
     }
 
     composable<MainRoutes.Collection> {

@@ -230,8 +230,7 @@ fun Main(navController: NavHostController) {
             ) {
                 mainGraph(
                     searchQuery = searchQuery,
-                    clearSearchQuery = clearSearchQuery,
-                    navController = navController
+                    clearSearchQuery = clearSearchQuery
                 )
             }
 
@@ -250,7 +249,6 @@ fun Main(navController: NavHostController) {
         }
 
         if (firstLaunch.value && dialogContent != null) {
-            // TODO: rework error dialog
             Dialog(dialogContent!!) {
                 onFirstLaunchDialogClose.invoke()
             }
