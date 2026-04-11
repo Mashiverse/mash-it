@@ -4,8 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.toColorInt
 
-// ----------------- Color conversions -----------------
-
 fun Color.toHexString(): String {
     val r = (red * 255).toInt()
     val g = (green * 255).toInt()
@@ -26,21 +24,16 @@ fun String.toHexColor(): Color {
     return Color("#$cleanHex".toColorInt())
 }
 
-// ----------------- ColorPicker Helpers -----------------
-
 object ColorPickerHelper {
 
-    // Convert Color to HSV hue
     fun Color.toHue(): Float {
         val hsv = FloatArray(3)
         android.graphics.Color.colorToHSV(this.toArgb(), hsv)
         return hsv[0]
     }
 
-    // Convert hue + saturation + value to Color
     fun hsvToColor(hue: Float, saturation: Float, value: Float): Color {
         val hsv = floatArrayOf(hue, saturation, value)
         return Color(android.graphics.Color.HSVToColor(hsv))
     }
-
 }

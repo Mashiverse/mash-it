@@ -1,7 +1,6 @@
 package com.mashiverse.mashit.data.states
 
 import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
@@ -18,5 +17,6 @@ data class MashupUiState(
     val dialogContent: DialogContent? = null,
     val isColorChange: Boolean = false,
     val isPreview: Boolean = false,
+    val isCollectibles: Boolean = true,
     val isDownloading: Boolean = false
 )

@@ -6,8 +6,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.utils.helpers.detectImageType
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.utils.helpers.nft.detectImageType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -28,7 +28,7 @@ fun rememberImageType(
 
     LaunchedEffect(data) {
         processImageIntent(
-            ImageIntent.GetImageType(
+            ImageIntent.OnTypeGet(
                 url = data,
                 onResult = { type ->
                     imageType.value = type
@@ -55,7 +55,7 @@ fun rememberImageType(
         }
 
         imageType.value = type
-        processImageIntent(ImageIntent.SetImageType(url = data, imageType = type))
+        processImageIntent(ImageIntent.OnTypeSet(url = data, type = type))
     }
 
     return imageType

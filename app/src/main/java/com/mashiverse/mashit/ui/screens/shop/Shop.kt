@@ -12,7 +12,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,21 +20,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.screens.components.nft.MashiDetailsSection
-import com.mashiverse.mashit.ui.screens.shop.sections.SearchCategory
-import com.mashiverse.mashit.ui.screens.shop.sections.ShopCategory
+import com.mashiverse.mashit.data.intents.DialogIntent
+import com.mashiverse.mashit.data.intents.ShopIntent
+import com.mashiverse.mashit.data.models.ShopDataType
+import com.mashiverse.mashit.ui.dialogs.Dialog
+import com.mashiverse.mashit.ui.nft.MashiBottomSheet
+import com.mashiverse.mashit.ui.nft.MashiDetailsSection
+import com.mashiverse.mashit.ui.screens.shop.sections.Category
 import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
 import com.mashiverse.mashit.ui.theme.Padding
-import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,48 +42,18 @@ fun Shop(
         mutableStateOf(searchQuery.value)
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val previewState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    var isBottomSheet by remember { mutableStateOf(false) }
 
     val viewModel = hiltViewModel<ShopViewModel>()
-    val pagingItems = viewModel.shopPagingData.collectAsLazyPagingItems()
-    val searchPagingItems = remember(searchQuery) {
-        if (searchQuery.isEmpty()) {
-            flowOf(PagingData.empty())
-        } else {
-            viewModel.getSearchPagingData(q = searchQuery)
-        }
-    }.collectAsLazyPagingItems()
-
-    val selectedListing by remember { viewModel.selectedNft }
-    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
-
-    val selectId = { id: String ->
-        viewModel.selectId(id)
-        isBottomSheet = true
-    }
-
-    var category by remember { mutableStateOf<String?>(null) }
-    var categoryItems by remember { mutableStateOf<LazyPagingItems<Nft>?>(null) }
-
-    val onCategorySelect = { categoryName: String, items: LazyPagingItems<Nft> ->
-        category = categoryName
-        categoryItems = items
-    }
-
-    val onCategoryClose = {
-        category = null
-    }
+    val shopUiState by remember { viewModel.shopUiState }
 
     LaunchedEffect(listingId) {
         if (!listingId.isNullOrEmpty()) {
-            selectId.invoke(listingId)
-            isBottomSheet = true
+            viewModel.processShopIntent(ShopIntent.OnNftSelect(listingId))
         }
     }
 
-    val closeBottomSheet = { isBottomSheet = false }
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -105,41 +69,17 @@ fun Shop(
         }
     }
 
-    val onMint = { listingId: String, price: Double, isPolCurrency: Boolean ->
-        if (isPolCurrency) {
-            viewModel.setDialogContent(
-                DialogContent(
-                    title = "POL Currency",
-                    text = "We currently don't support POL minting"
-                )
-            )
-        } else if (clientRef != null && walletPreferences.value.wallet != null) {
-            viewModel.mint(
-                client = clientRef!!,
-                fromAddress = walletPreferences.value.wallet!!,
-                listingId = listingId,
-                price = price
-            )
+    LaunchedEffect(searchQuery) {
+        val dataType = if (searchQuery.isNotEmpty()) {
+            ShopDataType.SEARCH
         } else {
-            viewModel.setDialogContent(
-                DialogContent(
-                    title = "Not Authenticated",
-                    text = "Please connect your wallet to continue"
-                )
-            )
+            ShopDataType.RECENT
         }
-    }
 
-    val getSoldQty = { listingId: Int, callback: (Int) -> Unit ->
-        viewModel.getTotalSold(listingId, callback)
-    }
-
-    val dialogContent by remember {
-        viewModel.dialogContent
-    }
-
-    val onSearchClear = {
-        clearSearchQuery.invoke()
+        viewModel.processShopIntent(ShopIntent.OnDataTypeSelect(dataType, searchQuery))
+        if (searchQuery.isNotEmpty()) {
+            viewModel.processShopIntent(ShopIntent.OnCategorySelect)
+        }
     }
 
     Column(
@@ -147,68 +87,65 @@ fun Shop(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        if (searchQuery.isNotEmpty()) {
-            SearchCategory(
-                items = searchPagingItems,
-                selectId = selectId,
+        if (shopUiState.isCategory) {
+            Category(
+                shopUiState = shopUiState,
+                clientRef = clientRef!!,
+                onSearchQueryClear = if (searchQuery.isNotEmpty()) {
+                    {
+                        clearSearchQuery.invoke()
+                        viewModel.processShopIntent(ShopIntent.OnCategoryClose)
+                    }
+                } else null,
+                processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                getSoldQty = getSoldQty,
-                onMint = onMint,
-                onSearchClear = onSearchClear
+                processShopIntent = { intent -> viewModel.processShopIntent(intent) }
             )
-        } else if (category == null) {
+        } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(Padding)
             ) {
                 item {
-                    ShopSection(
-                        sectionName = "Recently Released",
-                        selectId = selectId,
-                        sectionItems = pagingItems,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        getSoldQty = getSoldQty,
-                        onMint = onMint,
-                        onCategorySelect = onCategorySelect
-                    )
+                    clientRef?.let {
+                        ShopSection(
+                            shopUiState = shopUiState,
+                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                            clientRef = clientRef!!,
+                        )
+                    }
                 }
             }
-        } else {
-            ShopCategory(
-                categoryName = category!!,
-                categoryItems = categoryItems!!,
-                selectId = selectId,
-                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                getSoldQty = getSoldQty,
-                onMint = onMint,
-                onCategoryClose = onCategoryClose
-            )
         }
     }
 
-    if (isBottomSheet) {
-        selectedListing?.let { nft ->
+    if (shopUiState.isExpanded) {
+        shopUiState.selectedNft?.let { nft ->
             MashiBottomSheet(
                 selectedNft = nft,
-                sheetState = sheetState,
-                closeBottomSheet = closeBottomSheet,
+                sheetState = previewState,
+                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) }
             ) {
                 MashiDetailsSection(
                     nft = nft,
                     scope = scope,
-                    closeBottomSheet = closeBottomSheet,
-                    sheetState = sheetState,
-                    getSoldQty = getSoldQty,
-                    onMint = onMint
+                    closeBottomSheet = {
+                        viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                    },
+                    sheetState = previewState,
+                    clientRef = clientRef,
+                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
                 )
             }
         }
     }
 
-    if (dialogContent != null) {
-        Dialog(dialogContent!!) {
-            viewModel.clearDialog()
+    shopUiState.dialogContent?.let { content ->
+        Dialog(content) {
+            viewModel.processDialogIntent(DialogIntent.OnClear)
         }
     }
 }

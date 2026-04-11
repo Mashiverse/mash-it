@@ -1,7 +1,6 @@
 package com.mashiverse.mashit.data.repos
 
 import SaveMashupRes
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -15,14 +14,12 @@ import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.data.models.nft.mappers.toNft
-import com.mashiverse.mashit.data.models.nft.mappers.toNfts
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.paging.SearchPagingSource
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
-import com.mashiverse.mashit.utils.helpers.toFilebaseUri
-import com.mashiverse.mashit.utils.helpers.toIpfsUri
+import com.mashiverse.mashit.utils.helpers.nft.toFilebaseUri
+import com.mashiverse.mashit.utils.helpers.nft.toIpfsUri
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 
 class MashitRepo @Inject constructor(

@@ -42,9 +42,9 @@ import com.mashiverse.mashit.data.models.dialog.DialogContent
 import com.mashiverse.mashit.data.models.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.nav.drawer.NavDrawer
-import com.mashiverse.mashit.ui.screens.components.nav.top.TopNavBar
+import com.mashiverse.mashit.ui.dialogs.Dialog
+import com.mashiverse.mashit.ui.nav.drawer.NavDrawer
+import com.mashiverse.mashit.ui.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.utils.helpers.sys.checkNotificationsPermission
 import kotlinx.coroutines.launch
@@ -76,7 +76,7 @@ fun Main(navController: NavHostController) {
 
     val hasSearch by remember {
         derivedStateOf {
-            if (navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() == true) false else true
+            navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() != true
         }
     }
 
@@ -110,7 +110,7 @@ fun Main(navController: NavHostController) {
                     setPackage("com.android.vending")
                 }
             ctx.startActivity(intent)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             val intent = Intent(
                 Intent.ACTION_VIEW,
                 "https://play.google.com/store/apps/details?id=$packageName".toUri()
@@ -230,8 +230,7 @@ fun Main(navController: NavHostController) {
             ) {
                 mainGraph(
                     searchQuery = searchQuery,
-                    clearSearchQuery = clearSearchQuery,
-                    navController = navController
+                    clearSearchQuery = clearSearchQuery
                 )
             }
 
@@ -250,7 +249,6 @@ fun Main(navController: NavHostController) {
         }
 
         if (firstLaunch.value && dialogContent != null) {
-            // TODO: rework error dialog
             Dialog(dialogContent!!) {
                 onFirstLaunchDialogClose.invoke()
             }

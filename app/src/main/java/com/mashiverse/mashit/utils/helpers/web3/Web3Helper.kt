@@ -84,7 +84,7 @@ object Web3Helper {
                     }
                 }
                 true
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 true
             }
         }
@@ -105,7 +105,7 @@ object Web3Helper {
             ).send()
             val results = FunctionReturnDecoder.decode(response.value, function.outputParameters)
             if (results.isNotEmpty()) results[0].value as BigInteger else BigInteger.ZERO
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             BigInteger.ZERO
         }
     }
@@ -126,7 +126,7 @@ object Web3Helper {
             ).send()
             val results = FunctionReturnDecoder.decode(response.value, function.outputParameters)
             if (results.isNotEmpty()) results[0].value as BigInteger else BigInteger.ZERO
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             BigInteger.ZERO
         }
     }
@@ -162,7 +162,7 @@ object Web3Helper {
                 maxFee.toString(),
                 priorityFee.toString()
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             GasEstimate("350000", "500000000000", "50000000000")
         }
     }
@@ -233,7 +233,7 @@ object Web3Helper {
                 false
             }
 
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             onMintFailure(DialogContent(title = "Process Error", text = "Something went wrong"))
             false
         }
@@ -261,12 +261,4 @@ object Web3Helper {
             gasPriceInWei = null,
             actionSource = null
         ).action()
-
-    // Unused in batch mode but kept for compatibility if needed elsewhere
-    suspend fun executeMint(
-        client: CoinbaseWalletSDK,
-        listingId: String,
-        fromAddress: String,
-        onMintFailure: (DialogContent) -> Unit
-    ): Boolean = mint(client, fromAddress, listingId, 0.0, onMintFailure)
 }

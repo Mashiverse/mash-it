@@ -10,7 +10,6 @@ import com.mashiverse.mashit.ui.screens.artists.preview.ArtistsPreview
 
 fun NavGraphBuilder.artistsGraph(
     innerNavController: NavHostController,
-    parentNavController: NavHostController,
 ) {
     composable<ArtistsRoutes.List> {
         ArtistsPreview(
@@ -24,7 +23,6 @@ fun NavGraphBuilder.artistsGraph(
 
         ArtistPage(
             alias = alias,
-            parentNavController = parentNavController
         )
     }
 }

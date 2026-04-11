@@ -9,7 +9,7 @@ import com.mashiverse.mashit.data.models.artists.ArtistInfo
 import com.mashiverse.mashit.data.models.image.ImageType
 import com.mashiverse.mashit.data.repos.ArtistsRepo
 import com.mashiverse.mashit.data.repos.ImageTypeRepo
-import com.mashiverse.mashit.data.states.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,9 +27,9 @@ class ArtistsPreviewViewModel @Inject constructor(
 
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
-            is ImageIntent.GetImageType -> getImageType(intent.url, intent.onResult)
+            is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
 
-            is ImageIntent.SetImageType -> setImageType(intent.url, intent.imageType)
+            is ImageIntent.OnTypeSet -> setImageType(intent.url, intent.type)
         }
     }
 

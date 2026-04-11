@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,27 +30,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mashiverse.mashit.data.intents.ActionsIntent
+import com.mashiverse.mashit.data.intents.DialogIntent.OnClear
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.states.intents.ActionsIntent
-import com.mashiverse.mashit.data.states.intents.DialogIntent.Clear
-import com.mashiverse.mashit.data.states.intents.MashupIntent
-import com.mashiverse.mashit.ui.screens.components.dialogs.Dialog
-import com.mashiverse.mashit.ui.screens.components.placeholder.NotConnected
+import com.mashiverse.mashit.ui.dialogs.Dialog
+import com.mashiverse.mashit.ui.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
-import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategories
-import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCategoryItems
-import com.mashiverse.mashit.ui.screens.mashup.categories.MashupCollectiblesCategory
+import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
+import com.mashiverse.mashit.ui.screens.mashup.categories.sections.CollectiblesCategory
+import com.mashiverse.mashit.ui.screens.mashup.categories.sections.TraitsCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
-import com.mashiverse.mashit.ui.screens.mashup.preview.MashupSheet
+import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.MaxMashiHolderHeight
@@ -59,8 +56,7 @@ import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
-import com.mashiverse.mashit.utils.helpers.getTraitsByType
-import kotlinx.coroutines.launch
+import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,30 +66,30 @@ fun Mashup(searchQuery: State<String>) {
         mutableStateOf(searchQuery.value)
     }
 
-    LocalContext.current
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val config = LocalConfiguration.current
+    val viewModel = hiltViewModel<MashupViewModel>()
+
+    // Modals
+    val colorChangingState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val previewState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val traitsGridState = rememberLazyGridState()
+    val collectiblesVState = rememberLazyListState()
+
+    var height by remember { mutableStateOf(0.dp) }
+
 
     val compositeWidth = config.screenWidthDp.dp * 0.56f
     val compositeHeight = (compositeWidth / 3) * 4
 
-    // Bottom Sheet States
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val previewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    val lazyGridState = rememberLazyGridState()
-    val collectiblesColumnState = rememberLazyListState()
-    val viewModel = hiltViewModel<MashupViewModel>()
-    var height by remember { mutableStateOf(0.dp) }
-
-
     val mashupUiState by remember { viewModel.mashupUiState }
 
     val selectedColorType by remember(mashupUiState.selectedColorType) {
-        mutableStateOf(mashupUiState.selectedColorType)
+        mutableStateOf(
+            mashupUiState.selectedColorType
+        )
     }
-
 
     val currentColor = remember(selectedColorType, mashupUiState.colors) {
         when (selectedColorType) {
@@ -151,8 +147,6 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    var isCollectibles by remember { mutableStateOf(false) }
-
     Column {
         if (mashupUiState.wallet != null) {
             Column(
@@ -180,42 +174,28 @@ fun Mashup(searchQuery: State<String>) {
                 ) {
                     Spacer(Modifier.height(Padding))
 
-                    MashupCategories(
-                        onCategorySelect = { category ->
-                            viewModel.processMashupIntent(
-                                MashupIntent.OnCategorySelect(
-                                    scope = scope,
-                                    state = lazyGridState,
-                                    selectedCategory = category
-                                )
-                            )
-                            isCollectibles = false
-                            scope.launch { collectiblesColumnState.scrollToItem(0) }
-                        },
-                        selectedCategory = mashupUiState.selectedCategory,
-                        isCollectibles = isCollectibles,
-                        onCollectiblesSelect = {
-                            isCollectibles = true
-                            scope.launch { lazyGridState.scrollToItem(0) }
-                        }
+                    CategorySelector(
+                        mashupUiState = mashupUiState,
+                        processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                        gridState = traitsGridState,
+                        scope = scope
                     )
 
                     Spacer(Modifier.height(12.dp))
 
-                    if (isCollectibles) {
-                        MashupCollectiblesCategory(
+                    if (mashupUiState.isCollectibles) {
+                        CollectiblesCategory(
                             nfts = nfts,
-                            state = collectiblesColumnState,
                             mashupDetails = mashupUiState.mashupDetails,
+                            state = collectiblesVState,
                             processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
                             processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                         )
                     } else {
-                        MashupCategoryItems(
-                            modifier = Modifier.fillMaxHeight(),
-                            lazyGridState = lazyGridState,
+                        TraitsCategoryItems(
                             traits = traits,
                             selectedTraitUrl = selectedTraitUrl,
+                            lazyGridState = traitsGridState,
                             processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
                             processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                         )
@@ -226,10 +206,9 @@ fun Mashup(searchQuery: State<String>) {
             NotConnected()
         }
 
-        // COLOR SHEET
         if (mashupUiState.isColorChange) {
             ColorSheet(
-                sheetState = sheetState,
+                sheetState = colorChangingState,
                 initialColor = previousColor.toHexColor(),
                 color = currentColor.toHexColor(),
                 scope = scope,
@@ -241,9 +220,9 @@ fun Mashup(searchQuery: State<String>) {
         }
 
         if (mashupUiState.isPreview) {
-            MashupSheet(
+            MashupPreview(
                 closeBottomSheet = { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) },
-                sheetState = previewSheetState,
+                sheetState = previewState,
                 scope = scope,
                 mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
@@ -276,7 +255,7 @@ fun Mashup(searchQuery: State<String>) {
 
     mashupUiState.dialogContent?.let { content ->
         Dialog(content) {
-            viewModel.processDialogIntent(Clear)
+            viewModel.processDialogIntent(OnClear)
         }
     }
 }

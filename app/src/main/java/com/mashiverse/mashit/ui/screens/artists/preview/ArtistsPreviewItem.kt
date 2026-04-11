@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.artists.ArtistInfo
-import com.mashiverse.mashit.data.states.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Secondary
@@ -46,7 +45,7 @@ fun ArtistsPreviewItem(
             processImageIntent = processImageIntent
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = artistInfo.name,

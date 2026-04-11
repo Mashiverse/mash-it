@@ -3,7 +3,6 @@ package com.mashiverse.mashit.data.models.mashup.save
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
 @Serializable
 data class SaveMashupReq(

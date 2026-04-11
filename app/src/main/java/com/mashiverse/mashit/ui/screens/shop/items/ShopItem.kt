@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,30 +20,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
+import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ShopIntent
+import com.mashiverse.mashit.data.intents.Web3Intent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.PriceCurrency
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.ui.screens.components.buttons.BuyButton
-import com.mashiverse.mashit.ui.screens.components.nft.trait.TraitImage
+import com.mashiverse.mashit.ui.buttons.BuyButton
+import com.mashiverse.mashit.ui.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.ShopHolderHeight
 import com.mashiverse.mashit.ui.theme.ShopHolderWidth
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun ShopItem(
     nft: Nft,
-    selectId: (String) -> Unit,
+    processShopIntent: (ShopIntent) -> Unit,
+    clientRef: CoinbaseWalletSDK,
     processImageIntent: (ImageIntent) -> Unit,
-    getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double, Boolean) -> Unit,
+    processWeb3Intent: (Web3Intent) -> Unit,
     imageWidth: Dp = ShopHolderWidth,
     imageHeight: Dp = ShopHolderHeight
 ) {
-    val scope = rememberCoroutineScope()
     val productInfo = nft.productInfo
 
     var soldQty by remember {
@@ -52,11 +51,13 @@ fun ShopItem(
     }
 
     LaunchedEffect(Unit) {
-        scope.launch(Dispatchers.IO) {
-            getSoldQty.invoke(productInfo?.listingId?.toInt() ?: -1) { v ->
+        processWeb3Intent.invoke(
+            Web3Intent.OnTotalSoldGet(
+                productInfo?.listingId?.toInt() ?: -1
+            ) { v ->
                 soldQty = v
             }
-        }
+        )
     }
 
     val delisted = nft.productInfo?.delisted ?: false
@@ -73,7 +74,7 @@ fun ShopItem(
             modifier = Modifier
                 .width(imageWidth)
                 .height(imageHeight),
-            onClick = { selectId.invoke(productInfo?.id ?: "") },
+            onClick = { processShopIntent(ShopIntent.OnNftSelect(productInfo?.id ?: "")) },
             data = nft.compositeUrl,
             processImageIntent = processImageIntent
         )
@@ -126,10 +127,13 @@ fun ShopItem(
                 enabled = !isSoldOut && !delisted,
                 onClick = {
                     if (nft.productInfo?.listingId != null) {
-                        onMint.invoke(
-                            nft.productInfo.listingId,
-                            nft.productInfo.price,
-                            nft.productInfo.priceCurrency == PriceCurrency.POL
+                        processWeb3Intent(
+                            Web3Intent.OnMint(
+                                client = clientRef,
+                                listingId = nft.productInfo.listingId,
+                                price = nft.productInfo.price,
+                                isPolCurrency = nft.productInfo.priceCurrency == PriceCurrency.POL
+                            )
                         )
                     }
                 }

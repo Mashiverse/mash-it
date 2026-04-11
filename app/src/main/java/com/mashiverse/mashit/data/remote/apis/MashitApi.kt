@@ -2,7 +2,6 @@ package com.mashiverse.mashit.data.remote.apis
 
 import SaveMashupRes
 import com.mashiverse.mashit.data.models.mashup.save.SaveMashupReq
-import com.mashiverse.mashit.data.remote.dtos.HealthDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingsDto
 import com.mashiverse.mashit.data.remote.dtos.MashupDto
@@ -59,9 +58,6 @@ interface MashitApi {
         @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0
     ): ArtistListingsDto
-
-    @GET("api/v1/health")
-    suspend fun getStatus(): HealthDto
 
     @GET("api/mashers/latest")
     suspend fun getMashup(

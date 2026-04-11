@@ -4,7 +4,6 @@ import com.mashiverse.mashit.data.models.artists.ArtistInfo
 import com.mashiverse.mashit.data.models.artists.ArtistMashup
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.remote.dtos.artists.ArtistsDto
-import timber.log.Timber
 
 fun ArtistsDto.toArtists(): List<ArtistInfo> {
     val artists = this.artists

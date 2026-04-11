@@ -1,6 +1,5 @@
 package com.mashiverse.mashit.nav.routes
 
-import com.kenai.jffi.Main
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -13,33 +13,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.paging.compose.LazyPagingItems
-import com.mashiverse.mashit.data.states.intents.ImageIntent
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.nft.PriceCurrency
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.ShopIntent
+import com.mashiverse.mashit.data.intents.Web3Intent
+import com.mashiverse.mashit.data.states.ShopUiState
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun ShopSection(
-    sectionName: String,
-    selectId: (String) -> Unit,
-    sectionItems: LazyPagingItems<Nft>,
+    shopUiState: ShopUiState,
+    clientRef: CoinbaseWalletSDK,
     processImageIntent: (ImageIntent) -> Unit,
-    onCategorySelect: (String, LazyPagingItems<Nft>) -> Unit, // TODO: Category select
-    getSoldQty: (Int, (Int) -> Unit) -> Unit,
-    onMint: (String, Double, Boolean) -> Unit
+    processShopIntent: (ShopIntent) -> Unit,
+    processWeb3Intent: (Web3Intent) -> Unit
 ) {
+    val sectionItems = shopUiState.itemsData.collectAsLazyPagingItems()
+
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = sectionName,
+                text = shopUiState.category.name.uppercase(),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
@@ -49,7 +50,7 @@ fun ShopSection(
 
             TextButton(
                 onClick = {
-                    onCategorySelect.invoke(sectionName, sectionItems)
+                    processShopIntent(ShopIntent.OnCategorySelect)
                 }
             ) {
                 Text(
@@ -72,10 +73,10 @@ fun ShopSection(
                 if (nft != null) {
                     ShopItem(
                         nft = nft,
-                        selectId = selectId,
+                        processShopIntent = processShopIntent,
                         processImageIntent = processImageIntent,
-                        getSoldQty = getSoldQty,
-                        onMint = onMint
+                        processWeb3Intent = processWeb3Intent,
+                        clientRef = clientRef
                     )
                 }
             }
