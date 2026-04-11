@@ -5,7 +5,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,7 +55,6 @@ import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
@@ -80,8 +78,6 @@ fun ArtistPage(alias: String) {
 
     val previewState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-
-
 
     val appendState = listings.loadState.append
 
@@ -165,62 +161,64 @@ fun ArtistPage(alias: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(screenType.shopColumns),
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(Padding)
-        ) {
-            items(
-                count = listings.itemCount,
-                key = listings.itemKey { it.name + it.compositeUrl }
-            ) { index ->
-                val nft = listings[index]
-                nft?.let {
-                    ShopItem(
-                        nft = nft,
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                        clientRef = clientRef!!,
-                        imageWidth = width,
-                        imageHeight = height
-                    )
+        clientRef?.let {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(screenType.shopColumns),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(Padding)
+            ) {
+                items(
+                    count = listings.itemCount,
+                    key = listings.itemKey { it.name + it.compositeUrl }
+                ) { index ->
+                    val nft = listings[index]
+                    nft?.let {
+                        ShopItem(
+                            nft = nft,
+                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                            clientRef = clientRef!!,
+                            imageWidth = width,
+                            imageHeight = height
+                        )
+                    }
                 }
-            }
 
-            if (appendState is LoadState.Loading) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionLoading()
+                if (appendState is LoadState.Loading) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        SectionLoading()
+                    }
                 }
-            }
 
-            if (appendState is LoadState.Error) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionRefresh(onRetry = { listings.retry() })
+                if (appendState is LoadState.Error) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        SectionRefresh(onRetry = { listings.retry() })
+                    }
                 }
             }
         }
-    }
 
-    if (artistPageUiState.isExpanded) {
-        artistPageUiState.selectedNft?.let { nft ->
-            MashiBottomSheet(
-                selectedNft = nft,
-                sheetState = previewState,
-                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-            ) {
-                MashiDetailsSection(
-                    nft = nft,
-                    scope = scope,
-                    closeBottomSheet = {
-                        viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                    },
+        if (artistPageUiState.isExpanded) {
+            artistPageUiState.selectedNft?.let { nft ->
+                MashiBottomSheet(
+                    selectedNft = nft,
                     sheetState = previewState,
-                    clientRef = clientRef,
-                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                )
+                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                ) {
+                    MashiDetailsSection(
+                        nft = nft,
+                        scope = scope,
+                        closeBottomSheet = {
+                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                        },
+                        sheetState = previewState,
+                        clientRef = clientRef,
+                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+                    )
+                }
             }
         }
     }
