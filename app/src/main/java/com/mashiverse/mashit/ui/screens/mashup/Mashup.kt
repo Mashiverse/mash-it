@@ -42,6 +42,7 @@ import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.TraitType
 import com.mashiverse.mashit.ui.dialogs.Dialog
+import com.mashiverse.mashit.ui.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.placeholder.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
@@ -232,25 +233,7 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     if (mashupUiState.isDownloading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background.copy(alpha = 0.8F)),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgressIndicator(color = ContentAccentColor)
-
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    text = "Downloading",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = ContentAccentColor
-                )
-            }
-        }
+        LoadingIndicator("Downloading")
     }
 
     mashupUiState.dialogContent?.let { content ->

@@ -17,6 +17,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.mashiverse.mashit.nav.routes.ArtistsRoutes
+import com.mashiverse.mashit.ui.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
 import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.theme.Padding
@@ -28,6 +29,8 @@ fun ArtistsPreview(
     val viewModel = hiltViewModel<ArtistsPreviewViewModel>()
     val artists =
         viewModel.artistsPagingData.collectAsLazyPagingItems()
+
+    val refreshState = artists.loadState.refresh
 
     Column(
         modifier = Modifier
@@ -80,5 +83,9 @@ fun ArtistsPreview(
                 }
             }
         }
+    }
+
+    if (refreshState is LoadState.Loading) {
+        LoadingIndicator(text = "Loading")
     }
 }

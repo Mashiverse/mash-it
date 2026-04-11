@@ -20,7 +20,7 @@ fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     ) {
         Text(
             text = "${title}:",
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             color = ContentAccentColor,
             fontWeight = FontWeight.Bold
         )

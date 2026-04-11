@@ -2,11 +2,9 @@ package com.mashiverse.mashit.ui.screens.shop
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,8 +26,6 @@ import com.mashiverse.mashit.ui.dialogs.Dialog
 import com.mashiverse.mashit.ui.nft.MashiBottomSheet
 import com.mashiverse.mashit.ui.nft.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.sections.Category
-import com.mashiverse.mashit.ui.screens.shop.sections.ShopSection
-import com.mashiverse.mashit.ui.theme.Padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,7 +83,7 @@ fun Shop(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        if (shopUiState.isCategory) {
+        clientRef?.let {
             Category(
                 shopUiState = shopUiState,
                 clientRef = clientRef!!,
@@ -101,23 +97,6 @@ fun Shop(
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 processShopIntent = { intent -> viewModel.processShopIntent(intent) }
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(Padding)
-            ) {
-                item {
-                    clientRef?.let {
-                        ShopSection(
-                            shopUiState = shopUiState,
-                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                            clientRef = clientRef!!,
-                        )
-                    }
-                }
-            }
         }
     }
 

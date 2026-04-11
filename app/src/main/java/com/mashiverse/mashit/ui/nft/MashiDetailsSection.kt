@@ -61,21 +61,6 @@ fun MashiDetailsSection(
 
                 IconButton(
                     modifier = Modifier.size(32.dp),
-                    onClick = {}
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(32.dp),
-                        imageVector = Icons.Default.MoreHoriz,
-                        contentDescription = "More",
-                        tint = ContentAccentColor
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(SmallPadding))
-
-                IconButton(
-                    modifier = Modifier.size(32.dp),
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
