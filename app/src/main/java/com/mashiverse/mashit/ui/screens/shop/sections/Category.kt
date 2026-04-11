@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
@@ -129,14 +128,13 @@ fun Category(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(32.dp)
-                                .clip(RoundedCornerShape(45))
+                                .clip(RoundedCornerShape(24))
                                 .background(Secondary),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "Nothing found",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
                                 color = ContentColor
                             )
                         }
