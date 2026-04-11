@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.Background
@@ -22,7 +22,8 @@ fun LoadingIndicator(text: String) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background.copy(alpha = 0.8F)),
+            .background(Background.copy(alpha = 0.8F))
+            .imePadding(),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -33,7 +34,6 @@ fun LoadingIndicator(text: String) {
             Text(
                 text = text,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
                 color = ContentAccentColor
             )
         }

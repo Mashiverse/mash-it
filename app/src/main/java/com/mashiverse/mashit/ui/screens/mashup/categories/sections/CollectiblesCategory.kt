@@ -12,12 +12,14 @@ import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.intents.MashupIntent
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun CollectiblesCategory(
     nfts: List<Nft>,
     state: LazyListState,
     mashupDetails: MashupDetails,
+    scope: CoroutineScope,
     processMashupIntent: (MashupIntent) -> Unit,
     processImageIntent: (ImageIntent) -> Unit
 ) {
@@ -32,6 +34,9 @@ fun CollectiblesCategory(
 
             CollectiblePreview(
                 nft = nft,
+                position = i,
+                state = state,
+                scope = scope,
                 mashupDetails = mashupDetails,
                 processMashupIntent = processMashupIntent,
                 processImageIntent = processImageIntent

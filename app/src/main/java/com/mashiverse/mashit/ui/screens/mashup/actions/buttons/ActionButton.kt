@@ -58,7 +58,7 @@ fun ActionButton(
     Button(
         modifier = Modifier
             .width(56.dp)
-            .height(38.dp),
+            .height(36.dp),
         shape = RoundedCornerShape(90),
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = Secondary,

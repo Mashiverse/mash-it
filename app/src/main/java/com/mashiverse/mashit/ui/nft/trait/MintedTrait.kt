@@ -36,7 +36,7 @@ fun MintedTrait(
         mint?.let {
             MintText(
                 modifier = Modifier
-                    .padding(bottom = 4.dp, end = 6.dp)
+                    .padding(bottom = 2.dp, end = 3.dp)
                     .align(Alignment.BottomEnd),
                 mint = mint
             )

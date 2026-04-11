@@ -19,7 +19,7 @@ sealed class MashupIntent {
     data object OnCollectiblesSelect : MashupIntent()
 
     data class OnCollectibleExpand(
-        val height: Float,
+        val position: Int,
         val scope: CoroutineScope,
         val state: LazyListState
     ) : MashupIntent()

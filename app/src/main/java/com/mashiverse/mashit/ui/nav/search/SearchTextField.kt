@@ -73,7 +73,7 @@ fun SearchTextField(
             focusedContainerColor = Color.Transparent
         ),
         singleLine = true,
-        textStyle = TextStyle(fontSize = 18.sp),
-        placeholder = { Text(text = "Search Mash-it", fontSize = 18.sp) }
+        textStyle = TextStyle(fontSize = 16.sp),
+        placeholder = { Text(text = "Search Mash-it", fontSize = 16.sp) }
     )
 }

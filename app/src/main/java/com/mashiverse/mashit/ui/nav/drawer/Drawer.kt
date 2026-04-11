@@ -75,12 +75,14 @@ fun NavDrawer(
                 wallet?.let {
                     Text(
                         text = wallet.lowercase(),
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         color = Primary,
                         maxLines = 1,
                         overflow = TextOverflow.MiddleEllipsis
                     )
                 }
+
+                Spacer(modifier = Modifier.width(16.dp))
             }
 
             DrawerNav(

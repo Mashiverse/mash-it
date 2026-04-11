@@ -69,7 +69,7 @@ fun Shop(
         val dataType = if (searchQuery.isNotEmpty()) {
             ShopDataType.SEARCH
         } else {
-            ShopDataType.RECENT
+            ShopDataType.RECENTLY
         }
 
         viewModel.processShopIntent(ShopIntent.OnDataTypeSelect(dataType, searchQuery))

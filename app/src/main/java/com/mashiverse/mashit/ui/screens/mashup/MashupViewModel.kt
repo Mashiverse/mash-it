@@ -1,6 +1,5 @@
 package com.mashiverse.mashit.ui.screens.mashup
 
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.mutableStateOf
@@ -73,9 +72,11 @@ class MashupViewModel @Inject constructor(
                     WorkInfo.State.RUNNING -> {
                         mashupUiState.value = mashupUiState.value.copy(isDownloading = true)
                     }
+
                     WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
                         mashupUiState.value = mashupUiState.value.copy(isDownloading = false)
                     }
+
                     else -> {}
                 }
             }
@@ -303,11 +304,11 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onCollectibleExpand(
-        height: Float,
+        position: Int,
         scope: CoroutineScope,
         state: LazyListState
     ) {
-        scope.launch { state.scrollBy(height) }
+        scope.launch { state.animateScrollToItem(position) }
     }
 
     fun processMashupIntent(intent: MashupIntent) {
@@ -319,7 +320,7 @@ class MashupViewModel @Inject constructor(
             )
 
             is MashupIntent.OnCollectibleExpand -> onCollectibleExpand(
-                intent.height,
+                intent.position,
                 intent.scope,
                 intent.state
             )

@@ -39,7 +39,7 @@ fun BuyButton(
     Button(
         modifier = Modifier
             .height(32.dp)
-            .width(72.dp)
+            .width(68.dp)
             .background(
                 brush = if (enabled) {
                     gradient

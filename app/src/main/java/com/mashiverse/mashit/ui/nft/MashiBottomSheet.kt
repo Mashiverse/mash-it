@@ -20,16 +20,16 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.OptionalTrait
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.LargeHolderHeight
+import com.mashiverse.mashit.ui.theme.LargeHolderWidth
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.ShopHolderHeight
-import com.mashiverse.mashit.ui.theme.ShopHolderWidth
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
@@ -86,10 +86,10 @@ fun MashiBottomSheet(
 
                 MashupComposite(
                     modifier = Modifier
-                        .height(ShopHolderHeight)
-                        .width(ShopHolderWidth),
+                        .height(LargeHolderHeight)
+                        .width(LargeHolderWidth),
                     assets = selectedTraits,
-                    holderWidth = ShopHolderWidth,
+                    holderWidth = LargeHolderWidth,
                     processImageIntent = processImageIntent
                 )
 

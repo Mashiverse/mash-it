@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -41,9 +39,9 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
+import java.util.Locale
 
 @Composable
 fun Category(
@@ -72,13 +70,13 @@ fun Category(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 48.dp),
+                    .height(32.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = shopUiState.category.name.uppercase(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = shopUiState.category.name.lowercase()
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                    fontSize = 14.sp,
                     color = ContentAccentColor
                 )
 
@@ -86,17 +84,20 @@ fun Category(
 
                 if (isSearch) {
                     TextButton(
+                        modifier = Modifier.height(32.dp),
                         onClick = onSearchQueryClear
                     ) {
                         Text(
                             text = "Dismiss",
-                            fontSize = 16.sp,
+                            fontSize = 12.sp,
                             color = ContentColor,
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(screenType.shopColumns),

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,28 +30,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.data.models.nft.Trait
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.MashupIntent
 import com.mashiverse.mashit.ui.nft.TraitHolder
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun CollectiblePreview(
     nft: Nft,
     mashupDetails: MashupDetails,
+    position: Int,
+    scope: CoroutineScope,
+    state: LazyListState,
     processMashupIntent: (MashupIntent) -> Unit,
     processImageIntent: (ImageIntent) -> Unit
 ) {
@@ -69,7 +74,7 @@ fun CollectiblePreview(
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(12))
+                .clip(RoundedCornerShape(24))
                 .clickable {
                     isExpanded = !isExpanded
                 }
@@ -78,8 +83,8 @@ fun CollectiblePreview(
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .width((36).dp)
-                    .height(48.dp)
+                    .width(24.dp)
+                    .height(32.dp)
                     .clip(TraitShape),
                 model = nft.compositeUrl,
                 contentDescription = null
@@ -89,8 +94,7 @@ fun CollectiblePreview(
 
             Text(
                 text = nft.name,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
                 color = ContentAccentColor
             )
 
@@ -98,7 +102,7 @@ fun CollectiblePreview(
 
             IconButton(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(32.dp)
                     .clip(CircleShape),
                 onClick = {
                     isExpanded = !isExpanded
@@ -106,7 +110,7 @@ fun CollectiblePreview(
             ) {
                 Icon(
                     modifier = Modifier
-                        .size(32.dp),
+                        .size(24.dp),
                     tint = ContentAccentColor,
                     imageVector = if (!isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
                     contentDescription = null
@@ -115,7 +119,17 @@ fun CollectiblePreview(
         }
 
         AnimatedVisibility(isExpanded) {
-            Column {
+            Column(
+                modifier = Modifier.onPlaced {
+                    processMashupIntent.invoke(
+                        MashupIntent.OnCollectibleExpand(
+                            state = state,
+                            scope = scope,
+                            position = position
+                        )
+                    )
+                }
+            ) {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 FlowRow(

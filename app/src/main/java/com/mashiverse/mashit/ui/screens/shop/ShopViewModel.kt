@@ -90,7 +90,7 @@ class ShopViewModel @Inject constructor(
 
     private fun onDataTypeSelect(dataType: ShopDataType, query: String) {
         val itemsData = when (dataType) {
-            ShopDataType.RECENT -> mashItRepo.getShopListPagingData()
+            ShopDataType.RECENTLY -> mashItRepo.getShopListPagingData()
                 .cachedIn(viewModelScope)
 
             ShopDataType.SEARCH -> {

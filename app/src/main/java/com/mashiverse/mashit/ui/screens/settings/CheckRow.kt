@@ -8,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.SmallPadding
@@ -20,16 +19,15 @@ fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     ) {
         Text(
             text = "${title}:",
-            fontSize = 16.sp,
-            color = ContentAccentColor,
-            fontWeight = FontWeight.Bold
+            fontSize = 14.sp,
+            color = ContentAccentColor
         )
 
         Spacer(modifier = Modifier.width(SmallPadding))
 
         Switch(
             checked = checked,
-            onCheckedChange = { checked -> onChange.invoke(checked) }
+            onCheckedChange = { checked -> onChange.invoke(checked) },
         )
     }
 }

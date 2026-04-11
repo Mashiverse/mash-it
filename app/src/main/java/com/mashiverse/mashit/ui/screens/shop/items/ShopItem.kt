@@ -31,8 +31,8 @@ import com.mashiverse.mashit.ui.nft.trait.TraitImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
-import com.mashiverse.mashit.ui.theme.ShopHolderHeight
-import com.mashiverse.mashit.ui.theme.ShopHolderWidth
+import com.mashiverse.mashit.ui.theme.LargeHolderHeight
+import com.mashiverse.mashit.ui.theme.LargeHolderWidth
 
 @Composable
 fun ShopItem(
@@ -41,8 +41,8 @@ fun ShopItem(
     clientRef: CoinbaseWalletSDK,
     processImageIntent: (ImageIntent) -> Unit,
     processWeb3Intent: (Web3Intent) -> Unit,
-    imageWidth: Dp = ShopHolderWidth,
-    imageHeight: Dp = ShopHolderHeight
+    imageWidth: Dp = LargeHolderWidth,
+    imageHeight: Dp = LargeHolderHeight
 ) {
     val productInfo = nft.productInfo
 

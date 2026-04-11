@@ -46,7 +46,7 @@ fun ColorSelectActionButton(
                     ).reversed(),
                     center = Offset(
                         x = with(density) { 28.dp.toPx() },
-                        y = with(density) { 19.dp.toPx() })
+                        y = with(density) { 16.dp.toPx() })
                 )
             )
             .border(0.5.dp, Color.White, RoundedCornerShape(90))

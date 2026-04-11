@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,9 +26,8 @@ import com.mashiverse.mashit.data.intents.Web3Intent
 import com.mashiverse.mashit.data.models.nft.Nft
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.LargeHolderHeight
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.ShopHolderHeight
-import com.mashiverse.mashit.ui.theme.SmallPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -47,7 +44,7 @@ fun MashiDetailsSection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(ShopHolderHeight)
+            .height(LargeHolderHeight)
     ) {
         Column(
             modifier = Modifier

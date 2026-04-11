@@ -8,13 +8,13 @@ val SmallIconSize = 24.dp
 val SearchHeight = 48.dp
 
 
-val ShopHolderWidth = (552 * 0.36).dp
-val ShopHolderHeight = (736 * 0.36).dp
+val LargeHolderWidth = (552 * 0.32).dp
+val LargeHolderHeight = (736 * 0.32).dp
 
-val MaxMashiHolderWidth = (552 * 0.42).dp
-val MaxMashiHolderHeight = (736 * 0.42).dp
+val XLHolderWidth = (552 * 0.36).dp
+val XLHolderHeight = (736 * 0.36).dp
 
-val ColorPreviewSize = 80.dp
+val ColorPreviewSize = 72.dp
 
 // Paddings
 val Padding = 16.dp

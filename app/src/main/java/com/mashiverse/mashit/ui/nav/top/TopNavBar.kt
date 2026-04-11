@@ -51,7 +51,7 @@ fun TopNavBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp),
+                .height(56.dp),
             contentAlignment = Alignment.Center
         ) {
             if (hasSearch) {
@@ -96,7 +96,7 @@ fun TopNavBar(
                                 .align(Alignment.Center)
                                 .offset(y = 2.dp),
                             text = "mash-it · $tabName",
-                            fontSize = 20.sp,
+                            fontSize = 16.sp,
                             fontFamily = Cooper,
                             color = ContentAccentColor
                         )

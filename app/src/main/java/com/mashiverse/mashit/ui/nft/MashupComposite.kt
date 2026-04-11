@@ -9,13 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.min
+import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.nft.Trait
 import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.intents.ImageIntent
 import com.mashiverse.mashit.ui.nft.trait.TraitImage
-import com.mashiverse.mashit.ui.theme.MaxMashiHolderWidth
 import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
@@ -31,25 +29,24 @@ fun MashupComposite(
             .clip(TraitShape),
         contentAlignment = Alignment.Center
     ) {
-        val maxWidth = min(holderWidth, MaxMashiHolderWidth)
         assets.sortedBy { it.type }.forEach { trait ->
-            val traitType = trait.type
-            val width =
-                if (traitType == TraitType.BACKGROUND) maxWidth else maxWidth * 380 / 552
-            val height =
-                if (traitType == TraitType.BACKGROUND) maxWidth * 4 / 3 else (maxWidth * 4 / 3) * 600 / 736
-            val contentScale =
-                if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
+                val traitType = trait.type
+                val width =
+                    if (traitType == TraitType.BACKGROUND) holderWidth else holderWidth * 380 / 552
+                val height =
+                    if (traitType == TraitType.BACKGROUND) holderWidth * 4 / 3 else (holderWidth * 4 / 3) * 600 / 736
+                val contentScale =
+                    if (traitType == TraitType.BACKGROUND) ContentScale.FillBounds else ContentScale.Fit
 
-            TraitImage(
-                modifier = Modifier
-                    .width(width)
-                    .height(height),
-                selectedColors = colors,
-                data = trait.url ?: "",
-                contentScale = contentScale,
-                processImageIntent = processImageIntent
-            )
-        }
+                TraitImage(
+                    modifier = Modifier
+                        .width(width)
+                        .height(height),
+                    selectedColors = colors,
+                    data = trait.url ?: "",
+                    contentScale = contentScale,
+                    processImageIntent = processImageIntent
+                )
+            }
     }
 }

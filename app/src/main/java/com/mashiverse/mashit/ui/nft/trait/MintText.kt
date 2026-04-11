@@ -22,7 +22,7 @@ fun MintText(
     ) {
         Text(
             text = "#${mint}",
-            fontSize = 16.sp,
+            fontSize = 12.sp,
             style = TextStyle(
                 color = Color.Black, // The outline color
                 drawStyle = Stroke(
@@ -35,7 +35,7 @@ fun MintText(
         // 2. Draw the FILL second (Top Layer)
         Text(
             text = "#${mint}",
-            fontSize = 16.sp,
+            fontSize = 12.sp,
             color = Color.White // The inner color
         )
     }
