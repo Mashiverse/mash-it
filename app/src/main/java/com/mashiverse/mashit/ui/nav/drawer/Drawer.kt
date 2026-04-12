@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.R
-import com.mashiverse.mashit.ui.buttons.BaseButton
+import com.mashiverse.mashit.ui.default.buttons.BaseButton
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.Surface

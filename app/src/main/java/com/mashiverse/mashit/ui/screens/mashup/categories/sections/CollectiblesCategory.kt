@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.MashupIntent
+import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

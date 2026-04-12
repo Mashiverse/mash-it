@@ -17,7 +17,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.mashiverse.mashit.nav.routes.ArtistsRoutes
-import com.mashiverse.mashit.ui.indicators.LoadingIndicator
+import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
 import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.theme.Padding

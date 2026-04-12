@@ -27,14 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.nft.Owned
-import com.mashiverse.mashit.data.models.nft.mappers.fromEntities
-import com.mashiverse.mashit.data.models.wallet.WalletPreferences
-import com.mashiverse.mashit.ui.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.nft.MashiDetailsSection
-import com.mashiverse.mashit.ui.nft.trait.MintedTrait
-import com.mashiverse.mashit.ui.placeholder.NotConnected
+import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.Owned
+import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
+import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
+import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
+import com.mashiverse.mashit.ui.default.traits.MintedTrait
+import com.mashiverse.mashit.ui.default.placeholder.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.TraitShape
@@ -138,7 +138,7 @@ fun Collection(searchQuery: State<String>) {
 
         if (isBottomSheet) {
             selectedMashi?.let {
-                MashiBottomSheet(
+                ItemPreviewModal(
                     selectedNft = selectedMashi!!,
                     closeBottomSheet = closeBottomSheet,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },

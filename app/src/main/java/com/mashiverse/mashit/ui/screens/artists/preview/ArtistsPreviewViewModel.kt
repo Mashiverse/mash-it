@@ -6,10 +6,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.artists.ArtistInfo
-import com.mashiverse.mashit.data.models.image.ImageType
-import com.mashiverse.mashit.data.repos.ArtistsRepo
-import com.mashiverse.mashit.data.repos.ImageTypeRepo
-import com.mashiverse.mashit.data.intents.ImageIntent
+import com.mashiverse.mashit.data.models.sys.image.ImageType
+import com.mashiverse.mashit.data.repos.mashit.ArtistsRepo
+import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
+import com.mashiverse.mashit.data.states.sys.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

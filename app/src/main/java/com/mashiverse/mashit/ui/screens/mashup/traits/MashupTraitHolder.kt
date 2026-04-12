@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.MashupIntent
-import com.mashiverse.mashit.ui.nft.trait.TraitImage
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
+import com.mashiverse.mashit.ui.default.images.DefaultImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
@@ -55,7 +55,7 @@ fun MashupTraitHolder(
                 )
                 .padding(4.dp),
         ) {
-            TraitImage(
+            DefaultImage(
                 modifier = Modifier,
                 onClick = { processMashupIntent(MashupIntent.OnMashupUpdate(mashupTrait)) },
                 data = mashupTrait.trait.url ?: "",

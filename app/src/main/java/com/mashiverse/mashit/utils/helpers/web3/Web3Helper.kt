@@ -6,8 +6,8 @@ import com.coinbase.android.nativesdk.message.request.RequestContent
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.mashiverse.mashit.BuildConfig
-import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.models.minting.GasEstimate
+import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
+import com.mashiverse.mashit.data.models.sys.minting.GasEstimate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
