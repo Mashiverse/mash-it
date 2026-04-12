@@ -92,7 +92,10 @@ class MashupViewModel @Inject constructor(
                     mashupUiState.value = mashupUiState.value.copy(wallet = wallet)
                     val initialMashup = collectionRepo.getMashup(wallet)
                     mashupUiState.value =
-                        mashupUiState.value.copy(mashupDetails = initialMashup)
+                        mashupUiState.value.copy(
+                            mashupDetails = initialMashup,
+                            colors = initialMashup.colors
+                        )
 
                     stackManager.clear()
                     collectionRepo.updateOwnedData(wallet)
