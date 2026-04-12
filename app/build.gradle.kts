@@ -31,7 +31,7 @@ configure<ApplicationExtension> {
         applicationId = "com.mashiverse.mashit"
         minSdk = 28
         targetSdk = 36
-        versionCode = 9
+        versionCode = 10
         versionName = "12.04.2026"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -50,7 +50,7 @@ configure<ApplicationExtension> {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -100,7 +100,6 @@ dependencies {
     implementation(libs.core)
 
     // Networking
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
@@ -129,4 +128,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
+
+    // Icons
+    implementation(libs.androidx.compose.material.icons.extended)
 }
