@@ -3,9 +3,9 @@ package com.mashiverse.mashit.data.local.db.converters
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.mashiverse.mashit.data.models.nft.Owned
-import com.mashiverse.mashit.data.models.nft.PriceCurrency
-import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.mashi.Owned
+import com.mashiverse.mashit.data.models.mashi.PriceCurrency
+import com.mashiverse.mashit.data.models.mashi.Trait
 
 class NftConverters {
     private val gson = Gson()

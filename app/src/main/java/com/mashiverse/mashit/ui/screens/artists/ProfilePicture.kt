@@ -10,8 +10,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.artists.ArtistMashup
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.ui.nft.trait.TraitImage
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.ui.default.images.DefaultImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 
 @Composable
@@ -32,7 +32,7 @@ fun ProfilePicture(
             .clip(CircleShape)
     ) {
         artistMashup.layers.forEach { url ->
-            TraitImage(
+            DefaultImage(
                 modifier = Modifier.matchParentSize(),
                 onClick = onClick,
                 data = url,

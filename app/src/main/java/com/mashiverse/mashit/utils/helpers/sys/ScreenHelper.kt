@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import com.mashiverse.mashit.data.models.ScreenInfo
+import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.ui.theme.Padding
 
 fun Configuration.detectScreenType(): ScreenInfo {

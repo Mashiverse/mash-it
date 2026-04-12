@@ -3,9 +3,9 @@ package com.mashiverse.mashit.data.local.db.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mashiverse.mashit.data.models.nft.Owned
-import com.mashiverse.mashit.data.models.nft.ProductInfo
-import com.mashiverse.mashit.data.models.nft.Trait
+import com.mashiverse.mashit.data.models.mashi.Owned
+import com.mashiverse.mashit.data.models.mashi.ProductInfo
+import com.mashiverse.mashit.data.models.mashi.Trait
 
 @Entity(tableName = "nfts")
 data class NftEntity(

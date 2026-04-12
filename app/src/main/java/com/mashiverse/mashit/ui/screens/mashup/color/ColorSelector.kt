@@ -26,11 +26,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.data.intents.ActionsIntent
-import com.mashiverse.mashit.data.intents.MashupIntent
+import com.mashiverse.mashit.data.states.mashup.ActionsIntent
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
-import com.mashiverse.mashit.ui.picker.ColorPicker
-import com.mashiverse.mashit.ui.picker.ColorSlideBar
+import com.mashiverse.mashit.ui.default.picker.ColorPicker
+import com.mashiverse.mashit.ui.default.picker.ColorSlideBar
 import com.mashiverse.mashit.ui.screens.mashup.color.actions.ColorActions
 import com.mashiverse.mashit.ui.screens.mashup.color.preview.ColorPreview
 import com.mashiverse.mashit.ui.screens.mashup.color.type.ColorTypeSelector

@@ -21,13 +21,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.intents.ImageIntent
-import com.mashiverse.mashit.data.intents.ShopIntent
-import com.mashiverse.mashit.data.intents.Web3Intent
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.nft.PriceCurrency
-import com.mashiverse.mashit.ui.buttons.BuyButton
-import com.mashiverse.mashit.ui.nft.trait.TraitImage
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.states.web3.Web3Intent
+import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.PriceCurrency
+import com.mashiverse.mashit.ui.default.buttons.BuyButton
+import com.mashiverse.mashit.ui.default.images.DefaultImage
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
@@ -70,7 +70,7 @@ fun ShopItem(
         modifier = Modifier
             .width(imageWidth),
     ) {
-        TraitImage(
+        DefaultImage(
             modifier = Modifier
                 .width(imageWidth)
                 .height(imageHeight),

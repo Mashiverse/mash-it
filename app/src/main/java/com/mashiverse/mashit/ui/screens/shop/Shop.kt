@@ -19,12 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.intents.DialogIntent
-import com.mashiverse.mashit.data.intents.ShopIntent
-import com.mashiverse.mashit.data.models.ShopDataType
-import com.mashiverse.mashit.ui.dialogs.Dialog
-import com.mashiverse.mashit.ui.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.nft.MashiDetailsSection
+import com.mashiverse.mashit.data.states.sys.DialogIntent
+import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.models.sys.data.ShopDataType
+import com.mashiverse.mashit.ui.default.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
+import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.sections.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,7 +102,7 @@ fun Shop(
 
     if (shopUiState.isExpanded) {
         shopUiState.selectedNft?.let { nft ->
-            MashiBottomSheet(
+            ItemPreviewModal(
                 selectedNft = nft,
                 sheetState = previewState,
                 closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },

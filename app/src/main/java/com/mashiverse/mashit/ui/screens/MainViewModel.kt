@@ -10,9 +10,9 @@ import com.coinbase.android.nativesdk.message.request.Account
 import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.google.firebase.messaging.FirebaseMessaging
-import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.repos.DatastoreRepo
-import com.mashiverse.mashit.data.repos.Web3Repo
+import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
+import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
+import com.mashiverse.mashit.data.repos.sys.Web3Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

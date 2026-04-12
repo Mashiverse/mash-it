@@ -3,7 +3,7 @@ package com.mashiverse.mashit.ui.screens.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
-import com.mashiverse.mashit.data.repos.DatastoreRepo
+import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

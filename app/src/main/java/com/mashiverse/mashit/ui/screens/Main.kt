@@ -38,11 +38,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.models.dialog.DialogContent
-import com.mashiverse.mashit.data.models.wallet.WalletPreferences
+import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
+import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
-import com.mashiverse.mashit.ui.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.nav.drawer.NavDrawer
 import com.mashiverse.mashit.ui.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
