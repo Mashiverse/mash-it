@@ -37,7 +37,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Wallet Connect deep link -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -61,7 +60,6 @@
             android:exported="false"
             tools:node="merge">
 
-            <!-- Remove WorkManager auto init -->
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
                 tools:node="remove" />
