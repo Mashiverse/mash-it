@@ -25,6 +25,13 @@ configure<ApplicationExtension> {
                 "META-INF/io.netty.versions.properties"
             )
         }
+        jniLibs {
+            keepDebugSymbols += setOf(
+                "**/libandroidx.graphics.path.so",
+                "**/libdatastore_shared_counter.so",
+                "**/libpenguin.so"
+            )
+        }
     }
 
     defaultConfig {
@@ -51,6 +58,7 @@ configure<ApplicationExtension> {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

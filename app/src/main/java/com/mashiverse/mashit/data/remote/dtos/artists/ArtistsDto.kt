@@ -1,39 +1,41 @@
 package com.mashiverse.mashit.data.remote.dtos.artists
 
+import com.google.gson.annotations.SerializedName
+
 data class ArtistsDto(
-    val artists: List<Artist>,
-    val count: Int,
-    val pagination: Pagination,
-    val success: Boolean,
-    val timestamp: String
+    @SerializedName("artists") val artists: List<Artist>,
+    @SerializedName("count") val count: Int,
+    @SerializedName("pagination") val pagination: Pagination,
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("timestamp") val timestamp: String
 ) {
     data class Artist(
-        val alias: String,
-        val avatarUrl: String,
-        val bannerUrlDesktop: String,
-        val bannerUrlMobile: String,
-        val bio: String,
-        val listingCount: Int,
-        val mashupPfp: MashupPfp?,
-        val name: String,
-        val wallet: String
+        @SerializedName("alias") val alias: String,
+        @SerializedName("avatarUrl") val avatarUrl: String,
+        @SerializedName("bannerUrlDesktop") val bannerUrlDesktop: String,
+        @SerializedName("bannerUrlMobile") val bannerUrlMobile: String,
+        @SerializedName("bio") val bio: String,
+        @SerializedName("listingCount") val listingCount: Int,
+        @SerializedName("mashupPfp") val mashupPfp: MashupPfp?,
+        @SerializedName("name") val name: String,
+        @SerializedName("wallet") val wallet: String
     ) {
         data class MashupPfp(
-            val colors: Colors?,
-            val layers: List<String>
+            @SerializedName("colors") val colors: Colors?,
+            @SerializedName("layers") val layers: List<String>
         ) {
             data class Colors(
-                val base: String,
-                val eyes: String,
-                val hair: String
+                @SerializedName("base") val base: String,
+                @SerializedName("eyes") val eyes: String,
+                @SerializedName("hair") val hair: String
             )
         }
     }
 
     data class Pagination(
-        val hasMore: Boolean,
-        val limit: Int,
-        val offset: Int,
-        val total: Int
+        @SerializedName("hasMore") val hasMore: Boolean,
+        @SerializedName("limit") val limit: Int,
+        @SerializedName("offset") val offset: Int,
+        @SerializedName("total") val total: Int
     )
 }

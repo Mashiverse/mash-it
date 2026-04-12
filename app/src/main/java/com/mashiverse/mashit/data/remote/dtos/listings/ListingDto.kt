@@ -1,51 +1,53 @@
 package com.mashiverse.mashit.data.remote.dtos.listings
 
+import com.google.gson.annotations.SerializedName
+
 @Suppress("PropertyName")
 data class ListingDto(
-    val listing: Listing,
-    val success: Boolean
+    @SerializedName("listing") val listing: Listing,
+    @SerializedName("success") val success: Boolean
 ) {
     data class Listing(
-        val artistName: String,
-        val artistWallet: String,
-        val chainId: Int,
-        val createdAt: Any,
-        val currency: String,
-        val description: String?,
-        val id: String,
-        val images: Images,
-        val listingId: String,
-        val marketplace: String,
-        val maxPerWallet: Int,
-        val maxSupply: Int,
-        val metadata: Metadata,
-        val paused: Boolean,
-        val price: String,
-        val status: String,
-        val title: String,
-        val tokenURI: String,
-        val totalSold: Int
+        @SerializedName("artistName") val artistName: String,
+        @SerializedName("artistWallet") val artistWallet: String,
+        @SerializedName("chainId") val chainId: Int,
+        @SerializedName("createdAt") val createdAt: Any, // Consider changing Any to String or Long
+        @SerializedName("currency") val currency: String,
+        @SerializedName("description") val description: String?,
+        @SerializedName("id") val id: String,
+        @SerializedName("images") val images: Images,
+        @SerializedName("listingId") val listingId: String,
+        @SerializedName("marketplace") val marketplace: String,
+        @SerializedName("maxPerWallet") val maxPerWallet: Int,
+        @SerializedName("maxSupply") val maxSupply: Int,
+        @SerializedName("metadata") val metadata: Metadata,
+        @SerializedName("paused") val paused: Boolean,
+        @SerializedName("price") val price: String,
+        @SerializedName("status") val status: String,
+        @SerializedName("title") val title: String,
+        @SerializedName("tokenURI") val tokenURI: String,
+        @SerializedName("totalSold") val totalSold: Int
     ) {
         data class Images(
-            val composite: String,
-            val thumbnail: String
+            @SerializedName("composite") val composite: String,
+            @SerializedName("thumbnail") val thumbnail: String
         )
 
         data class Metadata(
-            val assets: List<Asset>,
-            val attributes: List<Attribute>,
-            val description: String,
-            val image: String,
-            val name: String
+            @SerializedName("assets") val assets: List<Asset>,
+            @SerializedName("attributes") val attributes: List<Attribute>,
+            @SerializedName("description") val description: String,
+            @SerializedName("image") val image: String,
+            @SerializedName("name") val name: String
         ) {
             data class Asset(
-                val label: String,
-                val uri: String
+                @SerializedName("label") val label: String,
+                @SerializedName("uri") val uri: String
             )
 
             data class Attribute(
-                val trait_type: String,
-                val value: String
+                @SerializedName("trait_type") val trait_type: String,
+                @SerializedName("value") val value: String
             )
         }
     }

@@ -1,28 +1,30 @@
 package com.mashiverse.mashit.data.remote.dtos.artists
 
+import com.google.gson.annotations.SerializedName
+
 data class ArtistPageDto(
-    val artist: Artist,
-    val success: Boolean
+    @SerializedName("artist") val artist: Artist,
+    @SerializedName("success") val success: Boolean
 ) {
     data class Artist(
-        val alias: String,
-        val avatarUrl: Any,
-        val bannerUrlDesktop: String?,
-        val bannerUrlMobile: String?,
-        val bio: String?,
-        val listingCount: Int,
-        val mashupPfp: MashupPfp?,
-        val name: String,
-        val wallet: String
+        @SerializedName("alias") val alias: String,
+        @SerializedName("avatarUrl") val avatarUrl: Any, // Consider String? if possible
+        @SerializedName("bannerUrlDesktop") val bannerUrlDesktop: String?,
+        @SerializedName("bannerUrlMobile") val bannerUrlMobile: String?,
+        @SerializedName("bio") val bio: String?,
+        @SerializedName("listingCount") val listingCount: Int,
+        @SerializedName("mashupPfp") val mashupPfp: MashupPfp?,
+        @SerializedName("name") val name: String,
+        @SerializedName("wallet") val wallet: String
     ) {
         data class MashupPfp(
-            val colors: Colors,
-            val layers: List<String>
+            @SerializedName("colors") val colors: Colors,
+            @SerializedName("layers") val layers: List<String>
         ) {
             data class Colors(
-                val base: String,
-                val eyes: String,
-                val hair: String
+                @SerializedName("base") val base: String,
+                @SerializedName("eyes") val eyes: String,
+                @SerializedName("hair") val hair: String
             )
         }
     }

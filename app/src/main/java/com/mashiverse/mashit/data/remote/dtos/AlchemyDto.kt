@@ -2,121 +2,123 @@
 
 package com.mashiverse.mashit.data.remote.dtos
 
+import com.google.gson.annotations.SerializedName
+
 @Suppress("PropertyName")
 data class AlchemyDto(
-    val ownedNfts: List<OwnedNft>,
-    val pageKey: String?,
-    val totalCount: Int,
-    val validAt: ValidAt
+    @SerializedName("ownedNfts") val ownedNfts: List<OwnedNft>,
+    @SerializedName("pageKey") val pageKey: String?,
+    @SerializedName("totalCount") val totalCount: Int,
+    @SerializedName("validAt") val validAt: ValidAt
 ) {
     data class OwnedNft(
-        val acquiredAt: AcquiredAt,
-        val animation: Animation,
-        val balance: String,
-        val collection: Collection,
-        val contract: Contract,
-        val description: String,
-        val image: Image,
-        val mint: Mint,
-        val name: String,
-        val owners: Any,
-        val raw: Raw,
-        val timeLastUpdated: String,
-        val tokenId: String,
-        val tokenType: String,
-        val tokenUri: String
+        @SerializedName("acquiredAt") val acquiredAt: AcquiredAt,
+        @SerializedName("animation") val animation: Animation,
+        @SerializedName("balance") val balance: String,
+        @SerializedName("collection") val collection: Collection,
+        @SerializedName("contract") val contract: Contract,
+        @SerializedName("description") val description: String,
+        @SerializedName("image") val image: Image,
+        @SerializedName("mint") val mint: Mint,
+        @SerializedName("name") val name: String,
+        @SerializedName("owners") val owners: Any,
+        @SerializedName("raw") val raw: Raw,
+        @SerializedName("timeLastUpdated") val timeLastUpdated: String,
+        @SerializedName("tokenId") val tokenId: String,
+        @SerializedName("tokenType") val tokenType: String,
+        @SerializedName("tokenUri") val tokenUri: String
     ) {
         data class AcquiredAt(
-            val blockNumber: Any,
-            val blockTimestamp: Any
+            @SerializedName("blockNumber") val blockNumber: Any,
+            @SerializedName("blockTimestamp") val blockTimestamp: Any
         )
 
         data class Animation(
-            val cachedUrl: Any,
-            val contentType: Any,
-            val originalUrl: Any,
-            val size: Any
+            @SerializedName("cachedUrl") val cachedUrl: Any,
+            @SerializedName("contentType") val contentType: Any,
+            @SerializedName("originalUrl") val originalUrl: Any,
+            @SerializedName("size") val size: Any
         )
 
         data class Collection(
-            val bannerImageUrl: Any,
-            val externalUrl: Any,
-            val name: String,
-            val slug: String
+            @SerializedName("bannerImageUrl") val bannerImageUrl: Any,
+            @SerializedName("externalUrl") val externalUrl: Any,
+            @SerializedName("name") val name: String,
+            @SerializedName("slug") val slug: String
         )
 
         data class Contract(
-            val address: String,
-            val contractDeployer: String,
-            val deployedBlockNumber: Int,
-            val isSpam: Boolean,
-            val name: String,
-            val openSeaMetadata: OpenSeaMetadata,
-            val spamClassifications: List<String>,
-            val symbol: String,
-            val tokenType: String,
-            val totalSupply: Any
+            @SerializedName("address") val address: String,
+            @SerializedName("contractDeployer") val contractDeployer: String,
+            @SerializedName("deployedBlockNumber") val deployedBlockNumber: Int,
+            @SerializedName("isSpam") val isSpam: Boolean,
+            @SerializedName("name") val name: String,
+            @SerializedName("openSeaMetadata") val openSeaMetadata: OpenSeaMetadata,
+            @SerializedName("spamClassifications") val spamClassifications: List<String>,
+            @SerializedName("symbol") val symbol: String,
+            @SerializedName("tokenType") val tokenType: String,
+            @SerializedName("totalSupply") val totalSupply: Any
         ) {
             data class OpenSeaMetadata(
-                val bannerImageUrl: Any,
-                val collectionName: String,
-                val collectionSlug: String,
-                val description: Any,
-                val discordUrl: Any,
-                val externalUrl: Any,
-                val floorPrice: Any,
-                val imageUrl: String,
-                val lastIngestedAt: String,
-                val safelistRequestStatus: String,
-                val twitterUsername: Any
+                @SerializedName("bannerImageUrl") val bannerImageUrl: Any,
+                @SerializedName("collectionName") val collectionName: String,
+                @SerializedName("collectionSlug") val collectionSlug: String,
+                @SerializedName("description") val description: Any,
+                @SerializedName("discordUrl") val discordUrl: Any,
+                @SerializedName("externalUrl") val externalUrl: Any,
+                @SerializedName("floorPrice") val floorPrice: Any,
+                @SerializedName("imageUrl") val imageUrl: String,
+                @SerializedName("lastIngestedAt") val lastIngestedAt: String,
+                @SerializedName("safelistRequestStatus") val safelistRequestStatus: String,
+                @SerializedName("twitterUsername") val twitterUsername: Any
             )
         }
 
         data class Image(
-            val cachedUrl: String,
-            val contentType: String,
-            val originalUrl: String,
-            val pngUrl: String,
-            val size: Int,
-            val thumbnailUrl: String
+            @SerializedName("cachedUrl") val cachedUrl: String,
+            @SerializedName("contentType") val contentType: String,
+            @SerializedName("originalUrl") val originalUrl: String,
+            @SerializedName("pngUrl") val pngUrl: String,
+            @SerializedName("size") val size: Int,
+            @SerializedName("thumbnailUrl") val thumbnailUrl: String
         )
 
         data class Mint(
-            val blockNumber: Int,
-            val mintAddress: String,
-            val timestamp: String,
-            val transactionHash: String
+            @SerializedName("blockNumber") val blockNumber: Int,
+            @SerializedName("mintAddress") val mintAddress: String,
+            @SerializedName("timestamp") val timestamp: String,
+            @SerializedName("transactionHash") val transactionHash: String
         )
 
         data class Raw(
-            val error: Any,
-            val metadata: Metadata,
-            val tokenUri: String
+            @SerializedName("error") val error: Any,
+            @SerializedName("metadata") val metadata: Metadata,
+            @SerializedName("tokenUri") val tokenUri: String
         ) {
             data class Metadata(
-                val assets: List<Asset>,
-                val attributes: List<Attribute>,
-                val description: String,
-                val image: String,
-                val name: String
+                @SerializedName("assets") val assets: List<Asset>,
+                @SerializedName("attributes") val attributes: List<Attribute>,
+                @SerializedName("description") val description: String,
+                @SerializedName("image") val image: String,
+                @SerializedName("name") val name: String
             ) {
                 data class Asset(
-                    val label: String,
-                    val type: String,
-                    val uri: String
+                    @SerializedName("label") val label: String,
+                    @SerializedName("type") val type: String,
+                    @SerializedName("uri") val uri: String
                 )
 
                 data class Attribute(
-                    val trait_type: String,
-                    val value: Any
+                    @SerializedName("trait_type") val trait_type: String,
+                    @SerializedName("value") val value: Any
                 )
             }
         }
     }
 
     data class ValidAt(
-        val blockHash: String,
-        val blockNumber: Int,
-        val blockTimestamp: String
+        @SerializedName("blockHash") val blockHash: String,
+        @SerializedName("blockNumber") val blockNumber: Int,
+        @SerializedName("blockTimestamp") val blockTimestamp: String
     )
 }
