@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.Environment
 import android.provider.MediaStore
-import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.sys.image.ImageType
 import java.io.InputStream
 
 fun detectImageType(input: InputStream): ImageType {

@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.utils.helpers.nft
 
-import com.mashiverse.mashit.data.models.nft.NftDetails
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 
 fun parseName(name: String): NftDetails {
     val (fullName: String, authorName: String) = if (" by " in name) {

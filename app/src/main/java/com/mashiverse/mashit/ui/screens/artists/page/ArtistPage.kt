@@ -2,7 +2,6 @@ package com.mashiverse.mashit.ui.screens.artists.page
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -44,18 +42,17 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.intents.DialogIntent
-import com.mashiverse.mashit.data.intents.ShopIntent
-import com.mashiverse.mashit.data.models.ScreenInfo
-import com.mashiverse.mashit.ui.dialogs.Dialog
-import com.mashiverse.mashit.ui.indicators.LoadingIndicator
-import com.mashiverse.mashit.ui.nft.MashiBottomSheet
-import com.mashiverse.mashit.ui.nft.MashiDetailsSection
+import com.mashiverse.mashit.data.states.sys.DialogIntent
+import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
+import com.mashiverse.mashit.ui.default.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
+import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
+import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
 import com.mashiverse.mashit.ui.screens.shop.items.SectionLoading
 import com.mashiverse.mashit.ui.screens.shop.items.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.items.ShopItem
-import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
@@ -207,7 +204,7 @@ fun ArtistPage(alias: String) {
 
         if (artistPageUiState.isExpanded) {
             artistPageUiState.selectedNft?.let { nft ->
-                MashiBottomSheet(
+                ItemPreviewModal(
                     selectedNft = nft,
                     sheetState = previewState,
                     closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },

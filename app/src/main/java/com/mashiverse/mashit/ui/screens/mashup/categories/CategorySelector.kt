@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.intents.MashupIntent
-import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.states.MashupUiState
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
+import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.states.mashup.MashupUiState
 import com.mashiverse.mashit.ui.theme.ActiveButtonBackground
 import com.mashiverse.mashit.ui.theme.ButtonBackground
 import com.mashiverse.mashit.ui.theme.ContentAccentColor

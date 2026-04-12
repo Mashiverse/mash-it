@@ -1,10 +1,10 @@
 package com.mashiverse.mashit.utils.helpers.nft
 
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
-import com.mashiverse.mashit.data.models.nft.Nft
-import com.mashiverse.mashit.data.models.nft.Trait
-import com.mashiverse.mashit.data.models.nft.TraitType
-import com.mashiverse.mashit.data.models.nft.activeTraits
+import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.Trait
+import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashi.activeTraits
 
 fun getTraitsByType(nfts: List<Nft>): Map<TraitType, List<MashupTrait>> {
     val allMashupTraits = nfts.flatMap { nft ->

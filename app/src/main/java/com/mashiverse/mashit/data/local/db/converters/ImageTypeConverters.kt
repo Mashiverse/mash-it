@@ -1,7 +1,7 @@
 package com.mashiverse.mashit.data.local.db.converters
 
 import androidx.room.TypeConverter
-import com.mashiverse.mashit.data.models.image.ImageType
+import com.mashiverse.mashit.data.models.sys.image.ImageType
 
 class ImageTypeConverters {
     @TypeConverter
