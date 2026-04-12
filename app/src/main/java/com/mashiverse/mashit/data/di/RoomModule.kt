@@ -21,8 +21,9 @@ object RoomModule {
     ) = Room.databaseBuilder(
         context = ctx,
         klass = RoomDb::class.java,
-        name = "mashit_db"
-    ).build()
+        name = "mashit_db",
+    ).fallbackToDestructiveMigration(true)
+        .build()
 
     @Provides
     fun provideNftDao(

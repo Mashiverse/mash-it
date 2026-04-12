@@ -31,8 +31,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mashiverse.mashit"
         minSdk = 28
         targetSdk = 36
-        versionCode = 7
-        versionName = "11.04.26"
+        versionCode = 8
+        versionName = "12.04.2026"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
