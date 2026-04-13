@@ -12,7 +12,12 @@ import com.reown.appkit.client.AppKit
 import com.reown.appkit.client.models.request.Request
 import com.reown.appkit.client.models.request.SentRequestResult
 import com.reown.appkit.engine.coinbase.CoinbaseResult
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.FunctionReturnDecoder
 import org.web3j.abi.TypeReference
@@ -34,7 +39,8 @@ object Web3Helper {
     private const val CHAIN_ID_RAW = "137"
 
     private val MAX_UINT256 = BigInteger("f".repeat(64), 16)
-    private val web3j = Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
+    private val web3j =
+        Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
 
     // --- Public API ---
 
@@ -78,8 +84,18 @@ object Web3Helper {
 
             // Transaction Execution (No internal dialogs here)
             return@withContext when (walletType) {
-                WalletType.BASE -> if (client != null)performBaseMint(client = client, from = fromAddress, lid = lid, usdcPrice = usdcPrice) else true
-                WalletType.MM -> performMetamaskMint(from = fromAddress, lid = lid, usdcPrice = usdcPrice)
+                WalletType.BASE -> if (client != null) performBaseMint(
+                    client = client,
+                    from = fromAddress,
+                    lid = lid,
+                    usdcPrice = usdcPrice
+                ) else true
+
+                WalletType.MM -> performMetamaskMint(
+                    from = fromAddress,
+                    lid = lid,
+                    usdcPrice = usdcPrice
+                )
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -100,16 +116,31 @@ object Web3Helper {
         var currentNonce = nonce
 
         if (getUsdcAllowanceSync(owner = from) < usdcPrice) {
-            actions.add(buildBaseTx(from = from, to = USDC_ADDRESS, data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256), nonce = currentNonce))
+            actions.add(
+                buildBaseTx(
+                    from = from,
+                    to = USDC_ADDRESS,
+                    data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256),
+                    nonce = currentNonce
+                )
+            )
             currentNonce++
         }
-        actions.add(buildBaseTx(from = from, to = MARKETPLACE_ADDRESS, data = encodeBuyAutoURIData(id = lid, recipient = from), nonce = currentNonce))
+        actions.add(
+            buildBaseTx(
+                from = from,
+                to = MARKETPLACE_ADDRESS,
+                data = encodeBuyAutoURIData(id = lid, recipient = from),
+                nonce = currentNonce
+            )
+        )
 
         withTimeoutOrNull(60000L) {
             suspendCancellableCoroutine { continuation ->
                 client.makeRequest(RequestContent.Request(actions = actions)) { result ->
                     result.onSuccess { results ->
-                        val success = results.isNotEmpty() && results.all { it is ActionResult.Result }
+                        val success =
+                            results.isNotEmpty() && results.all { it is ActionResult.Result }
                         continuation.resumeSafely(value = success)
                     }
                     result.onFailure { continuation.resumeSafely(value = false) }
@@ -127,13 +158,21 @@ object Web3Helper {
     ): Boolean {
         // Step 1: Approval
         if (getUsdcAllowanceSync(owner = from) < usdcPrice) {
-            val approveHash = requestAppKitTx(from = from, to = USDC_ADDRESS, data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256))
+            val approveHash = requestAppKitTx(
+                from = from,
+                to = USDC_ADDRESS,
+                data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256)
+            )
             if (approveHash == null) return false
             waitForTransaction(txHash = approveHash)
         }
 
         // Step 2: Minting
-        val mintHash = requestAppKitTx(from = from, to = MARKETPLACE_ADDRESS, data = encodeBuyAutoURIData(id = lid, recipient = from))
+        val mintHash = requestAppKitTx(
+            from = from,
+            to = MARKETPLACE_ADDRESS,
+            data = encodeBuyAutoURIData(id = lid, recipient = from)
+        )
         return mintHash != null
     }
 
@@ -144,7 +183,8 @@ object Web3Helper {
                 params = "[{\"from\":\"$from\",\"to\":\"$to\",\"data\":\"$data\",\"value\":\"0x0\"}]",
                 chainId = CHAIN_ID_APPKIT
             )
-            AppKit.request(request = req,
+            AppKit.request(
+                request = req,
                 onSuccess = { res: SentRequestResult ->
                     val hash = when (res) {
                         is SentRequestResult.WalletConnect -> "pending_metamask"
@@ -171,9 +211,15 @@ object Web3Helper {
     }
 
     private suspend fun waitForTransaction(txHash: String) {
-        if (txHash == "pending_metamask") { delay(4500); return }
+        if (txHash == "pending_metamask") {
+            delay(4500); return
+        }
         repeat(10) {
-            val receipt = try { web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt } catch (e: Exception) { java.util.Optional.empty() }
+            val receipt = try {
+                web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt
+            } catch (e: Exception) {
+                java.util.Optional.empty()
+            }
             if (receipt.isPresent) return@repeat
             delay(2000)
         }
@@ -182,32 +228,85 @@ object Web3Helper {
     // --- Queries ---
 
     suspend fun getUsdcBalance(fromAddress: String): BigInteger = withContext(Dispatchers.IO) {
-        queryContract(from = fromAddress, contract = USDC_ADDRESS, method = "balanceOf", params = listOf(Address(fromAddress)))
+        queryContract(
+            from = fromAddress,
+            contract = USDC_ADDRESS,
+            method = "balanceOf",
+            params = listOf(Address(fromAddress))
+        )
     }
 
     private fun getUsdcAllowanceSync(owner: String): BigInteger {
-        return queryContract(from = owner, contract = USDC_ADDRESS, method = "allowance", params = listOf(Address(owner), Address(MARKETPLACE_ADDRESS)))
+        return queryContract(
+            from = owner,
+            contract = USDC_ADDRESS,
+            method = "allowance",
+            params = listOf(Address(owner), Address(MARKETPLACE_ADDRESS))
+        )
     }
 
-    private fun queryContract(from: String, contract: String, method: String, params: List<org.web3j.abi.datatypes.Type<*>>): BigInteger {
+    private fun queryContract(
+        from: String,
+        contract: String,
+        method: String,
+        params: List<org.web3j.abi.datatypes.Type<*>>
+    ): BigInteger {
         return try {
             val fn = Function(method, params, listOf(object : TypeReference<Uint256>() {}))
-            val res = web3j.ethCall(Transaction.createEthCallTransaction(from, contract, FunctionEncoder.encode(fn)), DefaultBlockParameterName.LATEST).send()
+            val res = web3j.ethCall(
+                Transaction.createEthCallTransaction(
+                    from,
+                    contract,
+                    FunctionEncoder.encode(fn)
+                ), DefaultBlockParameterName.LATEST
+            ).send()
             val decoded = FunctionReturnDecoder.decode(res.value, fn.outputParameters)
             if (decoded.isNotEmpty()) decoded[0].value as BigInteger else BigInteger.ZERO
-        } catch (e: Exception) { BigInteger.ZERO }
+        } catch (e: Exception) {
+            BigInteger.ZERO
+        }
     }
 
-    private suspend fun canUserMint(listingId: BigInteger, userAddress: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val data = encodeBuyAutoURIData(id = listingId, recipient = userAddress)
-            !web3j.ethEstimateGas(Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, data)).send().hasError()
-        } catch (e: Exception) { true }
-    }
+    private suspend fun canUserMint(listingId: BigInteger, userAddress: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                val mintData = encodeBuyAutoURIData(listingId, userAddress)
+                val transaction =
+                    Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, mintData)
+                val estimateResponse = web3j.ethEstimateGas(transaction).send()
 
-    private suspend fun fetchNonce(address: String) =
-        web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send().transactionCount.toInt()
+                if (estimateResponse.hasError()) {
+                    val errorMessage = estimateResponse.error.message.lowercase()
+                    if (errorMessage.contains("revert") || errorMessage.contains("limit") || errorMessage.contains(
+                            "max"
+                        )
+                    ) {
+                        return@withContext false
+                    }
+                }
+                true
+            } catch (_: Exception) {
+                true
+            }
+        }
 
-    private fun encodeBuyAutoURIData(id: BigInteger, recipient: String) = FunctionEncoder.encode(Function("buyAutoURI", listOf(Uint256(id), Uint256(BigInteger.ONE), Address(recipient)), emptyList()))
-    private fun encodeERC20Approve(spender: String, amount: BigInteger) = FunctionEncoder.encode(Function("approve", listOf(Address(spender), Uint256(amount)), emptyList()))
+    private fun fetchNonce(address: String) =
+        web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING)
+            .send().transactionCount.toInt()
+
+    private fun encodeBuyAutoURIData(id: BigInteger, recipient: String) = FunctionEncoder.encode(
+        Function(
+            "buyAutoURI",
+            listOf(Uint256(id), Uint256(BigInteger.ONE), Address(recipient)),
+            emptyList()
+        )
+    )
+
+    private fun encodeERC20Approve(spender: String, amount: BigInteger) = FunctionEncoder.encode(
+        Function(
+            "approve",
+            listOf(Address(spender), Uint256(amount)),
+            emptyList()
+        )
+    )
 }

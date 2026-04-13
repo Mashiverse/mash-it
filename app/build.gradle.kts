@@ -25,13 +25,11 @@ configure<ApplicationExtension> {
                 "META-INF/io.netty.versions.properties"
             )
         }
-        jniLibs {
-            keepDebugSymbols += setOf(
-                "**/libandroidx.graphics.path.so",
-                "**/libdatastore_shared_counter.so",
-                "**/libpenguin.so"
-            )
-        }
+    }
+
+    androidResources {
+        @Suppress("UnstableApiUsage")
+        localeFilters += "en"
     }
 
     defaultConfig {

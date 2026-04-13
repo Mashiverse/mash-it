@@ -43,7 +43,7 @@ class MashItApp : Application(), Configuration.Provider {
             init = Modal.Params.Init(
                 core = CoreClient,
                 coinbaseEnabled = true,
-                recommendedWalletsIds = listOf(
+                includeWalletIds = listOf(
                     "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa",
                     "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96"
                 )

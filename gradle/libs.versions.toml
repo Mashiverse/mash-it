@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.0"
+agp = "9.1.1"
 androidBom = "1.6.11"
 coilCompose = "3.4.0"
 coinbaseWalletSdk = "1.2.0"
