@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.repos.mashit
 
-import SaveMashupRes
+import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData

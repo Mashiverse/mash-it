@@ -1,6 +1,6 @@
 package com.mashiverse.mashit.data.remote.apis
 
-import SaveMashupRes
+import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
 import com.mashiverse.mashit.data.models.mashup.save.SaveMashupReq
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingsDto
