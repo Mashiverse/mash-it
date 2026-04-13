@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.0"
+androidBom = "1.6.11"
 coilCompose = "3.4.0"
 coinbaseWalletSdk = "1.2.0"
 converterGson = "3.0.0"
@@ -25,6 +26,8 @@ timber = "5.0.1"
 workRuntimeKtx = "2.11.2"
 
 [libraries]
+android-bom = { module = "com.reown:android-bom", version.ref = "androidBom" }
+android-core = { module = "com.reown:android-core" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltNavigationCompose" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +41,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomPaging" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+appkit = { module = "com.reown:appkit" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }

@@ -102,9 +102,63 @@
 -keepclassmembers enum com.mashiverse.mashit.data.models.mashi.PriceCurrency { *; }
 -keepclassmembers enum com.mashiverse.mashit.data.models.mashi.TraitType { *; }
 -keepclassmembers enum com.mashiverse.mashit.data.models.sys.screens.ScreenInfo { *; }
+-keepclassmembers enum com.mashiverse.mashit.data.models.sys.wallet.WalletType { *; }
 
 # --- 14. WEB3 HELPER & SINGLETON PROTECTION ---
 -keep class com.mashiverse.mashit.utils.helpers.web3.** { *; }
 -keepclassmembers class com.mashiverse.mashit.utils.helpers.web3.** { *; }
 -keep class com.mashiverse.mashit.utils.helpers.web3.SoldHelper$* { *; }
 -keep class com.mashiverse.mashit.utils.ConstantsKt { *; }
+
+# --- 15. REOWN & APPKIT (WALLETCONNECT) ---
+# Keep all Reown core and AppKit classes and interfaces
+-keep class com.reown.** { *; }
+-keep interface com.reown.** { *; }
+
+# AppKit specifically needs protection for its UI, Modal components, and internal routing
+-keep class com.reown.appkit.** { *; }
+-keep interface com.reown.appkit.** { *; }
+
+# Protect internal SDK storage (SQLDelight/Preference wrappers)
+-keep class com.reown.sdk.storage.** { *; }
+
+# Keep models used for JSON-RPC serialization (Session, Account, etc.)
+-keepclassmembers class com.reown.appkit.client.models.** { *; }
+-keepclassmembers class com.reown.sign.client.models.** { *; }
+
+# Reown uses Kotlin Serialization, Moshi, and Gson transitive dependencies
+-keepclassmembers class * {
+    @com.squareup.moshi.Json <fields>;
+    @com.google.gson.annotations.SerializedName <fields>;
+    @kotlinx.serialization.SerialName <fields>;
+}
+
+# --- 16. TRANSITIVE WEB3 DEPENDENCIES FOR REOWN ---
+# Reown relies on OkHttp WebSockets for the Relay server
+-keepclassmembers class okhttp3.OkHttpClient { <fields>; <methods>; }
+-keep class okhttp3.internal.ws.** { *; }
+-keep interface okhttp3.WebSocket* { *; }
+
+# BouncyCastle is used for cryptographic signing
+-keep class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**
+
+# Protect WalletConnect Relay and Sign protocols
+-keep class com.walletconnect.** { *; }
+-dontwarn com.walletconnect.**
+
+# --- 17. JNI & NATIVE LIBRARIES ---
+# Reown/AppKit uses native libraries for performance-heavy crypto
+-keepclasseswithmembers class * {
+    native <methods>;
+}
+-keep class com.reown.** {
+    native <methods>;
+}
+
+# --- 18. LOGGING & ANNOTATIONS NOISE ---
+-dontwarn com.reown.**
+-dontwarn com.walletconnect.**
+# Avoid R8 warnings for missing optional Reown dependencies
+-dontwarn okio.internal.**
+-dontwarn reactor.blockhound.integration.BlockHoundIntegration

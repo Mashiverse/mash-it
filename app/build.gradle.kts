@@ -127,6 +127,11 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
 
+    // Reown
+    implementation(platform(libs.android.bom))
+    implementation(libs.android.core)
+    implementation(libs.appkit)
+
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

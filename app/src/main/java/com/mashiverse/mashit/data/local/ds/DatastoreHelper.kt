@@ -8,6 +8,7 @@ import com.mashiverse.mashit.utils.FIRST_LAUNCH_KEY
 import com.mashiverse.mashit.utils.MASHIT_PREFERENCES
 import com.mashiverse.mashit.utils.NOTIFICATIONS_KEY
 import com.mashiverse.mashit.utils.WALLET_KEY
+import com.mashiverse.mashit.utils.WALLET_TYPE_KEY
 
 val Context.datastore by preferencesDataStore(
     name = MASHIT_PREFERENCES
@@ -15,6 +16,7 @@ val Context.datastore by preferencesDataStore(
 
 object PreferencesKeys {
     val WALLET = stringPreferencesKey(WALLET_KEY)
+    val WALLET_TYPE = stringPreferencesKey(WALLET_TYPE_KEY)
     val FIRST_LAUNCH = booleanPreferencesKey(FIRST_LAUNCH_KEY)
     val NOTIFICATIONS = booleanPreferencesKey(NOTIFICATIONS_KEY)
 }

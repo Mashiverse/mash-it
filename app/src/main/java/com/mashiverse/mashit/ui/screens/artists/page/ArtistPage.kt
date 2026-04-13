@@ -42,9 +42,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.states.sys.DialogIntent
-import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
+import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
@@ -163,41 +163,39 @@ fun ArtistPage(alias: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        clientRef?.let {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(screenType.shopColumns),
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(Padding)
-            ) {
-                items(
-                    count = listings.itemCount,
-                    key = listings.itemKey { it.name + it.compositeUrl }
-                ) { index ->
-                    val nft = listings[index]
-                    nft?.let {
-                        ShopItem(
-                            nft = nft,
-                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                            clientRef = clientRef!!,
-                            imageWidth = width,
-                            imageHeight = height
-                        )
-                    }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(screenType.shopColumns),
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(Padding)
+        ) {
+            items(
+                count = listings.itemCount,
+                key = listings.itemKey { it.name + it.compositeUrl }
+            ) { index ->
+                val nft = listings[index]
+                nft?.let {
+                    ShopItem(
+                        nft = nft,
+                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                        processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                        clientRef = clientRef,
+                        imageWidth = width,
+                        imageHeight = height
+                    )
                 }
+            }
 
-                if (appendState is LoadState.Loading) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        SectionLoading()
-                    }
+            if (appendState is LoadState.Loading) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    SectionLoading()
                 }
+            }
 
-                if (appendState is LoadState.Error) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        SectionRefresh(onRetry = { listings.retry() })
-                    }
+            if (appendState is LoadState.Error) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    SectionRefresh(onRetry = { listings.retry() })
                 }
             }
         }

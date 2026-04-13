@@ -6,6 +6,7 @@ import com.mashiverse.mashit.BuildConfig
 const val MASHIT_PREFERENCES = "mashit"
 
 const val WALLET_KEY = "wallet"
+const val WALLET_TYPE_KEY = "wallet_type"
 const val FIRST_LAUNCH_KEY = "first_launch"
 const val NOTIFICATIONS_KEY = "notifications"
 

@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.states.sys.DialogIntent
-import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.models.sys.data.ShopDataType
+import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
@@ -42,15 +42,6 @@ fun Shop(
     val scope = rememberCoroutineScope()
 
     val viewModel = hiltViewModel<ShopViewModel>()
-    val shopUiState by remember { viewModel.shopUiState }
-
-    LaunchedEffect(listingId) {
-        if (!listingId.isNullOrEmpty()) {
-            viewModel.processShopIntent(ShopIntent.OnNftSelect(listingId))
-        }
-    }
-
-
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -64,6 +55,15 @@ fun Shop(
             launcher.launch(intent)
         }
     }
+
+    val shopUiState by remember { viewModel.shopUiState }
+
+    LaunchedEffect(listingId) {
+        if (!listingId.isNullOrEmpty()) {
+            viewModel.processShopIntent(ShopIntent.OnNftSelect(listingId))
+        }
+    }
+
 
     LaunchedEffect(searchQuery) {
         val dataType = if (searchQuery.isNotEmpty()) {
@@ -83,21 +83,19 @@ fun Shop(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        clientRef?.let {
-            Category(
-                shopUiState = shopUiState,
-                clientRef = clientRef!!,
-                onSearchQueryClear = if (searchQuery.isNotEmpty()) {
-                    {
-                        clearSearchQuery.invoke()
-                        viewModel.processShopIntent(ShopIntent.OnCategoryClose)
-                    }
-                } else null,
-                processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                processShopIntent = { intent -> viewModel.processShopIntent(intent) }
-            )
-        }
+        Category(
+            shopUiState = shopUiState,
+            clientRef = clientRef,
+            onSearchQueryClear = if (searchQuery.isNotEmpty()) {
+                {
+                    clearSearchQuery.invoke()
+                    viewModel.processShopIntent(ShopIntent.OnCategoryClose)
+                }
+            } else null,
+            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+            processShopIntent = { intent -> viewModel.processShopIntent(intent) }
+        )
     }
 
     if (shopUiState.isExpanded) {

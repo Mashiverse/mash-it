@@ -38,7 +38,7 @@ import com.mashiverse.mashit.ui.theme.LargeHolderWidth
 fun ShopItem(
     nft: Nft,
     processShopIntent: (ShopIntent) -> Unit,
-    clientRef: CoinbaseWalletSDK,
+    clientRef: CoinbaseWalletSDK?,
     processImageIntent: (ImageIntent) -> Unit,
     processWeb3Intent: (Web3Intent) -> Unit,
     imageWidth: Dp = LargeHolderWidth,
