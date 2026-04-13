@@ -101,7 +101,7 @@ fun MashiDetailsSection(
 
             nft.description?.let {
                 Text(
-                    maxLines = 5,
+                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 12.sp,
                     color = ContentAccentColor,
