@@ -39,8 +39,7 @@ object Web3Helper {
     private const val CHAIN_ID_RAW = "137"
 
     private val MAX_UINT256 = BigInteger("f".repeat(64), 16)
-    private val web3j =
-        Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
+    private val web3j = Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
 
     // --- Public API ---
 
@@ -50,13 +49,12 @@ object Web3Helper {
         fromAddress: String,
         listingId: String,
         price: Double,
-        onDialogTrigger: (DialogContent) -> Unit // Restored for validation feedback
+        onDialogTrigger: (DialogContent) -> Unit
     ): Boolean = withContext(Dispatchers.IO) {
         try {
             val lid = BigInteger(listingId)
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
 
-            // 1. Balance Check
             if (getUsdcBalance(fromAddress = fromAddress) < usdcPrice) {
                 withContext(Dispatchers.Main) {
                     onDialogTrigger(
@@ -69,7 +67,6 @@ object Web3Helper {
                 return@withContext false
             }
 
-            // 2. Limit Check
             if (!canUserMint(listingId = lid, userAddress = fromAddress)) {
                 withContext(Dispatchers.Main) {
                     onDialogTrigger(
@@ -82,20 +79,12 @@ object Web3Helper {
                 return@withContext false
             }
 
-            // Transaction Execution (No internal dialogs here)
             return@withContext when (walletType) {
-                WalletType.BASE -> if (client != null) performBaseMint(
-                    client = client,
-                    from = fromAddress,
-                    lid = lid,
-                    usdcPrice = usdcPrice
-                ) else true
+                WalletType.BASE -> if (client != null) {
+                    performBaseMint(client = client, from = fromAddress, lid = lid, usdcPrice = usdcPrice)
+                } else false
 
-                WalletType.MM -> performMetamaskMint(
-                    from = fromAddress,
-                    lid = lid,
-                    usdcPrice = usdcPrice
-                )
+                WalletType.MM -> performMetamaskMint(from = fromAddress, lid = lid, usdcPrice = usdcPrice)
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -111,43 +100,46 @@ object Web3Helper {
         lid: BigInteger,
         usdcPrice: BigInteger
     ): Boolean = withContext(Dispatchers.IO) {
-        val actions = mutableListOf<Action>()
-        val nonce = fetchNonce(address = from)
-        var currentNonce = nonce
+        var currentNonce = fetchNonce(address = from)
 
         if (getUsdcAllowanceSync(owner = from) < usdcPrice) {
-            actions.add(
-                buildBaseTx(
-                    from = from,
-                    to = USDC_ADDRESS,
-                    data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256),
-                    nonce = currentNonce
-                )
-            )
-            currentNonce++
-        }
-        actions.add(
-            buildBaseTx(
+            val approveAction = buildBaseTx(
                 from = from,
-                to = MARKETPLACE_ADDRESS,
-                data = encodeBuyAutoURIData(id = lid, recipient = from),
+                to = USDC_ADDRESS,
+                data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256),
                 nonce = currentNonce
             )
-        )
+            val approveHash = executeCoinbaseAction(client = client, action = approveAction)
 
+            if (approveHash == null) return@withContext false
+
+            waitForTransaction(txHash = approveHash)
+            currentNonce++
+        }
+
+        val mintAction = buildBaseTx(
+            from = from,
+            to = MARKETPLACE_ADDRESS,
+            data = encodeBuyAutoURIData(id = lid, recipient = from),
+            nonce = currentNonce
+        )
+        val mintHash = executeCoinbaseAction(client = client, action = mintAction)
+
+        return@withContext mintHash != null
+    }
+
+    private suspend fun executeCoinbaseAction(client: CoinbaseWalletSDK, action: Action): String? =
         withTimeoutOrNull(60000L) {
             suspendCancellableCoroutine { continuation ->
-                client.makeRequest(RequestContent.Request(actions = actions)) { result ->
+                client.makeRequest(RequestContent.Request(actions = listOf(action))) { result ->
                     result.onSuccess { results ->
-                        val success =
-                            results.isNotEmpty() && results.all { it is ActionResult.Result }
-                        continuation.resumeSafely(value = success)
+                        val hash = (results.firstOrNull() as? ActionResult.Result)?.value
+                        continuation.resumeSafely(value = hash)
                     }
-                    result.onFailure { continuation.resumeSafely(value = false) }
+                    result.onFailure { continuation.resumeSafely(value = null) }
                 }
             }
-        } ?: false
-    }
+        }
 
     // --- MetaMask Path ---
 
@@ -156,24 +148,22 @@ object Web3Helper {
         lid: BigInteger,
         usdcPrice: BigInteger
     ): Boolean {
-        // Step 1: Approval
         if (getUsdcAllowanceSync(owner = from) < usdcPrice) {
             val approveHash = requestAppKitTx(
                 from = from,
                 to = USDC_ADDRESS,
                 data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256)
             )
-            if (approveHash == null) return false
+            if (approveHash == null || approveHash == "rejected") return false
             waitForTransaction(txHash = approveHash)
         }
 
-        // Step 2: Minting
         val mintHash = requestAppKitTx(
             from = from,
             to = MARKETPLACE_ADDRESS,
             data = encodeBuyAutoURIData(id = lid, recipient = from)
         )
-        return mintHash != null
+        return mintHash != null && mintHash != "rejected"
     }
 
     private suspend fun requestAppKitTx(from: String, to: String, data: String): String? =
@@ -185,14 +175,16 @@ object Web3Helper {
             )
             AppKit.request(
                 request = req,
-                onSuccess = { res: SentRequestResult ->
-                    val hash = when (res) {
-                        is SentRequestResult.WalletConnect -> "pending_metamask"
-                        is SentRequestResult.Coinbase -> (res.results.firstOrNull() as? CoinbaseResult.Result)?.value
+                onSuccess = { res ->
+                    when (res) {
+                        is SentRequestResult.WalletConnect -> continuation.resumeSafely(value = "confirmed_by_user")
+                        is SentRequestResult.Coinbase -> {
+                            val hash = (res.results.firstOrNull() as? CoinbaseResult.Result)?.value
+                            continuation.resumeSafely(value = hash)
+                        }
                     }
-                    continuation.resumeSafely(value = hash)
                 },
-                onError = { continuation.resumeSafely(value = null) }
+                onError = { continuation.resumeSafely(value = "rejected") }
             )
         }
 
@@ -201,7 +193,7 @@ object Web3Helper {
     private fun buildBaseTx(from: String, to: String, data: String, nonce: Int) =
         Web3JsonRPC.SendTransaction(
             fromAddress = from, toAddress = to, weiValue = "0", data = data,
-            chainId = CHAIN_ID_RAW, nonce = nonce, gasLimit = "350000",
+            chainId = CHAIN_ID_RAW, nonce = nonce, gasLimit = "450000",
             maxFeePerGas = "500000000000", maxPriorityFeePerGas = "50000000000",
             gasPriceInWei = null, actionSource = null
         ).action()
@@ -211,21 +203,18 @@ object Web3Helper {
     }
 
     private suspend fun waitForTransaction(txHash: String) {
-        if (txHash == "pending_metamask") {
-            delay(4500); return
+        if (txHash == "confirmed_by_user" || txHash == "rejected") {
+            delay(5000)
+            return
         }
-        repeat(10) {
+        repeat(20) {
             val receipt = try {
                 web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt
-            } catch (e: Exception) {
-                java.util.Optional.empty()
-            }
+            } catch (e: Exception) { java.util.Optional.empty() }
             if (receipt.isPresent) return@repeat
             delay(2000)
         }
     }
-
-    // --- Queries ---
 
     suspend fun getUsdcBalance(fromAddress: String): BigInteger = withContext(Dispatchers.IO) {
         queryContract(
@@ -254,33 +243,24 @@ object Web3Helper {
         return try {
             val fn = Function(method, params, listOf(object : TypeReference<Uint256>() {}))
             val res = web3j.ethCall(
-                Transaction.createEthCallTransaction(
-                    from,
-                    contract,
-                    FunctionEncoder.encode(fn)
-                ), DefaultBlockParameterName.LATEST
+                Transaction.createEthCallTransaction(from, contract, FunctionEncoder.encode(fn)),
+                DefaultBlockParameterName.LATEST
             ).send()
             val decoded = FunctionReturnDecoder.decode(res.value, fn.outputParameters)
             if (decoded.isNotEmpty()) decoded[0].value as BigInteger else BigInteger.ZERO
-        } catch (e: Exception) {
-            BigInteger.ZERO
-        }
+        } catch (e: Exception) { BigInteger.ZERO }
     }
 
     private suspend fun canUserMint(listingId: BigInteger, userAddress: String): Boolean =
         withContext(Dispatchers.IO) {
             try {
-                val mintData = encodeBuyAutoURIData(listingId, userAddress)
-                val transaction =
-                    Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, mintData)
+                val mintData = encodeBuyAutoURIData(id = listingId, recipient = userAddress)
+                val transaction = Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, mintData)
                 val estimateResponse = web3j.ethEstimateGas(transaction).send()
 
                 if (estimateResponse.hasError()) {
                     val errorMessage = estimateResponse.error.message.lowercase()
-                    if (errorMessage.contains("revert") || errorMessage.contains("limit") || errorMessage.contains(
-                            "max"
-                        )
-                    ) {
+                    if (errorMessage.contains("revert") || errorMessage.contains("limit") || errorMessage.contains("max")) {
                         return@withContext false
                     }
                 }
