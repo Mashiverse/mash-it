@@ -33,7 +33,7 @@ fun BaseButton(
             text = if (wallet != null) {
                 "Disconnect"
             } else {
-                "Connect wallet"
+                "Connect Wallet"
             },
             fontSize = 16.sp
         )

@@ -29,7 +29,10 @@ fun SignInModal(
         sheetGesturesEnabled = false
     ) {
         AppKitTheme(
-            mode = AppKitTheme.Mode.DARK
+            mode = AppKitTheme.Mode.DARK,
+//        darkColors = AppKitTheme.provideDarkAppKitColor(
+//
+//        )
         ) {
             AppKitComponent(
                 shouldOpenChooseNetwork = false,
