@@ -35,7 +35,7 @@ configure<ApplicationExtension> {
     defaultConfig {
         applicationId = "com.mashiverse.mashit"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 13
         versionName = "13.04.2026"
 

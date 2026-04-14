@@ -39,7 +39,8 @@ object Web3Helper {
     private const val CHAIN_ID_RAW = "137"
 
     private val MAX_UINT256 = BigInteger("f".repeat(64), 16)
-    private val web3j = Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
+    private val web3j =
+        Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
 
     // --- Public API ---
 
@@ -81,10 +82,19 @@ object Web3Helper {
 
             return@withContext when (walletType) {
                 WalletType.BASE -> if (client != null) {
-                    performBaseMint(client = client, from = fromAddress, lid = lid, usdcPrice = usdcPrice)
+                    performBaseMint(
+                        client = client,
+                        from = fromAddress,
+                        lid = lid,
+                        usdcPrice = usdcPrice
+                    )
                 } else false
 
-                WalletType.MM -> performMetamaskMint(from = fromAddress, lid = lid, usdcPrice = usdcPrice)
+                WalletType.MM -> performMetamaskMint(
+                    from = fromAddress,
+                    lid = lid,
+                    usdcPrice = usdcPrice
+                )
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -210,7 +220,9 @@ object Web3Helper {
         repeat(20) {
             val receipt = try {
                 web3j.ethGetTransactionReceipt(txHash).send().transactionReceipt
-            } catch (e: Exception) { java.util.Optional.empty() }
+            } catch (_: Exception) {
+                java.util.Optional.empty()
+            }
             if (receipt.isPresent) return@repeat
             delay(2000)
         }
@@ -248,19 +260,25 @@ object Web3Helper {
             ).send()
             val decoded = FunctionReturnDecoder.decode(res.value, fn.outputParameters)
             if (decoded.isNotEmpty()) decoded[0].value as BigInteger else BigInteger.ZERO
-        } catch (e: Exception) { BigInteger.ZERO }
+        } catch (_: Exception) {
+            BigInteger.ZERO
+        }
     }
 
     private suspend fun canUserMint(listingId: BigInteger, userAddress: String): Boolean =
         withContext(Dispatchers.IO) {
             try {
                 val mintData = encodeBuyAutoURIData(id = listingId, recipient = userAddress)
-                val transaction = Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, mintData)
+                val transaction =
+                    Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, mintData)
                 val estimateResponse = web3j.ethEstimateGas(transaction).send()
 
                 if (estimateResponse.hasError()) {
                     val errorMessage = estimateResponse.error.message.lowercase()
-                    if (errorMessage.contains("revert") || errorMessage.contains("limit") || errorMessage.contains("max")) {
+                    if (errorMessage.contains("revert") || errorMessage.contains("limit") || errorMessage.contains(
+                            "max"
+                        )
+                    ) {
                         return@withContext false
                     }
                 }

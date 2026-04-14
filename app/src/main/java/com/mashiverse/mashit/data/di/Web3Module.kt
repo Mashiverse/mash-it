@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.core.net.toUri
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.reown.android.Core
-import com.reown.android.relay.ConnectionType
 import com.reown.appkit.client.Modal
 import dagger.Module
 import dagger.Provides
@@ -23,7 +22,7 @@ object Web3Module {
     fun provideCoinbaseSdkFactory(
         @ApplicationContext ctx: Context
     ): @JvmSuppressWildcards (openIntent: (Intent) -> Unit) -> CoinbaseWalletSDK {
-        return  { openIntent ->
+        return { openIntent ->
             CoinbaseWalletSDK(
                 appContext = ctx,
                 domain = "https://mash-it.io".toUri(),
@@ -39,7 +38,7 @@ object Web3Module {
         description = "Combine mashable nfts to get the perfect mashi",
         url = "https://www.mash-it.io",
         icons = listOf("https://www.mash-it.io/img/transparent_logo_p.png?v=4e7c0f250868de67bf09a2c36db38666fdb151e2"),
-        redirect = "mashit://request",
+        redirect = "com.mashiverse.mashit://request",
     )
 
     @Provides
