@@ -45,7 +45,7 @@ import java.util.Locale
 @Composable
 fun Category(
     shopUiState: ShopUiState,
-    clientRef: CoinbaseWalletSDK,
+    clientRef: CoinbaseWalletSDK?,
     processImageIntent: (ImageIntent) -> Unit,
     onSearchQueryClear: (() -> Unit)? = null,
     processShopIntent: (ShopIntent) -> Unit,

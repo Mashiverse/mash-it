@@ -102,9 +102,12 @@
 -keepclassmembers enum com.mashiverse.mashit.data.models.mashi.PriceCurrency { *; }
 -keepclassmembers enum com.mashiverse.mashit.data.models.mashi.TraitType { *; }
 -keepclassmembers enum com.mashiverse.mashit.data.models.sys.screens.ScreenInfo { *; }
+-keepclassmembers enum com.mashiverse.mashit.data.models.sys.wallet.WalletType { *; }
 
 # --- 14. WEB3 HELPER & SINGLETON PROTECTION ---
 -keep class com.mashiverse.mashit.utils.helpers.web3.** { *; }
 -keepclassmembers class com.mashiverse.mashit.utils.helpers.web3.** { *; }
 -keep class com.mashiverse.mashit.utils.helpers.web3.SoldHelper$* { *; }
 -keep class com.mashiverse.mashit.utils.ConstantsKt { *; }
+
+-dontwarn reactor.blockhound.integration.BlockHoundIntegration

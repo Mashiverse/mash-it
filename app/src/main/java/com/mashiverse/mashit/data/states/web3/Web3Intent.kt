@@ -10,7 +10,7 @@ sealed class Web3Intent {
     ) : Web3Intent()
 
     data class OnMint(
-        val client: CoinbaseWalletSDK,
+        val client: CoinbaseWalletSDK?,
         val listingId: String,
         val price: Double,
         val isPolCurrency: Boolean

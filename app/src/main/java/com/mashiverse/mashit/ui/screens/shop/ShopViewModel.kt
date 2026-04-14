@@ -7,24 +7,25 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.states.sys.DialogIntent
-import com.mashiverse.mashit.data.states.sys.ImageIntent
-import com.mashiverse.mashit.data.states.shop.ShopIntent
-import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.sys.data.ShopDataType
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.image.ImageType
+import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
-import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.Web3Repo
+import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.states.shop.ShopUiState
+import com.mashiverse.mashit.data.states.sys.DialogIntent
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.utils.helpers.web3.SoldHelper
 import com.mashiverse.mashit.utils.helpers.web3.Web3Helper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,7 +34,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShopViewModel @Inject constructor(
-    dataStoreRepo: DatastoreRepo,
+    private val dataStoreRepo: DatastoreRepo,
     private val mashItRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo
@@ -53,9 +54,13 @@ class ShopViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             walletFlow.distinctUntilChanged().collect { prefs ->
                 val wallet = prefs.wallet
+                val walletType = prefs.walletType
 
                 if (!wallet.isNullOrEmpty()) {
-                    shopUiState.value = shopUiState.value.copy(wallet = wallet)
+                    shopUiState.value = shopUiState.value.copy(
+                        wallet = wallet,
+                        walletType = walletType
+                    )
                 } else {
                     shopUiState.value = shopUiState.value.copy(wallet = null)
                 }
@@ -192,32 +197,44 @@ class ShopViewModel @Inject constructor(
     }
 
     private fun onMint(
-        clientRef: CoinbaseWalletSDK,
+        clientRef: CoinbaseWalletSDK?,
         listingId: String,
         price: Double,
         isPolCurrency: Boolean
     ) {
-        if (isPolCurrency) {
-            shopUiState.value = shopUiState.value.copy(
-                dialogContent = DialogContent(
-                    title = "POL Currency",
-                    text = "We currently don't support POL minting"
-                )
-            )
-        } else if (shopUiState.value.wallet != null) {
-            mint(
-                client = clientRef,
-                fromAddress = shopUiState.value.wallet!!,
-                listingId = listingId,
-                price = price
-            )
-        } else {
-            shopUiState.value = shopUiState.value.copy(
-                dialogContent = DialogContent(
-                    title = "Not Authenticated",
-                    text = "Please connect your wallet to continue"
-                )
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            // 1. Pull the actual latest value from the Flow itself, not the UI snapshot
+            val latestPrefs = dataStoreRepo.walletFlow.first()
+            val address = latestPrefs.wallet
+            val type = latestPrefs.walletType
+
+            // 2. Switch to Main to update UI if needed
+            withContext(Dispatchers.Main) {
+                if (isPolCurrency) {
+                    shopUiState.value = shopUiState.value.copy(
+                        dialogContent = DialogContent(
+                            title = "POL Currency",
+                            text = "We currently don't support POL minting"
+                        )
+                    )
+                } else if (!address.isNullOrEmpty()) {
+                    // 3. Pass the fresh data to the mint function
+                    mint(
+                        client = clientRef,
+                        walletType = type,
+                        fromAddress = address,
+                        listingId = listingId,
+                        price = price
+                    )
+                } else {
+                    shopUiState.value = shopUiState.value.copy(
+                        dialogContent = DialogContent(
+                            title = "Not Authenticated",
+                            text = "Please connect your wallet to continue"
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -229,27 +246,36 @@ class ShopViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val totalSold = SoldHelper.getTotalSold(listing.toLong()).toInt()
-                callback.invoke(totalSold)
+                withContext(Dispatchers.Main) {
+                    callback.invoke(totalSold)
+                }
             } catch (_: Exception) {
-                callback.invoke(0)
+                withContext(Dispatchers.Main) {
+                    callback.invoke(0)
+                }
             }
         }
     }
 
     private fun mint(
-        client: CoinbaseWalletSDK,
+        client: CoinbaseWalletSDK?,
+        walletType: com.mashiverse.mashit.data.models.sys.wallet.WalletType,
         fromAddress: String,
         listingId: String,
         price: Double
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             Web3Helper.mint(
-                client,
+                walletType = walletType,
+                client = client,
                 fromAddress = fromAddress,
                 listingId = listingId,
                 price = price,
-                onMintFailure = { dialogContent ->
-                    shopUiState.value = shopUiState.value.copy(dialogContent = dialogContent)
+                onDialogTrigger = { dialogContent ->
+                    // CRITICAL: Update Compose State on Main Thread
+                    viewModelScope.launch(Dispatchers.Main) {
+                        shopUiState.value = shopUiState.value.copy(dialogContent = dialogContent)
+                    }
                 }
             )
         }

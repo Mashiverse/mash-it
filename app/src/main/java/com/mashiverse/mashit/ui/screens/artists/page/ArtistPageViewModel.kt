@@ -1,29 +1,31 @@
 package com.mashiverse.mashit.ui.screens.artists.page
 
 import android.content.Intent
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.states.sys.DialogIntent
-import com.mashiverse.mashit.data.states.sys.ImageIntent
-import com.mashiverse.mashit.data.states.shop.ShopIntent
-import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.image.ImageType
 import com.mashiverse.mashit.data.repos.mashit.ArtistsRepo
+import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
-import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.Web3Repo
 import com.mashiverse.mashit.data.states.ArtistPageUiState
+import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.states.sys.DialogIntent
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.utils.helpers.web3.SoldHelper
 import com.mashiverse.mashit.utils.helpers.web3.Web3Helper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -33,7 +35,7 @@ import javax.inject.Inject
 class ArtistPageViewModel @Inject constructor(
     private val imageTypeRepo: ImageTypeRepo,
     private val artistsRepo: ArtistsRepo,
-    dataStoreRepo: DatastoreRepo,
+    private val dataStoreRepo: DatastoreRepo,
     private val web3Repo: Web3Repo,
     private val mashitRepo: MashitRepo
 ) : ViewModel() {
@@ -53,9 +55,13 @@ class ArtistPageViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             walletFlow.distinctUntilChanged().collect { prefs ->
                 val wallet = prefs.wallet
+                val walletType = prefs.walletType
 
                 if (!wallet.isNullOrEmpty()) {
-                    artistPageUiState.value = artistPageUiState.value.copy(wallet = wallet)
+                    artistPageUiState.value = artistPageUiState.value.copy(
+                        wallet = wallet,
+                        walletType = walletType
+                    )
                 } else {
                     artistPageUiState.value = artistPageUiState.value.copy(wallet = null)
                 }
@@ -173,32 +179,44 @@ class ArtistPageViewModel @Inject constructor(
     }
 
     private fun onMint(
-        clientRef: CoinbaseWalletSDK,
+        clientRef: CoinbaseWalletSDK?,
         listingId: String,
         price: Double,
         isPolCurrency: Boolean
     ) {
-        if (isPolCurrency) {
-            artistPageUiState.value = artistPageUiState.value.copy(
-                dialogContent = DialogContent(
-                    title = "POL Currency",
-                    text = "We currently don't support POL minting"
-                )
-            )
-        } else if (artistPageUiState.value.wallet != null) {
-            mint(
-                client = clientRef,
-                fromAddress = artistPageUiState.value.wallet!!,
-                listingId = listingId,
-                price = price
-            )
-        } else {
-            artistPageUiState.value = artistPageUiState.value.copy(
-                dialogContent = DialogContent(
-                    title = "Not Authenticated",
-                    text = "Please connect your wallet to continue"
-                )
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            // 1. Pull the actual latest value from the Flow itself, not the UI snapshot
+            val latestPrefs = dataStoreRepo.walletFlow.first()
+            val address = latestPrefs.wallet
+            val type = latestPrefs.walletType
+
+            // 2. Switch to Main to update UI if needed
+            withContext(Dispatchers.Main) {
+                if (isPolCurrency) {
+                    artistPageUiState.value = artistPageUiState.value.copy(
+                        dialogContent = DialogContent(
+                            title = "POL Currency",
+                            text = "We currently don't support POL minting"
+                        )
+                    )
+                } else if (!address.isNullOrEmpty()) {
+                    // 3. Pass the fresh data to the mint function
+                    mint(
+                        client = clientRef,
+                        walletType = type,
+                        fromAddress = address,
+                        listingId = listingId,
+                        price = price
+                    )
+                } else {
+                    artistPageUiState.value = artistPageUiState.value.copy(
+                        dialogContent = DialogContent(
+                            title = "Not Authenticated",
+                            text = "Please connect your wallet to continue"
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -210,28 +228,38 @@ class ArtistPageViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val totalSold = SoldHelper.getTotalSold(listing.toLong()).toInt()
-                callback.invoke(totalSold)
+                withContext(Dispatchers.Main) {
+                    callback.invoke(totalSold)
+                }
             } catch (_: Exception) {
-                callback.invoke(0)
+                withContext(Dispatchers.Main) {
+                    callback.invoke(0)
+                }
             }
         }
     }
 
     private fun mint(
-        client: CoinbaseWalletSDK,
+        client: CoinbaseWalletSDK?,
+        walletType: com.mashiverse.mashit.data.models.sys.wallet.WalletType,
         fromAddress: String,
         listingId: String,
         price: Double
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             Web3Helper.mint(
-                client,
+                walletType = walletType,
+                client = client,
                 fromAddress = fromAddress,
                 listingId = listingId,
                 price = price,
-                onMintFailure = { dialogContent ->
-                    artistPageUiState.value =
-                        artistPageUiState.value.copy(dialogContent = dialogContent)
+                onDialogTrigger = { dialogContent ->
+                    // CRITICAL: Push UI updates back to the Main thread
+                    viewModelScope.launch(Dispatchers.Main) {
+                        artistPageUiState.value = artistPageUiState.value.copy(
+                            dialogContent = dialogContent
+                        )
+                    }
                 }
             )
         }

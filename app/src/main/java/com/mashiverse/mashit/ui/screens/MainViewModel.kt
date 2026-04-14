@@ -11,6 +11,7 @@ import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
 import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
+import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.Web3Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,13 +38,9 @@ class MainViewModel @Inject constructor(
         _dialogContent.value = dialogContent
     }
 
-    fun getCoinbaseSdk(openIntent: (Intent) -> Unit): CoinbaseWalletSDK {
-        return web3Repo.getCoinbaseSdk(openIntent)
-    }
-
-    private fun updateWallet(wallet: String) {
+    fun updateWallet(walletPreferences: WalletPreferences) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepo.updateWallet(wallet)
+            dataStoreRepo.updateWallet(walletPreferences)
         }
     }
 
@@ -68,28 +65,6 @@ class MainViewModel @Inject constructor(
             }
 
             dataStoreRepo.updateNotifications(enabled)
-        }
-    }
-
-    fun initHandshake(clientRef: CoinbaseWalletSDK?) {
-        val requestAccount = Web3JsonRPC.RequestAccounts().action()
-        val handShakeActions = listOf(requestAccount)
-
-        clientRef?.initiateHandshake(
-            initialActions = handShakeActions
-        ) { result: Result<List<ActionResult>>, account: Account? ->
-            result.onSuccess { _ ->
-                val address = account?.address
-                address?.let {
-                    updateWallet(address)
-                }
-            }
-            result.onFailure { err ->
-                _dialogContent.value = DialogContent(
-                    title = "Base auth error",
-                    text = err.message ?: "Unknown error"
-                )
-            }
         }
     }
 }

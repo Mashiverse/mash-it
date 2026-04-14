@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import com.mashiverse.mashit.data.local.ds.PreferencesKeys
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
+import com.mashiverse.mashit.data.models.sys.wallet.WalletType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -30,7 +31,8 @@ class DatastoreRepo @Inject constructor(
             }
             .map { preferences ->
                 WalletPreferences(
-                    wallet = preferences[PreferencesKeys.WALLET]
+                    wallet = preferences[PreferencesKeys.WALLET],
+                    walletType = WalletType.valueOf(preferences[PreferencesKeys.WALLET_TYPE] ?: "BASE")
                 )
             }
 
@@ -60,9 +62,10 @@ class DatastoreRepo @Inject constructor(
                 preferences[PreferencesKeys.NOTIFICATIONS] ?: false
             }
 
-    suspend fun updateWallet(wallet: String) {
+    suspend fun updateWallet(walletPreferences: WalletPreferences) {
         datastore.edit { preferences ->
-            preferences[PreferencesKeys.WALLET] = wallet
+            preferences[PreferencesKeys.WALLET] = walletPreferences.wallet ?: ""
+            preferences[PreferencesKeys.WALLET_TYPE] = walletPreferences.walletType.name
         }
     }
 
