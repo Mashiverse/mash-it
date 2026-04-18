@@ -114,17 +114,27 @@ fun NavDrawer(
                     .background(Color.DarkGray)
             )
 
-            RedirectButton(
-                uri = "https://www.reddit.com/r/mashit",
-                background = Color(255, 69, 0),
-                text = "Reddit"
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                RedirectButton(
+                    modifier = Modifier.weight(1F),
+                    uri = "https://www.reddit.com/r/mashit",
+                    background = Color(255, 69, 0),
+                    text = "Reddit"
+                )
 
-            RedirectButton(
-                uri = "https://discord.gg/B9Cvkcvs",
-                background = Color(88, 101, 242),
-                text = "Discord"
-            )
+                Spacer(Modifier.width(8.dp))
+
+                RedirectButton(
+                    modifier = Modifier.weight(1F),
+                    uri = "https://discord.gg/B9Cvkcvs",
+                    background = Color(88, 101, 242),
+                    text = "Discord"
+                )
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ package com.mashiverse.mashit.ui.theme
 import androidx.compose.ui.unit.dp
 
 // Components
-val ContentContainerHeight = 40.dp
+val ContentContainerHeight = 36.dp
 val SmallIconSize = 24.dp
 val SearchHeight = 48.dp
 
