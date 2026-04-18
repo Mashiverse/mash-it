@@ -1,7 +1,6 @@
 package com.mashiverse.mashit.ui.screens.artists.page
 
 import android.content.Intent
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
