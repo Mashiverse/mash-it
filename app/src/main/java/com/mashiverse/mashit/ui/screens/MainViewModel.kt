@@ -1,14 +1,9 @@
 package com.mashiverse.mashit.ui.screens
 
-import android.content.Intent
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.coinbase.android.nativesdk.message.request.Account
-import com.coinbase.android.nativesdk.message.request.Web3JsonRPC
-import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences

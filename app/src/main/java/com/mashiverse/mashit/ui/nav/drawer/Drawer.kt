@@ -31,6 +31,7 @@ import androidx.navigation.NavHostController
 import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.ui.default.buttons.BaseButton
+import com.mashiverse.mashit.ui.default.buttons.RedirectButton
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.Surface
@@ -61,7 +62,7 @@ fun NavDrawer(
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -71,9 +72,9 @@ fun NavDrawer(
                     contentDescription = ""
                 )
 
-
                 wallet?.let {
                     Text(
+                        modifier = Modifier.weight(1F),
                         text = wallet.lowercase(),
                         fontSize = 18.sp,
                         color = Primary,
@@ -82,7 +83,7 @@ fun NavDrawer(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
 
             DrawerNav(
@@ -103,6 +104,26 @@ fun NavDrawer(
             BaseButton(
                 onConnect = onConnect,
                 wallet = wallet
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Padding)
+                    .height(1.dp)
+                    .background(Color.DarkGray)
+            )
+
+            RedirectButton(
+                uri = "https://www.reddit.com/r/mashit",
+                background = Color(255, 69, 0),
+                text = "Reddit"
+            )
+
+            RedirectButton(
+                uri = "https://discord.gg/B9Cvkcvs",
+                background = Color(88, 101, 242),
+                text = "Discord"
             )
         }
     }

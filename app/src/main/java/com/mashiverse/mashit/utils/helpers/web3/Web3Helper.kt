@@ -120,8 +120,7 @@ object Web3Helper {
                 nonce = currentNonce
             )
             val approveHash = executeCoinbaseAction(client = client, action = approveAction)
-
-            if (approveHash == null) return@withContext false
+                ?: return@withContext false
 
             waitForTransaction(txHash = approveHash)
             currentNonce++
