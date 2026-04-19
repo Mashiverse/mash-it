@@ -31,7 +31,6 @@ import androidx.navigation.NavHostController
 import com.google.common.primitives.Doubles.min
 import com.mashiverse.mashit.R
 import com.mashiverse.mashit.ui.default.buttons.BaseButton
-import com.mashiverse.mashit.ui.default.buttons.RedirectButton
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.Surface
@@ -62,7 +61,9 @@ fun NavDrawer(
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -114,27 +115,7 @@ fun NavDrawer(
                     .background(Color.DarkGray)
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                RedirectButton(
-                    modifier = Modifier.weight(1F),
-                    uri = "https://www.reddit.com/r/mashit",
-                    background = Color(255, 69, 0),
-                    text = "Reddit"
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                RedirectButton(
-                    modifier = Modifier.weight(1F),
-                    uri = "https://discord.gg/B9Cvkcvs",
-                    background = Color(88, 101, 242),
-                    text = "Discord"
-                )
-            }
+            DrawerRedirect()
         }
     }
 }
