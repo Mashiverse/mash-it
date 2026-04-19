@@ -36,8 +36,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mashiverse.mashit"
         minSdk = 28
         targetSdk = 37
-        versionCode = 15
-        versionName = "18.04.2026"
+        versionCode = 16
+        versionName = "19.04.2026"
 
         val localProperties = Properties()
         val localPropertiesFile = File(rootDir, "keys.properties")
@@ -49,6 +49,7 @@ configure<ApplicationExtension> {
 
         buildConfigField("String", "ALCHEMY_API_KEY", localProperties.getProperty("ALCHEMY_API_KEY") ?: "\"\"")
         buildConfigField("String", "MASH_IT_API_KEY", localProperties.getProperty("MASH_IT_API_KEY") ?: "\"\"")
+        buildConfigField("String", "REOWN_ID", localProperties.getProperty("REOWN_ID") ?: "\"\"")
     }
 
     buildTypes {

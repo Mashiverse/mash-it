@@ -32,7 +32,7 @@ class MashItApp : Application(), Configuration.Provider {
         if (Timber.treeCount == 0) Timber.plant(Timber.DebugTree())
 
         CoreClient.initialize(
-            projectId = "64e5fcdc68005f09c6316af60084ddab",
+            projectId = BuildConfig.REOWN_ID,
             connectionType = ConnectionType.AUTOMATIC,
             application = this,
             metaData = appMetaData,
