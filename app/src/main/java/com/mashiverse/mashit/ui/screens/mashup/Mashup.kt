@@ -34,7 +34,7 @@ import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
-import com.mashiverse.mashit.ui.default.placeholder.NotConnected
+import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
 import com.mashiverse.mashit.ui.screens.mashup.categories.sections.CollectiblesCategory

@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.shop.items
+package com.mashiverse.mashit.ui.default.indicators
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth

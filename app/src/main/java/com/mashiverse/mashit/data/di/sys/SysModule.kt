@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.di
+package com.mashiverse.mashit.data.di.sys
 
 import android.content.Context
 import androidx.work.WorkManager

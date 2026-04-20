@@ -8,6 +8,9 @@ import com.coinbase.android.nativesdk.message.response.ActionResult
 import com.mashiverse.mashit.BuildConfig
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.wallet.WalletType
+import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
+import com.mashiverse.mashit.utils.CONTRACT_ADDRESS
+import com.mashiverse.mashit.utils.USDC_ADDRESS
 import com.reown.appkit.client.AppKit
 import com.reown.appkit.client.models.request.Request
 import com.reown.appkit.client.models.request.SentRequestResult
@@ -33,14 +36,12 @@ import java.math.BigInteger
 import kotlin.coroutines.resume
 
 object Web3Helper {
-    private const val MARKETPLACE_ADDRESS = "0x69945bc1F0fa219d3b9063B62EB2ED6f99e3EF09"
-    private const val USDC_ADDRESS = "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
     private const val CHAIN_ID_APPKIT = "eip155:137"
     private const val CHAIN_ID_RAW = "137"
 
     private val MAX_UINT256 = BigInteger("f".repeat(64), 16)
     private val web3j =
-        Web3j.build(HttpService("https://polygon-mainnet.g.alchemy.com/v2/${BuildConfig.ALCHEMY_API_KEY}"))
+        Web3j.build(HttpService("${ALCHEMY_BASE_URL}v2/${BuildConfig.ALCHEMY_API_KEY}"))
 
     // --- Public API ---
 
@@ -116,7 +117,7 @@ object Web3Helper {
             val approveAction = buildBaseTx(
                 from = from,
                 to = USDC_ADDRESS,
-                data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256),
+                data = encodeERC20Approve(spender = CONTRACT_ADDRESS, amount = MAX_UINT256),
                 nonce = currentNonce
             )
             val approveHash = executeCoinbaseAction(client = client, action = approveAction)
@@ -128,7 +129,7 @@ object Web3Helper {
 
         val mintAction = buildBaseTx(
             from = from,
-            to = MARKETPLACE_ADDRESS,
+            to = CONTRACT_ADDRESS,
             data = encodeBuyAutoURIData(id = lid, recipient = from),
             nonce = currentNonce
         )
@@ -161,7 +162,7 @@ object Web3Helper {
             val approveHash = requestAppKitTx(
                 from = from,
                 to = USDC_ADDRESS,
-                data = encodeERC20Approve(spender = MARKETPLACE_ADDRESS, amount = MAX_UINT256)
+                data = encodeERC20Approve(spender = CONTRACT_ADDRESS, amount = MAX_UINT256)
             )
             if (approveHash == null || approveHash == "rejected") return false
             waitForTransaction(txHash = approveHash)
@@ -169,7 +170,7 @@ object Web3Helper {
 
         val mintHash = requestAppKitTx(
             from = from,
-            to = MARKETPLACE_ADDRESS,
+            to = CONTRACT_ADDRESS,
             data = encodeBuyAutoURIData(id = lid, recipient = from)
         )
         return mintHash != null && mintHash != "rejected"
@@ -241,7 +242,7 @@ object Web3Helper {
             from = owner,
             contract = USDC_ADDRESS,
             method = "allowance",
-            params = listOf(Address(owner), Address(MARKETPLACE_ADDRESS))
+            params = listOf(Address(owner), Address(CONTRACT_ADDRESS))
         )
     }
 
@@ -269,7 +270,7 @@ object Web3Helper {
             try {
                 val mintData = encodeBuyAutoURIData(id = listingId, recipient = userAddress)
                 val transaction =
-                    Transaction.createEthCallTransaction(userAddress, MARKETPLACE_ADDRESS, mintData)
+                    Transaction.createEthCallTransaction(userAddress, CONTRACT_ADDRESS, mintData)
                 val estimateResponse = web3j.ethEstimateGas(transaction).send()
 
                 if (estimateResponse.hasError()) {

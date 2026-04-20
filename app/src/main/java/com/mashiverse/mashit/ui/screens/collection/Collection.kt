@@ -34,7 +34,7 @@ import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.default.traits.MintedTrait
-import com.mashiverse.mashit.ui.default.placeholder.NotConnected
+import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.TraitShape

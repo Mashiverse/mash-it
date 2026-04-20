@@ -1,14 +1,14 @@
-package com.mashiverse.mashit.data.di
+package com.mashiverse.mashit.data.di.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.mashiverse.mashit.data.local.ds.datastore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import com.mashiverse.mashit.data.local.ds.datastore
 import javax.inject.Singleton
 
 @Module

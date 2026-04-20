@@ -18,6 +18,7 @@ import com.mashiverse.mashit.ui.theme.MashitTheme
 import com.reown.appkit.client.AppKit
 import dagger.hilt.android.AndroidEntryPoint
 
+@Suppress("UnstableApiUsage")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 

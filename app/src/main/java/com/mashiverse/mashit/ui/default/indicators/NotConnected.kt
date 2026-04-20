@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.default.placeholder
+package com.mashiverse.mashit.ui.default.indicators
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

@@ -1,5 +1,6 @@
 package com.mashiverse.mashit.utils.helpers.web3
 
+import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.CONTRACT_ADDRESS
 import org.web3j.abi.FunctionEncoder
@@ -24,25 +25,22 @@ import java.math.BigInteger
  * Reads marketplace.listings(listingId).totalSold using Alchemy Polygon RPC.
  */
 object SoldHelper {
-    private const val RPC_URL = "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}"
-
-    // totalSold is the 5th element (0-based index 4) in Listing struct
-    private const val TOTAL_SOLD_INDEX = 4
-
+    private const val RPC_URL = "${ALCHEMY_BASE_URL}v2/${ALCHEMY_KEY}"
     private val web3j: Web3j by lazy { Web3j.build(HttpService(RPC_URL)) }
 
+    private const val TOTAL_SOLD_INDEX = 4
     private val OUTPUT_TYPES: List<TypeReference<out Type<*>>> = listOf(
-        object : TypeReference<Address>() {},   // artist
-        object : TypeReference<Address>() {},   // currency
-        object : TypeReference<Uint256>() {},   // price
-        object : TypeReference<Uint64>() {},    // maxSupply
-        object : TypeReference<Uint64>() {},    // totalSold
-        object : TypeReference<Uint64>() {},    // start
-        object : TypeReference<Uint64>() {},    // end
-        object : TypeReference<Uint32>() {},    // maxPerWallet
-        object : TypeReference<Uint64>() {},    // defaultAssetId
-        object : TypeReference<Bytes32>() {}, // merkleRoot
-        object : TypeReference<Bool>() {}       // active
+        object : TypeReference<Address>() {},
+        object : TypeReference<Address>() {},
+        object : TypeReference<Uint256>() {},
+        object : TypeReference<Uint64>() {},
+        object : TypeReference<Uint64>() {},
+        object : TypeReference<Uint64>() {},
+        object : TypeReference<Uint64>() {},
+        object : TypeReference<Uint32>() {},
+        object : TypeReference<Uint64>() {},
+        object : TypeReference<Bytes32>() {},
+        object : TypeReference<Bool>() {}
     )
 
     @Throws(Exception::class)

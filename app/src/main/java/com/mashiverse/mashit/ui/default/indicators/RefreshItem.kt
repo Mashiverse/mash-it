@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.shop.items
+package com.mashiverse.mashit.ui.default.indicators
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,7 +47,7 @@ fun SectionRefresh(
 
 @Preview
 @Composable
-fun SectionRefreshPreview() {
+private fun SectionRefreshPreview() {
     SectionRefresh(
         onRetry = {}
     )

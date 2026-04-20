@@ -26,8 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentAccentColor

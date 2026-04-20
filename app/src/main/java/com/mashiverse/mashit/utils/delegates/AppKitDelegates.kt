@@ -32,30 +32,21 @@ fun createAppKitDelegate(
         onSessionRejected.invoke()
     }
 
-    override fun onSessionUpdate(updatedSession: Modal.Model.UpdatedSession) {
-    }
+    override fun onSessionUpdate(updatedSession: Modal.Model.UpdatedSession) {}
 
-    override fun onSessionEvent(sessionEvent: Modal.Model.SessionEvent) {
-    }
+    override fun onSessionEvent(sessionEvent: Modal.Model.SessionEvent) {}
 
-    override fun onSessionExtend(session: Modal.Model.Session) {
-    }
+    override fun onSessionExtend(session: Modal.Model.Session) {}
 
-    override fun onSessionDelete(deletedSession: Modal.Model.DeletedSession) {
-    }
+    override fun onSessionDelete(deletedSession: Modal.Model.DeletedSession) {}
 
-    override fun onSessionRequestResponse(response: Modal.Model.SessionRequestResponse) {
-    }
+    override fun onSessionRequestResponse(response: Modal.Model.SessionRequestResponse) {}
 
-    override fun onProposalExpired(proposal: Modal.Model.ExpiredProposal) {
-    }
+    override fun onProposalExpired(proposal: Modal.Model.ExpiredProposal) {}
 
-    override fun onRequestExpired(request: Modal.Model.ExpiredRequest) {
-    }
+    override fun onRequestExpired(request: Modal.Model.ExpiredRequest) {}
 
-    override fun onConnectionStateChange(state: Modal.Model.ConnectionState) {
-    }
+    override fun onConnectionStateChange(state: Modal.Model.ConnectionState) {}
 
-    override fun onError(error: Modal.Model.Error) {
-    }
+    override fun onError(error: Modal.Model.Error) {}
 }

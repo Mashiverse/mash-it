@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.data.di
+package com.mashiverse.mashit.data.di.sys
 
 import android.content.Context
 import android.content.Intent
@@ -37,7 +37,7 @@ object Web3Module {
         name = "mash-it",
         description = "Combine mashable nfts to get the perfect mashi",
         url = "https://www.mash-it.io",
-        icons = listOf("https://www.mash-it.io/img/transparent_logo_p.png?v=4e7c0f250868de67bf09a2c36db38666fdb151e2"),
+        icons = listOf("https://www.mash-it.io/img/transparent_logo_p.png"),
         redirect = "com.mashiverse.mashit://request",
     )
 

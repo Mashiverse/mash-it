@@ -3,6 +3,9 @@ package com.mashiverse.mashit
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.mashiverse.mashit.utils.COINBASE_ID
+import com.mashiverse.mashit.utils.METAMASK_ID
+import com.mashiverse.mashit.utils.REOWN_ID
 import com.reown.android.Core
 import com.reown.android.CoreClient
 import com.reown.android.relay.ConnectionType
@@ -16,9 +19,12 @@ import javax.inject.Inject
 @HiltAndroidApp
 class MashItApp : Application(), Configuration.Provider {
 
-    @Inject lateinit var workerFactory: HiltWorkerFactory
-    @Inject lateinit var appMetaData: Core.Model.AppMetaData
-    @Inject lateinit var polygonChain: Modal.Model.Chain
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+    @Inject
+    lateinit var appMetaData: Core.Model.AppMetaData
+    @Inject
+    lateinit var polygonChain: Modal.Model.Chain
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
@@ -32,11 +38,11 @@ class MashItApp : Application(), Configuration.Provider {
         if (Timber.treeCount == 0) Timber.plant(Timber.DebugTree())
 
         CoreClient.initialize(
-            projectId = BuildConfig.REOWN_ID,
+            projectId = REOWN_ID,
             connectionType = ConnectionType.AUTOMATIC,
             application = this,
             metaData = appMetaData,
-            onError = { err -> Timber.tag("GG").e(err.throwable) }
+            onError = {}
         )
 
         AppKit.initialize(
@@ -44,12 +50,12 @@ class MashItApp : Application(), Configuration.Provider {
                 core = CoreClient,
                 coinbaseEnabled = true,
                 includeWalletIds = listOf(
-                    "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa",
-                    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96"
+                    METAMASK_ID,
+                    COINBASE_ID
                 )
             ),
             onSuccess = { AppKit.setChains(listOf(polygonChain)) },
-            onError = { error -> Timber.tag("GG").e(error.throwable) }
+            onError = {}
         )
     }
 }

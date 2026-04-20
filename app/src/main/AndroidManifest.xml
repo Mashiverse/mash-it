@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MashIt"
         android:usesCleartextTraffic="true"
-        tools:ignore="DataExtractionRules">
+        tools:ignore="DataExtractionRules,RemoveWorkManagerInitializer">
 
         <activity
             android:name=".ui.MainActivity"

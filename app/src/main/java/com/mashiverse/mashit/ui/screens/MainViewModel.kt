@@ -8,7 +8,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
-import com.mashiverse.mashit.data.repos.sys.Web3Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val web3Repo: Web3Repo,
     private val dataStoreRepo: DatastoreRepo,
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletFlow

@@ -1,15 +1,15 @@
-package com.mashiverse.mashit.data.di
+package com.mashiverse.mashit.data.di.data
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.apis.MashiverseApi
 import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
 import com.mashiverse.mashit.utils.MASHIT_BASE_URL
 import com.mashiverse.mashit.utils.MASHIVERSE_BASE_URL
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
