@@ -34,6 +34,10 @@ fun createAppKitDelegate(
 
     override fun onSessionUpdate(updatedSession: Modal.Model.UpdatedSession) {}
 
+    @Deprecated(
+        "Use onSessionEvent(Modal.Model.Event) instead. Using both will result in duplicate events.",
+        replaceWith = ReplaceWith("onEvent(event)")
+    )
     override fun onSessionEvent(sessionEvent: Modal.Model.SessionEvent) {}
 
     override fun onSessionExtend(session: Modal.Model.Session) {}

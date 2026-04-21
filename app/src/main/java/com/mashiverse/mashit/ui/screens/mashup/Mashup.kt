@@ -166,7 +166,7 @@ fun Mashup(searchQuery: State<String>) {
                         scope = scope
                     )
 
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(Padding))
 
                     if (mashupUiState.isCollectibles) {
                         CollectiblesCategory(

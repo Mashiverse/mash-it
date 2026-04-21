@@ -19,9 +19,9 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 
 @Composable
@@ -37,7 +37,7 @@ fun ColorActionsField(
         modifier = Modifier
             .height(height)
             .width(width)
-            .clip(shape = RoundedCornerShape(8.dp))
+            .clip(shape = RoundedCornerShape(SmallPadding))
             .wrapContentSize(unbounded = true)
             .clipToBounds(),
         contentAlignment = Alignment.Center

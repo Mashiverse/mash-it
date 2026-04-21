@@ -47,15 +47,17 @@ import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
+import com.mashiverse.mashit.ui.default.indicators.SectionLoading
+import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
-import com.mashiverse.mashit.ui.default.indicators.SectionLoading
-import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
@@ -102,7 +104,7 @@ fun ArtistPage(alias: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = Padding)
     ) {
         artistPageUiState.pageInfo?.let { info ->
             Column {
@@ -134,7 +136,7 @@ fun ArtistPage(alias: String) {
                                 ) else 0.dp
                             )
                     ) {
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(Padding))
 
                         ProfilePicture(
                             onClick = {},
@@ -144,7 +146,7 @@ fun ArtistPage(alias: String) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(SmallPadding))
 
                 Text(
                     text = info.name,
@@ -161,12 +163,12 @@ fun ArtistPage(alias: String) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Padding))
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(screenType.shopColumns),
             modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(MediumPadding),
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             items(

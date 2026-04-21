@@ -7,11 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
+import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -24,10 +24,11 @@ fun CollectiblesCategory(
     processImageIntent: (ImageIntent) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .fillMaxHeight(),
         state = state,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(Padding)
     ) {
         items(nfts.size) { i ->
             val nft = nfts[i]

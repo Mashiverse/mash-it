@@ -10,10 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentContainerHeight
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Primary
 import com.mashiverse.mashit.ui.theme.Secondary
 
@@ -25,7 +25,7 @@ fun BaseButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = Padding)
             .height(ContentContainerHeight),
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = Secondary,
@@ -33,7 +33,7 @@ fun BaseButton(
         ),
         shape = ContentContainerShape,
         onClick = onConnect,
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        contentPadding = PaddingValues(horizontal = Padding)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),

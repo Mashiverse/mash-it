@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.ui.default.buttons.DiscordButton
 import com.mashiverse.mashit.ui.default.buttons.RedditButton
+import com.mashiverse.mashit.ui.theme.MediumPadding
 
 @Composable
 fun DrawerRedirect() {
@@ -19,7 +19,7 @@ fun DrawerRedirect() {
 
         RedditButton()
 
-        Spacer(Modifier.width(12.dp))
+        Spacer(Modifier.width(MediumPadding))
 
         DiscordButton()
 

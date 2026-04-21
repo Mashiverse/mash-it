@@ -32,6 +32,7 @@ import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
@@ -53,7 +54,10 @@ fun MashupPreview(
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (itemWidth, _) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
+    val (itemWidth, _) = config.getItemWidthAndHeight(
+        screenType.collectionColumns,
+        MediumPadding
+    )
 
     ModalBottomSheet(
         modifier = Modifier.fillMaxWidth(),
@@ -107,7 +111,7 @@ fun MashupPreview(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(MediumPadding),
                             horizontalArrangement = Arrangement.spacedBy(11.5.dp),
                             maxItemsInEachRow = screenType.collectionColumns
                         ) {

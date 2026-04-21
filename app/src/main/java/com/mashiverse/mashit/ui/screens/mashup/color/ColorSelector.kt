@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
@@ -115,7 +114,7 @@ fun ColorSheet(
                 processMashupIntent = processMashupIntent
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Padding))
 
             ColorPicker(
                 modifier = Modifier
@@ -137,7 +136,7 @@ fun ColorSheet(
                 onPickerSizeChange = { pickerSize = it }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(SmallPadding))
 
             ColorSlideBar(
                 colors = Colors.gradientColors,
@@ -154,7 +153,7 @@ fun ColorSheet(
                 }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(SmallPadding))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ColorActions(

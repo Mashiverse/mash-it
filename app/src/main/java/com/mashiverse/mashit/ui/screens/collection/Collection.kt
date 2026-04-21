@@ -36,6 +36,7 @@ import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.default.traits.MintedTrait
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
@@ -106,7 +107,7 @@ fun Collection(searchQuery: State<String>) {
 
     val (width, height) = config.getItemWidthAndHeight(
         screenType.collectionColumns,
-        padding = 12.dp
+        padding = MediumPadding
     )
 
     if (walletPreferences.value.wallet != null) {
@@ -117,8 +118,8 @@ fun Collection(searchQuery: State<String>) {
         ) {
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
                 columns = GridCells.Fixed(screenType.collectionColumns)
             ) {
                 items(ownedNfts.size) { i ->

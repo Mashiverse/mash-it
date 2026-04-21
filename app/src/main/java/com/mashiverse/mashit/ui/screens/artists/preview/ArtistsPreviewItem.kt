@@ -13,13 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.artists.ArtistInfo
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.MediumPadding
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 
 @Composable
@@ -31,12 +33,12 @@ fun ArtistsPreviewItem(
 ) {
     Row(
         modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(MediumPadding))
             .background(Secondary)
             .clickable {
                 onClick.invoke()
             }
-            .padding(8.dp),
+            .padding(SmallPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfilePicture(
@@ -45,7 +47,7 @@ fun ArtistsPreviewItem(
             processImageIntent = processImageIntent
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(Padding))
 
         Text(
             text = artistInfo.name,

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Cooper
+import com.mashiverse.mashit.ui.theme.Padding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -66,7 +67,7 @@ fun TopNavBar(
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = Padding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AnimatedVisibility(
@@ -108,11 +109,11 @@ fun TopNavBar(
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = Padding)
                 .height(1.dp)
                 .background(Color.DarkGray)
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Padding))
     }
 }

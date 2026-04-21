@@ -15,7 +15,7 @@ fun Configuration.detectScreenType(): ScreenInfo {
     }
 }
 
-fun Configuration.getItemWidthAndHeight(columns: Int, padding: Dp = 16.dp): Pair<Dp, Dp> {
+fun Configuration.getItemWidthAndHeight(columns: Int, padding: Dp = Padding): Pair<Dp, Dp> {
     val width = (this.screenWidthDp.dp - 2 * Padding - (columns - 1) * padding) / columns
     val height = width * 4 / 3
     return Pair(width, height)

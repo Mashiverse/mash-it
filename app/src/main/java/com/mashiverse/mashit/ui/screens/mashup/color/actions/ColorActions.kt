@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ColorPreviewSize
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.color.helpers.toHexString
@@ -78,7 +79,7 @@ fun ColorActions(modifier: Modifier = Modifier, changePreviewColor: (Color) -> U
             ColorActionsField(
                 text = hex.value,
                 onTextChange = { hex.value = it },
-                width = (40.dp) * 3 + 16.dp,
+                width = (40.dp) * 3 + Padding,
                 height = 32.dp,
                 filterStrategy = hexFilterStrategy,
                 isHex = true

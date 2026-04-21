@@ -33,6 +33,7 @@ import com.mashiverse.mashit.R
 import com.mashiverse.mashit.ui.default.buttons.BaseButton
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Primary
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 import kotlinx.coroutines.CoroutineScope
 
@@ -53,7 +54,7 @@ fun NavDrawer(
         drawerShape = RectangleShape,
         modifier = modifier
             .width(min((config.screenWidthDp * 0.80), 328.0).dp)
-            .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
+            .clip(RoundedCornerShape(topEnd = Padding, bottomEnd = Padding))
     ) {
         Spacer(modifier = Modifier.height(Padding))
 
@@ -63,7 +64,7 @@ fun NavDrawer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = Padding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -84,7 +85,7 @@ fun NavDrawer(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(SmallPadding))
             }
 
             DrawerNav(

@@ -35,14 +35,15 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mashiverse.mashit.data.states.sys.ImageIntent
-import com.mashiverse.mashit.data.states.mashup.MashupIntent
-import com.mashiverse.mashit.data.models.mashup.MashupDetails
-import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Trait
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
+import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
@@ -63,7 +64,10 @@ fun CollectiblePreview(
 
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, _) = config.getItemWidthAndHeight(screenType.collectionColumns, 12.dp)
+    val (width, _) = config.getItemWidthAndHeight(
+        screenType.collectionColumns,
+        MediumPadding
+    )
 
     val isSelected = { trait: Trait ->
         val sameTypeTrait = mashupDetails.assets.find { it.type == trait.type }
@@ -130,13 +134,13 @@ fun CollectiblePreview(
                     )
                 }
             ) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(MediumPadding))
 
                 FlowRow(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
                     horizontalArrangement = Arrangement.spacedBy(11.5.dp),
                     maxItemsInEachRow = screenType.collectionColumns
                 ) {

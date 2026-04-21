@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.utils.color.ext.drawColorSelector
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper.toHue
@@ -63,7 +63,7 @@ fun ColorPicker(
                     pickerSize = it
                     onPickerSizeChange(it)
                 }
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(Padding))
                 .background(Brush.horizontalGradient(listOf(Color.White, rangeColor)))
                 .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
                 .pointerInput(pickerSize) {
