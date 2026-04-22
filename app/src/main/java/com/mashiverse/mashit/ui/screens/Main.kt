@@ -177,6 +177,7 @@ fun Main(navController: NavHostController) {
                         )
                     } else {
                         scope.launch(Dispatchers.Main) { drawerState.close() }.invokeOnCompletion {
+                            isSignIn = true
                         }
                     }
                 },
