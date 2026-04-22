@@ -16,6 +16,7 @@ val XLHolderHeight = (736 * 0.36).dp
 
 val ColorPreviewSize = 72.dp
 
+// Paddings
 val Padding = 16.dp
 val MediumPadding = 12.dp
 val SmallPadding = 8.dp

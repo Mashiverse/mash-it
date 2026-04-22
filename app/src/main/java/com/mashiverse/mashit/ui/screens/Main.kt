@@ -47,6 +47,7 @@ import com.mashiverse.mashit.ui.nav.top.TopNavBar
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.utils.delegates.createAppKitDelegate
 import com.mashiverse.mashit.utils.helpers.sys.checkNotificationsPermission
+import com.mashiverse.mashit.utils.helpers.sys.getCurrentTabName
 import com.reown.appkit.client.AppKit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,23 +76,16 @@ fun Main(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val backStack by navController.currentBackStackEntryAsState()
     val tabName by remember {
         derivedStateOf {
-            val name = when {
-                navBackStackEntry?.destination?.hasRoute<MainRoutes.Shop>() == true -> "shop"
-                navBackStackEntry?.destination?.hasRoute<MainRoutes.Collection>() == true -> "collection"
-                navBackStackEntry?.destination?.hasRoute<MainRoutes.Mashup>() == true -> "mashup"
-                navBackStackEntry?.destination?.hasRoute<MainRoutes.Settings>() == true -> "settings"
-                else -> "artists"
-            }
-            name
+            backStack.getCurrentTabName()
         }
     }
 
     val hasSearch by remember {
         derivedStateOf {
-            navBackStackEntry?.destination?.hasRoute<MainRoutes.Artists>() != true
+            backStack?.destination?.hasRoute<MainRoutes.Artists>() != true
         }
     }
 
@@ -162,7 +156,7 @@ fun Main(navController: NavHostController) {
         }
     }
 
-    LaunchedEffect(navBackStackEntry?.destination?.route) {
+    LaunchedEffect(backStack?.destination?.route) {
         clearSearchQuery.invoke()
     }
 

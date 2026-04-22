@@ -107,7 +107,7 @@ fun Category(
             ) {
                 items(
                     count = items.itemCount,
-                    key = items.itemKey { it.compositeUrl }
+                    key = items.itemKey { it.compositeUrl + it.name }
                 ) { index ->
                     val nft = items[index]
                     nft?.let {

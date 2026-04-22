@@ -22,8 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var navController: NavHostController
-
+    private var navController: NavHostController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             navController = rememberNavController()
+
             MashitTheme {
                 navController = rememberNavController()
 
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Background)
                 ) {
-                    Main(navController = navController)
+                    Main(navController = navController!!)
                 }
             }
         }
@@ -53,6 +53,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        navController.handleDeepLink(intent)
+        navController?.handleDeepLink(intent)
     }
 }
