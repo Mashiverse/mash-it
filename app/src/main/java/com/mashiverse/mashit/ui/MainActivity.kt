@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.mashiverse.mashit.ui.screens.Main
 import com.mashiverse.mashit.ui.theme.Background
-import com.mashiverse.mashit.ui.theme.DarkSystemBarStyle
 import com.mashiverse.mashit.ui.theme.MashitTheme
 import com.reown.appkit.client.AppKit
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,14 +25,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         AppKit.register(this)
 
-        enableEdgeToEdge(
-            statusBarStyle = DarkSystemBarStyle,
-            navigationBarStyle = DarkSystemBarStyle
-        )
-
+        enableEdgeToEdge()
         setContent {
             navController = rememberNavController()
 
