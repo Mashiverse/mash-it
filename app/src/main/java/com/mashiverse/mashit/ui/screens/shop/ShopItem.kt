@@ -47,17 +47,19 @@ fun ShopItem(
     val productInfo = nft.productInfo
 
     var soldQty by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(nft.soldQty ?: 0)
     }
 
     LaunchedEffect(Unit) {
-        processWeb3Intent.invoke(
-            Web3Intent.OnTotalSoldGet(
-                productInfo?.listingId?.toInt() ?: -1
-            ) { v ->
-                soldQty = v
-            }
-        )
+        if (nft.soldQty == null) {
+            processWeb3Intent.invoke(
+                Web3Intent.OnTotalSoldGet(
+                    productInfo?.listingId?.toInt() ?: -1
+                ) { v ->
+                    soldQty = v
+                }
+            )
+        }
     }
 
     val delisted = nft.productInfo?.delisted ?: false
