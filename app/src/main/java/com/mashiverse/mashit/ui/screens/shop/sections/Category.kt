@@ -13,9 +13,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,9 +45,13 @@ import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
+import com.mashiverse.mashit.utils.helpers.sys.fetchSoldQty
+import com.mashiverse.mashit.utils.helpers.sys.filter
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.Locale
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun Category(
     shopUiState: ShopUiState,
@@ -54,7 +63,17 @@ fun Category(
 ) {
     val isSearch = onSearchQueryClear != null
 
-    val items = shopUiState.itemsData.collectAsLazyPagingItems()
+    val data = shopUiState.itemsData
+    var isAvailableOnly by remember(data) { mutableStateOf(false) }
+
+    val fullData = remember(data) {
+        data.fetchSoldQty(processWeb3Intent)
+    }
+
+    val items = remember(isAvailableOnly, fullData) {
+        fullData.filter(isAvailableOnly)
+    }.collectAsLazyPagingItems()
+
 
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
@@ -76,6 +95,19 @@ fun Category(
                 Text(
                     text = shopUiState.category.name.lowercase()
                         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                    fontSize = 14.sp,
+                    color = ContentAccentColor
+                )
+
+                Checkbox(
+                    checked = isAvailableOnly,
+                    onCheckedChange = {
+                        isAvailableOnly = !isAvailableOnly
+                    }
+                )
+
+                Text(
+                    text = "Is available?",
                     fontSize = 14.sp,
                     color = ContentAccentColor
                 )

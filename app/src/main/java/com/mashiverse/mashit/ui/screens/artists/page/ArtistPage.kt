@@ -179,12 +179,12 @@ fun ArtistPage(alias: String) {
                 nft?.let {
                     ShopItem(
                         nft = nft,
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                         processShopIntent = { intent -> viewModel.processShopIntent(intent) },
                         clientRef = clientRef,
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
                         imageWidth = width,
-                        imageHeight = height
+                        imageHeight = height,
                     )
                 }
             }
