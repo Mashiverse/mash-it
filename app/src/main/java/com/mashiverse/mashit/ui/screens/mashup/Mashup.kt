@@ -27,11 +27,11 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.states.mashup.ActionsIntent
-import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
-import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.states.mashup.ActionsIntent
+import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
@@ -168,23 +168,35 @@ fun Mashup(searchQuery: State<String>) {
 
                     Spacer(Modifier.height(Padding))
 
-                    if (mashupUiState.isCollectibles) {
-                        CollectiblesCategory(
-                            nfts = nfts,
-                            mashupDetails = mashupUiState.mashupDetails,
-                            state = collectiblesVState,
-                            scope = scope,
-                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                        )
+                    if (mashupUiState.isCollectionReady) {
+                        if (mashupUiState.isCollectibles) {
+                            CollectiblesCategory(
+                                nfts = nfts,
+                                mashupDetails = mashupUiState.mashupDetails,
+                                state = collectiblesVState,
+                                scope = scope,
+                                processMashupIntent = { intent ->
+                                    viewModel.processMashupIntent(
+                                        intent
+                                    )
+                                },
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                            )
+                        } else {
+                            TraitsCategoryItems(
+                                traits = traits,
+                                selectedTraitUrl = selectedTraitUrl,
+                                lazyGridState = traitsGridState,
+                                processMashupIntent = { intent ->
+                                    viewModel.processMashupIntent(
+                                        intent
+                                    )
+                                },
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                            )
+                        }
                     } else {
-                        TraitsCategoryItems(
-                            traits = traits,
-                            selectedTraitUrl = selectedTraitUrl,
-                            lazyGridState = traitsGridState,
-                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                        )
+                        LoadingIndicator()
                     }
                 }
             }

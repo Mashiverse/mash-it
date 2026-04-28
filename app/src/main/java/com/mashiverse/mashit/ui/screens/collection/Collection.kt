@@ -31,10 +31,11 @@ import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
+import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.default.traits.MintedTrait
-import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
@@ -65,6 +66,8 @@ fun Collection(searchQuery: State<String>) {
         .collectAsState(emptyList())
 
     var ownedNfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
+
+    val isReady by remember { viewModel.isReady }
 
     LaunchedEffect(collection, searchQuery) {
         val nfts = mutableListOf<Nft>()
@@ -116,24 +119,28 @@ fun Collection(searchQuery: State<String>) {
                 .fillMaxSize()
                 .padding(horizontal = Padding),
         ) {
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                columns = GridCells.Fixed(screenType.collectionColumns)
-            ) {
-                items(ownedNfts.size) { i ->
-                    MintedTrait(
-                        modifier = Modifier
-                            .height(height)
-                            .width(width)
-                            .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
-                        onClick = { selectMashi.invoke(ownedNfts[i]) },
-                        data = ownedNfts[i].compositeUrl,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        mint = ownedNfts[i].owned!![0].mint
-                    )
+            if (isReady) {
+                LazyVerticalGrid(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                    horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+                    columns = GridCells.Fixed(screenType.collectionColumns)
+                ) {
+                    items(ownedNfts.size) { i ->
+                        MintedTrait(
+                            modifier = Modifier
+                                .height(height)
+                                .width(width)
+                                .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
+                            onClick = { selectMashi.invoke(ownedNfts[i]) },
+                            data = ownedNfts[i].compositeUrl,
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                            mint = ownedNfts[i].owned!![0].mint
+                        )
+                    }
                 }
+            } else {
+                LoadingIndicator()
             }
         }
 

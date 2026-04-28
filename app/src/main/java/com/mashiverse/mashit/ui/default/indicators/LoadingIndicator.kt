@@ -18,7 +18,7 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
-fun LoadingIndicator(text: String) {
+fun LoadingIndicator(text: String? = null) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,13 +29,15 @@ fun LoadingIndicator(text: String) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator(color = ContentAccentColor)
 
-            Spacer(Modifier.height(SmallPadding))
+            text?.let {
+                Spacer(Modifier.height(SmallPadding))
 
-            Text(
-                text = text,
-                fontSize = 16.sp,
-                color = ContentAccentColor
-            )
+                Text(
+                    text = text,
+                    fontSize = 16.sp,
+                    color = ContentAccentColor
+                )
+            }
         }
     }
 }

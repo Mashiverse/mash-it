@@ -9,11 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
-import com.mashiverse.mashit.data.states.sys.ImageIntent
-import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
+import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.images.DefaultImage
+import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
@@ -29,7 +30,10 @@ fun MashupComposite(
             .clip(TraitShape),
         contentAlignment = Alignment.Center
     ) {
-        assets.sortedBy { it.type }.forEach { trait ->
+        if (assets.none { it.url != null } || assets.isEmpty()) {
+            LoadingIndicator()
+        } else {
+            assets.sortedBy { it.type }.forEach { trait ->
                 val traitType = trait.type
                 val width =
                     if (traitType == TraitType.BACKGROUND) holderWidth else holderWidth * 380 / 552
@@ -48,5 +52,6 @@ fun MashupComposite(
                     processImageIntent = processImageIntent
                 )
             }
+        }
     }
 }

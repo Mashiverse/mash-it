@@ -18,5 +18,6 @@ data class MashupUiState(
     val isColorChange: Boolean = false,
     val isPreview: Boolean = false,
     val isCollectibles: Boolean = true,
-    val isDownloading: Boolean = false
+    val isDownloading: Boolean = false,
+    val isCollectionReady: Boolean = false
 )
