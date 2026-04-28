@@ -103,7 +103,7 @@ class MashupViewModel @Inject constructor(
                     val updateSuccess = collectionRepo.updateOwnedData(prefs.wallet)
 
                     mashupUiState.value =
-                        mashupUiState.value.copy(isCollectionReady = isNotEmpty && updateSuccess)
+                        mashupUiState.value.copy(isCollectionReady = isNotEmpty || updateSuccess)
                 } else {
                     mashupUiState.value = mashupUiState.value.copy(wallet = null)
                     collectionRepo.clearOwned()

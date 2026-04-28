@@ -44,7 +44,7 @@ class CollectionViewModel @Inject constructor(
                         val isNotEmpty = collectionFlow.first().isNotEmpty()
                         val updateSuccess = collectionRepo.updateOwnedData(prefs.wallet)
 
-                        isReady.value = isNotEmpty or updateSuccess
+                        isReady.value = isNotEmpty || updateSuccess
                     } else {
                         collectionRepo.clearOwned()
                     }
