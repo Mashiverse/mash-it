@@ -196,7 +196,7 @@ fun Mashup(searchQuery: State<String>) {
                             )
                         }
                     } else {
-                        LoadingIndicator()
+                        LoadingIndicator(text = "Loading")
                     }
                 }
             }

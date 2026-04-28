@@ -140,7 +140,7 @@ fun Collection(searchQuery: State<String>) {
                     }
                 }
             } else {
-                LoadingIndicator()
+                LoadingIndicator(text = "Loading")
             }
         }
 
