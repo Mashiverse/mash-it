@@ -5,6 +5,7 @@ import com.mashiverse.mashit.data.models.mashi.mappers.toEntities
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 
 class CollectionRepo @Inject constructor(
@@ -47,7 +48,8 @@ class CollectionRepo @Inject constructor(
             }
 
             return true
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Timber.tag("GG").d(e)
             return false
         }
     }

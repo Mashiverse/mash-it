@@ -43,3 +43,5 @@ fun getRandomTraits(nfts: List<Nft>): List<MashupTrait> {
 
     return randomAssets
 }
+
+fun String.toIpfsPartialUri() = this.replace("https://ipfs.filebase.io/ipfs/", "")

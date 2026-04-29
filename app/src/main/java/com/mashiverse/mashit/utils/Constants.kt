@@ -14,6 +14,7 @@ const val NOTIFICATIONS_KEY = "notifications"
 const val ALCHEMY_BASE_URL = "https://polygon-mainnet.g.alchemy.com/"
 const val MASHIT_BASE_URL = "https://avatar-artists-guild.web.app/"
 const val MASHIVERSE_BASE_URL = "https://katzemon.com/"
+const val IPFS_BASE_URL = "https://ipfs.filebase.io/"
 
 // Keys
 const val ALCHEMY_KEY = BuildConfig.ALCHEMY_API_KEY

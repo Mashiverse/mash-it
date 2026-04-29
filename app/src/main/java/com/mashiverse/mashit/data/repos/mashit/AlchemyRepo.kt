@@ -2,16 +2,23 @@ package com.mashiverse.mashit.data.repos.mashit
 
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Owned
+import com.mashiverse.mashit.data.models.mashi.Trait
+import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.mappers.toTraits
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
+import com.mashiverse.mashit.data.remote.apis.IpfsApi
 import com.mashiverse.mashit.utils.ALCHEMY_KEY
 import com.mashiverse.mashit.utils.MASHI_ADDRESS
 import com.mashiverse.mashit.utils.helpers.nft.parseName
 import com.mashiverse.mashit.utils.helpers.nft.fromIpfsScheme
+import com.mashiverse.mashit.utils.helpers.nft.toFilebaseUri
+import com.mashiverse.mashit.utils.helpers.nft.toIpfsPartialUri
+import timber.log.Timber
 import javax.inject.Inject
 
 class AlchemyRepo @Inject constructor(
-    private val alchemyApi: AlchemyApi
+    private val alchemyApi: AlchemyApi,
+    private val ipfsApi: IpfsApi
 ) {
 
     suspend fun getCollection(wallet: String): List<Nft> {
@@ -37,8 +44,24 @@ class AlchemyRepo @Inject constructor(
                     val description = metadata.description
 
                     val assets = metadata.assets
-                    val compositeUrl = metadata.image.fromIpfsScheme()
-                    val traits = assets.toTraits()
+                    val (compositeUrl: String, traits: List<Trait>) = try {
+                        val url = metadata.image.fromIpfsScheme()
+                        val traits =  assets.toTraits()
+                        url to traits
+                    } catch (_: Exception) {
+                        val tokenUri = nft.tokenUri.toFilebaseUri().toIpfsPartialUri()
+                        val ipfsMetadata = ipfsApi.getMetadataByIpfsUri(tokenUri)
+
+                        val url = ipfsMetadata.image.fromIpfsScheme()
+                        val traits = ipfsMetadata.assets.map { asset ->
+                            Trait(
+                                url = asset.uri.fromIpfsScheme(),
+                                type = TraitType.valueOf(asset.label.uppercase())
+                            )
+                        }
+                        Timber.tag("GG").d(url)
+                        url to traits
+                    }
 
                     val currentOwned = Owned(
                         mint = details.mint,
@@ -74,7 +97,8 @@ class AlchemyRepo @Inject constructor(
                 key = data.pageKey
                 if (key == null) return nfts
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Timber.tag("GG").d(e)
             return emptyList()
         }
     }
