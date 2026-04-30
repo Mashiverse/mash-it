@@ -201,8 +201,6 @@ fun Mashup(searchQuery: State<String>) {
 
                     if (mashupUiState.isCollectionReady) {
                         if (mashupUiState.isCollectibles) {
-                            scope.launch { collectiblesVState.animateScrollToItem(0) }
-
                             CollectiblesCategory(
                                 nfts = sortedNfts,
                                 mashupDetails = mashupUiState.mashupDetails,
@@ -215,6 +213,8 @@ fun Mashup(searchQuery: State<String>) {
                                 },
                                 processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                             )
+
+                            scope.launch { collectiblesVState.animateScrollToItem(0) }
                         } else {
                             TraitsCategoryItems(
                                 traits = traits,
