@@ -3,6 +3,7 @@ package com.mashiverse.mashit.ui.screens.mashup
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
@@ -35,6 +37,7 @@ import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
+import com.mashiverse.mashit.ui.default.sorting.Sorting
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
 import com.mashiverse.mashit.ui.screens.mashup.categories.sections.CollectiblesCategory
@@ -47,8 +50,11 @@ import com.mashiverse.mashit.ui.theme.XLHolderHeight
 import com.mashiverse.mashit.ui.theme.XLHolderWidth
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
+import kotlinx.coroutines.launch
 
-@SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
+@SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
+    "CoroutineCreationDuringComposition"
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup(searchQuery: State<String>) {
@@ -110,11 +116,35 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
+    val selectedTraitUrl by remember(mashupUiState.mashupDetails, mashupUiState.selectedCategory) {
+        derivedStateOf {
+            mashupUiState.mashupDetails.assets.first { it.type == mashupUiState.selectedCategory }.url
+                ?: ""
+        }
+    }
 
-    val traits by remember(mashupUiState.selectedCategory, nfts) {
+    var sortType by remember { mutableStateOf(SortType.NEWEST) }
+
+    val sortedNfts = remember(sortType, nfts) {
+        when (sortType) {
+            SortType.NEWEST -> nfts.sortedByDescending { it.owned?.get(0)?.timestamp }
+            SortType.OLDEST -> nfts.sortedBy { it.owned?.get(0)?.timestamp }
+            // Sort by Name (A-Z), then by Mint (Ascending)
+            SortType.ALPHABET_ASC -> nfts
+                .sortedWith(compareBy<Nft> { it.name.lowercase() }
+                    .thenBy { it.owned?.firstOrNull()?.mint })
+
+            // Sort by Name (Z-A), then by Mint (Ascending)
+            SortType.ALPHABET_DESC -> nfts
+                .sortedWith(compareByDescending<Nft> { it.name.lowercase() }
+                    .thenBy { it.owned?.firstOrNull()?.mint })
+        }
+    }
+
+    val traits by remember(mashupUiState.selectedCategory, sortedNfts) {
         derivedStateOf {
             val traits =
-                getTraitsByType(nfts)[mashupUiState.selectedCategory]
+                getTraitsByType(sortedNfts)[mashupUiState.selectedCategory]
                     ?: emptyList()
 
             if (mashupUiState.selectedCategory != TraitType.BACKGROUND) {
@@ -122,13 +152,6 @@ fun Mashup(searchQuery: State<String>) {
             } else {
                 traits
             }
-        }
-    }
-
-    val selectedTraitUrl by remember(mashupUiState.mashupDetails, mashupUiState.selectedCategory) {
-        derivedStateOf {
-            mashupUiState.mashupDetails.assets.first { it.type == mashupUiState.selectedCategory }.url
-                ?: ""
         }
     }
 
@@ -159,19 +182,29 @@ fun Mashup(searchQuery: State<String>) {
                 ) {
                     Spacer(Modifier.height(Padding))
 
-                    CategorySelector(
-                        mashupUiState = mashupUiState,
-                        processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                        gridState = traitsGridState,
-                        scope = scope
-                    )
+                    Row{
+                        Sorting {
+                            type -> sortType = type
+                            scope.launch {
+                                collectiblesVState.animateScrollToItem(0)
+                                traitsGridState.animateScrollToItem(0)
+                            }
+                        }
 
-                    Spacer(Modifier.height(Padding))
+                        CategorySelector(
+                            mashupUiState = mashupUiState,
+                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
+                            gridState = traitsGridState,
+                            scope = scope
+                        )
+                    }
 
                     if (mashupUiState.isCollectionReady) {
                         if (mashupUiState.isCollectibles) {
+                            scope.launch { collectiblesVState.animateScrollToItem(0) }
+
                             CollectiblesCategory(
-                                nfts = nfts,
+                                nfts = sortedNfts,
                                 mashupDetails = mashupUiState.mashupDetails,
                                 state = collectiblesVState,
                                 scope = scope,
