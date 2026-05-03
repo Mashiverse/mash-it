@@ -44,7 +44,7 @@ fun Settings() {
         contentAlignment = Alignment.TopStart
     ) {
         CheckRow(
-            title = "Notifications",
+            title = "Opt in to new releases",
             checked = isNotifications
         ) { checked ->
             updateNotifications.invoke(checked)

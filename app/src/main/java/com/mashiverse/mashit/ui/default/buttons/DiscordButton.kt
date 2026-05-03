@@ -20,7 +20,7 @@ import com.mashiverse.mashit.utils.helpers.openSocialLink
 @Composable
 fun DiscordButton() {
     val context = LocalContext.current
-    val uri = "https://discord.gg/B9Cvkcvs"
+    val uri = "https://discord.gg/h576pXd6FE"
 
     IconButton(
         modifier = Modifier

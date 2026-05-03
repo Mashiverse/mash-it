@@ -1,9 +1,11 @@
 package com.mashiverse.mashit.data.di.data
 
 import com.mashiverse.mashit.data.remote.apis.AlchemyApi
+import com.mashiverse.mashit.data.remote.apis.IpfsApi
 import com.mashiverse.mashit.data.remote.apis.MashitApi
 import com.mashiverse.mashit.data.remote.apis.MashiverseApi
 import com.mashiverse.mashit.utils.ALCHEMY_BASE_URL
+import com.mashiverse.mashit.utils.IPFS_BASE_URL
 import com.mashiverse.mashit.utils.MASHIT_BASE_URL
 import com.mashiverse.mashit.utils.MASHIVERSE_BASE_URL
 import dagger.Module
@@ -77,4 +79,25 @@ object RetrofitModule {
     @Provides
     fun provideMashiverseApi(@Named("MashiverseClient") retrofit: Retrofit): MashiverseApi =
         retrofit.create(MashiverseApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("IpfsClient")
+    fun provideIpfsClient(): Retrofit {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(3, TimeUnit.MINUTES)
+            .build()
+
+        return Retrofit
+            .Builder()
+            .baseUrl(IPFS_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
+    @Provides
+    fun provideIpfsApi(@Named("IpfsClient") retrofit: Retrofit): IpfsApi =
+        retrofit.create(IpfsApi::class.java)
 }

@@ -5,6 +5,7 @@ import com.mashiverse.mashit.data.models.mashi.mappers.toEntities
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 
 class CollectionRepo @Inject constructor(
@@ -14,35 +15,42 @@ class CollectionRepo @Inject constructor(
 ) {
     val collectionFlow: Flow<List<NftEntity>> = nftRepo.ownedNftsFlow
 
-    suspend fun updateOwnedData(wallet: String) {
-        val newCollection = alchemyRepo.getCollection(wallet)
-        val oldCollection = nftRepo.ownedNftsFlow.first()
+    suspend fun updateOwnedData(wallet: String): Boolean {
+        try {
+            val newCollection = alchemyRepo.getCollection(wallet)
+            val oldCollection = nftRepo.ownedNftsFlow.first()
 
-        val newNames = newCollection.map { it.name }.toSet()
-        val oldNames = oldCollection.map { it.name }.toSet()
+            val newNames = newCollection.map { it.name }.toSet()
+            val oldNames = oldCollection.map { it.name }.toSet()
 
-        val toAdd = newCollection.filter { it.name !in oldNames }
-        val toRemove = oldCollection.filter { it.name !in newNames }
-        val toUpdate = newCollection.mapNotNull { new ->
-            val old = oldCollection.find { it.name == new.name }
+            val toAdd = newCollection.filter { it.name !in oldNames }
+            val toRemove = oldCollection.filter { it.name !in newNames }
+            val toUpdate = newCollection.mapNotNull { new ->
+                val old = oldCollection.find { it.name == new.name }
 
-            if (old != null && new.owned != old.owned) {
-                new
-            } else null
-        }
+                if (old != null && new.owned != old.owned) {
+                    new
+                } else null
+            }
 
-        if (toUpdate.isNotEmpty()) {
-            val list = toUpdate.toEntities()
-            nftRepo.insertNfts(list)
-        }
+            if (toUpdate.isNotEmpty()) {
+                val list = toUpdate.toEntities()
+                nftRepo.insertNfts(list)
+            }
 
-        if (toAdd.isNotEmpty()) {
-            val list = toAdd.toEntities()
-            nftRepo.insertNfts(list)
-        }
+            if (toAdd.isNotEmpty()) {
+                val list = toAdd.toEntities()
+                nftRepo.insertNfts(list)
+            }
 
-        if (toRemove.isNotEmpty()) {
-            nftRepo.deleteNfts(toRemove)
+            if (toRemove.isNotEmpty()) {
+                nftRepo.deleteNfts(toRemove)
+            }
+
+            return true
+        } catch (e: Exception) {
+            Timber.tag("GG").d(e)
+            return false
         }
     }
 

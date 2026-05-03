@@ -8,24 +8,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.mashiverse.mashit.data.states.mashup.ActionsIntent
-import com.mashiverse.mashit.data.states.sys.DialogIntent
-import com.mashiverse.mashit.data.states.sys.ImageIntent
-import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
-import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
-import com.mashiverse.mashit.data.models.sys.image.DownloadType
-import com.mashiverse.mashit.data.models.sys.image.ImageType
+import com.mashiverse.mashit.data.models.mashi.SortType
+import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
-import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
+import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
+import com.mashiverse.mashit.data.models.sys.image.DownloadType
+import com.mashiverse.mashit.data.models.sys.image.ImageType
 import com.mashiverse.mashit.data.repos.mashit.CollectionRepo
+import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
-import com.mashiverse.mashit.data.repos.mashit.MashitRepo
+import com.mashiverse.mashit.data.states.mashup.ActionsIntent
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.states.mashup.MashupUiState
+import com.mashiverse.mashit.data.states.sys.DialogIntent
+import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import com.mashiverse.mashit.utils.helpers.nft.getRandomTraits
@@ -34,6 +35,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,7 +100,11 @@ class MashupViewModel @Inject constructor(
                         )
 
                     stackManager.clear()
-                    collectionRepo.updateOwnedData(wallet)
+                    val isNotEmpty = collectionFlow.first().isNotEmpty()
+                    val updateSuccess = collectionRepo.updateOwnedData(prefs.wallet)
+
+                    mashupUiState.value =
+                        mashupUiState.value.copy(isCollectionReady = isNotEmpty || updateSuccess)
                 } else {
                     mashupUiState.value = mashupUiState.value.copy(wallet = null)
                     collectionRepo.clearOwned()
@@ -135,6 +141,20 @@ class MashupViewModel @Inject constructor(
                 mashupDetails = next,
                 colors = next.colors
             )
+        }
+    }
+
+    // Collection
+    fun changeSortType(
+        scope: CoroutineScope,
+        vState: LazyListState,
+        gState: LazyGridState,
+        type: SortType
+    ) {
+        mashupUiState.value = mashupUiState.value.copy(sortType = type)
+        scope.launch {
+            vState.animateScrollToItem(0)
+            gState.animateScrollToItem(0)
         }
     }
 
@@ -185,6 +205,7 @@ class MashupViewModel @Inject constructor(
 
     fun onSave() {
         viewModelScope.launch(Dispatchers.IO) {
+            mashupUiState.value = mashupUiState.value.copy(isSave = true)
             val uiState = mashupUiState.value
             if (uiState.wallet.isNullOrEmpty()) return@launch
 
@@ -203,7 +224,8 @@ class MashupViewModel @Inject constructor(
             }
 
             mashupUiState.value = uiState.copy(
-                dialogContent = dialogContent
+                dialogContent = dialogContent,
+                isSave = false
             )
         }
     }

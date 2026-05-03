@@ -2,6 +2,7 @@ package com.mashiverse.mashit.utils.helpers.nft
 
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.activeTraits
@@ -43,3 +44,21 @@ fun getRandomTraits(nfts: List<Nft>): List<MashupTrait> {
 
     return randomAssets
 }
+
+fun sortNfts(sortType: SortType, nfts: List<Nft>): List<Nft> {
+    return when (sortType) {
+        SortType.NEWEST -> nfts.sortedByDescending { it.owned?.get(0)?.timestamp }
+        SortType.OLDEST -> nfts.sortedBy { it.owned?.get(0)?.timestamp }
+        // Sort by Name (A-Z), then by Mint (Ascending)
+        SortType.ALPHABET_ASC -> nfts
+            .sortedWith(compareBy<Nft> { it.name.lowercase() }
+                .thenBy { it.owned?.firstOrNull()?.mint })
+
+        // Sort by Name (Z-A), then by Mint (Ascending)
+        SortType.ALPHABET_DESC -> nfts
+            .sortedWith(compareByDescending<Nft> { it.name.lowercase() }
+                .thenBy { it.owned?.firstOrNull()?.mint })
+    }
+}
+
+fun String.toIpfsPartialUri() = this.replace("https://ipfs.filebase.io/ipfs/", "")

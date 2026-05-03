@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,19 +30,24 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Owned
+import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
+import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
+import com.mashiverse.mashit.ui.default.sorting.Sorting
 import com.mashiverse.mashit.ui.default.traits.MintedTrait
-import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.TraitShape
+import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
@@ -66,6 +72,8 @@ fun Collection(searchQuery: State<String>) {
 
     var ownedNfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
 
+    val isReady by remember { viewModel.isReady }
+
     LaunchedEffect(collection, searchQuery) {
         val nfts = mutableListOf<Nft>()
         collection.forEach { nft ->
@@ -88,6 +96,14 @@ fun Collection(searchQuery: State<String>) {
             }
         }
     }
+
+    var sortType by remember { mutableStateOf(SortType.NEWEST) }
+
+    val sortedNfts = remember(sortType, ownedNfts) {
+        sortNfts(sortType, ownedNfts)
+    }
+
+    val lazyGridState = rememberLazyGridState()
 
     val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
@@ -116,24 +132,34 @@ fun Collection(searchQuery: State<String>) {
                 .fillMaxSize()
                 .padding(horizontal = Padding),
         ) {
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                columns = GridCells.Fixed(screenType.collectionColumns)
-            ) {
-                items(ownedNfts.size) { i ->
-                    MintedTrait(
-                        modifier = Modifier
-                            .height(height)
-                            .width(width)
-                            .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
-                        onClick = { selectMashi.invoke(ownedNfts[i]) },
-                        data = ownedNfts[i].compositeUrl,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        mint = ownedNfts[i].owned!![0].mint
-                    )
+            Sorting(onSortChange = {
+                type -> sortType = type
+                scope.launch { lazyGridState.animateScrollToItem(0) }
+            })
+
+            if (isReady) {
+                LazyVerticalGrid(
+                    state = lazyGridState,
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                    horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+                    columns = GridCells.Fixed(screenType.collectionColumns)
+                ) {
+                    items(sortedNfts.size) { i ->
+                        MintedTrait(
+                            modifier = Modifier
+                                .height(height)
+                                .width(width)
+                                .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
+                            onClick = { selectMashi.invoke(sortedNfts[i]) },
+                            data = sortedNfts[i].compositeUrl,
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                            mint = sortedNfts[i].owned!![0].mint
+                        )
+                    }
                 }
+            } else {
+                LoadingIndicator(text = "Loading")
             }
         }
 

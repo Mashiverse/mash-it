@@ -3,6 +3,7 @@ package com.mashiverse.mashit.ui.screens.mashup
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -27,14 +28,15 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.mashiverse.mashit.data.states.mashup.ActionsIntent
-import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
-import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.states.mashup.ActionsIntent
+import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
+import com.mashiverse.mashit.ui.default.sorting.Sorting
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
 import com.mashiverse.mashit.ui.screens.mashup.categories.sections.CollectiblesCategory
@@ -47,8 +49,12 @@ import com.mashiverse.mashit.ui.theme.XLHolderHeight
 import com.mashiverse.mashit.ui.theme.XLHolderWidth
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
+import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 
-@SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
+@SuppressLint(
+    "ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
+    "CoroutineCreationDuringComposition"
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mashup(searchQuery: State<String>) {
@@ -110,11 +116,21 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
+    val selectedTraitUrl by remember(mashupUiState.mashupDetails, mashupUiState.selectedCategory) {
+        derivedStateOf {
+            mashupUiState.mashupDetails.assets.first { it.type == mashupUiState.selectedCategory }.url
+                ?: ""
+        }
+    }
 
-    val traits by remember(mashupUiState.selectedCategory, nfts) {
+    val sortedNfts = remember(mashupUiState.sortType, nfts) {
+        sortNfts(mashupUiState.sortType, nfts)
+    }
+
+    val traits by remember(mashupUiState.selectedCategory, sortedNfts) {
         derivedStateOf {
             val traits =
-                getTraitsByType(nfts)[mashupUiState.selectedCategory]
+                getTraitsByType(sortedNfts)[mashupUiState.selectedCategory]
                     ?: emptyList()
 
             if (mashupUiState.selectedCategory != TraitType.BACKGROUND) {
@@ -125,10 +141,9 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    val selectedTraitUrl by remember(mashupUiState.mashupDetails, mashupUiState.selectedCategory) {
-        derivedStateOf {
-            mashupUiState.mashupDetails.assets.first { it.type == mashupUiState.selectedCategory }.url
-                ?: ""
+    LaunchedEffect(mashupUiState.isCollectibles) {
+        if (mashupUiState.isCollectibles) {
+            collectiblesVState.animateScrollToItem(0)
         }
     }
 
@@ -159,32 +174,53 @@ fun Mashup(searchQuery: State<String>) {
                 ) {
                     Spacer(Modifier.height(Padding))
 
-                    CategorySelector(
-                        mashupUiState = mashupUiState,
-                        processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                        gridState = traitsGridState,
-                        scope = scope
-                    )
+                    Row {
+                        Sorting { type ->
+                            viewModel.changeSortType(
+                                scope = scope,
+                                vState = collectiblesVState,
+                                gState = traitsGridState,
+                                type = type
+                            )
+                        }
 
-                    Spacer(Modifier.height(Padding))
-
-                    if (mashupUiState.isCollectibles) {
-                        CollectiblesCategory(
-                            nfts = nfts,
-                            mashupDetails = mashupUiState.mashupDetails,
-                            state = collectiblesVState,
-                            scope = scope,
+                        CategorySelector(
+                            mashupUiState = mashupUiState,
                             processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                            gridState = traitsGridState,
+                            scope = scope
                         )
+                    }
+
+                    if (mashupUiState.isCollectionReady) {
+                        if (mashupUiState.isCollectibles) {
+                            CollectiblesCategory(
+                                nfts = sortedNfts,
+                                mashupDetails = mashupUiState.mashupDetails,
+                                state = collectiblesVState,
+                                scope = scope,
+                                processMashupIntent = { intent ->
+                                    viewModel.processMashupIntent(
+                                        intent
+                                    )
+                                },
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                            )
+                        } else {
+                            TraitsCategoryItems(
+                                traits = traits,
+                                selectedTraitUrl = selectedTraitUrl,
+                                lazyGridState = traitsGridState,
+                                processMashupIntent = { intent ->
+                                    viewModel.processMashupIntent(
+                                        intent
+                                    )
+                                },
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                            )
+                        }
                     } else {
-                        TraitsCategoryItems(
-                            traits = traits,
-                            selectedTraitUrl = selectedTraitUrl,
-                            lazyGridState = traitsGridState,
-                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                        )
+                        LoadingIndicator(text = "Loading")
                     }
                 }
             }
@@ -219,6 +255,10 @@ fun Mashup(searchQuery: State<String>) {
 
     if (mashupUiState.isDownloading) {
         LoadingIndicator("Downloading")
+    }
+
+    if (mashupUiState.isSave) {
+        LoadingIndicator("Saving")
     }
 
     mashupUiState.dialogContent?.let { content ->

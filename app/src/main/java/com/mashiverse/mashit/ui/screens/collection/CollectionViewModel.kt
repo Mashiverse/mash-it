@@ -5,17 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
-import com.mashiverse.mashit.data.models.sys.image.ImageType
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.sys.image.ImageType
 import com.mashiverse.mashit.data.repos.mashit.CollectionRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,11 +27,8 @@ class CollectionViewModel @Inject constructor(
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletFlow
     val collectionFlow = collectionRepo.collectionFlow
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+
+    val isReady = mutableStateOf(false)
 
     private val _selectedNft = mutableStateOf<Nft?>(null)
     val selectedNft: State<Nft?> get() = _selectedNft
@@ -42,8 +38,15 @@ class CollectionViewModel @Inject constructor(
             walletPreferences
                 .distinctUntilChanged()
                 .collect { prefs ->
-                    if (prefs.wallet != null) {
-                        collectionRepo.updateOwnedData(prefs.wallet)
+                    val wallet = prefs.wallet
+
+                    if (!wallet.isNullOrEmpty()) {
+                        val isNotEmpty = collectionFlow.first().isNotEmpty()
+                        val updateSuccess = collectionRepo.updateOwnedData(prefs.wallet)
+
+                        isReady.value = isNotEmpty || updateSuccess
+                    } else {
+                        collectionRepo.clearOwned()
                     }
                 }
         }
