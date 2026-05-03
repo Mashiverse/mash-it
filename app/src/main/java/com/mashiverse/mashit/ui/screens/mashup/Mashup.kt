@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
@@ -50,9 +49,10 @@ import com.mashiverse.mashit.ui.theme.XLHolderHeight
 import com.mashiverse.mashit.ui.theme.XLHolderWidth
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
-import kotlinx.coroutines.launch
+import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 
-@SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
+@SuppressLint(
+    "ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
     "CoroutineCreationDuringComposition"
 )
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,22 +123,8 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    var sortType by remember { mutableStateOf(SortType.NEWEST) }
-
-    val sortedNfts = remember(sortType, nfts) {
-        when (sortType) {
-            SortType.NEWEST -> nfts.sortedByDescending { it.owned?.get(0)?.timestamp }
-            SortType.OLDEST -> nfts.sortedBy { it.owned?.get(0)?.timestamp }
-            // Sort by Name (A-Z), then by Mint (Ascending)
-            SortType.ALPHABET_ASC -> nfts
-                .sortedWith(compareBy<Nft> { it.name.lowercase() }
-                    .thenBy { it.owned?.firstOrNull()?.mint })
-
-            // Sort by Name (Z-A), then by Mint (Ascending)
-            SortType.ALPHABET_DESC -> nfts
-                .sortedWith(compareByDescending<Nft> { it.name.lowercase() }
-                    .thenBy { it.owned?.firstOrNull()?.mint })
-        }
+    val sortedNfts = remember(mashupUiState.sortType, nfts) {
+        sortNfts(mashupUiState.sortType, nfts)
     }
 
     val traits by remember(mashupUiState.selectedCategory, sortedNfts) {
@@ -152,6 +138,12 @@ fun Mashup(searchQuery: State<String>) {
             } else {
                 traits
             }
+        }
+    }
+
+    LaunchedEffect(mashupUiState.isCollectibles) {
+        if (mashupUiState.isCollectibles) {
+            collectiblesVState.animateScrollToItem(0)
         }
     }
 
@@ -182,13 +174,14 @@ fun Mashup(searchQuery: State<String>) {
                 ) {
                     Spacer(Modifier.height(Padding))
 
-                    Row{
-                        Sorting {
-                            type -> sortType = type
-                            scope.launch {
-                                collectiblesVState.animateScrollToItem(0)
-                                traitsGridState.animateScrollToItem(0)
-                            }
+                    Row {
+                        Sorting { type ->
+                            viewModel.changeSortType(
+                                scope = scope,
+                                vState = collectiblesVState,
+                                gState = traitsGridState,
+                                type = type
+                            )
                         }
 
                         CategorySelector(
@@ -213,8 +206,6 @@ fun Mashup(searchQuery: State<String>) {
                                 },
                                 processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                             )
-
-                            scope.launch { collectiblesVState.animateScrollToItem(0) }
                         } else {
                             TraitsCategoryItems(
                                 traits = traits,
@@ -264,6 +255,10 @@ fun Mashup(searchQuery: State<String>) {
 
     if (mashupUiState.isDownloading) {
         LoadingIndicator("Downloading")
+    }
+
+    if (mashupUiState.isSave) {
+        LoadingIndicator("Saving")
     }
 
     mashupUiState.dialogContent?.let { content ->

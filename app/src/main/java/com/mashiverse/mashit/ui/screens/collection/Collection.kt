@@ -43,6 +43,7 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.TraitShape
+import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.flow.map
@@ -99,19 +100,7 @@ fun Collection(searchQuery: State<String>) {
     var sortType by remember { mutableStateOf(SortType.NEWEST) }
 
     val sortedNfts = remember(sortType, ownedNfts) {
-        when (sortType) {
-            SortType.NEWEST -> ownedNfts.sortedByDescending { it.owned?.get(0)?.timestamp }
-            SortType.OLDEST -> ownedNfts.sortedBy { it.owned?.get(0)?.timestamp }
-            // Sort by Name (A-Z), then by Mint (Ascending)
-            SortType.ALPHABET_ASC -> ownedNfts
-                .sortedWith(compareBy<Nft> { it.name.lowercase() }
-                    .thenBy { it.owned?.firstOrNull()?.mint })
-
-            // Sort by Name (Z-A), then by Mint (Ascending)
-            SortType.ALPHABET_DESC -> ownedNfts
-                .sortedWith(compareByDescending<Nft> { it.name.lowercase() }
-                    .thenBy { it.owned?.firstOrNull()?.mint })
-        }
+        sortNfts(sortType, ownedNfts)
     }
 
     val lazyGridState = rememberLazyGridState()

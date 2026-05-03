@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
+import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
@@ -143,6 +144,20 @@ class MashupViewModel @Inject constructor(
         }
     }
 
+    // Collection
+    fun changeSortType(
+        scope: CoroutineScope,
+        vState: LazyListState,
+        gState: LazyGridState,
+        type: SortType
+    ) {
+        mashupUiState.value = mashupUiState.value.copy(sortType = type)
+        scope.launch {
+            vState.animateScrollToItem(0)
+            gState.animateScrollToItem(0)
+        }
+    }
+
     // Mashup
     fun onReset() {
         recordState()
@@ -190,6 +205,7 @@ class MashupViewModel @Inject constructor(
 
     fun onSave() {
         viewModelScope.launch(Dispatchers.IO) {
+            mashupUiState.value = mashupUiState.value.copy(isSave = true)
             val uiState = mashupUiState.value
             if (uiState.wallet.isNullOrEmpty()) return@launch
 
@@ -208,7 +224,8 @@ class MashupViewModel @Inject constructor(
             }
 
             mashupUiState.value = uiState.copy(
-                dialogContent = dialogContent
+                dialogContent = dialogContent,
+                isSave = false
             )
         }
     }
