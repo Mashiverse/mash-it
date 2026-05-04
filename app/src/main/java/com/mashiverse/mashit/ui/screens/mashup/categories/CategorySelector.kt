@@ -13,8 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.states.mashup.MashupIntent
+import com.mashiverse.mashit.data.states.mashup.MashupState
 import com.mashiverse.mashit.data.states.mashup.MashupUiState
 import com.mashiverse.mashit.ui.theme.ActiveButtonBackground
 import com.mashiverse.mashit.ui.theme.ButtonBackground
@@ -26,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun CategorySelector(
+    mashupState: MashupState,
     mashupUiState: MashupUiState,
     processMashupIntent: (MashupIntent) -> Unit,
     gridState: LazyGridState,
@@ -62,7 +64,7 @@ fun CategorySelector(
 
         items(TraitType.entries) { traitType ->
             val selected = !mashupUiState.isCollectibles
-                    && mashupUiState.selectedCategory == traitType
+                    && mashupState.selectedCategory == traitType
 
             val text = traitType.name
                 .lowercase()

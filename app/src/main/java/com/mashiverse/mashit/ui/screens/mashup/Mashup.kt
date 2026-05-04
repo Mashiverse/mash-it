@@ -75,34 +75,35 @@ fun Mashup(searchQuery: State<String>) {
     var height by remember { mutableStateOf(0.dp) }
 
     val mashupUiState by remember { viewModel.mashupUiState }
+    val mashupState by remember { viewModel.mashupState }
 
-    val selectedColorType by remember(mashupUiState.selectedColorType) {
+    val selectedColorType by remember(mashupState.selectedColorType) {
         mutableStateOf(
-            mashupUiState.selectedColorType
+            mashupState.selectedColorType
         )
     }
 
-    val currentColor = remember(selectedColorType, mashupUiState.colors) {
+    val currentColor = remember(selectedColorType, mashupState.colors) {
         when (selectedColorType) {
-            ColorType.BASE -> mashupUiState.colors.base
-            ColorType.EYES -> mashupUiState.colors.eyes
-            ColorType.HAIR -> mashupUiState.colors.hair
+            ColorType.BASE -> mashupState.colors.base
+            ColorType.EYES -> mashupState.colors.eyes
+            ColorType.HAIR -> mashupState.colors.hair
         }
     }
 
-    val previousColor = remember(mashupUiState.mashupDetails, selectedColorType) {
+    val previousColor = remember(mashupState.mashupDetails, selectedColorType) {
         when (selectedColorType) {
-            ColorType.BASE -> mashupUiState.mashupDetails.colors.base
-            ColorType.EYES -> mashupUiState.mashupDetails.colors.eyes
-            ColorType.HAIR -> mashupUiState.mashupDetails.colors.hair
+            ColorType.BASE -> mashupState.mashupDetails.colors.base
+            ColorType.EYES -> mashupState.mashupDetails.colors.eyes
+            ColorType.HAIR -> mashupState.mashupDetails.colors.hair
         }
     }
 
     var nfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
 
-    LaunchedEffect(mashupUiState.nfts, searchQuery) {
+    LaunchedEffect(mashupState.nfts, searchQuery) {
         val temp = mutableListOf<Nft>()
-        mashupUiState.nfts.forEach { nft ->
+        mashupState.nfts.forEach { nft ->
             temp.add(nft)
         }
 
@@ -116,24 +117,24 @@ fun Mashup(searchQuery: State<String>) {
         }
     }
 
-    val selectedTraitUrl by remember(mashupUiState.mashupDetails, mashupUiState.selectedCategory) {
+    val selectedTraitUrl by remember(mashupState.mashupDetails, mashupState.selectedCategory) {
         derivedStateOf {
-            mashupUiState.mashupDetails.assets.first { it.type == mashupUiState.selectedCategory }.url
+            mashupState.mashupDetails.assets.first { it.type == mashupState.selectedCategory }.url
                 ?: ""
         }
     }
 
-    val sortedNfts = remember(mashupUiState.sortType, nfts) {
-        sortNfts(mashupUiState.sortType, nfts)
+    val sortedNfts = remember(mashupState.sortType, nfts) {
+        sortNfts(mashupState.sortType, nfts)
     }
 
-    val traits by remember(mashupUiState.selectedCategory, sortedNfts) {
+    val traits by remember(mashupState.selectedCategory, sortedNfts) {
         derivedStateOf {
             val traits =
-                getTraitsByType(sortedNfts)[mashupUiState.selectedCategory]
+                getTraitsByType(sortedNfts)[mashupState.selectedCategory]
                     ?: emptyList()
 
-            if (mashupUiState.selectedCategory != TraitType.BACKGROUND) {
+            if (mashupState.selectedCategory != TraitType.BACKGROUND) {
                 traits.distinctBy { it.avatarName }
             } else {
                 traits
@@ -148,14 +149,14 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     Column {
-        if (mashupUiState.wallet != null) {
+        if (mashupState.wallet != null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = Padding)
             ) {
                 MashupActions(
-                    mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),
+                    mashupDetails = mashupState.mashupDetails.copy(colors = mashupState.colors),
                     modifier = Modifier
                         .height(XLHolderHeight)
                         .width(XLHolderWidth)
@@ -185,6 +186,7 @@ fun Mashup(searchQuery: State<String>) {
                         }
 
                         CategorySelector(
+                            mashupState = mashupState,
                             mashupUiState = mashupUiState,
                             processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
                             gridState = traitsGridState,
@@ -196,7 +198,7 @@ fun Mashup(searchQuery: State<String>) {
                         if (mashupUiState.isCollectibles) {
                             CollectiblesCategory(
                                 nfts = sortedNfts,
-                                mashupDetails = mashupUiState.mashupDetails,
+                                mashupDetails = mashupState.mashupDetails,
                                 state = collectiblesVState,
                                 scope = scope,
                                 processMashupIntent = { intent ->
@@ -246,7 +248,7 @@ fun Mashup(searchQuery: State<String>) {
                 closeBottomSheet = { viewModel.processActionsIntent(ActionsIntent.OnPreviewDismiss) },
                 sheetState = previewState,
                 scope = scope,
-                mashupDetails = mashupUiState.mashupDetails.copy(colors = mashupUiState.colors),
+                mashupDetails = mashupState.mashupDetails.copy(colors = mashupState.colors),
                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                 height = height
             )
