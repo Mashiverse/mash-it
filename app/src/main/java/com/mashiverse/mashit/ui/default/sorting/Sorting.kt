@@ -98,6 +98,6 @@ fun Sorting(
 
 @Composable
 @Preview
-fun SortingPreview() {
+private fun SortingPreview() {
     Sorting({})
 }

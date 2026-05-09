@@ -24,6 +24,7 @@ import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
+import com.mashiverse.mashit.data.states.mashup.MashupState
 import com.mashiverse.mashit.data.states.mashup.MashupUiState
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
@@ -55,6 +56,10 @@ class MashupViewModel @Inject constructor(
 
     var mashupUiState = mutableStateOf(MashupUiState())
         private set
+
+    var mashupState = mutableStateOf(MashupState())
+        private set
+
     private val stackManager = StackManager<MashupDetails>()
 
     private val walletFlow = dataStoreRepo.walletFlow
@@ -91,10 +96,10 @@ class MashupViewModel @Inject constructor(
                 val wallet = prefs.wallet
 
                 if (!wallet.isNullOrEmpty()) {
-                    mashupUiState.value = mashupUiState.value.copy(wallet = wallet)
+                    mashupState.value = mashupState.value.copy(wallet = wallet)
                     val initialMashup = collectionRepo.getMashup(wallet)
-                    mashupUiState.value =
-                        mashupUiState.value.copy(
+                    mashupState.value =
+                        mashupState.value.copy(
                             mashupDetails = initialMashup,
                             colors = initialMashup.colors
                         )
@@ -106,7 +111,7 @@ class MashupViewModel @Inject constructor(
                     mashupUiState.value =
                         mashupUiState.value.copy(isCollectionReady = isNotEmpty || updateSuccess)
                 } else {
-                    mashupUiState.value = mashupUiState.value.copy(wallet = null)
+                    mashupState.value = mashupState.value.copy(wallet = null)
                     collectionRepo.clearOwned()
                 }
             }
@@ -116,19 +121,19 @@ class MashupViewModel @Inject constructor(
     private fun observeCollection() {
         viewModelScope.launch(Dispatchers.IO) {
             collectionFlow.distinctUntilChanged().collect { collection ->
-                mashupUiState.value = mashupUiState.value.copy(nfts = collection.fromEntities())
+                mashupState.value = mashupState.value.copy(nfts = collection.fromEntities())
             }
         }
     }
 
     // State
     private fun recordState() {
-        stackManager.record(mashupUiState.value.mashupDetails)
+        stackManager.record(mashupState.value.mashupDetails)
     }
 
     fun onUndo() {
-        stackManager.undo(mashupUiState.value.mashupDetails)?.let { previous ->
-            mashupUiState.value = mashupUiState.value.copy(
+        stackManager.undo(mashupState.value.mashupDetails)?.let { previous ->
+            mashupState.value = mashupState.value.copy(
                 mashupDetails = previous,
                 colors = previous.colors
             )
@@ -136,8 +141,8 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onRedo() {
-        stackManager.redo(mashupUiState.value.mashupDetails)?.let { next ->
-            mashupUiState.value = mashupUiState.value.copy(
+        stackManager.redo(mashupState.value.mashupDetails)?.let { next ->
+            mashupState.value = mashupState.value.copy(
                 mashupDetails = next,
                 colors = next.colors
             )
@@ -151,7 +156,7 @@ class MashupViewModel @Inject constructor(
         gState: LazyGridState,
         type: SortType
     ) {
-        mashupUiState.value = mashupUiState.value.copy(sortType = type)
+        mashupState.value = mashupState.value.copy(sortType = type)
         scope.launch {
             vState.animateScrollToItem(0)
             gState.animateScrollToItem(0)
@@ -161,11 +166,11 @@ class MashupViewModel @Inject constructor(
     // Mashup
     fun onReset() {
         recordState()
-        mashupUiState.value = mashupUiState.value.copy(mashupDetails = MashupDetails())
+        mashupState.value = mashupState.value.copy(mashupDetails = MashupDetails())
     }
 
     fun onMashupUpdate(mashupTrait: MashupTrait) {
-        val uiState = mashupUiState.value
+        val uiState = mashupState.value
         val mashupDetails = uiState.mashupDetails
 
         recordState()
@@ -182,7 +187,7 @@ class MashupViewModel @Inject constructor(
             }
         }
 
-        mashupUiState.value = uiState.copy(
+        mashupState.value = uiState.copy(
             mashupDetails = mashupDetails.copy(
                 assets = assets,
             )
@@ -190,13 +195,13 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onRandom() {
-        val uiState = mashupUiState.value
+        val uiState = mashupState.value
         if (uiState.nfts.isEmpty()) return
 
         recordState()
 
         val randomAssets = getRandomTraits(uiState.nfts)
-        mashupUiState.value = uiState.copy(
+        mashupState.value = uiState.copy(
             mashupDetails = uiState.mashupDetails.copy(
                 assets = randomAssets.map { it.trait },
             )
@@ -206,7 +211,7 @@ class MashupViewModel @Inject constructor(
     fun onSave() {
         viewModelScope.launch(Dispatchers.IO) {
             mashupUiState.value = mashupUiState.value.copy(isSave = true)
-            val uiState = mashupUiState.value
+            val uiState = mashupState.value
             if (uiState.wallet.isNullOrEmpty()) return@launch
 
             val res = mashitRepo.saveMashup(
@@ -223,7 +228,7 @@ class MashupViewModel @Inject constructor(
                 DialogContent(title = "Save Error", text = "Please try again later")
             }
 
-            mashupUiState.value = uiState.copy(
+            mashupUiState.value = mashupUiState.value.copy(
                 dialogContent = dialogContent,
                 isSave = false
             )
@@ -233,9 +238,9 @@ class MashupViewModel @Inject constructor(
     // Colors
     fun onColorsSave() {
         recordState()
-        val uiState = mashupUiState.value
+        val uiState = mashupState.value
 
-        mashupUiState.value = uiState.copy(
+        mashupState.value = uiState.copy(
             mashupDetails = uiState.mashupDetails.copy(
                 colors = uiState.colors
             )
@@ -243,22 +248,22 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onColorsReset() {
-        mashupUiState.value = mashupUiState.value.copy(
-            colors = mashupUiState.value.mashupDetails.colors
+        mashupState.value = mashupState.value.copy(
+            colors = mashupState.value.mashupDetails.colors
         )
     }
 
     fun onColorTypeSelect(colorType: ColorType) {
-        mashupUiState.value = mashupUiState.value.copy(selectedColorType = colorType)
+        mashupState.value = mashupState.value.copy(selectedColorType = colorType)
     }
 
     fun onColorChange(color: Color) {
-        val uiState = mashupUiState.value
+        val uiState = mashupState.value
 
         val hex = "#" + color.toHexString()
         val currentColors = uiState.colors
 
-        mashupUiState.value = uiState.copy(
+        mashupState.value = uiState.copy(
             colors = when (uiState.selectedColorType) {
                 ColorType.BASE -> currentColors.copy(base = hex)
                 ColorType.EYES -> currentColors.copy(eyes = hex)
@@ -269,8 +274,10 @@ class MashupViewModel @Inject constructor(
 
     // Category
     fun onCategorySelect(scope: CoroutineScope, state: LazyGridState, selectedCategory: TraitType) {
-        mashupUiState.value = mashupUiState.value.copy(
+        mashupState.value = mashupState.value.copy(
             selectedCategory = selectedCategory,
+        )
+        mashupUiState.value = mashupUiState.value.copy(
             isCollectibles = false
         )
         scope.launch { state.scrollToItem(0) }
@@ -291,7 +298,7 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onImageSave(downloadType: DownloadType) {
-        mashupUiState.value.wallet?.let { wallet ->
+        mashupState.value.wallet?.let { wallet ->
             startImageDownload(wallet, downloadType.type, worker = worker)
         }
     }

@@ -1,13 +1,13 @@
 package com.mashiverse.mashit.data.remote.apis
 
-import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
 import com.mashiverse.mashit.data.models.mashup.save.SaveMashupReq
+import com.mashiverse.mashit.data.remote.dtos.MashupDto
+import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistListingsDto
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistPageDto
+import com.mashiverse.mashit.data.remote.dtos.artists.ArtistsDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingsDto
-import com.mashiverse.mashit.data.remote.dtos.MashupDto
-import com.mashiverse.mashit.data.remote.dtos.artists.ArtistPageDto
-import com.mashiverse.mashit.data.remote.dtos.artists.ArtistListingsDto
-import com.mashiverse.mashit.data.remote.dtos.artists.ArtistsDto
 import com.mashiverse.mashit.data.remote.dtos.listings.SearchDto
 import com.mashiverse.mashit.utils.MASHIT_KEY
 import retrofit2.http.Body

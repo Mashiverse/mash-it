@@ -7,8 +7,7 @@ data class Nft(
     val compositeUrl: String,
     val traits: List<Trait>? = emptyList(),
     val productInfo: ProductInfo? = null,
-    val owned: List<Owned>? = null,
-    val soldQty: Int? = null
+    val owned: List<Owned>? = null
 )
 
 data class ProductInfo(

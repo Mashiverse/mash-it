@@ -10,7 +10,7 @@ import timber.log.Timber
 
 class ShopPagingSource(
     private val api: MashitApi,
-    private val apiKey: String = MASHIT_KEY
+    private val apiKey: String = MASHIT_KEY,
 ) : PagingSource<Int, Nft>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Nft> {

@@ -16,9 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.PriceCurrency
+import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.ui.default.buttons.BuyButton
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -34,17 +34,21 @@ fun ProductInfoSection(
     val productInfo = nft.productInfo!!
 
     var soldQty by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(productInfo.soldQuantity)
     }
+    val delisted = nft.productInfo.delisted
+    val isSoldOut = soldQty >= productInfo.quantity
 
     LaunchedEffect(Unit) {
-        processWeb3Intent.invoke(
-            Web3Intent.OnTotalSoldGet(
-                nft.productInfo.listingId.toInt()
-            ) { v ->
-                soldQty = v
-            }
-        )
+        if (!delisted && !isSoldOut) {
+            processWeb3Intent.invoke(
+                Web3Intent.OnTotalSoldGet(
+                    nft.productInfo.listingId.toInt()
+                ) { v ->
+                    soldQty = v
+                }
+            )
+        }
     }
 
     Text(
