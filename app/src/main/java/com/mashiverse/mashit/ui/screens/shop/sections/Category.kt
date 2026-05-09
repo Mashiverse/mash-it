@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
@@ -48,7 +49,6 @@ import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.filter
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -59,6 +59,7 @@ fun Category(
     onSearchQueryClear: (() -> Unit)? = null,
     processShopIntent: (ShopIntent) -> Unit,
     processWeb3Intent: (Web3Intent) -> Unit,
+    categoryState: LazyGridState,
 ) {
     val isSearch = onSearchQueryClear != null
 
@@ -81,19 +82,21 @@ fun Category(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+//            Text(
+//                modifier = Modifier.align(Alignment.CenterHorizontally),
+//                text = shopUiState.category.name.lowercase()
+//                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+//                fontSize = 14.sp,
+//                fontWeight = FontWeight.Bold,
+//                color = ContentAccentColor
+//            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(32.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = shopUiState.category.name.lowercase()
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
-                    fontSize = 14.sp,
-                    color = ContentAccentColor
-                )
-
                 Checkbox(
                     checked = isAvailableOnly,
                     onCheckedChange = {
@@ -102,7 +105,7 @@ fun Category(
                 )
 
                 Text(
-                    text = "Is available?",
+                    text = "Available?",
                     fontSize = 14.sp,
                     color = ContentAccentColor
                 )
@@ -127,6 +130,7 @@ fun Category(
             Spacer(modifier = Modifier.height(MediumPadding))
 
             LazyVerticalGrid(
+                state = categoryState,
                 columns = GridCells.Fixed(screenType.shopColumns),
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(MediumPadding),

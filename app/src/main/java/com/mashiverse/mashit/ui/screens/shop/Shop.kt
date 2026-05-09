@@ -2,9 +2,11 @@ package com.mashiverse.mashit.ui.screens.shop
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.sections.Category
+import com.mashiverse.mashit.ui.screens.shop.sections.Drops
 import com.mashiverse.mashit.ui.theme.Padding
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +51,13 @@ fun Shop(
     ) { result ->
         val uri = result.data?.data ?: return@rememberLauncherForActivityResult
         clientRef?.handleResponse(uri)
+    }
+
+
+    val categoryGState = rememberLazyGridState()
+    var isHidden by remember { mutableStateOf(false) }
+    LaunchedEffect(categoryGState.canScrollBackward) {
+        isHidden = categoryGState.canScrollBackward
     }
 
     LaunchedEffect(Unit) {
@@ -83,9 +93,14 @@ fun Shop(
             .fillMaxSize()
             .padding(horizontal = Padding)
     ) {
+        AnimatedVisibility(searchQuery.isEmpty() && !isHidden) {
+            Drops()
+        }
+
         Category(
             shopUiState = shopUiState,
             clientRef = clientRef,
+            categoryState = categoryGState,
             onSearchQueryClear = if (searchQuery.isNotEmpty()) {
                 {
                     clearSearchQuery.invoke()
