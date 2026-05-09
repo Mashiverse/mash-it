@@ -1,20 +1,20 @@
 package com.mashiverse.mashit.data.repos.mashit
 
-import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.Trait
+import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.mashi.mappers.toNft
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.models.mashup.save.MashupColors
 import com.mashiverse.mashit.data.models.mashup.save.MashupData
 import com.mashiverse.mashit.data.models.mashup.save.MashupLayer
 import com.mashiverse.mashit.data.models.mashup.save.SaveMashupReq
-import com.mashiverse.mashit.data.models.mashi.Nft
-import com.mashiverse.mashit.data.models.mashi.Trait
-import com.mashiverse.mashit.data.models.mashi.TraitType
-import com.mashiverse.mashit.data.models.mashi.mappers.toNft
 import com.mashiverse.mashit.data.remote.apis.MashitApi
+import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
 import com.mashiverse.mashit.data.remote.paging.SearchPagingSource
 import com.mashiverse.mashit.data.remote.paging.ShopPagingSource
 import com.mashiverse.mashit.utils.helpers.nft.toFilebaseUri
@@ -41,7 +41,7 @@ class MashitRepo @Inject constructor(
     fun getSearchListPagingData(
         q: String,
         pageSize: Int = 20
-    ) : Flow<PagingData<Nft>> {
+    ): Flow<PagingData<Nft>> {
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,

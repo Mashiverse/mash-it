@@ -11,27 +11,27 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.resume
 
-fun Flow<PagingData<Nft>>.fetchSoldQty(
-    processWeb3Intent: (Web3Intent) -> Unit
-): Flow<PagingData<Nft>> = this.map { pagingData ->
-    pagingData.map { item ->
-        val listingId = item.productInfo?.listingId?.toInt() ?: -1
-        val soldQty = try {
-            withTimeout(3000L) {
-                suspendCancellableCoroutine<Int> { cont ->
-                    processWeb3Intent.invoke(
-                        Web3Intent.OnTotalSoldGet(listingId) { v ->
-                            if (cont.isActive) cont.resume(v)
-                        }
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            null // Fallback
-        }
-        item.copy(soldQty = soldQty)
-    }
-}
+//fun Flow<PagingData<Nft>>.fetchSoldQty(
+//    processWeb3Intent: (Web3Intent) -> Unit
+//): Flow<PagingData<Nft>> = this.map { pagingData ->
+//    pagingData.map { item ->
+//        val listingId = item.productInfo?.listingId?.toInt() ?: -1
+//        val soldQty = try {
+//            withTimeout(3000L) {
+//                suspendCancellableCoroutine<Int> { cont ->
+//                    processWeb3Intent.invoke(
+//                        Web3Intent.OnTotalSoldGet(listingId) { v ->
+//                            if (cont.isActive) cont.resume(v)
+//                        }
+//                    )
+//                }
+//            }
+//        } catch (e: Exception) {
+//            null // Fallback
+//        }
+//        item.copy(soldQty = soldQty)
+//    }
+//}
 
 
 fun Flow<PagingData<Nft>>.filter(
@@ -44,7 +44,7 @@ fun Flow<PagingData<Nft>>.filter(
             // 1. Map to a Pair (Item, KeepBoolean) to avoid Nft?
             .map { item ->
                 val isDelisted = item.productInfo?.delisted ?: false
-                val soldQty = item.soldQty ?: -1
+                val soldQty = item.productInfo?.soldQuantity ?: -1
                 val totalQty = item.productInfo?.quantity ?: -1
 
                 if (isDelisted) {

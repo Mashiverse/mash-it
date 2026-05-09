@@ -45,7 +45,6 @@ import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.fetchSoldQty
 import com.mashiverse.mashit.utils.helpers.sys.filter
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,12 +65,8 @@ fun Category(
     val data = shopUiState.itemsData
     var isAvailableOnly by remember(data) { mutableStateOf(false) }
 
-    val fullData = remember(data) {
-        data.fetchSoldQty(processWeb3Intent)
-    }
-
-    val items = remember(isAvailableOnly, fullData) {
-        fullData.filter(isAvailableOnly)
+    val items = remember(isAvailableOnly, data) {
+        data.filter(isAvailableOnly)
     }.collectAsLazyPagingItems()
 
 
