@@ -8,9 +8,11 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
+import com.mashiverse.mashit.data.models.drops.DropDetails
 import com.mashiverse.mashit.data.models.sys.data.ShopDataType
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.image.ImageType
+import com.mashiverse.mashit.data.repos.drops.DropsRepo
 import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
@@ -37,15 +39,26 @@ class ShopViewModel @Inject constructor(
     private val dataStoreRepo: DatastoreRepo,
     private val mashItRepo: MashitRepo,
     private val imageTypeRepo: ImageTypeRepo,
-    private val web3Repo: Web3Repo
+    private val web3Repo: Web3Repo,
+    private val dropsRepo: DropsRepo
 ) : ViewModel() {
     var shopUiState = mutableStateOf(ShopUiState())
         private set
 
     val walletFlow = dataStoreRepo.walletFlow
 
+    val specialDrops = mutableStateOf<List<DropDetails>>(emptyList())
+
     init {
         observeWallet()
+        getSpecialDrops()
+    }
+
+    // Drops
+    fun getSpecialDrops() {
+        viewModelScope.launch(Dispatchers.IO) {
+            specialDrops.value = dropsRepo.getSpecialDropsList()
+        }
     }
 
     // Observers

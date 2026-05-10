@@ -59,6 +59,7 @@ fun Shop(
     LaunchedEffect(categoryGState.canScrollBackward) {
         isHidden = categoryGState.canScrollBackward
     }
+    val specialDrops by remember { viewModel.specialDrops }
 
     LaunchedEffect(Unit) {
         clientRef = viewModel.getCoinbaseSdk { intent ->
@@ -73,7 +74,6 @@ fun Shop(
             viewModel.processShopIntent(ShopIntent.OnNftSelect(listingId))
         }
     }
-
 
     LaunchedEffect(searchQuery) {
         val dataType = if (searchQuery.isNotEmpty()) {
@@ -94,7 +94,7 @@ fun Shop(
             .padding(horizontal = Padding)
     ) {
         AnimatedVisibility(searchQuery.isEmpty() && !isHidden) {
-            Drops()
+            Drops(specialDrops = specialDrops)
         }
 
         Category(
