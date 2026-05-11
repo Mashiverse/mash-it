@@ -142,7 +142,7 @@ class RegularShopViewModel @Inject constructor(
                     isExpanded = true
                 )
             } catch (e: Exception) {
-                Timber.Forest.e(e, "Failed to fetch shop item details")
+                Timber.e(e, "Failed to fetch shop item details")
             }
         }
     }

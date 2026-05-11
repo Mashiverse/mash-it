@@ -1,6 +1,5 @@
 package com.mashiverse.mashit.nav.routes
 
-import androidx.compose.runtime.State
 import kotlinx.serialization.Serializable
 
 @Serializable
