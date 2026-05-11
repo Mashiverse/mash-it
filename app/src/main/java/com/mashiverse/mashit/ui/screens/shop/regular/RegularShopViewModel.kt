@@ -47,6 +47,7 @@ class RegularShopViewModel @Inject constructor(
         private set
 
     val walletFlow = dataStoreRepo.walletFlow
+    val specialDropsFlow = dataStoreRepo.specialDropsFlow
 
     val specialDrops = mutableStateOf<List<DropDetails>>(emptyList())
 

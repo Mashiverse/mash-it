@@ -62,6 +62,19 @@ class DatastoreRepo @Inject constructor(
                 preferences[PreferencesKeys.NOTIFICATIONS] ?: false
             }
 
+    val specialDropsFlow: Flow<Boolean> =
+        datastore.data
+            .catch { e ->
+                if (e is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    Timber.tag("Test").d(e)
+                }
+            }
+            .map { preferences ->
+                preferences[PreferencesKeys.SPECIAL_DROPS] ?: false
+            }
+
     suspend fun updateWallet(walletPreferences: WalletPreferences) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.WALLET] = walletPreferences.wallet ?: ""
@@ -84,6 +97,12 @@ class DatastoreRepo @Inject constructor(
     suspend fun updateNotifications(enabled: Boolean) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.NOTIFICATIONS] = enabled
+        }
+    }
+
+    suspend fun updateSpecialDrops(enabled: Boolean) {
+        datastore.edit { preferences ->
+            preferences[PreferencesKeys.SPECIAL_DROPS] = enabled
         }
     }
 }

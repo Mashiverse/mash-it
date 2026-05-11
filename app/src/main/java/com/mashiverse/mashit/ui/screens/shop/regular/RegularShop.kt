@@ -12,6 +12,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +55,8 @@ fun RegularShop(
         clientRef?.handleResponse(uri)
     }
 
+    val specialDisabled = viewModel.specialDropsFlow.collectAsState(false)
+
 
     val categoryGState = rememberLazyGridState()
     var isHidden by remember { mutableStateOf(false) }
@@ -94,7 +97,7 @@ fun RegularShop(
             .fillMaxSize()
             .padding(horizontal = Padding)
     ) {
-        AnimatedVisibility(searchQuery.isEmpty() && !isHidden) {
+        AnimatedVisibility(searchQuery.isEmpty() && !isHidden && !specialDisabled.value) {
             Drops(
                 specialDrops = specialDrops,
                 navigateToDrop = navigateToDrop
