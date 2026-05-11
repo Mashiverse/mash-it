@@ -23,7 +23,15 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -69,7 +77,9 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
@@ -184,8 +194,6 @@ fun ArtistPage(alias: String) {
 
                         Column(modifier = Modifier.align(Alignment.Center).widthIn(max = 480.dp)){
                             Box {
-
-
                                 AsyncImage(
                                     modifier = Modifier
                                         .align(Alignment.TopStart)
@@ -221,24 +229,39 @@ fun ArtistPage(alias: String) {
                                             )
                                         }
                                     )
+
+                                    Column {
+                                        Spacer(modifier = Modifier.height(48.dp))
+
+                                        IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors().copy(
+                                            containerColor = Secondary
+                                        )) {
+                                            Icon(
+                                                tint = ContentAccentColor,
+                                                modifier = Modifier.size(32.dp),
+                                                imageVector = Icons.Default.MoreHoriz,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(SmallPadding))
-
-                            Text(
-                                text = info.name,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = ContentAccentColor
-                            )
-
-                            Text(
-                                text = info.bio,
-                                fontSize = 14.sp,
-                                color = ContentColor
-                            )
-
+//                            Spacer(modifier = Modifier.height(SmallPadding))
+//
+//                            Text(
+//                                text = info.name,
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Bold,
+//                                color = ContentAccentColor
+//                            )
+//
+//                            Text(
+//                                text = info.bio,
+//                                fontSize = 14.sp,
+//                                color = ContentColor
+//                            )
+//
                             Spacer(modifier = Modifier.height(Padding))
                         }
                     }
