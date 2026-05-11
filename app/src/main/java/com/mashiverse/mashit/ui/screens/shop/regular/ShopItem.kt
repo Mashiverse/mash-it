@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.shop
+package com.mashiverse.mashit.ui.screens.shop.regular
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

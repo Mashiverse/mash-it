@@ -39,7 +39,7 @@ import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.SectionLoading
 import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
-import com.mashiverse.mashit.ui.screens.shop.ShopItem
+import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding

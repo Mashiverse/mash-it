@@ -9,4 +9,6 @@ class DropsRepo @Inject constructor(
 ) {
 
     suspend fun getSpecialDropsList() = mashitApi.getSpecialDrops().toDrops()
+
+    suspend fun getSingleDrop(slug: String) = mashitApi.getSingleDrop(slug = slug)
 }

@@ -1,4 +1,4 @@
-package com.mashiverse.mashit.ui.screens.artists.page
+package com.mashiverse.mashit.ui.screens.shop.special
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
@@ -52,6 +51,7 @@ import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
+import com.mashiverse.mashit.ui.screens.artists.page.ArtistPageViewModel
 import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -60,29 +60,26 @@ import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtistPage(alias: String) {
+fun SpecialDrop(slug: String) {
     val config = LocalConfiguration.current
-    val density = LocalDensity.current
 
     val screenType = config.detectScreenType()
     val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
 
-    val viewModel = hiltViewModel<ArtistPageViewModel>()
-    val artistPageUiState by remember { viewModel.artistPageUiState }
+    val viewModel = hiltViewModel<SpecialDropViewModel>()
+    val specialDropUiState = viewModel.specialDropUiState
 
-    val listings = artistPageUiState.itemsData.collectAsLazyPagingItems()
-
-    LaunchedEffect(alias) {
-        viewModel.onInit(alias)
+    LaunchedEffect(slug) {
+        Timber.tag("GG").d(slug)
+        viewModel.getDrop(slug)
     }
 
     val previewState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-
-    val appendState = listings.loadState.append
 
     var clientRef by remember { mutableStateOf<CoinbaseWalletSDK?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -98,52 +95,27 @@ fun ArtistPage(alias: String) {
         }
     }
 
-    var bannerHeight by remember { mutableStateOf(0.dp) }
-
+    Timber.tag("GG").d(specialDropUiState.dropInfo.toString())
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = Padding)
     ) {
-        artistPageUiState.pageInfo?.let { info ->
+        specialDropUiState.dropInfo?.let { info ->
             Column {
                 Box {
                     val model =
-                        if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
+                        if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
 
                     AsyncImage(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .fillMaxWidth()
-                            .onSizeChanged { size ->
-                                with(density) {
-                                    bannerHeight = size.height.toDp()
-                                }
-                            }
                             .clip(RoundedCornerShape(4)),
                         model = model,
                         contentDescription = null
                     )
-
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(
-                                top = if (model.isNotEmpty()) max(
-                                    0.dp,
-                                    bannerHeight - 40.dp
-                                ) else 0.dp
-                            )
-                    ) {
-                        Spacer(modifier = Modifier.width(Padding))
-
-                        ProfilePicture(
-                            onClick = {},
-                            artistMashup = info.mashup,
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                        )
-                    }
                 }
 
                 Spacer(modifier = Modifier.height(SmallPadding))
@@ -156,7 +128,7 @@ fun ArtistPage(alias: String) {
                 )
 
                 Text(
-                    text = info.bio,
+                    text = info.description ?: "",
                     fontSize = 14.sp,
                     color = ContentColor
                 )
@@ -172,38 +144,24 @@ fun ArtistPage(alias: String) {
             verticalArrangement = Arrangement.spacedBy(Padding)
         ) {
             items(
-                count = listings.itemCount,
-                key = listings.itemKey { it.name + it.compositeUrl }
+                specialDropUiState.dropItems.size
             ) { index ->
-                val nft = listings[index]
-                nft?.let {
-                    ShopItem(
-                        nft = nft,
-                        processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                        clientRef = clientRef,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                        imageWidth = width,
-                        imageHeight = height,
-                    )
-                }
-            }
+                val nft = specialDropUiState.dropItems[index]
 
-            if (appendState is LoadState.Loading) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionLoading()
-                }
-            }
-
-            if (appendState is LoadState.Error) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionRefresh(onRetry = { listings.retry() })
-                }
+                ShopItem(
+                    nft = nft,
+                    processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                    clientRef = clientRef,
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+                    imageWidth = width,
+                    imageHeight = height,
+                )
             }
         }
 
-        if (artistPageUiState.isExpanded) {
-            artistPageUiState.selectedNft?.let { nft ->
+        if (specialDropUiState.isExpanded) {
+            specialDropUiState.selectedNft?.let { nft ->
                 ItemPreviewModal(
                     selectedNft = nft,
                     sheetState = previewState,
@@ -225,11 +183,11 @@ fun ArtistPage(alias: String) {
         }
     }
 
-    if (artistPageUiState.pageInfo == null) {
+    if (specialDropUiState.dropInfo == null) {
         LoadingIndicator(text = "Loading")
     }
 
-    artistPageUiState.dialogContent?.let { content ->
+    specialDropUiState.dialogContent?.let { content ->
         Dialog(content) {
             viewModel.processDialogIntent(DialogIntent.OnClear)
         }
