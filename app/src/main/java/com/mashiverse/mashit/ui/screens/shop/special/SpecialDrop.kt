@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens.shop.special
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -82,7 +84,11 @@ fun SpecialDrop(slug: String) {
         }
     }
 
-    Timber.tag("GG").d(specialDropUiState.dropInfo.toString())
+    val gState = rememberLazyGridState()
+    var isHidden by remember { mutableStateOf(false) }
+    LaunchedEffect(gState.canScrollBackward) {
+        isHidden = gState.canScrollBackward
+    }
 
     Column(
         modifier = Modifier
@@ -90,41 +96,44 @@ fun SpecialDrop(slug: String) {
             .padding(horizontal = Padding)
     ) {
         specialDropUiState.dropInfo?.let { info ->
-            Column {
-                Box {
-                    val model =
-                        if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
+            AnimatedVisibility(!isHidden) {
+                Column {
+                    Box {
+                        val model =
+                            if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
 
-                    AsyncImage(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(4)),
-                        model = model,
-                        contentDescription = null
+                        AsyncImage(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(4)),
+                            model = model,
+                            contentDescription = null
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(SmallPadding))
+
+                    Text(
+                        text = info.name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ContentAccentColor
                     )
+
+                    Text(
+                        text = info.description ?: "",
+                        fontSize = 14.sp,
+                        color = ContentColor
+                    )
+
+                    Spacer(modifier = Modifier.height(Padding))
                 }
-
-                Spacer(modifier = Modifier.height(SmallPadding))
-
-                Text(
-                    text = info.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = ContentAccentColor
-                )
-
-                Text(
-                    text = info.description ?: "",
-                    fontSize = 14.sp,
-                    color = ContentColor
-                )
             }
         }
 
-        Spacer(modifier = Modifier.height(Padding))
-
         LazyVerticalGrid(
+            state = gState,
             columns = GridCells.Fixed(screenType.shopColumns),
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.spacedBy(MediumPadding),

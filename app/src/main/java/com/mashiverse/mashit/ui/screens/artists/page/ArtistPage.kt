@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens.artists.page
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -100,6 +102,12 @@ fun ArtistPage(alias: String) {
 
     var bannerHeight by remember { mutableStateOf(0.dp) }
 
+    val gState = rememberLazyGridState()
+    var isHidden by remember { mutableStateOf(false) }
+    LaunchedEffect(gState.canScrollBackward) {
+        isHidden = gState.canScrollBackward
+    }
+
 
     Column(
         modifier = Modifier
@@ -107,65 +115,68 @@ fun ArtistPage(alias: String) {
             .padding(horizontal = Padding)
     ) {
         artistPageUiState.pageInfo?.let { info ->
-            Column {
-                Box {
-                    val model =
-                        if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
+            AnimatedVisibility(!isHidden) {
+                Column {
+                    Box {
+                        val model =
+                            if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
 
-                    AsyncImage(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .fillMaxWidth()
-                            .onSizeChanged { size ->
-                                with(density) {
-                                    bannerHeight = size.height.toDp()
+                        AsyncImage(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .fillMaxWidth()
+                                .onSizeChanged { size ->
+                                    with(density) {
+                                        bannerHeight = size.height.toDp()
+                                    }
                                 }
-                            }
-                            .clip(RoundedCornerShape(4)),
-                        model = model,
-                        contentDescription = null
+                                .clip(RoundedCornerShape(4)),
+                            model = model,
+                            contentDescription = null
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(
+                                    top = if (model.isNotEmpty()) max(
+                                        0.dp,
+                                        bannerHeight - 40.dp
+                                    ) else 0.dp
+                                )
+                        ) {
+                            Spacer(modifier = Modifier.width(Padding))
+
+                            ProfilePicture(
+                                onClick = {},
+                                artistMashup = info.mashup,
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(SmallPadding))
+
+                    Text(
+                        text = info.name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ContentAccentColor
                     )
 
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(
-                                top = if (model.isNotEmpty()) max(
-                                    0.dp,
-                                    bannerHeight - 40.dp
-                                ) else 0.dp
-                            )
-                    ) {
-                        Spacer(modifier = Modifier.width(Padding))
+                    Text(
+                        text = info.bio,
+                        fontSize = 14.sp,
+                        color = ContentColor
+                    )
 
-                        ProfilePicture(
-                            onClick = {},
-                            artistMashup = info.mashup,
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(Padding))
                 }
-
-                Spacer(modifier = Modifier.height(SmallPadding))
-
-                Text(
-                    text = info.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = ContentAccentColor
-                )
-
-                Text(
-                    text = info.bio,
-                    fontSize = 14.sp,
-                    color = ContentColor
-                )
             }
         }
 
-        Spacer(modifier = Modifier.height(Padding))
-
         LazyVerticalGrid(
+            state = gState,
             columns = GridCells.Fixed(screenType.shopColumns),
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.spacedBy(MediumPadding),

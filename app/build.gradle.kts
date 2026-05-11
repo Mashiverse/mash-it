@@ -36,7 +36,7 @@ configure<ApplicationExtension> {
         applicationId = "com.mashiverse.mashit"
         minSdk = 28
         targetSdk = 37
-        versionCode = 26
+        versionCode = 27
         versionName = "11.05.2026"
 
         val localProperties = Properties()
