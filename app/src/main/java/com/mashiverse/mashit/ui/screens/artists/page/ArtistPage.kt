@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -32,7 +36,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -155,65 +163,84 @@ fun ArtistPage(alias: String) {
                         },
                     visible = !isHidden
                 ) {
-                    Column {
-                        Box {
-                            val model =
-                                if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        val model =
+                            if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
 
-                            AsyncImage(
-                                modifier = Modifier
-                                    .align(Alignment.TopStart)
-                                    .fillMaxWidth()
-                                    .onSizeChanged { size ->
-                                        with(density) {
-                                            bannerHeight = size.height.toDp()
+                        AsyncImage(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .fillMaxWidth()
+                                .heightIn(max = bannerHeight)
+                                .clip(RoundedCornerShape(8))
+                                .blur(radius = 20.dp) // Adjust blur intensity here
+                                .alpha(0.33f),
+                            model = model,
+                            contentScale = ContentScale.FillWidth,
+                            contentDescription = null
+                        )
+
+                        Column(modifier = Modifier.align(Alignment.Center).widthIn(max = 480.dp)){
+                            Box {
+
+
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .align(Alignment.TopStart)
+                                        .fillMaxWidth()
+                                        .onSizeChanged { size ->
+                                            with(density) {
+                                                bannerHeight = size.height.toDp()
+                                            }
                                         }
-                                    }
-                                    .clip(RoundedCornerShape(4)),
-                                model = model,
-                                contentDescription = null
+                                        .clip(RoundedCornerShape(4)),
+                                    model = model,
+                                    contentDescription = null
+                                )
+
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(
+                                            top = if (model.isNotEmpty()) max(
+                                                0.dp,
+                                                bannerHeight - 40.dp
+                                            ) else 0.dp
+                                        )
+                                ) {
+                                    Spacer(modifier = Modifier.width(Padding))
+
+                                    ProfilePicture(
+                                        onClick = {},
+                                        artistMashup = info.mashup,
+                                        processImageIntent = { intent ->
+                                            viewModel.processImageIntent(
+                                                intent
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(SmallPadding))
+
+                            Text(
+                                text = info.name,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = ContentAccentColor
                             )
 
-                            Row(
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(
-                                        top = if (model.isNotEmpty()) max(
-                                            0.dp,
-                                            bannerHeight - 40.dp
-                                        ) else 0.dp
-                                    )
-                            ) {
-                                Spacer(modifier = Modifier.width(Padding))
+                            Text(
+                                text = info.bio,
+                                fontSize = 14.sp,
+                                color = ContentColor
+                            )
 
-                                ProfilePicture(
-                                    onClick = {},
-                                    artistMashup = info.mashup,
-                                    processImageIntent = { intent ->
-                                        viewModel.processImageIntent(
-                                            intent
-                                        )
-                                    }
-                                )
-                            }
+                            Spacer(modifier = Modifier.height(Padding))
                         }
-
-                        Spacer(modifier = Modifier.height(SmallPadding))
-
-                        Text(
-                            text = info.name,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = ContentAccentColor
-                        )
-
-                        Text(
-                            text = info.bio,
-                            fontSize = 14.sp,
-                            color = ContentColor
-                        )
-
-                        Spacer(modifier = Modifier.height(Padding))
                     }
                 }
             }
