@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,8 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
@@ -55,6 +60,7 @@ import timber.log.Timber
 @Composable
 fun SpecialDrop(slug: String) {
     val config = LocalConfiguration.current
+    val density = LocalDensity.current
 
     val screenType = config.detectScreenType()
     val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
@@ -86,8 +92,33 @@ fun SpecialDrop(slug: String) {
 
     val gState = rememberLazyGridState()
     var isHidden by remember { mutableStateOf(false) }
-    LaunchedEffect(gState.canScrollBackward) {
-        isHidden = gState.canScrollBackward
+    var infoHeight by remember { mutableStateOf(0.dp) }
+
+    val totalOffset by remember {
+        derivedStateOf {
+            val layoutInfo = gState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+
+            if (visibleItemsInfo.isEmpty()) {
+                0
+            } else {
+                val firstItem = visibleItemsInfo.first()
+                val rowIndex = firstItem.index / screenType.shopColumns
+                // We use the first item's height as the row height estimate
+                (rowIndex * firstItem.size.height) + gState.firstVisibleItemScrollOffset
+            }
+        }
+    }
+
+    LaunchedEffect(totalOffset) {
+        val currentOffsetDp = with(density) { totalOffset.toDp() }
+
+        // Use a small buffer to prevent rapid toggling
+        if (currentOffsetDp > infoHeight) {
+            isHidden = true
+        } else if (currentOffsetDp < infoHeight) {
+            isHidden = false
+        }
     }
 
     Column(
@@ -96,8 +127,13 @@ fun SpecialDrop(slug: String) {
             .padding(horizontal = Padding)
     ) {
         specialDropUiState.dropInfo?.let { info ->
-            AnimatedVisibility(!isHidden) {
-                Column {
+            AnimatedVisibility(
+                modifier = Modifier.onSizeChanged { size ->
+                    with(density) { infoHeight = size.height.toDp() }
+                },
+                visible = !isHidden
+            ) {
+                Column{
                     Box {
                         val model =
                             if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl

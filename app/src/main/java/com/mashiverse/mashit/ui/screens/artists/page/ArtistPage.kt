@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -104,10 +105,34 @@ fun ArtistPage(alias: String) {
 
     val gState = rememberLazyGridState()
     var isHidden by remember { mutableStateOf(false) }
-    LaunchedEffect(gState.canScrollBackward) {
-        isHidden = gState.canScrollBackward
+    var infoHeight by remember { mutableStateOf(0.dp) }
+
+    val totalOffset by remember {
+        derivedStateOf {
+            val layoutInfo = gState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+
+            if (visibleItemsInfo.isEmpty()) {
+                0
+            } else {
+                val firstItem = visibleItemsInfo.first()
+                val rowIndex = firstItem.index / screenType.shopColumns
+                // We use the first item's height as the row height estimate
+                (rowIndex * firstItem.size.height) + gState.firstVisibleItemScrollOffset
+            }
+        }
     }
 
+    LaunchedEffect(totalOffset) {
+        val currentOffsetDp = with(density) { totalOffset.toDp() }
+
+        // Use a small buffer to prevent rapid toggling
+        if (currentOffsetDp > infoHeight) {
+            isHidden = true
+        } else if (currentOffsetDp < infoHeight) {
+            isHidden = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -115,7 +140,13 @@ fun ArtistPage(alias: String) {
             .padding(horizontal = Padding)
     ) {
         artistPageUiState.pageInfo?.let { info ->
-            AnimatedVisibility(!isHidden) {
+            AnimatedVisibility(
+                modifier = Modifier
+                    .onSizeChanged { size ->
+                        with(density) { infoHeight = size.height.toDp() }
+                    },
+                visible = !isHidden
+            ) {
                 Column {
                     Box {
                         val model =
