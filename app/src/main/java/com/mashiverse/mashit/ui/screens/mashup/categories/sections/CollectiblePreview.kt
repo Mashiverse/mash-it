@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -64,101 +65,107 @@ fun CollectiblePreview(
 
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, _) = config.getItemWidthAndHeight(
-        screenType.collectionColumns,
-        MediumPadding
-    )
+
 
     val isSelected = { trait: Trait ->
         val sameTypeTrait = mashupDetails.assets.find { it.type == trait.type }
         sameTypeTrait?.url == trait.url
     }
 
+    BoxWithConstraints {
+        val constraints = this
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(24))
-                .clickable {
-                    isExpanded = !isExpanded
-                }
-                .background(Secondary),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
+        val (width, _) = getItemWidthAndHeight(
+            screenType.collectionColumns,
+            maxWidth = constraints.maxWidth,
+            MediumPadding
+        )
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
                 modifier = Modifier
-                    .width(24.dp)
-                    .height(32.dp)
-                    .clip(TraitShape),
-                model = nft.compositeUrl,
-                contentDescription = null
-            )
-
-            Spacer(modifier = Modifier.weight(1F))
-
-            Text(
-                text = nft.name,
-                fontSize = 14.sp,
-                color = ContentAccentColor
-            )
-
-            Spacer(modifier = Modifier.weight(1F))
-
-            IconButton(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape),
-                onClick = {
-                    isExpanded = !isExpanded
-                }
+                    .clip(RoundedCornerShape(24))
+                    .clickable {
+                        isExpanded = !isExpanded
+                    }
+                    .background(Secondary),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
+                AsyncImage(
                     modifier = Modifier
-                        .size(24.dp),
-                    tint = ContentAccentColor,
-                    imageVector = if (!isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
+                        .width(24.dp)
+                        .height(32.dp)
+                        .clip(TraitShape),
+                    model = nft.compositeUrl,
                     contentDescription = null
                 )
-            }
-        }
 
-        AnimatedVisibility(isExpanded) {
-            Column(
-                modifier = Modifier.onPlaced {
-                    processMashupIntent.invoke(
-                        MashupIntent.OnCollectibleExpand(
-                            state = state,
-                            scope = scope,
-                            position = position
-                        )
+                Spacer(modifier = Modifier.weight(1F))
+
+                Text(
+                    text = nft.name,
+                    fontSize = 14.sp,
+                    color = ContentAccentColor
+                )
+
+                Spacer(modifier = Modifier.weight(1F))
+
+                IconButton(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape),
+                    onClick = {
+                        isExpanded = !isExpanded
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(24.dp),
+                        tint = ContentAccentColor,
+                        imageVector = if (!isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
+                        contentDescription = null
                     )
                 }
-            ) {
-                Spacer(modifier = Modifier.height(MediumPadding))
+            }
 
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                    horizontalArrangement = Arrangement.spacedBy(11.5.dp),
-                    maxItemsInEachRow = screenType.collectionColumns
-                ) {
-                    nft.traits?.forEach { trait ->
-                        TraitHolder(
-                            modifier = Modifier
-                                .width(width),
-                            isSelected = isSelected.invoke(trait),
-                            trait = trait,
-                            processImageIntent = processImageIntent,
-                            onClick = {
-                                processMashupIntent.invoke(
-                                    MashupIntent.OnMashupUpdate(
-                                        MashupTrait(trait = trait, avatarName = nft.name)
-                                    )
-                                )
-                            }
+            AnimatedVisibility(isExpanded) {
+                Column(
+                    modifier = Modifier.onPlaced {
+                        processMashupIntent.invoke(
+                            MashupIntent.OnCollectibleExpand(
+                                state = state,
+                                scope = scope,
+                                position = position
+                            )
                         )
+                    }
+                ) {
+                    Spacer(modifier = Modifier.height(MediumPadding))
+
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                        horizontalArrangement = Arrangement.spacedBy(11.5.dp),
+                        maxItemsInEachRow = screenType.collectionColumns
+                    ) {
+                        nft.traits?.forEach { trait ->
+                            TraitHolder(
+                                modifier = Modifier
+                                    .width(width),
+                                isSelected = isSelected.invoke(trait),
+                                trait = trait,
+                                processImageIntent = processImageIntent,
+                                onClick = {
+                                    processMashupIntent.invoke(
+                                        MashupIntent.OnMashupUpdate(
+                                            MashupTrait(trait = trait, avatarName = nft.name)
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }

@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,7 +64,7 @@ fun SpecialDrop(slug: String) {
     val density = LocalDensity.current
 
     val screenType = config.detectScreenType()
-    val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
+
 
     val viewModel = hiltViewModel<SpecialDropViewModel>()
     val specialDropUiState = viewModel.specialDropUiState
@@ -121,107 +122,113 @@ fun SpecialDrop(slug: String) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = Padding)
-    ) {
-        specialDropUiState.dropInfo?.let { info ->
-            AnimatedVisibility(
-                modifier = Modifier.onSizeChanged { size ->
-                    with(density) { infoHeight = size.height.toDp() }
-                },
-                visible = !isHidden
-            ) {
-                Column{
-                    Box {
-                        val model =
-                            if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
+    BoxWithConstraints {
+        val constraints = this
 
-                        AsyncImage(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(4)),
-                            model = model,
-                            contentDescription = null
+        val (width, height) = getItemWidthAndHeight(screenType.shopColumns, constraints.maxWidth)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = Padding)
+        ) {
+            specialDropUiState.dropInfo?.let { info ->
+                AnimatedVisibility(
+                    modifier = Modifier.onSizeChanged { size ->
+                        with(density) { infoHeight = size.height.toDp() }
+                    },
+                    visible = !isHidden
+                ) {
+                    Column {
+                        Box {
+                            val model =
+                                if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
+
+                            AsyncImage(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(4)),
+                                model = model,
+                                contentDescription = null
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(SmallPadding))
+
+                        Text(
+                            text = info.name,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = ContentAccentColor
+                        )
+
+                        Text(
+                            text = info.description ?: "",
+                            fontSize = 14.sp,
+                            color = ContentColor
+                        )
+
+                        Spacer(modifier = Modifier.height(Padding))
+                    }
+                }
+            }
+
+            LazyVerticalGrid(
+                state = gState,
+                columns = GridCells.Fixed(screenType.shopColumns),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+                verticalArrangement = Arrangement.spacedBy(Padding)
+            ) {
+                items(
+                    specialDropUiState.dropItems.size
+                ) { index ->
+                    val nft = specialDropUiState.dropItems[index]
+
+                    ShopItem(
+                        nft = nft,
+                        processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                        clientRef = clientRef,
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+                        imageWidth = width,
+                        imageHeight = height,
+                    )
+                }
+            }
+
+            if (specialDropUiState.isExpanded) {
+                specialDropUiState.selectedNft?.let { nft ->
+                    ItemPreviewModal(
+                        selectedNft = nft,
+                        sheetState = previewState,
+                        closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                    ) {
+                        MashiDetailsSection(
+                            nft = nft,
+                            scope = scope,
+                            closeBottomSheet = {
+                                viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                            },
+                            sheetState = previewState,
+                            clientRef = clientRef,
+                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(SmallPadding))
-
-                    Text(
-                        text = info.name,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = ContentAccentColor
-                    )
-
-                    Text(
-                        text = info.description ?: "",
-                        fontSize = 14.sp,
-                        color = ContentColor
-                    )
-
-                    Spacer(modifier = Modifier.height(Padding))
                 }
             }
         }
 
-        LazyVerticalGrid(
-            state = gState,
-            columns = GridCells.Fixed(screenType.shopColumns),
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-            verticalArrangement = Arrangement.spacedBy(Padding)
-        ) {
-            items(
-                specialDropUiState.dropItems.size
-            ) { index ->
-                val nft = specialDropUiState.dropItems[index]
-
-                ShopItem(
-                    nft = nft,
-                    processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                    clientRef = clientRef,
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                    imageWidth = width,
-                    imageHeight = height,
-                )
-            }
+        if (specialDropUiState.dropInfo == null) {
+            LoadingIndicator(text = "Loading")
         }
 
-        if (specialDropUiState.isExpanded) {
-            specialDropUiState.selectedNft?.let { nft ->
-                ItemPreviewModal(
-                    selectedNft = nft,
-                    sheetState = previewState,
-                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                ) {
-                    MashiDetailsSection(
-                        nft = nft,
-                        scope = scope,
-                        closeBottomSheet = {
-                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                        },
-                        sheetState = previewState,
-                        clientRef = clientRef,
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                    )
-                }
+        specialDropUiState.dialogContent?.let { content ->
+            Dialog(content) {
+                viewModel.processDialogIntent(DialogIntent.OnClear)
             }
-        }
-    }
-
-    if (specialDropUiState.dropInfo == null) {
-        LoadingIndicator(text = "Loading")
-    }
-
-    specialDropUiState.dialogContent?.let { content ->
-        Dialog(content) {
-            viewModel.processDialogIntent(DialogIntent.OnClear)
         }
     }
 }

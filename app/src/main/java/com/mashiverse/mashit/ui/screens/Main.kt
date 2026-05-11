@@ -8,7 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
@@ -31,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -160,88 +163,178 @@ fun Main(navController: NavHostController) {
         clearSearchQuery.invoke()
     }
 
-    DismissibleNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            NavDrawer(
-                navController = navController,
+    BoxWithConstraints {
+        val constraints = this
+        val isTablet = constraints.maxWidth >= 1200.dp
+
+        if (!isTablet) {
+            DismissibleNavigationDrawer(
                 drawerState = drawerState,
-                scope = scope,
-                wallet = walletPreferences.value.wallet,
-                onConnect = {
-                    if (walletPreferences.value.wallet != null) {
-                        viewModel.disconnect()
-                        AppKit.disconnect(
-                            onSuccess = { },
-                            onError = { }
-                        )
-                    } else {
-                        scope.launch(Dispatchers.Main) { drawerState.close() }.invokeOnCompletion {
-                            isSignIn = true
-                        }
-                    }
+                drawerContent = {
+                    NavDrawer(
+                        navController = navController,
+                        drawerState = drawerState,
+                        scope = scope,
+                        wallet = walletPreferences.value.wallet,
+                        onConnect = {
+                            if (walletPreferences.value.wallet != null) {
+                                viewModel.disconnect()
+                                AppKit.disconnect(
+                                    onSuccess = { },
+                                    onError = { }
+                                )
+                            } else {
+                                scope.launch(Dispatchers.Main) { drawerState.close() }.invokeOnCompletion {
+                                    isSignIn = true
+                                }
+                            }
+                        },
+                    )
                 },
-            )
-        },
-        gesturesEnabled = true
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = Background,
-            topBar = {
-                TopNavBar(
-                    tabName = tabName,
+                gesturesEnabled = true
+            ) {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = Background,
+                    topBar = {
+                        TopNavBar(
+                            tabName = tabName,
+                            drawerState = drawerState,
+                            scope = scope,
+                            searchQuery = searchQuery.value,
+                            onSearchQueryChange = onSearchQueryChange,
+                            isSearch = isSearch,
+                            onIsSearchChange = onIsSearchChange,
+                            hasSearch = hasSearch
+                        )
+
+                    }
+                ) { paddingValues ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = MainRoutes.Shop(listingId = null),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+                        mainGraph(
+                            searchQuery = searchQuery,
+                            clearSearchQuery = clearSearchQuery
+                        )
+                    }
+
+                    if (drawerState.isOpen) {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    scope.launch { drawerState.close() }
+                                }
+                        )
+                    }
+                }
+
+                if (isSignIn) {
+                    SignInModal(
+                        sheetState = signInState,
+                        onDismissRequest = {
+                            isSignIn = false
+                        }
+                    )
+                }
+
+                if (firstLaunch.value && dialogContent != null) {
+                    Dialog(dialogContent!!) {
+                        onFirstLaunchDialogClose.invoke()
+                    }
+                }
+            }
+        } else {
+            Row {
+                NavDrawer(
+                    navController = navController,
                     drawerState = drawerState,
                     scope = scope,
-                    searchQuery = searchQuery.value,
-                    onSearchQueryChange = onSearchQueryChange,
-                    isSearch = isSearch,
-                    onIsSearchChange = onIsSearchChange,
-                    hasSearch = hasSearch
-                )
-
-            }
-        ) { paddingValues ->
-            NavHost(
-                navController = navController,
-                startDestination = MainRoutes.Shop(listingId = null),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                mainGraph(
-                    searchQuery = searchQuery,
-                    clearSearchQuery = clearSearchQuery
-                )
-            }
-
-            if (drawerState.isOpen) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            scope.launch { drawerState.close() }
+                    wallet = walletPreferences.value.wallet,
+                    onConnect = {
+                        if (walletPreferences.value.wallet != null) {
+                            viewModel.disconnect()
+                            AppKit.disconnect(
+                                onSuccess = { },
+                                onError = { }
+                            )
+                        } else {
+                            scope.launch(Dispatchers.Main) { drawerState.close() }.invokeOnCompletion {
+                                isSignIn = true
+                            }
                         }
+                    },
                 )
-            }
-        }
 
-        if (isSignIn) {
-            SignInModal(
-                sheetState = signInState,
-                onDismissRequest = {
-                    isSignIn = false
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = Background,
+                    topBar = {
+                        TopNavBar(
+                            tabName = tabName,
+                            drawerState = drawerState,
+                            scope = scope,
+                            searchQuery = searchQuery.value,
+                            onSearchQueryChange = onSearchQueryChange,
+                            isSearch = isSearch,
+                            onIsSearchChange = onIsSearchChange,
+                            hasSearch = hasSearch
+                        )
+
+                    }
+                ) { paddingValues ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = MainRoutes.Shop(listingId = null),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+                        mainGraph(
+                            searchQuery = searchQuery,
+                            clearSearchQuery = clearSearchQuery
+                        )
+                    }
+
+                    if (drawerState.isOpen) {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    scope.launch { drawerState.close() }
+                                }
+                        )
+                    }
                 }
-            )
-        }
 
-        if (firstLaunch.value && dialogContent != null) {
-            Dialog(dialogContent!!) {
-                onFirstLaunchDialogClose.invoke()
+                if (isSignIn) {
+                    SignInModal(
+                        sheetState = signInState,
+                        onDismissRequest = {
+                            isSignIn = false
+                        }
+                    )
+                }
+
+                if (firstLaunch.value && dialogContent != null) {
+                    Dialog(dialogContent!!) {
+                        onFirstLaunchDialogClose.invoke()
+                    }
+                }
             }
         }
     }
+
+
 }

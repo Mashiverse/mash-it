@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -71,7 +72,6 @@ fun ArtistPage(alias: String) {
     val density = LocalDensity.current
 
     val screenType = config.detectScreenType()
-    val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
 
     val viewModel = hiltViewModel<ArtistPageViewModel>()
     val artistPageUiState by remember { viewModel.artistPageUiState }
@@ -134,146 +134,159 @@ fun ArtistPage(alias: String) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = Padding)
-    ) {
-        artistPageUiState.pageInfo?.let { info ->
-            AnimatedVisibility(
-                modifier = Modifier
-                    .onSizeChanged { size ->
-                        with(density) { infoHeight = size.height.toDp() }
-                    },
-                visible = !isHidden
-            ) {
-                Column {
-                    Box {
-                        val model =
-                            if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
+    BoxWithConstraints {
+        val constraints = this
 
-                        AsyncImage(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxWidth()
-                                .onSizeChanged { size ->
-                                    with(density) {
-                                        bannerHeight = size.height.toDp()
+        val (width, height) = getItemWidthAndHeight(
+            columns = screenType.shopColumns,
+            maxWidth = constraints.maxWidth
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = Padding)
+        ) {
+            artistPageUiState.pageInfo?.let { info ->
+                AnimatedVisibility(
+                    modifier = Modifier
+                        .onSizeChanged { size ->
+                            with(density) { infoHeight = size.height.toDp() }
+                        },
+                    visible = !isHidden
+                ) {
+                    Column {
+                        Box {
+                            val model =
+                                if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
+
+                            AsyncImage(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .fillMaxWidth()
+                                    .onSizeChanged { size ->
+                                        with(density) {
+                                            bannerHeight = size.height.toDp()
+                                        }
                                     }
-                                }
-                                .clip(RoundedCornerShape(4)),
-                            model = model,
-                            contentDescription = null
+                                    .clip(RoundedCornerShape(4)),
+                                model = model,
+                                contentDescription = null
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(
+                                        top = if (model.isNotEmpty()) max(
+                                            0.dp,
+                                            bannerHeight - 40.dp
+                                        ) else 0.dp
+                                    )
+                            ) {
+                                Spacer(modifier = Modifier.width(Padding))
+
+                                ProfilePicture(
+                                    onClick = {},
+                                    artistMashup = info.mashup,
+                                    processImageIntent = { intent ->
+                                        viewModel.processImageIntent(
+                                            intent
+                                        )
+                                    }
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(SmallPadding))
+
+                        Text(
+                            text = info.name,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = ContentAccentColor
                         )
 
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(
-                                    top = if (model.isNotEmpty()) max(
-                                        0.dp,
-                                        bannerHeight - 40.dp
-                                    ) else 0.dp
-                                )
-                        ) {
-                            Spacer(modifier = Modifier.width(Padding))
+                        Text(
+                            text = info.bio,
+                            fontSize = 14.sp,
+                            color = ContentColor
+                        )
 
-                            ProfilePicture(
-                                onClick = {},
-                                artistMashup = info.mashup,
-                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                            )
-                        }
+                        Spacer(modifier = Modifier.height(Padding))
                     }
-
-                    Spacer(modifier = Modifier.height(SmallPadding))
-
-                    Text(
-                        text = info.name,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = ContentAccentColor
-                    )
-
-                    Text(
-                        text = info.bio,
-                        fontSize = 14.sp,
-                        color = ContentColor
-                    )
-
-                    Spacer(modifier = Modifier.height(Padding))
-                }
-            }
-        }
-
-        LazyVerticalGrid(
-            state = gState,
-            columns = GridCells.Fixed(screenType.shopColumns),
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-            verticalArrangement = Arrangement.spacedBy(Padding)
-        ) {
-            items(
-                count = listings.itemCount,
-                key = listings.itemKey { it.name + it.compositeUrl }
-            ) { index ->
-                val nft = listings[index]
-                nft?.let {
-                    ShopItem(
-                        nft = nft,
-                        processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                        clientRef = clientRef,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                        imageWidth = width,
-                        imageHeight = height,
-                    )
                 }
             }
 
-            if (appendState is LoadState.Loading) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionLoading()
+            LazyVerticalGrid(
+                state = gState,
+                columns = GridCells.Fixed(screenType.shopColumns),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+                verticalArrangement = Arrangement.spacedBy(Padding)
+            ) {
+                items(
+                    count = listings.itemCount,
+                    key = listings.itemKey { it.name + it.compositeUrl }
+                ) { index ->
+                    val nft = listings[index]
+                    nft?.let {
+                        ShopItem(
+                            nft = nft,
+                            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                            clientRef = clientRef,
+                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+                            imageWidth = width,
+                            imageHeight = height,
+                        )
+                    }
+                }
+
+                if (appendState is LoadState.Loading) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        SectionLoading()
+                    }
+                }
+
+                if (appendState is LoadState.Error) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        SectionRefresh(onRetry = { listings.retry() })
+                    }
                 }
             }
 
-            if (appendState is LoadState.Error) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SectionRefresh(onRetry = { listings.retry() })
-                }
-            }
-        }
-
-        if (artistPageUiState.isExpanded) {
-            artistPageUiState.selectedNft?.let { nft ->
-                ItemPreviewModal(
-                    selectedNft = nft,
-                    sheetState = previewState,
-                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                ) {
-                    MashiDetailsSection(
-                        nft = nft,
-                        scope = scope,
-                        closeBottomSheet = {
-                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                        },
+            if (artistPageUiState.isExpanded) {
+                artistPageUiState.selectedNft?.let { nft ->
+                    ItemPreviewModal(
+                        selectedNft = nft,
                         sheetState = previewState,
-                        clientRef = clientRef,
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                    )
+                        closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                    ) {
+                        MashiDetailsSection(
+                            nft = nft,
+                            scope = scope,
+                            closeBottomSheet = {
+                                viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                            },
+                            sheetState = previewState,
+                            clientRef = clientRef,
+                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+                        )
+                    }
                 }
             }
         }
-    }
 
-    if (artistPageUiState.pageInfo == null) {
-        LoadingIndicator(text = "Loading")
-    }
+        if (artistPageUiState.pageInfo == null) {
+            LoadingIndicator(text = "Loading")
+        }
 
-    artistPageUiState.dialogContent?.let { content ->
-        Dialog(content) {
-            viewModel.processDialogIntent(DialogIntent.OnClear)
+        artistPageUiState.dialogContent?.let { content ->
+            Dialog(content) {
+                viewModel.processDialogIntent(DialogIntent.OnClear)
+            }
         }
     }
 }

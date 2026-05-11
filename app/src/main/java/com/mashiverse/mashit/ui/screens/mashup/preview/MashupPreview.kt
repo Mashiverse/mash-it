@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens.mashup.preview
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -54,74 +55,81 @@ fun MashupPreview(
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (itemWidth, _) = config.getItemWidthAndHeight(
-        screenType.collectionColumns,
-        MediumPadding
-    )
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
-        shape = BottomSheetShape,
-        onDismissRequest = closeBottomSheet,
-        sheetState = sheetState,
-        containerColor = Surface,
-        contentColor = ContentColor,
-        dragHandle = null,
-        sheetGesturesEnabled = false
-    ) {
-        Column(
-            modifier = Modifier
-                .height(height)
-                .padding(start = Padding, end = Padding, top = Padding),
-            horizontalAlignment = Alignment.CenterHorizontally
+    BoxWithConstraints {
+        val constraints = this
+
+        val (itemWidth, _) = getItemWidthAndHeight(
+            screenType.collectionColumns,
+            maxWidth = constraints.maxWidth,
+            MediumPadding
+        )
+
+
+        ModalBottomSheet(
+            modifier = Modifier.fillMaxWidth(),
+            shape = BottomSheetShape,
+            onDismissRequest = closeBottomSheet,
+            sheetState = sheetState,
+            containerColor = Surface,
+            contentColor = ContentColor,
+            dragHandle = null,
+            sheetGesturesEnabled = false
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier
+                    .height(height)
+                    .padding(start = Padding, end = Padding, top = Padding),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.weight(1F))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Spacer(Modifier.weight(1F))
 
-                IconButton(
-                    modifier = Modifier.size(32.dp),
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                closeBottomSheet.invoke()
+                    IconButton(
+                        modifier = Modifier.size(32.dp),
+                        onClick = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    closeBottomSheet.invoke()
+                                }
                             }
                         }
-                    }
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(32.dp),
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "More",
-                        tint = ContentAccentColor
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(SmallPadding))
-
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                item {
-                    mashupDetails.assets.sortedBy { it.type }.let {
-                        FlowRow(
+                    ) {
+                        Icon(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                            horizontalArrangement = Arrangement.spacedBy(11.5.dp),
-                            maxItemsInEachRow = screenType.collectionColumns
-                        ) {
-                            it.forEach { i ->
-                                TraitHolder(
-                                    modifier = Modifier.width(itemWidth),
-                                    trait = i,
-                                    processImageIntent = processImageIntent,
-                                    onClick = {}
-                                )
+                                .size(32.dp),
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "More",
+                            tint = ContentAccentColor
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(SmallPadding))
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    item {
+                        mashupDetails.assets.sortedBy { it.type }.let {
+                            FlowRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(),
+                                verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                                horizontalArrangement = Arrangement.spacedBy(11.5.dp),
+                                maxItemsInEachRow = screenType.collectionColumns
+                            ) {
+                                it.forEach { i ->
+                                    TraitHolder(
+                                        modifier = Modifier.width(itemWidth),
+                                        trait = i,
+                                        processImageIntent = processImageIntent,
+                                        onClick = {}
+                                    )
+                                }
                             }
                         }
                     }

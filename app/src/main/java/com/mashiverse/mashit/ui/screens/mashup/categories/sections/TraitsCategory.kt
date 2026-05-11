@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.screens.mashup.categories.sections
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,26 +30,35 @@ fun TraitsCategoryItems(
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, height) = config.getItemWidthAndHeight(screenType.collectionColumns, MediumPadding)
 
-    LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(),
-        state = lazyGridState,
-        verticalArrangement = Arrangement.spacedBy(MediumPadding),
-        horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-        columns = GridCells.Fixed(screenType.collectionColumns)
-    ) {
-        items(traits.size) { i ->
-            MashupTraitHolder(
-                height = height,
-                width = width,
-                isSelected = traits[i].trait.url == selectedTraitUrl,
-                mashupTrait = traits[i],
-                processMashupIntent = processMashupIntent,
-                processImageIntent = processImageIntent
-            )
+    BoxWithConstraints {
+        val constraints = this
+
+        val (width, height) = getItemWidthAndHeight(
+            screenType.collectionColumns,
+            maxWidth = constraints.maxWidth,
+            MediumPadding
+        )
+
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
+            state = lazyGridState,
+            verticalArrangement = Arrangement.spacedBy(MediumPadding),
+            horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+            columns = GridCells.Fixed(screenType.collectionColumns)
+        ) {
+            items(traits.size) { i ->
+                MashupTraitHolder(
+                    height = height,
+                    width = width,
+                    isSelected = traits[i].trait.url == selectedTraitUrl,
+                    mashupTrait = traits[i],
+                    processMashupIntent = processMashupIntent,
+                    processImageIntent = processImageIntent
+                )
+            }
         }
     }
 }

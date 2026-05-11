@@ -3,6 +3,7 @@ package com.mashiverse.mashit.ui.screens.collection
 import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -121,66 +122,71 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = false
     }
 
-    val (width, height) = config.getItemWidthAndHeight(
-        screenType.collectionColumns,
-        padding = MediumPadding
-    )
+    BoxWithConstraints {
+        val constraints = this
 
-    if (walletPreferences.value.wallet != null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = Padding),
-        ) {
-            Sorting(onSortChange = {
-                type -> sortType = type
-                scope.launch { lazyGridState.animateScrollToItem(0) }
-            })
+        val (width, height) = getItemWidthAndHeight(
+            screenType.collectionColumns,
+            maxWidth = constraints.maxWidth,
+            padding = MediumPadding
+        )
 
-            if (isReady) {
-                LazyVerticalGrid(
-                    state = lazyGridState,
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                    horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                    columns = GridCells.Fixed(screenType.collectionColumns)
-                ) {
-                    items(sortedNfts.size) { i ->
-                        MintedTrait(
-                            modifier = Modifier
-                                .height(height)
-                                .width(width)
-                                .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
-                            onClick = { selectMashi.invoke(sortedNfts[i]) },
-                            data = sortedNfts[i].compositeUrl,
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                            mint = sortedNfts[i].owned!![0].mint
+        if (walletPreferences.value.wallet != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = Padding),
+            ) {
+                Sorting(onSortChange = {
+                        type -> sortType = type
+                    scope.launch { lazyGridState.animateScrollToItem(0) }
+                })
+
+                if (isReady) {
+                    LazyVerticalGrid(
+                        state = lazyGridState,
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                        horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+                        columns = GridCells.Fixed(screenType.collectionColumns)
+                    ) {
+                        items(sortedNfts.size) { i ->
+                            MintedTrait(
+                                modifier = Modifier
+                                    .height(height)
+                                    .width(width)
+                                    .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
+                                onClick = { selectMashi.invoke(sortedNfts[i]) },
+                                data = sortedNfts[i].compositeUrl,
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                                mint = sortedNfts[i].owned!![0].mint
+                            )
+                        }
+                    }
+                } else {
+                    LoadingIndicator(text = "Loading")
+                }
+            }
+
+            if (isBottomSheet) {
+                selectedMashi?.let {
+                    ItemPreviewModal(
+                        selectedNft = selectedMashi!!,
+                        closeBottomSheet = closeBottomSheet,
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                        sheetState = sheetState,
+                    ) {
+                        MashiDetailsSection(
+                            nft = selectedMashi!!,
+                            scope = scope,
+                            closeBottomSheet = closeBottomSheet,
+                            sheetState = sheetState,
                         )
                     }
                 }
-            } else {
-                LoadingIndicator(text = "Loading")
             }
+        } else {
+            NotConnected()
         }
-
-        if (isBottomSheet) {
-            selectedMashi?.let {
-                ItemPreviewModal(
-                    selectedNft = selectedMashi!!,
-                    closeBottomSheet = closeBottomSheet,
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                    sheetState = sheetState,
-                ) {
-                    MashiDetailsSection(
-                        nft = selectedMashi!!,
-                        scope = scope,
-                        closeBottomSheet = closeBottomSheet,
-                        sheetState = sheetState,
-                    )
-                }
-            }
-        }
-    } else {
-        NotConnected()
     }
 }

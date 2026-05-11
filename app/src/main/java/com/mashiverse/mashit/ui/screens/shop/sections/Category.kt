@@ -3,6 +3,7 @@ package com.mashiverse.mashit.ui.screens.shop.sections
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -73,12 +74,16 @@ fun Category(
 
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, height) = config.getItemWidthAndHeight(screenType.shopColumns)
+
 
     val appendState = items.loadState.append
     val refreshState = items.loadState.refresh
 
-    Box {
+    BoxWithConstraints {
+        val constraints = this
+
+        val (width, height) = getItemWidthAndHeight(screenType.shopColumns, constraints.maxWidth)
+
         Column(
             modifier = Modifier.fillMaxSize()
         ) {

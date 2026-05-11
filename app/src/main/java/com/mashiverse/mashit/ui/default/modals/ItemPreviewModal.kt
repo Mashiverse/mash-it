@@ -2,6 +2,7 @@ package com.mashiverse.mashit.ui.default.modals
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,10 +50,6 @@ fun ItemPreviewModal(
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, _) = config.getItemWidthAndHeight(
-        screenType.collectionColumns,
-        MediumPadding
-    )
 
     val optionalTraits = remember(selectedNft) {
         selectedNft.traits?.map { trait ->
@@ -70,56 +67,66 @@ fun ItemPreviewModal(
         }
     }
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
-        shape = BottomSheetShape,
-        onDismissRequest = closeBottomSheet,
-        sheetState = sheetState,
-        containerColor = Surface,
-        contentColor = ContentColor,
-        dragHandle = null,
-        sheetGesturesEnabled = false
-    ) {
-        Column(
-            modifier = Modifier
-                .height((config.screenHeightDp * 0.8).dp)
-                .fillMaxWidth()
-                .padding(start = Padding, end = Padding, top = Padding),
+    BoxWithConstraints {
+        val constraints = this
+
+        val (width, _) = getItemWidthAndHeight(
+            screenType.collectionColumns,
+            maxWidth = this.maxWidth,
+            MediumPadding
+        )
+
+        ModalBottomSheet(
+            modifier = Modifier.fillMaxWidth(),
+            shape = BottomSheetShape,
+            onDismissRequest = closeBottomSheet,
+            sheetState = sheetState,
+            containerColor = Surface,
+            contentColor = ContentColor,
+            dragHandle = null,
+            sheetGesturesEnabled = false
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(Padding)) {
-                val selectedTraits =
-                    optionalTraits?.filter { it.selected }?.map { it.trait } ?: emptyList()
+            Column(
+                modifier = Modifier
+                    .height((config.screenHeightDp * 0.8).dp)
+                    .fillMaxWidth()
+                    .padding(start = Padding, end = Padding, top = Padding),
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(Padding)) {
+                    val selectedTraits =
+                        optionalTraits?.filter { it.selected }?.map { it.trait } ?: emptyList()
 
-                MashupComposite(
-                    modifier = Modifier
-                        .height(LargeHolderHeight)
-                        .width(LargeHolderWidth),
-                    assets = selectedTraits,
-                    holderWidth = LargeHolderWidth,
-                    processImageIntent = processImageIntent
-                )
+                    MashupComposite(
+                        modifier = Modifier
+                            .height(LargeHolderHeight)
+                            .width(LargeHolderWidth),
+                        assets = selectedTraits,
+                        holderWidth = LargeHolderWidth,
+                        processImageIntent = processImageIntent
+                    )
 
-                detailsContent()
-            }
+                    detailsContent()
+                }
 
-            Spacer(modifier = Modifier.height(Padding))
+                Spacer(modifier = Modifier.height(Padding))
 
-            optionalTraits?.let { traits ->
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(Padding),
-                    horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                    columns = GridCells.Fixed(screenType.collectionColumns)
-                ) {
-                    items(traits.size) { i ->
-                        val isSelected = traits[i].selected
-                        TraitHolder(
-                            modifier = Modifier.width(width),
-                            onClick = { selectTrait(traits[i].trait) },
-                            isSelected = isSelected,
-                            trait = traits[i].trait,
-                            processImageIntent = processImageIntent
-                        )
+                optionalTraits?.let { traits ->
+                    LazyVerticalGrid(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(Padding),
+                        horizontalArrangement = Arrangement.spacedBy(MediumPadding),
+                        columns = GridCells.Fixed(screenType.collectionColumns)
+                    ) {
+                        items(traits.size) { i ->
+                            val isSelected = traits[i].selected
+                            TraitHolder(
+                                modifier = Modifier.width(width),
+                                onClick = { selectTrait(traits[i].trait) },
+                                isSelected = isSelected,
+                                trait = traits[i].trait,
+                                processImageIntent = processImageIntent
+                            )
+                        }
                     }
                 }
             }
