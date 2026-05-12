@@ -6,25 +6,32 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.OptionalTrait
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
+import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.MashupComposite
 import com.mashiverse.mashit.ui.default.traits.TraitHolder
@@ -72,25 +79,44 @@ fun ItemPreviewModal(
 
         val (width, _) = getItemWidthAndHeight(
             screenType.collectionColumns,
-            maxWidth = this.maxWidth,
-            MediumPadding
+            maxWidth = constraints.maxWidth,
+            MediumPadding,
+            if (screenType == ScreenInfo.EXPANDED) 16.dp else 0.dp
         )
 
         ModalBottomSheet(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .height((config.screenHeightDp * 0.8).dp)
+                .then(
+                    if (screenType == ScreenInfo.EXPANDED) {
+                        Modifier
+                            .width((config.screenWidthDp - 328.0).dp)
+                            .align(Alignment.BottomEnd)
+                            .padding(horizontal = 16.dp)
+                            .navigationBarsPadding()
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomEnd)
+                            .navigationBarsPadding()
+                    }
+                ),
             shape = BottomSheetShape,
             onDismissRequest = closeBottomSheet,
             sheetState = sheetState,
             containerColor = Surface,
             contentColor = ContentColor,
+            scrimColor = Color.Transparent,
             dragHandle = null,
+            contentWindowInsets = { WindowInsets(0,0, 0, 0) },
             sheetGesturesEnabled = false
         ) {
             Column(
                 modifier = Modifier
                     .height((config.screenHeightDp * 0.8).dp)
                     .fillMaxWidth()
-                    .padding(start = Padding, end = Padding, top = Padding),
+                    .padding(start = Padding, end = Padding)
+                    .padding(top = 16.dp),
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(Padding)) {
                     val selectedTraits =
