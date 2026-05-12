@@ -268,11 +268,13 @@ fun ArtistPage(alias: String) {
                                         color = ContentAccentColor
                                     )
 
-                                    Text(
-                                        text = info.bio,
-                                        fontSize = 14.sp,
-                                        color = ContentColor
-                                    )
+                                    if (info.bio.isNotEmpty()) {
+                                        Text(
+                                            text = info.bio,
+                                            fontSize = 14.sp,
+                                            color = ContentColor
+                                        )
+                                    }
                                 }
                             }
 
