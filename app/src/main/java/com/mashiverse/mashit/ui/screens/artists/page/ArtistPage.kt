@@ -275,7 +275,7 @@ fun ArtistPage(alias: String) {
                                     )
                                 }
                             }
-//
+
                             Spacer(modifier = Modifier.height(Padding))
                         }
                     }

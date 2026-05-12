@@ -7,16 +7,27 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,13 +40,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
@@ -47,11 +62,14 @@ import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
+import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
 import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
@@ -91,8 +109,11 @@ fun SpecialDrop(slug: String) {
         }
     }
 
+    var bannerHeight by remember { mutableStateOf(0.dp) }
+
     val gState = rememberLazyGridState()
     var isHidden by remember { mutableStateOf(false) }
+    var isBio by remember { mutableStateOf(false) }
     var infoHeight by remember { mutableStateOf(0.dp) }
 
     val totalOffset by remember {
@@ -118,6 +139,7 @@ fun SpecialDrop(slug: String) {
         if (currentOffsetDp > infoHeight) {
             isHidden = true
         } else if (currentOffsetDp < infoHeight) {
+            isBio = false
             isHidden = false
         }
     }
@@ -134,42 +156,100 @@ fun SpecialDrop(slug: String) {
         ) {
             specialDropUiState.dropInfo?.let { info ->
                 AnimatedVisibility(
-                    modifier = Modifier.onSizeChanged { size ->
-                        with(density) { infoHeight = size.height.toDp() }
-                    },
+                    modifier = Modifier
+                        .onSizeChanged { size ->
+                            with(density) { infoHeight = size.height.toDp() }
+                        },
                     visible = !isHidden
                 ) {
-                    Column {
-                        Box {
-                            val model =
-                                if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        val model =
+                            if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
 
-                            AsyncImage(
-                                modifier = Modifier
-                                    .align(Alignment.TopStart)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(4)),
-                                model = model,
-                                contentDescription = null
-                            )
+                        AsyncImage(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .fillMaxWidth()
+                                .heightIn(max = bannerHeight)
+                                .clip(RoundedCornerShape(8))
+                                .blur(radius = 20.dp) // Adjust blur intensity here
+                                .alpha(0.33f),
+                            model = model,
+                            contentScale = ContentScale.FillWidth,
+                            contentDescription = null
+                        )
+
+                        Column(modifier = Modifier.align(Alignment.Center).widthIn(max = 480.dp)){
+                            Box {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .align(Alignment.TopStart)
+                                        .fillMaxWidth()
+                                        .onSizeChanged { size ->
+                                            with(density) {
+                                                bannerHeight = size.height.toDp()
+                                            }
+                                        }
+                                        .clip(RoundedCornerShape(4)),
+                                    model = model,
+                                    contentDescription = null
+                                )
+
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(
+                                            top = if (model.isNotEmpty()) max(
+                                                0.dp,
+                                                bannerHeight - 40.dp
+                                            ) else 0.dp
+                                        )
+                                ) {
+                                    Spacer(modifier = Modifier.width(Padding))
+
+                                    Column {
+                                        Spacer(modifier = Modifier.height(48.dp))
+
+                                        IconButton(
+                                            modifier = Modifier.size(32.dp), onClick = {
+                                                isBio = !isBio
+                                            }, colors = IconButtonDefaults.iconButtonColors().copy(
+                                                containerColor = Secondary
+                                            )) {
+                                            Icon(
+                                                tint = ContentAccentColor,
+                                                modifier = Modifier.size(24.dp),
+                                                imageVector = if (isBio) Icons.Default.ArrowCircleUp else Icons.Default.ArrowCircleDown,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            AnimatedVisibility(visible = isBio) {
+                                Column {
+                                    Spacer(modifier = Modifier.height(SmallPadding))
+
+                                    Text(
+                                        text = info.name,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = ContentAccentColor
+                                    )
+
+                                    Text(
+                                        text = info.description ?: "",
+                                        fontSize = 14.sp,
+                                        color = ContentColor
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(Padding))
                         }
-
-                        Spacer(modifier = Modifier.height(SmallPadding))
-
-                        Text(
-                            text = info.name,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = ContentAccentColor
-                        )
-
-                        Text(
-                            text = info.description ?: "",
-                            fontSize = 14.sp,
-                            color = ContentColor
-                        )
-
-                        Spacer(modifier = Modifier.height(Padding))
                     }
                 }
             }
