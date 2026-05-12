@@ -122,13 +122,15 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = false
     }
 
-    BoxWithConstraints {
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
+    ) {
         val constraints = this
 
-        val (width, height) = getItemWidthAndHeight(
+        val (width, _) = getItemWidthAndHeight(
             screenType.collectionColumns,
             maxWidth = constraints.maxWidth,
-            padding = MediumPadding
+            padding = MediumPadding,
         )
 
         if (walletPreferences.value.wallet != null) {
@@ -153,9 +155,7 @@ fun Collection(searchQuery: State<String>) {
                         items(sortedNfts.size) { i ->
                             MintedTrait(
                                 modifier = Modifier
-                                    .height(height)
-                                    .width(width)
-                                    .border(width = 0.2.dp, shape = TraitShape, color = ContentColor),
+                                    .width(width),
                                 onClick = { selectMashi.invoke(sortedNfts[i]) },
                                 data = sortedNfts[i].compositeUrl,
                                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },

@@ -43,6 +43,7 @@ import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper.toHue
@@ -110,26 +111,24 @@ fun ColorSheet(
                     .padding(start = 328.dp)
                     .width((config.screenWidthDp - 328.0).dp)
                     .padding(horizontal = 16.dp)
-                    .systemBarsPadding()
-
             } else {
                 Modifier
                     .fillMaxWidth()
-                    .systemBarsPadding()
             }
         ),
         shape = BottomSheetShape,
         onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
-        containerColor = Secondary,
+        containerColor = Surface,
         contentColor = ContentColor,
-        contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
+//        contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         dragHandle = null,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height)
+                .systemBarsPadding()
                 .padding(start = Padding, end = Padding, top = SmallPadding)
         ) {
             ColorTypeSelector(

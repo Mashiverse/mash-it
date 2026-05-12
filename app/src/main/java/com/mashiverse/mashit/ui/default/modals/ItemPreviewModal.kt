@@ -94,12 +94,10 @@ fun ItemPreviewModal(
                             .width((config.screenWidthDp - 328.0).dp)
                             .align(Alignment.BottomEnd)
                             .padding(horizontal = 16.dp)
-                            .navigationBarsPadding()
                     } else {
                         Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomEnd)
-                            .navigationBarsPadding()
                     }
                 )
                 .fillMaxHeight(0.8f),
@@ -117,7 +115,8 @@ fun ItemPreviewModal(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = Padding, end = Padding)
-                    .padding(top = 16.dp),
+                    .padding(top = 16.dp)
+                    .navigationBarsPadding(),
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(Padding)) {
                     val selectedTraits =
