@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -23,11 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
-import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.default.picker.ColorPicker
 import com.mashiverse.mashit.ui.default.picker.ColorSlideBar
 import com.mashiverse.mashit.ui.screens.mashup.color.actions.ColorActions
@@ -36,11 +41,12 @@ import com.mashiverse.mashit.ui.screens.mashup.color.type.ColorTypeSelector
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper.toHue
+import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -56,6 +62,9 @@ fun ColorSheet(
     processMashupIntent: (MashupIntent) -> Unit,
     processActionsIntent: (ActionsIntent) -> Unit
 ) {
+    val config = LocalConfiguration.current
+    val screenType = config.detectScreenType()
+
     var pickerLocation by remember { mutableStateOf(Offset.Zero) }
     var rangeColor by remember { mutableStateOf(color) }
     var hueProgress by remember { mutableFloatStateOf(0f) }
@@ -95,12 +104,26 @@ fun ColorSheet(
     }
 
     ModalBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.then(
+            if (screenType == ScreenInfo.EXPANDED) {
+                Modifier
+                    .padding(start = 328.dp)
+                    .width((config.screenWidthDp - 328.0).dp)
+                    .padding(horizontal = 16.dp)
+                    .systemBarsPadding()
+
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .systemBarsPadding()
+            }
+        ),
         shape = BottomSheetShape,
         onDismissRequest = closeBottomSheet,
         sheetState = sheetState,
         containerColor = Secondary,
         contentColor = ContentColor,
+        contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         dragHandle = null,
     ) {
         Column(
@@ -146,7 +169,8 @@ fun ColorSheet(
                     rangeColor = ColorPickerHelper.hsvToColor(progress * 360f, 1f, 1f)
 
                     val saturation = (pickerLocation.x / pickerSize.width).coerceIn(0f, 1f)
-                    val brightness = (1f - pickerLocation.y / pickerSize.height).coerceIn(0f, 1f)
+                    val brightness =
+                        (1f - pickerLocation.y / pickerSize.height).coerceIn(0f, 1f)
                     val newColor =
                         ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
                     processMashupIntent(MashupIntent.OnColorChange(newColor))

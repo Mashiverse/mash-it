@@ -7,14 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -24,9 +25,10 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.OptionalTrait
 import com.mashiverse.mashit.data.models.mashi.Trait
@@ -86,7 +88,6 @@ fun ItemPreviewModal(
 
         ModalBottomSheet(
             modifier = Modifier
-                .height((config.screenHeightDp * 0.8).dp)
                 .then(
                     if (screenType == ScreenInfo.EXPANDED) {
                         Modifier
@@ -100,7 +101,8 @@ fun ItemPreviewModal(
                             .align(Alignment.BottomEnd)
                             .navigationBarsPadding()
                     }
-                ),
+                )
+                .fillMaxHeight(0.8f),
             shape = BottomSheetShape,
             onDismissRequest = closeBottomSheet,
             sheetState = sheetState,
@@ -108,12 +110,11 @@ fun ItemPreviewModal(
             contentColor = ContentColor,
             scrimColor = Color.Transparent,
             dragHandle = null,
-            contentWindowInsets = { WindowInsets(0,0, 0, 0) },
+            contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
             sheetGesturesEnabled = false
         ) {
             Column(
                 modifier = Modifier
-                    .height((config.screenHeightDp * 0.8).dp)
                     .fillMaxWidth()
                     .padding(start = Padding, end = Padding)
                     .padding(top = 16.dp),
@@ -146,7 +147,8 @@ fun ItemPreviewModal(
                         items(traits.size) { i ->
                             val isSelected = traits[i].selected
                             TraitHolder(
-                                modifier = Modifier.width(width),
+                                modifier = Modifier
+                                    .width(width),
                                 onClick = { selectTrait(traits[i].trait) },
                                 isSelected = isSelected,
                                 trait = traits[i].trait,
