@@ -46,18 +46,6 @@ fun Drops(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.weight(1F))
-
-            AnimatedVisibility(isInfo) {
-                Text(
-                    text = "Can be disabled in settings",
-                    fontSize = 12.sp,
-                    color = ContentColor
-                )
-            }
-
-            Spacer(modifier = Modifier.width(ExtraSmallPadding))
-
             Icon(
                 modifier = Modifier
                     .size(24.dp)
@@ -68,6 +56,18 @@ fun Drops(
                 contentDescription = null,
                 tint = ContentAccentColor
             )
+
+            Spacer(modifier = Modifier.width(ExtraSmallPadding))
+
+            AnimatedVisibility(isInfo) {
+                Text(
+                    text = "Can be disabled in settings",
+                    fontSize = 12.sp,
+                    color = ContentColor
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1F))
         }
 
         Spacer(modifier = Modifier.height(SmallPadding))
@@ -105,13 +105,13 @@ fun Drops(
 
         Spacer(modifier = Modifier.height(Padding))
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.DarkGray)
-        )
-
-        Spacer(modifier = Modifier.height(Padding))
+//        Spacer(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(1.dp)
+//                .background(Color.DarkGray)
+//        )
+//
+//        Spacer(modifier = Modifier.height(Padding))
     }
 }

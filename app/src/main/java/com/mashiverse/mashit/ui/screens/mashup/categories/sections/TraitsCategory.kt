@@ -16,6 +16,7 @@ import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.screens.mashup.traits.MashupTraitHolder
 import com.mashiverse.mashit.ui.theme.MediumPadding
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
@@ -36,7 +37,7 @@ fun TraitsCategoryItems(
 
         val (width, height) = getItemWidthAndHeight(
             screenType.collectionColumns,
-            maxWidth = constraints.maxWidth,
+            maxWidth = constraints.maxWidth + Padding * 2,
             MediumPadding
         )
 

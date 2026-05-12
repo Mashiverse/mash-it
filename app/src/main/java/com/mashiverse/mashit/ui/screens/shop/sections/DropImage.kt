@@ -21,8 +21,7 @@ fun DropImage(
 ) {
     AsyncImage(
         modifier = Modifier
-            .width((44.1 * 2).dp)
-            .height((63.6 * 2).dp)
+            .height((80 * 2).dp)
             .clip(TraitShape)
             .clickable {
                 onClick.invoke(slug)

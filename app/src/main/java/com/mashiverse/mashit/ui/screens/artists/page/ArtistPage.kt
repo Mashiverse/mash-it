@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
@@ -62,6 +63,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
+import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent
@@ -75,6 +77,7 @@ import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
 import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
+import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
@@ -123,6 +126,7 @@ fun ArtistPage(alias: String) {
 
     val gState = rememberLazyGridState()
     var isHidden by remember { mutableStateOf(false) }
+    var isBio by remember { mutableStateOf(false) }
     var infoHeight by remember { mutableStateOf(0.dp) }
 
     val totalOffset by remember {
@@ -148,6 +152,7 @@ fun ArtistPage(alias: String) {
         if (currentOffsetDp > infoHeight) {
             isHidden = true
         } else if (currentOffsetDp < infoHeight) {
+            isBio = false
             isHidden = false
         }
     }
@@ -230,16 +235,21 @@ fun ArtistPage(alias: String) {
                                         }
                                     )
 
+                                    Spacer(modifier = Modifier.width(ExtraSmallPadding))
+
                                     Column {
                                         Spacer(modifier = Modifier.height(48.dp))
 
-                                        IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors().copy(
+                                        IconButton(
+                                            modifier = Modifier.size(32.dp), onClick = {
+                                                isBio = !isBio
+                                            }, colors = IconButtonDefaults.iconButtonColors().copy(
                                             containerColor = Secondary
                                         )) {
                                             Icon(
                                                 tint = ContentAccentColor,
-                                                modifier = Modifier.size(32.dp),
-                                                imageVector = Icons.Default.MoreHoriz,
+                                                modifier = Modifier.size(24.dp),
+                                                imageVector = if (isBio) Icons.Default.ArrowCircleUp else Icons.Default.ArrowCircleDown,
                                                 contentDescription = null
                                             )
                                         }
@@ -247,20 +257,24 @@ fun ArtistPage(alias: String) {
                                 }
                             }
 
-//                            Spacer(modifier = Modifier.height(SmallPadding))
-//
-//                            Text(
-//                                text = info.name,
-//                                fontSize = 16.sp,
-//                                fontWeight = FontWeight.Bold,
-//                                color = ContentAccentColor
-//                            )
-//
-//                            Text(
-//                                text = info.bio,
-//                                fontSize = 14.sp,
-//                                color = ContentColor
-//                            )
+                            AnimatedVisibility(visible = isBio) {
+                                Column {
+                                    Spacer(modifier = Modifier.height(SmallPadding))
+
+                                    Text(
+                                        text = info.name,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = ContentAccentColor
+                                    )
+
+                                    Text(
+                                        text = info.bio,
+                                        fontSize = 14.sp,
+                                        color = ContentColor
+                                    )
+                                }
+                            }
 //
                             Spacer(modifier = Modifier.height(Padding))
                         }
