@@ -15,6 +15,7 @@ import com.mashiverse.mashit.ui.screens.mashup.traits.MashupTraitHolder
 
 @Composable
 fun MashupTraitHolderGrid(
+    modifier: Modifier = Modifier,
     items: List<MashupTrait>,
     selectedTraitUrl: String,
     state: LazyGridState,
@@ -25,7 +26,7 @@ fun MashupTraitHolderGrid(
     processImageIntent: (ImageIntent) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         state = state,
         verticalArrangement = Arrangement.spacedBy(spacedByVert),
