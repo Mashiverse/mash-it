@@ -140,7 +140,6 @@ fun ArtistPage(alias: String) {
         }
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -277,27 +276,23 @@ fun ArtistPage(alias: String) {
             processImageIntent = { intent -> viewModel.processImageIntent(intent) },
             processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
         )
+    }
 
-        if (artistPageUiState.isExpanded) {
-            artistPageUiState.selectedNft?.let { nft ->
-                ItemPreviewModal(
-                    selectedNft = nft,
-                    sheetState = previewState,
-                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                ) {
-                    MashiDetailsSection(
-                        nft = nft,
-                        scope = scope,
-                        closeBottomSheet = {
-                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                        },
-                        sheetState = previewState,
-                        clientRef = clientRef,
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                    )
-                }
-            }
+    artistPageUiState.selectedNft?.let { nft ->
+        ItemPreviewModal(
+            selectedNft = nft,
+            sheetState = previewState,
+            closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+        ) {
+            MashiDetailsSection(
+                nft = nft,
+                scope = scope,
+                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                sheetState = previewState,
+                clientRef = clientRef,
+                processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+            )
         }
     }
 

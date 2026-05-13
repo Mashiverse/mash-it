@@ -139,8 +139,7 @@ class RegularShopViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 shopUiState.value = shopUiState.value.copy(
-                    selectedNft = mashItRepo.getShopItem(id),
-                    isExpanded = true
+                    selectedNft = mashItRepo.getShopItem(id)
                 )
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch shop item details")
@@ -150,8 +149,7 @@ class RegularShopViewModel @Inject constructor(
 
     private fun deselectNft() {
         shopUiState.value = shopUiState.value.copy(
-            selectedNft = null,
-            isExpanded = false
+            selectedNft = null
         )
     }
 
@@ -287,10 +285,7 @@ class RegularShopViewModel @Inject constructor(
                 listingId = listingId,
                 price = price,
                 onDialogTrigger = { dialogContent ->
-                    // CRITICAL: Update Compose State on Main Thread
-                    viewModelScope.launch(Dispatchers.Main) {
-                        shopUiState.value = shopUiState.value.copy(dialogContent = dialogContent)
-                    }
+                    shopUiState.value = shopUiState.value.copy(dialogContent = dialogContent)
                 }
             )
         }

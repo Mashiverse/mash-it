@@ -58,7 +58,6 @@ fun RegularShop(
 
     val specialDisabled = viewModel.specialDropsFlow.collectAsState(false)
 
-
     val categoryGState = rememberLazyGridState()
     var isHidden by remember { mutableStateOf(false) }
     LaunchedEffect(categoryGState.canScrollBackward) {
@@ -125,25 +124,21 @@ fun RegularShop(
         }
     }
 
-    if (shopUiState.isExpanded) {
-        shopUiState.selectedNft?.let { nft ->
-            ItemPreviewModal(
-                selectedNft = nft,
-                sheetState = previewState,
+    shopUiState.selectedNft?.let { nft ->
+        ItemPreviewModal(
+            selectedNft = nft,
+            sheetState = previewState,
+            closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+        ) {
+            MashiDetailsSection(
+                nft = nft,
+                scope = scope,
                 closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-            ) {
-                MashiDetailsSection(
-                    nft = nft,
-                    scope = scope,
-                    closeBottomSheet = {
-                        viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                    },
-                    sheetState = previewState,
-                    clientRef = clientRef,
-                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                )
-            }
+                sheetState = previewState,
+                clientRef = clientRef,
+                processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+            )
         }
     }
 

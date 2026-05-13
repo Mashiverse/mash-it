@@ -107,7 +107,6 @@ class ArtistPageViewModel @Inject constructor(
             try {
                 artistPageUiState.value = artistPageUiState.value.copy(
                     selectedNft = mashitRepo.getShopItem(id),
-                    isExpanded = true
                 )
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch shop item details")
@@ -117,13 +116,11 @@ class ArtistPageViewModel @Inject constructor(
 
     private fun deselectNft() {
         artistPageUiState.value = artistPageUiState.value.copy(
-            selectedNft = null,
-            isExpanded = false
+            selectedNft = null
         )
     }
 
     // Image Type
-
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
             is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
@@ -254,12 +251,9 @@ class ArtistPageViewModel @Inject constructor(
                 listingId = listingId,
                 price = price,
                 onDialogTrigger = { dialogContent ->
-                    // CRITICAL: Push UI updates back to the Main thread
-                    viewModelScope.launch(Dispatchers.Main) {
-                        artistPageUiState.value = artistPageUiState.value.copy(
-                            dialogContent = dialogContent
-                        )
-                    }
+                    artistPageUiState.value = artistPageUiState.value.copy(
+                        dialogContent = dialogContent
+                    )
                 }
             )
         }
