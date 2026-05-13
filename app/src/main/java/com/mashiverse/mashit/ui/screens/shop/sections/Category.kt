@@ -41,6 +41,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun Category(
+    modifier: Modifier = Modifier,
     shopUiState: ShopUiState,
     clientRef: CoinbaseWalletSDK?,
     processImageIntent: (ImageIntent) -> Unit,
@@ -48,6 +49,7 @@ fun Category(
     processShopIntent: (ShopIntent) -> Unit,
     processWeb3Intent: (Web3Intent) -> Unit,
     categoryState: LazyGridState,
+    isLoadedCallback: (Boolean) -> Unit
 ) {
     val isSearch = onSearchQueryClear != null
 
@@ -66,7 +68,7 @@ fun Category(
     val appendState = items.loadState.append
     val refreshState = items.loadState.refresh
 
-    Box {
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -122,7 +124,10 @@ fun Category(
                 processImageIntent = processImageIntent,
                 processWeb3Intent = processWeb3Intent,
             )
+        }
 
+        if (refreshState is LoadState.NotLoading) {
+            isLoadedCallback.invoke(true)
         }
 
         if (!isSearch && refreshState is LoadState.Loading) {

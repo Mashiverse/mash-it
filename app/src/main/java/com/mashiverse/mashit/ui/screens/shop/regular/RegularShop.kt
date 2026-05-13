@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.sys.data.ShopDataType
@@ -92,12 +93,14 @@ fun RegularShop(
         }
     }
 
+    var isLoaded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = Padding)
     ) {
-        AnimatedVisibility(searchQuery.isEmpty() && !isHidden && !specialDisabled.value) {
+        AnimatedVisibility(searchQuery.isEmpty() && !isHidden && !specialDisabled.value && isLoaded) {
             Drops(
                 specialDrops = specialDrops,
                 navigateToDrop = navigateToDrop
@@ -117,7 +120,9 @@ fun RegularShop(
             processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
             processImageIntent = { intent -> viewModel.processImageIntent(intent) },
             processShopIntent = { intent -> viewModel.processShopIntent(intent) }
-        )
+        ) { loaded ->
+            isLoaded = loaded
+        }
     }
 
     if (shopUiState.isExpanded) {
