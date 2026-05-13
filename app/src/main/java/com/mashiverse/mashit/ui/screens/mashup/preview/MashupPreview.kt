@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,67 +51,69 @@ fun MashupPreview(
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
 
-    ModalBottomSheet(
-        modifier = Modifier.then(
-            if (screenType == ScreenInfo.EXPANDED) {
-                Modifier
-                    .padding(start = 328.dp)
-                    .width((config.screenWidthDp - 328.0).dp)
-                    .padding(horizontal = 16.dp)
-            } else {
-                Modifier
-                    .fillMaxWidth()
-            }
-        ),
-        shape = BottomSheetShape,
-        onDismissRequest = closeBottomSheet,
-        sheetState = sheetState,
-        containerColor = Surface,
-        contentColor = ContentColor,
-        dragHandle = null,
-        sheetGesturesEnabled = false
-    ) {
-        Column(
-            modifier = Modifier
-                .height(height)
-                .padding(start = Padding, end = Padding, top = Padding)
-                .systemBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Row {
+        ModalBottomSheet(
+            modifier = Modifier.then(
+                if (screenType == ScreenInfo.EXPANDED) {
+                    Modifier
+                        .padding(start = 328.dp)
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                }
+            ),
+            shape = BottomSheetShape,
+            onDismissRequest = closeBottomSheet,
+            sheetState = sheetState,
+            containerColor = Surface,
+            contentColor = ContentColor,
+            dragHandle = null,
+            sheetGesturesEnabled = false
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier
+                    .height(height)
+                    .padding(start = Padding, end = Padding, top = Padding)
+                    .systemBarsPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.weight(1F))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Spacer(Modifier.weight(1F))
 
-                IconButton(
-                    modifier = Modifier.size(32.dp),
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                closeBottomSheet.invoke()
+                    IconButton(
+                        modifier = Modifier.size(32.dp),
+                        onClick = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    closeBottomSheet.invoke()
+                                }
                             }
                         }
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(32.dp),
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "More",
+                            tint = ContentAccentColor
+                        )
                     }
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(32.dp),
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "More",
-                        tint = ContentAccentColor
-                    )
                 }
+
+                Spacer(modifier = Modifier.height(SmallPadding))
+
+                TraitHolderGrid(
+                    items = mashupDetails.assets.sortedBy { it.type },
+                    spacedByVert = MediumPadding,
+                    spacedByHoriz = MediumPadding,
+                    columns = screenType.collectionColumns,
+                    processImageIntent = processImageIntent
+                )
             }
-
-            Spacer(modifier = Modifier.height(SmallPadding))
-
-            TraitHolderGrid(
-                items = mashupDetails.assets.sortedBy { it.type },
-                spacedByVert = MediumPadding,
-                spacedByHoriz = MediumPadding,
-                columns = screenType.collectionColumns,
-                processImageIntent = processImageIntent
-            )
         }
     }
 }
