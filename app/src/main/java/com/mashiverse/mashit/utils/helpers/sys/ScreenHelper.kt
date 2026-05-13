@@ -1,7 +1,6 @@
 package com.mashiverse.mashit.utils.helpers.sys
 
 import android.content.res.Configuration
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times

@@ -29,12 +29,8 @@ import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.data.states.web3.Web3Intent
 import com.mashiverse.mashit.ui.default.indicators.SectionLoading
 import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
-import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
-import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.MediumPadding
-import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 
 @Composable
