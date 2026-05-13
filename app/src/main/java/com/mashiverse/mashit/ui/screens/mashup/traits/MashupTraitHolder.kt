@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -32,8 +34,6 @@ import com.mashiverse.mashit.ui.theme.TraitShape
 
 @Composable
 fun MashupTraitHolder(
-    width: Dp,
-    height: Dp,
     isSelected: Boolean = false,
     mashupTrait: MashupTrait,
     processMashupIntent: (MashupIntent) -> Unit,
@@ -44,8 +44,8 @@ fun MashupTraitHolder(
     Column {
         Box(
             modifier = Modifier
-                .width(width)
-                .height(height)
+                .fillMaxWidth()
+                .aspectRatio(3f / 4f)
                 .clip(TraitShape)
                 .background(Surface)
                 .border(
@@ -66,7 +66,7 @@ fun MashupTraitHolder(
         Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
         Row(
-            modifier = Modifier.width(width),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(

@@ -3,9 +3,7 @@ package com.mashiverse.mashit.ui.screens.shop.special
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -44,7 +40,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -59,20 +54,17 @@ import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.grids.ShopItemGrid
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
-import com.mashiverse.mashit.ui.screens.artists.ProfilePicture
-import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
-import com.mashiverse.mashit.ui.theme.ExtraSmallPadding
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,171 +136,159 @@ fun SpecialDrop(slug: String) {
         }
     }
 
-    BoxWithConstraints {
-        val constraints = this
 
-        val (width, height) = getItemWidthAndHeight(screenType.shopColumns, constraints.maxWidth)
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = Padding)
-        ) {
-            specialDropUiState.dropInfo?.let { info ->
-                AnimatedVisibility(
-                    modifier = Modifier
-                        .onSizeChanged { size ->
-                            with(density) { infoHeight = size.height.toDp() }
-                        },
-                    visible = !isHidden
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Padding)
+    ) {
+        specialDropUiState.dropInfo?.let { info ->
+            AnimatedVisibility(
+                modifier = Modifier
+                    .onSizeChanged { size ->
+                        with(density) { infoHeight = size.height.toDp() }
+                    },
+                visible = !isHidden
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
+                    val model =
+                        if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
+
+                    AsyncImage(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .fillMaxWidth()
+                            .heightIn(max = bannerHeight)
+                            .clip(RoundedCornerShape(8))
+                            .blur(radius = 20.dp) // Adjust blur intensity here
+                            .alpha(0.33f),
+                        model = model,
+                        contentScale = ContentScale.FillWidth,
+                        contentDescription = null
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .widthIn(max = 480.dp)
                     ) {
-                        val model =
-                            if (screenType == ScreenInfo.COMPACT) info.mobileImageUrl else info.desktopImageUrl
-
-                        AsyncImage(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxWidth()
-                                .heightIn(max = bannerHeight)
-                                .clip(RoundedCornerShape(8))
-                                .blur(radius = 20.dp) // Adjust blur intensity here
-                                .alpha(0.33f),
-                            model = model,
-                            contentScale = ContentScale.FillWidth,
-                            contentDescription = null
-                        )
-
-                        Column(modifier = Modifier.align(Alignment.Center).widthIn(max = 480.dp)){
-                            Box {
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .align(Alignment.TopStart)
-                                        .fillMaxWidth()
-                                        .onSizeChanged { size ->
-                                            with(density) {
-                                                bannerHeight = size.height.toDp()
-                                            }
+                        Box {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .fillMaxWidth()
+                                    .onSizeChanged { size ->
+                                        with(density) {
+                                            bannerHeight = size.height.toDp()
                                         }
-                                        .clip(RoundedCornerShape(4)),
-                                    model = model,
-                                    contentDescription = null
-                                )
+                                    }
+                                    .clip(RoundedCornerShape(4)),
+                                model = model,
+                                contentDescription = null
+                            )
 
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.BottomStart)
-                                        .padding(
-                                            top = if (model.isNotEmpty()) max(
-                                                0.dp,
-                                                bannerHeight - 40.dp
-                                            ) else 0.dp
+                            Row(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(
+                                        top = if (model.isNotEmpty()) max(
+                                            0.dp,
+                                            bannerHeight - 40.dp
+                                        ) else 0.dp
+                                    )
+                            ) {
+                                Spacer(modifier = Modifier.width(Padding))
+
+                                Column {
+                                    Spacer(modifier = Modifier.height(48.dp))
+
+                                    IconButton(
+                                        modifier = Modifier.size(32.dp), onClick = {
+                                            isBio = !isBio
+                                        }, colors = IconButtonDefaults.iconButtonColors().copy(
+                                            containerColor = Secondary
                                         )
-                                ) {
-                                    Spacer(modifier = Modifier.width(Padding))
-
-                                    Column {
-                                        Spacer(modifier = Modifier.height(48.dp))
-
-                                        IconButton(
-                                            modifier = Modifier.size(32.dp), onClick = {
-                                                isBio = !isBio
-                                            }, colors = IconButtonDefaults.iconButtonColors().copy(
-                                                containerColor = Secondary
-                                            )) {
-                                            Icon(
-                                                tint = ContentAccentColor,
-                                                modifier = Modifier.size(24.dp),
-                                                imageVector = if (isBio) Icons.Default.ArrowCircleUp else Icons.Default.ArrowCircleDown,
-                                                contentDescription = null
-                                            )
-                                        }
+                                    ) {
+                                        Icon(
+                                            tint = ContentAccentColor,
+                                            modifier = Modifier.size(24.dp),
+                                            imageVector = if (isBio) Icons.Default.ArrowCircleUp else Icons.Default.ArrowCircleDown,
+                                            contentDescription = null
+                                        )
                                     }
                                 }
                             }
-
-                            AnimatedVisibility(visible = isBio) {
-                                Column {
-                                    Spacer(modifier = Modifier.height(SmallPadding))
-
-                                    Text(
-                                        text = info.name,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = ContentAccentColor
-                                    )
-
-                                    Text(
-                                        text = info.description ?: "",
-                                        fontSize = 14.sp,
-                                        color = ContentColor
-                                    )
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(Padding))
                         }
+
+                        AnimatedVisibility(visible = isBio) {
+                            Column {
+                                Spacer(modifier = Modifier.height(SmallPadding))
+
+                                Text(
+                                    text = info.name,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = ContentAccentColor
+                                )
+
+                                Text(
+                                    text = info.description ?: "",
+                                    fontSize = 14.sp,
+                                    color = ContentColor
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(Padding))
                     }
                 }
             }
+        }
 
-            LazyVerticalGrid(
-                state = gState,
-                columns = GridCells.Fixed(screenType.shopColumns),
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                verticalArrangement = Arrangement.spacedBy(Padding)
-            ) {
-                items(
-                    specialDropUiState.dropItems.size
-                ) { index ->
-                    val nft = specialDropUiState.dropItems[index]
+        ShopItemGrid(
+            items = specialDropUiState.dropItems,
+            state = gState,
+            columns = screenType.shopColumns,
+            spacedByHoriz = MediumPadding,
+            spacedByVert = Padding,
+            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+            clientRef = clientRef,
+            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+        )
 
-                    ShopItem(
+        if (specialDropUiState.isExpanded) {
+            specialDropUiState.selectedNft?.let { nft ->
+                ItemPreviewModal(
+                    selectedNft = nft,
+                    sheetState = previewState,
+                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                ) {
+                    MashiDetailsSection(
                         nft = nft,
-                        processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+                        scope = scope,
+                        closeBottomSheet = {
+                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                        },
+                        sheetState = previewState,
                         clientRef = clientRef,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                        imageWidth = width,
-                        imageHeight = height,
+                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
                     )
                 }
             }
-
-            if (specialDropUiState.isExpanded) {
-                specialDropUiState.selectedNft?.let { nft ->
-                    ItemPreviewModal(
-                        selectedNft = nft,
-                        sheetState = previewState,
-                        closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                    ) {
-                        MashiDetailsSection(
-                            nft = nft,
-                            scope = scope,
-                            closeBottomSheet = {
-                                viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                            },
-                            sheetState = previewState,
-                            clientRef = clientRef,
-                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                        )
-                    }
-                }
-            }
         }
+    }
 
-        if (specialDropUiState.dropInfo == null) {
-            LoadingIndicator(text = "Loading")
-        }
+    if (specialDropUiState.dropInfo == null) {
+        LoadingIndicator(text = "Loading")
+    }
 
-        specialDropUiState.dialogContent?.let { content ->
-            Dialog(content) {
-                viewModel.processDialogIntent(DialogIntent.OnClear)
-            }
+    specialDropUiState.dialogContent?.let { content ->
+        Dialog(content) {
+            viewModel.processDialogIntent(DialogIntent.OnClear)
         }
     }
 }

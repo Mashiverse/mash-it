@@ -2,7 +2,7 @@ package com.mashiverse.mashit.ui.default.modals
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,12 +10,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -24,19 +21,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.OptionalTrait
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.ui.default.grids.TraitHolderGrid
 import com.mashiverse.mashit.ui.default.traits.MashupComposite
-import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.LargeHolderHeight
@@ -45,7 +39,6 @@ import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,37 +69,27 @@ fun ItemPreviewModal(
         }
     }
 
-    BoxWithConstraints {
-        val constraints = this
-
-        val (width, _) = getItemWidthAndHeight(
-            screenType.collectionColumns,
-            maxWidth = constraints.maxWidth,
-            MediumPadding,
-            if (screenType == ScreenInfo.EXPANDED) 16.dp else 0.dp
-        )
-
+    Box {
         ModalBottomSheet(
             modifier = Modifier
                 .then(
                     if (screenType == ScreenInfo.EXPANDED) {
                         Modifier
-                            .width((config.screenWidthDp - 328.0).dp)
-                            .align(Alignment.BottomEnd)
+                            .padding(start = 328.dp)
                             .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
                     } else {
                         Modifier
                             .fillMaxWidth()
-                            .align(Alignment.BottomEnd)
                     }
                 )
+                .align(Alignment.BottomEnd)
                 .fillMaxHeight(0.8f),
             shape = BottomSheetShape,
             onDismissRequest = closeBottomSheet,
             sheetState = sheetState,
             containerColor = Surface,
             contentColor = ContentColor,
-            scrimColor = Color.Transparent,
             dragHandle = null,
             contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
             sheetGesturesEnabled = false
@@ -137,23 +120,14 @@ fun ItemPreviewModal(
                 Spacer(modifier = Modifier.height(Padding))
 
                 optionalTraits?.let { traits ->
-                    LazyVerticalGrid(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(Padding),
-                        horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                        columns = GridCells.Fixed(screenType.collectionColumns)
-                    ) {
-                        items(traits.size) { i ->
-                            val isSelected = traits[i].selected
-                            TraitHolder(
-                                modifier = Modifier
-                                    .width(width),
-                                onClick = { selectTrait(traits[i].trait) },
-                                isSelected = isSelected,
-                                trait = traits[i].trait,
-                                processImageIntent = processImageIntent
-                            )
-                        }
+                    TraitHolderGrid(
+                        items = traits,
+                        spacedByHoriz = MediumPadding,
+                        spacedByVert = Padding,
+                        columns = screenType.collectionColumns,
+                        processImageIntent = processImageIntent
+                    ) { trait ->
+                        selectTrait(trait)
                     }
                 }
             }

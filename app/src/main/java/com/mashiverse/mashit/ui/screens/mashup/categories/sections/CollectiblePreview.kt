@@ -45,10 +45,11 @@ import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
+import com.mashiverse.mashit.utils.helpers.sys.getItemWidth
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -75,10 +76,11 @@ fun CollectiblePreview(
     BoxWithConstraints {
         val constraints = this
 
-        val (width, _) = getItemWidthAndHeight(
+        val width = getItemWidth(
             screenType.collectionColumns,
             maxWidth = constraints.maxWidth,
-            MediumPadding
+            MediumPadding,
+            initialPadding = -Padding
         )
 
         Column(modifier = Modifier.fillMaxWidth()) {

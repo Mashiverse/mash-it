@@ -1,15 +1,11 @@
 package com.mashiverse.mashit.ui.screens.collection
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -27,26 +23,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.default.grids.MintedTraitGrid
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.default.sorting.Sorting
 import com.mashiverse.mashit.ui.default.traits.MintedTrait
-import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
-import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -122,71 +115,52 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = false
     }
 
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val constraints = this
 
-        val (width, _) = getItemWidthAndHeight(
-            screenType.collectionColumns,
-            maxWidth = constraints.maxWidth,
-            padding = MediumPadding,
-        )
+    if (walletPreferences.value.wallet != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = Padding),
+        ) {
+            Sorting(onSortChange = { type ->
+                sortType = type
+                scope.launch { lazyGridState.animateScrollToItem(0) }
+            })
 
-        if (walletPreferences.value.wallet != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = Padding),
-            ) {
-                Sorting(onSortChange = {
-                        type -> sortType = type
-                    scope.launch { lazyGridState.animateScrollToItem(0) }
-                })
-
-                if (isReady) {
-                    LazyVerticalGrid(
-                        state = lazyGridState,
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                        horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                        columns = GridCells.Fixed(screenType.collectionColumns)
-                    ) {
-                        items(sortedNfts.size) { i ->
-                            MintedTrait(
-                                modifier = Modifier
-                                    .width(width),
-                                onClick = { selectMashi.invoke(sortedNfts[i]) },
-                                data = sortedNfts[i].compositeUrl,
-                                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                                mint = sortedNfts[i].owned!![0].mint
-                            )
-                        }
-                    }
-                } else {
-                    LoadingIndicator(text = "Loading")
+            if (isReady) {
+                MintedTraitGrid(
+                    items = sortedNfts,
+                    state = lazyGridState,
+                    spacedByHoriz = MediumPadding,
+                    spacedByVert = MediumPadding,
+                    columns = screenType.collectionColumns,
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                ) { nft ->
+                    selectMashi.invoke(nft)
                 }
+            } else {
+                LoadingIndicator(text = "Loading")
             }
-
-            if (isBottomSheet) {
-                selectedMashi?.let {
-                    ItemPreviewModal(
-                        selectedNft = selectedMashi!!,
-                        closeBottomSheet = closeBottomSheet,
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                        sheetState = sheetState,
-                    ) {
-                        MashiDetailsSection(
-                            nft = selectedMashi!!,
-                            scope = scope,
-                            closeBottomSheet = closeBottomSheet,
-                            sheetState = sheetState,
-                        )
-                    }
-                }
-            }
-        } else {
-            NotConnected()
         }
+
+        if (isBottomSheet) {
+            selectedMashi?.let {
+                ItemPreviewModal(
+                    selectedNft = selectedMashi!!,
+                    closeBottomSheet = closeBottomSheet,
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                    sheetState = sheetState,
+                ) {
+                    MashiDetailsSection(
+                        nft = selectedMashi!!,
+                        scope = scope,
+                        closeBottomSheet = closeBottomSheet,
+                        sheetState = sheetState,
+                    )
+                }
+            }
+        }
+    } else {
+        NotConnected()
     }
 }

@@ -5,7 +5,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -26,9 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowCircleUp
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
@@ -63,11 +57,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
-import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.grids.ShopItemGrid
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.SectionLoading
 import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
@@ -82,9 +76,7 @@ import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallPadding
-import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,202 +149,174 @@ fun ArtistPage(alias: String) {
         }
     }
 
-    BoxWithConstraints {
-        val constraints = this
 
-        val (width, height) = getItemWidthAndHeight(
-            columns = screenType.shopColumns,
-            maxWidth = constraints.maxWidth
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = Padding)
-        ) {
-            artistPageUiState.pageInfo?.let { info ->
-                AnimatedVisibility(
-                    modifier = Modifier
-                        .onSizeChanged { size ->
-                            with(density) { infoHeight = size.height.toDp() }
-                        },
-                    visible = !isHidden
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Padding)
+    ) {
+        artistPageUiState.pageInfo?.let { info ->
+            AnimatedVisibility(
+                modifier = Modifier
+                    .onSizeChanged { size ->
+                        with(density) { infoHeight = size.height.toDp() }
+                    },
+                visible = !isHidden
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
+                    val model =
+                        if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
+
+                    AsyncImage(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .fillMaxWidth()
+                            .heightIn(max = bannerHeight)
+                            .clip(RoundedCornerShape(8))
+                            .blur(radius = 20.dp) // Adjust blur intensity here
+                            .alpha(0.33f),
+                        model = model,
+                        contentScale = ContentScale.FillWidth,
+                        contentDescription = null
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .widthIn(max = 480.dp)
                     ) {
-                        val model =
-                            if (screenType == ScreenInfo.COMPACT) info.bannerUrl else info.desktopBannerUrl
-
-                        AsyncImage(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxWidth()
-                                .heightIn(max = bannerHeight)
-                                .clip(RoundedCornerShape(8))
-                                .blur(radius = 20.dp) // Adjust blur intensity here
-                                .alpha(0.33f),
-                            model = model,
-                            contentScale = ContentScale.FillWidth,
-                            contentDescription = null
-                        )
-
-                        Column(modifier = Modifier.align(Alignment.Center).widthIn(max = 480.dp)){
-                            Box {
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .align(Alignment.TopStart)
-                                        .fillMaxWidth()
-                                        .onSizeChanged { size ->
-                                            with(density) {
-                                                bannerHeight = size.height.toDp()
-                                            }
+                        Box {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .fillMaxWidth()
+                                    .onSizeChanged { size ->
+                                        with(density) {
+                                            bannerHeight = size.height.toDp()
                                         }
-                                        .clip(RoundedCornerShape(4)),
-                                    model = model,
-                                    contentDescription = null
+                                    }
+                                    .clip(RoundedCornerShape(4)),
+                                model = model,
+                                contentDescription = null
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(
+                                        top = if (model.isNotEmpty()) max(
+                                            0.dp,
+                                            bannerHeight - 40.dp
+                                        ) else 0.dp
+                                    )
+                            ) {
+                                Spacer(modifier = Modifier.width(Padding))
+
+                                ProfilePicture(
+                                    onClick = {},
+                                    artistMashup = info.mashup,
+                                    processImageIntent = { intent ->
+                                        viewModel.processImageIntent(
+                                            intent
+                                        )
+                                    }
                                 )
 
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.BottomStart)
-                                        .padding(
-                                            top = if (model.isNotEmpty()) max(
-                                                0.dp,
-                                                bannerHeight - 40.dp
-                                            ) else 0.dp
-                                        )
-                                ) {
-                                    Spacer(modifier = Modifier.width(Padding))
+                                Spacer(modifier = Modifier.width(ExtraSmallPadding))
 
-                                    ProfilePicture(
-                                        onClick = {},
-                                        artistMashup = info.mashup,
-                                        processImageIntent = { intent ->
-                                            viewModel.processImageIntent(
-                                                intent
-                                            )
-                                        }
-                                    )
-
-                                    Spacer(modifier = Modifier.width(ExtraSmallPadding))
-
-                                    Column {
-                                        Spacer(modifier = Modifier.height(48.dp))
-
-                                        IconButton(
-                                            modifier = Modifier.size(32.dp), onClick = {
-                                                isBio = !isBio
-                                            }, colors = IconButtonDefaults.iconButtonColors().copy(
-                                            containerColor = Secondary
-                                        )) {
-                                            Icon(
-                                                tint = ContentAccentColor,
-                                                modifier = Modifier.size(24.dp),
-                                                imageVector = if (isBio) Icons.Default.ArrowCircleUp else Icons.Default.ArrowCircleDown,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                            AnimatedVisibility(visible = isBio) {
                                 Column {
-                                    Spacer(modifier = Modifier.height(SmallPadding))
+                                    Spacer(modifier = Modifier.height(48.dp))
 
-                                    Text(
-                                        text = info.name,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = ContentAccentColor
-                                    )
-
-                                    if (info.bio.isNotEmpty()) {
-                                        Text(
-                                            text = info.bio,
-                                            fontSize = 14.sp,
-                                            color = ContentColor
+                                    IconButton(
+                                        modifier = Modifier.size(32.dp), onClick = {
+                                            isBio = !isBio
+                                        }, colors = IconButtonDefaults.iconButtonColors().copy(
+                                            containerColor = Secondary
+                                        )
+                                    ) {
+                                        Icon(
+                                            tint = ContentAccentColor,
+                                            modifier = Modifier.size(24.dp),
+                                            imageVector = if (isBio) Icons.Default.ArrowCircleUp else Icons.Default.ArrowCircleDown,
+                                            contentDescription = null
                                         )
                                     }
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(Padding))
                         }
+
+                        AnimatedVisibility(visible = isBio) {
+                            Column {
+                                Spacer(modifier = Modifier.height(SmallPadding))
+
+                                Text(
+                                    text = info.name,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = ContentAccentColor
+                                )
+
+                                if (info.bio.isNotEmpty()) {
+                                    Text(
+                                        text = info.bio,
+                                        fontSize = 14.sp,
+                                        color = ContentColor
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(Padding))
                     }
                 }
             }
+        }
 
-            LazyVerticalGrid(
-                state = gState,
-                columns = GridCells.Fixed(screenType.shopColumns),
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                verticalArrangement = Arrangement.spacedBy(Padding)
-            ) {
-                items(
-                    count = listings.itemCount,
-                    key = listings.itemKey { it.name + it.compositeUrl }
-                ) { index ->
-                    val nft = listings[index]
-                    nft?.let {
-                        ShopItem(
-                            nft = nft,
-                            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
-                            clientRef = clientRef,
-                            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
-                            imageWidth = width,
-                            imageHeight = height,
-                        )
-                    }
-                }
+        ShopItemGrid(
+            items = listings,
+            appendState = appendState,
+            state = gState,
+            columns = screenType.shopColumns,
+            spacedByHoriz = MediumPadding,
+            spacedByVert = Padding,
+            processShopIntent = { intent -> viewModel.processShopIntent(intent) },
+            clientRef = clientRef,
+            processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
+        )
 
-                if (appendState is LoadState.Loading) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        SectionLoading()
-                    }
-                }
-
-                if (appendState is LoadState.Error) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        SectionRefresh(onRetry = { listings.retry() })
-                    }
-                }
-            }
-
-            if (artistPageUiState.isExpanded) {
-                artistPageUiState.selectedNft?.let { nft ->
-                    ItemPreviewModal(
-                        selectedNft = nft,
+        if (artistPageUiState.isExpanded) {
+            artistPageUiState.selectedNft?.let { nft ->
+                ItemPreviewModal(
+                    selectedNft = nft,
+                    sheetState = previewState,
+                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                ) {
+                    MashiDetailsSection(
+                        nft = nft,
+                        scope = scope,
+                        closeBottomSheet = {
+                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                        },
                         sheetState = previewState,
-                        closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                    ) {
-                        MashiDetailsSection(
-                            nft = nft,
-                            scope = scope,
-                            closeBottomSheet = {
-                                viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                            },
-                            sheetState = previewState,
-                            clientRef = clientRef,
-                            processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                        )
-                    }
+                        clientRef = clientRef,
+                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+                    )
                 }
             }
         }
+    }
 
-        if (artistPageUiState.pageInfo == null) {
-            LoadingIndicator(text = "Loading")
-        }
+    if (artistPageUiState.pageInfo == null) {
+        LoadingIndicator(text = "Loading")
+    }
 
-        artistPageUiState.dialogContent?.let { content ->
-            Dialog(content) {
-                viewModel.processDialogIntent(DialogIntent.OnClear)
-            }
+    artistPageUiState.dialogContent?.let { content ->
+        Dialog(content) {
+            viewModel.processDialogIntent(DialogIntent.OnClear)
         }
     }
 }

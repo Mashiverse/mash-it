@@ -25,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -34,15 +35,16 @@ import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.grids.MashupTraitHolderGrid
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
 import com.mashiverse.mashit.ui.default.sorting.Sorting
 import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
 import com.mashiverse.mashit.ui.screens.mashup.categories.sections.CollectiblesCategory
-import com.mashiverse.mashit.ui.screens.mashup.categories.sections.TraitsCategoryItems
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
+import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.XLHolderHeight
@@ -50,6 +52,7 @@ import com.mashiverse.mashit.ui.theme.XLHolderWidth
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
 import com.mashiverse.mashit.utils.helpers.nft.sortNfts
+import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 
 @SuppressLint(
     "ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
@@ -62,9 +65,12 @@ fun Mashup(searchQuery: State<String>) {
         mutableStateOf(searchQuery.value)
     }
 
+    val config = LocalConfiguration.current
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val viewModel = hiltViewModel<MashupViewModel>()
+
+    val screenType = config.detectScreenType()
 
     // Modals
     val colorChangingState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -209,16 +215,19 @@ fun Mashup(searchQuery: State<String>) {
                                 processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                             )
                         } else {
-                            TraitsCategoryItems(
-                                traits = traits,
+                            MashupTraitHolderGrid(
+                                items = traits,
                                 selectedTraitUrl = selectedTraitUrl,
-                                lazyGridState = traitsGridState,
+                                state = traitsGridState,
+                                spacedByHoriz = MediumPadding,
+                                spacedByVert = MediumPadding,
+                                columns = screenType.collectionColumns,
+                                processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                                 processMashupIntent = { intent ->
                                     viewModel.processMashupIntent(
                                         intent
                                     )
-                                },
-                                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+                                }
                             )
                         }
                     } else {

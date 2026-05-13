@@ -2,7 +2,6 @@ package com.mashiverse.mashit.ui.screens.mashup.preview
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.sys.ImageIntent
+import com.mashiverse.mashit.ui.default.grids.TraitHolderGrid
 import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -39,7 +39,6 @@ import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -57,87 +56,67 @@ fun MashupPreview(
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
 
-    BoxWithConstraints {
-        val constraints = this
-
-        val (itemWidth, _) = getItemWidthAndHeight(
-            screenType.collectionColumns,
-            maxWidth = constraints.maxWidth,
-            MediumPadding,
-            initialPadding = 16.dp
-        )
-
-        ModalBottomSheet(
-            modifier = Modifier.then(
-                if (screenType == ScreenInfo.EXPANDED) {
-                    Modifier
-                        .padding(start = 328.dp)
-                        .width((config.screenWidthDp - 328.0).dp)
-                        .padding(horizontal = 16.dp)
-                } else {
-                    Modifier
-                        .fillMaxWidth()
-                }
-            ),
-            shape = BottomSheetShape,
-            onDismissRequest = closeBottomSheet,
-            sheetState = sheetState,
-            containerColor = Surface,
-            contentColor = ContentColor,
-            dragHandle = null,
-            sheetGesturesEnabled = false
+    ModalBottomSheet(
+        modifier = Modifier.then(
+            if (screenType == ScreenInfo.EXPANDED) {
+                Modifier
+                    .padding(start = 328.dp)
+                    .width((config.screenWidthDp - 328.0).dp)
+                    .padding(horizontal = 16.dp)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+            }
+        ),
+        shape = BottomSheetShape,
+        onDismissRequest = closeBottomSheet,
+        sheetState = sheetState,
+        containerColor = Surface,
+        contentColor = ContentColor,
+        dragHandle = null,
+        sheetGesturesEnabled = false
+    ) {
+        Column(
+            modifier = Modifier
+                .height(height)
+                .padding(start = Padding, end = Padding, top = Padding)
+                .systemBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .height(height)
-                    .padding(start = Padding, end = Padding, top = Padding)
-                    .systemBarsPadding(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Spacer(Modifier.weight(1F))
+                Spacer(Modifier.weight(1F))
 
-                    IconButton(
-                        modifier = Modifier.size(32.dp),
-                        onClick = {
-                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                if (!sheetState.isVisible) {
-                                    closeBottomSheet.invoke()
-                                }
+                IconButton(
+                    modifier = Modifier.size(32.dp),
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                closeBottomSheet.invoke()
                             }
                         }
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(32.dp),
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "More",
-                            tint = ContentAccentColor
-                        )
                     }
-                }
-
-                Spacer(modifier = Modifier.height(SmallPadding))
-
-                LazyVerticalGrid(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                    horizontalArrangement = Arrangement.spacedBy(MediumPadding),
-                    columns = GridCells.Fixed(screenType.collectionColumns)
                 ) {
-                    val sorted = mashupDetails.assets.sortedBy { it.type }
-                    items(sorted.size) { i ->
-                        TraitHolder(
-                            modifier = Modifier.width(itemWidth),
-                            trait = sorted[i],
-                            processImageIntent = processImageIntent,
-                            onClick = {}
-                        )
-                    }
+                    Icon(
+                        modifier = Modifier
+                            .size(32.dp),
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "More",
+                        tint = ContentAccentColor
+                    )
                 }
             }
+
+            Spacer(modifier = Modifier.height(SmallPadding))
+
+            TraitHolderGrid(
+                items = mashupDetails.assets.sortedBy { it.type },
+                spacedByVert = MediumPadding,
+                spacedByHoriz = MediumPadding,
+                columns = screenType.collectionColumns,
+                processImageIntent = processImageIntent
+            )
         }
     }
 }
