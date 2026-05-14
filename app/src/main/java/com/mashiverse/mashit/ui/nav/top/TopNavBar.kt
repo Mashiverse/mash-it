@@ -42,7 +42,8 @@ fun TopNavBar(
     onSearchQueryChange: (String) -> Unit,
     onIsSearchChange: () -> Unit,
     isSearch: Boolean,
-    hasSearch: Boolean = true
+    hasSearch: Boolean = true,
+    isTablet: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -76,21 +77,23 @@ fun TopNavBar(
                     exit = fadeOut(tween(durationMillis = 150))
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .align(Alignment.CenterStart)
-                                .clickable(onClick = {
-                                    scope.launch {
-                                        drawerState.apply {
-                                            if (isClosed) open() else close()
+                        if (!isTablet) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .align(Alignment.CenterStart)
+                                    .clickable(onClick = {
+                                        scope.launch {
+                                            drawerState.apply {
+                                                if (isClosed) open() else close()
+                                            }
                                         }
-                                    }
-                                }),
-                            tint = ContentAccentColor,
-                            contentDescription = "menu icon"
-                        )
+                                    }),
+                                tint = ContentAccentColor,
+                                contentDescription = "menu icon"
+                            )
+                        }
 
                         Text(
                             modifier = Modifier

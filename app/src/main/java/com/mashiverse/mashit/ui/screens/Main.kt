@@ -206,7 +206,7 @@ fun Main(navController: NavHostController) {
                         onSearchQueryChange = onSearchQueryChange,
                         isSearch = isSearch,
                         onIsSearchChange = onIsSearchChange,
-                        hasSearch = hasSearch
+                        hasSearch = hasSearch,
                     )
 
                 }
@@ -287,7 +287,8 @@ fun Main(navController: NavHostController) {
                         onSearchQueryChange = onSearchQueryChange,
                         isSearch = isSearch,
                         onIsSearchChange = onIsSearchChange,
-                        hasSearch = hasSearch
+                        hasSearch = hasSearch,
+                        isTablet = true
                     )
 
                 }
