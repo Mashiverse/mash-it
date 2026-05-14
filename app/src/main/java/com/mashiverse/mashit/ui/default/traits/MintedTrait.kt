@@ -1,6 +1,7 @@
 package com.mashiverse.mashit.ui.default.traits
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -27,7 +28,8 @@ fun MintedTrait(
         modifier = modifier
     ) {
         DefaultImage(
-            modifier = modifier,
+            modifier = modifier
+                .aspectRatio(3f / 4f),
             onClick = onClick,
             data = data,
             processImageIntent = processImageIntent,
