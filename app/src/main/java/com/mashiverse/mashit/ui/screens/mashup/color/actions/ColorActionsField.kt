@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 
@@ -48,8 +49,8 @@ fun ColorActionsField(
                 onTextChange.invoke(filterStrategy(input))
             },
             colors = TextFieldDefaults.colors().copy(
-                unfocusedContainerColor = Surface,
-                focusedContainerColor = Surface,
+                unfocusedContainerColor = Secondary,
+                focusedContainerColor = Secondary,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),

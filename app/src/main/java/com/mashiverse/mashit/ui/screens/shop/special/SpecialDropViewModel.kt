@@ -1,22 +1,25 @@
-package com.mashiverse.mashit.ui.screens.shop
+package com.mashiverse.mashit.ui.screens.shop.special
 
 import android.content.Intent
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
-import com.mashiverse.mashit.data.models.sys.data.ShopDataType
+import com.mashiverse.mashit.data.models.drops.toInfo
+import com.mashiverse.mashit.data.models.drops.toNfts
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.image.ImageType
+import com.mashiverse.mashit.data.models.sys.wallet.WalletType
+import com.mashiverse.mashit.data.repos.drops.DropsRepo
 import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.sys.Web3Repo
+import com.mashiverse.mashit.data.states.drop.SpecialDropUiState
 import com.mashiverse.mashit.data.states.shop.ShopIntent
-import com.mashiverse.mashit.data.states.shop.ShopUiState
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.data.states.web3.Web3Intent
@@ -26,20 +29,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ShopViewModel @Inject constructor(
-    private val dataStoreRepo: DatastoreRepo,
-    private val mashItRepo: MashitRepo,
+class SpecialDropViewModel @Inject constructor(
+    private val dropsRepo: DropsRepo,
     private val imageTypeRepo: ImageTypeRepo,
-    private val web3Repo: Web3Repo
+    private val dataStoreRepo: DatastoreRepo,
+    private val web3Repo: Web3Repo,
+    private val mashitRepo: MashitRepo
 ) : ViewModel() {
-    var shopUiState = mutableStateOf(ShopUiState())
+    var specialDropUiState by mutableStateOf(SpecialDropUiState())
         private set
 
     val walletFlow = dataStoreRepo.walletFlow
@@ -57,14 +60,24 @@ class ShopViewModel @Inject constructor(
                 val walletType = prefs.walletType
 
                 if (!wallet.isNullOrEmpty()) {
-                    shopUiState.value = shopUiState.value.copy(
+                    specialDropUiState = specialDropUiState.copy(
                         wallet = wallet,
                         walletType = walletType
                     )
                 } else {
-                    shopUiState.value = shopUiState.value.copy(wallet = null)
+                    specialDropUiState = specialDropUiState.copy(wallet = null)
                 }
             }
+        }
+    }
+
+    fun getDrop(slug: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val drop = dropsRepo.getSingleDrop(slug)
+            specialDropUiState = specialDropUiState.copy(
+                dropInfo = drop.drop.toInfo(),
+                dropItems = drop.drop.toNfts()
+            )
         }
     }
 
@@ -72,59 +85,19 @@ class ShopViewModel @Inject constructor(
 
     fun processShopIntent(intent: ShopIntent) {
         when (intent) {
-            is ShopIntent.OnDataTypeSelect -> {
-                onDataTypeSelect(
-                    dataType = intent.dataType,
-                    query = intent.query
-                )
-            }
-
-            is ShopIntent.OnCategorySelect -> onCategorySelect()
-
-            is ShopIntent.OnCategoryClose -> onCategoryClose()
-
             is ShopIntent.OnNftSelect -> selectNft(intent.id)
 
             is ShopIntent.OnNftDeselect -> deselectNft()
+
+            else -> {}
         }
     }
-
-    private fun onCategorySelect() {
-        shopUiState.value = shopUiState.value.copy(isCategory = true)
-    }
-
-    private fun onDataTypeSelect(dataType: ShopDataType, query: String) {
-        val itemsData = when (dataType) {
-            ShopDataType.RECENTLY -> mashItRepo.getShopListPagingData()
-                .cachedIn(viewModelScope)
-
-            ShopDataType.SEARCH -> {
-                if (query.isEmpty()) {
-                    flowOf(PagingData.empty())
-                } else {
-                    mashItRepo
-                        .getSearchListPagingData(q = query)
-                        .cachedIn(viewModelScope)
-                }
-            }
-        }
-
-        shopUiState.value = shopUiState.value.copy(
-            category = dataType,
-            itemsData = itemsData,
-        )
-    }
-
-    private fun onCategoryClose() {
-        shopUiState.value = shopUiState.value.copy(isCategory = false)
-    }
-
 
     private fun selectNft(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                shopUiState.value = shopUiState.value.copy(
-                    selectedNft = mashItRepo.getShopItem(id),
+                specialDropUiState = specialDropUiState.copy(
+                    selectedNft = mashitRepo.getShopItem(id),
                     isExpanded = true
                 )
             } catch (e: Exception) {
@@ -134,7 +107,7 @@ class ShopViewModel @Inject constructor(
     }
 
     private fun deselectNft() {
-        shopUiState.value = shopUiState.value.copy(
+        specialDropUiState = specialDropUiState.copy(
             selectedNft = null,
             isExpanded = false
         )
@@ -150,7 +123,7 @@ class ShopViewModel @Inject constructor(
         }
     }
 
-    fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
+    private fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
@@ -159,7 +132,7 @@ class ShopViewModel @Inject constructor(
         }
     }
 
-    fun setImageType(url: String, imageType: ImageType) {
+    private fun setImageType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
             val entity = ImageTypeEntity(url, imageType)
             imageTypeRepo.insertImageType(entity)
@@ -170,11 +143,11 @@ class ShopViewModel @Inject constructor(
 
     fun processDialogIntent(intent: DialogIntent) {
         when (intent) {
-            is DialogIntent.OnClear -> shopUiState.value =
-                shopUiState.value.copy(dialogContent = null)
+            is DialogIntent.OnClear -> specialDropUiState =
+                specialDropUiState.copy(dialogContent = null)
 
-            is DialogIntent.OnChange -> shopUiState.value =
-                shopUiState.value.copy(dialogContent = intent.content)
+            is DialogIntent.OnChange -> specialDropUiState =
+                specialDropUiState.copy(dialogContent = intent.content)
         }
     }
 
@@ -211,7 +184,7 @@ class ShopViewModel @Inject constructor(
             // 2. Switch to Main to update UI if needed
             withContext(Dispatchers.Main) {
                 if (isPolCurrency) {
-                    shopUiState.value = shopUiState.value.copy(
+                    specialDropUiState = specialDropUiState.copy(
                         dialogContent = DialogContent(
                             title = "POL Currency",
                             text = "We currently don't support POL minting"
@@ -227,7 +200,7 @@ class ShopViewModel @Inject constructor(
                         price = price
                     )
                 } else {
-                    shopUiState.value = shopUiState.value.copy(
+                    specialDropUiState = specialDropUiState.copy(
                         dialogContent = DialogContent(
                             title = "Not Authenticated",
                             text = "Please connect your wallet to continue"
@@ -259,7 +232,7 @@ class ShopViewModel @Inject constructor(
 
     private fun mint(
         client: CoinbaseWalletSDK?,
-        walletType: com.mashiverse.mashit.data.models.sys.wallet.WalletType,
+        walletType: WalletType,
         fromAddress: String,
         listingId: String,
         price: Double
@@ -272,9 +245,11 @@ class ShopViewModel @Inject constructor(
                 listingId = listingId,
                 price = price,
                 onDialogTrigger = { dialogContent ->
-                    // CRITICAL: Update Compose State on Main Thread
+                    // CRITICAL: Push UI updates back to the Main thread
                     viewModelScope.launch(Dispatchers.Main) {
-                        shopUiState.value = shopUiState.value.copy(dialogContent = dialogContent)
+                        specialDropUiState = specialDropUiState.copy(
+                            dialogContent = dialogContent
+                        )
                     }
                 }
             )

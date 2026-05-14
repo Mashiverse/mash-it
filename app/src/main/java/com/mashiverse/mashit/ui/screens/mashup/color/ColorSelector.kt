@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -23,11 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
-import com.mashiverse.mashit.data.models.mashup.colors.ColorType
 import com.mashiverse.mashit.ui.default.picker.ColorPicker
 import com.mashiverse.mashit.ui.default.picker.ColorSlideBar
 import com.mashiverse.mashit.ui.screens.mashup.color.actions.ColorActions
@@ -37,16 +41,18 @@ import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
-import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.color.data.Colors
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper
 import com.mashiverse.mashit.utils.color.helpers.ColorPickerHelper.toHue
+import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import kotlinx.coroutines.CoroutineScope
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColorSheet(
+    modifier: Modifier = Modifier,
     sheetState: SheetState,
     scope: CoroutineScope,
     initialColor: Color,
@@ -56,6 +62,9 @@ fun ColorSheet(
     processMashupIntent: (MashupIntent) -> Unit,
     processActionsIntent: (ActionsIntent) -> Unit
 ) {
+    val config = LocalConfiguration.current
+    val screenType = config.detectScreenType()
+
     var pickerLocation by remember { mutableStateOf(Offset.Zero) }
     var rangeColor by remember { mutableStateOf(color) }
     var hueProgress by remember { mutableFloatStateOf(0f) }
@@ -94,92 +103,106 @@ fun ColorSheet(
         }
     }
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
-        shape = BottomSheetShape,
-        onDismissRequest = closeBottomSheet,
-        sheetState = sheetState,
-        containerColor = Secondary,
-        contentColor = ContentColor,
-        dragHandle = null,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(height)
-                .padding(start = Padding, end = Padding, top = SmallPadding)
+    Row {
+        ModalBottomSheet(
+            modifier = Modifier.then(
+                if (screenType == ScreenInfo.EXPANDED) {
+                    Modifier
+                        .padding(start = 328.dp)
+                        .width((config.screenWidthDp - 328.0).dp)
+                        .padding(horizontal = 16.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                }
+            ),
+            shape = BottomSheetShape,
+            onDismissRequest = closeBottomSheet,
+            sheetState = sheetState,
+            containerColor = Surface,
+            contentColor = ContentColor,
+            dragHandle = null,
         ) {
-            ColorTypeSelector(
-                selectedColorType = selectedColorType,
-                processMashupIntent = processMashupIntent
-            )
-
-            Spacer(modifier = Modifier.height(Padding))
-
-            ColorPicker(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
-                color = color,
-                rangeColor = rangeColor,
-                pickerLocation = pickerLocation,
-                onPickedColor = { newColor ->
-                    // calculate with current hue from hueProgress
-                    val hue = hueProgress * 360f
-                    val hsv = FloatArray(3)
-                    android.graphics.Color.colorToHSV(newColor.toArgb(), hsv)
-                    val correctedColor = ColorPickerHelper.hsvToColor(hue, hsv[1], hsv[2])
-                    processMashupIntent(MashupIntent.OnColorChange(correctedColor))
-                },
-                onPickerLocationChange = { pickerLocation = it },
-                onDraggingChange = { dragging -> isDragging = dragging },
-                onPickerSizeChange = { pickerSize = it }
-            )
+                    .height(height)
+                    .systemBarsPadding()
+                    .padding(start = Padding, end = Padding, top = SmallPadding)
+            ) {
+                ColorTypeSelector(
+                    selectedColorType = selectedColorType,
+                    processMashupIntent = processMashupIntent
+                )
 
-            Spacer(modifier = Modifier.height(SmallPadding))
+                Spacer(modifier = Modifier.height(Padding))
 
-            ColorSlideBar(
-                colors = Colors.gradientColors,
-                progress = hueProgress,
-                onProgressChange = { progress ->
-                    hueProgress = progress
-                    rangeColor = ColorPickerHelper.hsvToColor(progress * 360f, 1f, 1f)
-
-                    val saturation = (pickerLocation.x / pickerSize.width).coerceIn(0f, 1f)
-                    val brightness = (1f - pickerLocation.y / pickerSize.height).coerceIn(0f, 1f)
-                    val newColor =
-                        ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
-                    processMashupIntent(MashupIntent.OnColorChange(newColor))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(SmallPadding))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                ColorActions(
-                    modifier = Modifier.weight(1f),
+                ColorPicker(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
                     color = color,
-                    changePreviewColor = changeColor
+                    rangeColor = rangeColor,
+                    pickerLocation = pickerLocation,
+                    onPickedColor = { newColor ->
+                        // calculate with current hue from hueProgress
+                        val hue = hueProgress * 360f
+                        val hsv = FloatArray(3)
+                        android.graphics.Color.colorToHSV(newColor.toArgb(), hsv)
+                        val correctedColor = ColorPickerHelper.hsvToColor(hue, hsv[1], hsv[2])
+                        processMashupIntent(MashupIntent.OnColorChange(correctedColor))
+                    },
+                    onPickerLocationChange = { pickerLocation = it },
+                    onDraggingChange = { dragging -> isDragging = dragging },
+                    onPickerSizeChange = { pickerSize = it }
                 )
 
-                Spacer(modifier = Modifier.width(Padding))
+                Spacer(modifier = Modifier.height(SmallPadding))
 
-                ColorPreview(
-                    initialColor = initialColor,
-                    updatedColor = color
+                ColorSlideBar(
+                    colors = Colors.gradientColors,
+                    progress = hueProgress,
+                    onProgressChange = { progress ->
+                        hueProgress = progress
+                        rangeColor = ColorPickerHelper.hsvToColor(progress * 360f, 1f, 1f)
+
+                        val saturation = (pickerLocation.x / pickerSize.width).coerceIn(0f, 1f)
+                        val brightness =
+                            (1f - pickerLocation.y / pickerSize.height).coerceIn(0f, 1f)
+                        val newColor =
+                            ColorPickerHelper.hsvToColor(rangeColor.toHue(), saturation, brightness)
+                        processMashupIntent(MashupIntent.OnColorChange(newColor))
+                    }
                 )
+
+                Spacer(modifier = Modifier.height(SmallPadding))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ColorActions(
+                        modifier = Modifier.weight(1f),
+                        color = color,
+                        changePreviewColor = changeColor
+                    )
+
+                    Spacer(modifier = Modifier.width(Padding))
+
+                    ColorPreview(
+                        initialColor = initialColor,
+                        updatedColor = color
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(Padding))
+
+                ColorSheetActions(
+                    scope = scope,
+                    sheetState = sheetState,
+                    closeBottomSheet = closeBottomSheet,
+                    saveColors = saveColors
+                )
+
+                Spacer(modifier = Modifier.height(SmallPadding))
             }
-
-            Spacer(modifier = Modifier.height(Padding))
-
-            ColorSheetActions(
-                scope = scope,
-                sheetState = sheetState,
-                closeBottomSheet = closeBottomSheet,
-                saveColors = saveColors
-            )
-
-            Spacer(modifier = Modifier.height(SmallPadding))
         }
     }
 }

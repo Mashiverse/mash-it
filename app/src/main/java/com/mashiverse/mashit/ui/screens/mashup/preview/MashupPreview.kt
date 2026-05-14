@@ -1,18 +1,14 @@
 package com.mashiverse.mashit.ui.screens.mashup.preview
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,8 +23,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
+import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.states.sys.ImageIntent
-import com.mashiverse.mashit.ui.default.traits.TraitHolder
+import com.mashiverse.mashit.ui.default.grids.TraitHolderGrid
 import com.mashiverse.mashit.ui.theme.BottomSheetShape
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentColor
@@ -37,7 +34,6 @@ import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -54,78 +50,69 @@ fun MashupPreview(
 ) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (itemWidth, _) = config.getItemWidthAndHeight(
-        screenType.collectionColumns,
-        MediumPadding
-    )
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
-        shape = BottomSheetShape,
-        onDismissRequest = closeBottomSheet,
-        sheetState = sheetState,
-        containerColor = Surface,
-        contentColor = ContentColor,
-        dragHandle = null,
-        sheetGesturesEnabled = false
-    ) {
-        Column(
-            modifier = Modifier
-                .height(height)
-                .padding(start = Padding, end = Padding, top = Padding),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Row {
+        ModalBottomSheet(
+            modifier = Modifier.then(
+                if (screenType == ScreenInfo.EXPANDED) {
+                    Modifier
+                        .padding(start = 328.dp)
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                }
+            ),
+            shape = BottomSheetShape,
+            onDismissRequest = closeBottomSheet,
+            sheetState = sheetState,
+            containerColor = Surface,
+            contentColor = ContentColor,
+            dragHandle = null,
+            sheetGesturesEnabled = false
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier
+                    .height(height)
+                    .padding(start = Padding, end = Padding, top = Padding)
+                    .systemBarsPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.weight(1F))
-
-                IconButton(
-                    modifier = Modifier.size(32.dp),
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                closeBottomSheet.invoke()
-                            }
-                        }
-                    }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(32.dp),
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "More",
-                        tint = ContentAccentColor
-                    )
-                }
-            }
+                    Spacer(Modifier.weight(1F))
 
-            Spacer(modifier = Modifier.height(SmallPadding))
-
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                item {
-                    mashupDetails.assets.sortedBy { it.type }.let {
-                        FlowRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                            horizontalArrangement = Arrangement.spacedBy(11.5.dp),
-                            maxItemsInEachRow = screenType.collectionColumns
-                        ) {
-                            it.forEach { i ->
-                                TraitHolder(
-                                    modifier = Modifier.width(itemWidth),
-                                    trait = i,
-                                    processImageIntent = processImageIntent,
-                                    onClick = {}
-                                )
+                    IconButton(
+                        modifier = Modifier.size(32.dp),
+                        onClick = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    closeBottomSheet.invoke()
+                                }
                             }
                         }
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(32.dp),
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "More",
+                            tint = ContentAccentColor
+                        )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(SmallPadding))
+
+                TraitHolderGrid(
+                    items = mashupDetails.assets.sortedBy { it.type },
+                    spacedByVert = MediumPadding,
+                    spacedByHoriz = MediumPadding,
+                    columns = screenType.collectionColumns,
+                    processImageIntent = processImageIntent
+                )
             }
         }
     }

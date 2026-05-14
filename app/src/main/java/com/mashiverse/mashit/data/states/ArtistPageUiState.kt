@@ -14,6 +14,5 @@ data class ArtistPageUiState(
     val itemsData: Flow<PagingData<Nft>> = flowOf(PagingData.empty()),
     val pageInfo: ArtistPageInfo? = null,
     val selectedNft: Nft? = null,
-    val dialogContent: DialogContent? = null,
-    val isExpanded: Boolean = false
+    val dialogContent: DialogContent? = null
 )

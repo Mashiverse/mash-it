@@ -3,6 +3,7 @@ package com.mashiverse.mashit.ui.default.traits
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +27,7 @@ fun MintedTrait(
         modifier = modifier
     ) {
         DefaultImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier,
             onClick = onClick,
             data = data,
             processImageIntent = processImageIntent,
@@ -37,7 +38,7 @@ fun MintedTrait(
         mint?.let {
             MintText(
                 modifier = Modifier
-                    .padding(bottom = 2.dp, end = 3.dp)
+                    .padding(bottom = 3.dp, end = 5.dp)
                     .align(Alignment.BottomEnd),
                 mint = mint
             )

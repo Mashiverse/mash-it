@@ -14,6 +14,7 @@ class SettingsViewModel @Inject constructor(
     private val datastoreRepo: DatastoreRepo
 ) : ViewModel() {
     val notificationsFlow = datastoreRepo.notificationsFlow
+    val specialDropsFlow = datastoreRepo.specialDropsFlow
 
     fun updateNotifications(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -24,6 +25,12 @@ class SettingsViewModel @Inject constructor(
             }
 
             datastoreRepo.updateNotifications(enabled)
+        }
+    }
+
+    fun updateSpecialDrops(enabled: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            datastoreRepo.updateSpecialDrops(enabled)
         }
     }
 }

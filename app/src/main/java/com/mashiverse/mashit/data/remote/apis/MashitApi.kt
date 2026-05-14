@@ -6,6 +6,8 @@ import com.mashiverse.mashit.data.remote.dtos.SaveMashupRes
 import com.mashiverse.mashit.data.remote.dtos.artists.ArtistListingsDto
 import com.mashiverse.mashit.data.remote.dtos.artists.ArtistPageDto
 import com.mashiverse.mashit.data.remote.dtos.artists.ArtistsDto
+import com.mashiverse.mashit.data.remote.dtos.drops.DropsDto
+import com.mashiverse.mashit.data.remote.dtos.drops.SingleDropDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingDto
 import com.mashiverse.mashit.data.remote.dtos.listings.ListingsDto
 import com.mashiverse.mashit.data.remote.dtos.listings.SearchDto
@@ -69,4 +71,15 @@ interface MashitApi {
         @Query("apiKey") apiKey: String = MASHIT_KEY,
         @Body request: SaveMashupReq
     ): SaveMashupRes
+
+    @GET("api/v1/drops")
+    suspend fun getSpecialDrops(
+        @Query("apiKey") apiKey: String = MASHIT_KEY,
+    ): DropsDto
+
+    @GET("api/v1/drops/{slug}")
+    suspend fun getSingleDrop(
+        @Path("slug") slug: String,
+        @Query("apiKey") apiKey: String = MASHIT_KEY,
+    ): SingleDropDto
 }

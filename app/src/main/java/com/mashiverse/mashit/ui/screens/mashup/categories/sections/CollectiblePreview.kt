@@ -4,20 +4,24 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -44,10 +49,12 @@ import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.TraitHolder
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
+import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getItemWidthAndHeight
+import com.mashiverse.mashit.utils.helpers.sys.getItemWidth
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -64,101 +71,124 @@ fun CollectiblePreview(
 
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
-    val (width, _) = config.getItemWidthAndHeight(
-        screenType.collectionColumns,
-        MediumPadding
-    )
+
 
     val isSelected = { trait: Trait ->
         val sameTypeTrait = mashupDetails.assets.find { it.type == trait.type }
         sameTypeTrait?.url == trait.url
     }
 
+    BoxWithConstraints {
+        val constraints = this
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(24))
-                .clickable {
-                    isExpanded = !isExpanded
-                }
-                .background(Secondary),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
+        val width = getItemWidth(
+            screenType.collectionColumns,
+            maxWidth = constraints.maxWidth,
+            MediumPadding,
+            initialPadding = -Padding
+        )
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
                 modifier = Modifier
-                    .width(24.dp)
-                    .height(32.dp)
-                    .clip(TraitShape),
-                model = nft.compositeUrl,
-                contentDescription = null
-            )
 
-            Spacer(modifier = Modifier.weight(1F))
-
-            Text(
-                text = nft.name,
-                fontSize = 14.sp,
-                color = ContentAccentColor
-            )
-
-            Spacer(modifier = Modifier.weight(1F))
-
-            IconButton(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape),
-                onClick = {
-                    isExpanded = !isExpanded
-                }
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24))
+                    .clickable {
+                        isExpanded = !isExpanded
+                    }
+                    .background(Secondary.copy(alpha = 0.33f)),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Icon(
+                Row(
                     modifier = Modifier
-                        .size(24.dp),
-                    tint = ContentAccentColor,
-                    imageVector = if (!isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
-                    contentDescription = null
-                )
-            }
-        }
-
-        AnimatedVisibility(isExpanded) {
-            Column(
-                modifier = Modifier.onPlaced {
-                    processMashupIntent.invoke(
-                        MashupIntent.OnCollectibleExpand(
-                            state = state,
-                            scope = scope,
-                            position = position
-                        )
-                    )
-                }
-            ) {
-                Spacer(modifier = Modifier.height(MediumPadding))
-
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                    horizontalArrangement = Arrangement.spacedBy(11.5.dp),
-                    maxItemsInEachRow = screenType.collectionColumns
+                        .widthIn(max = 480.dp)
+                        .clip(RoundedCornerShape(12))
+                        .background(Secondary)
+                        .padding(SmallPadding),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    nft.traits?.forEach { trait ->
-                        TraitHolder(
+                    AsyncImage(
+                        modifier = Modifier
+                            .height(48.dp)
+                            .clip(TraitShape),
+                        model = nft.compositeUrl,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(SmallPadding))
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    Text(
+                        text = nft.name,
+                        fontSize = 14.sp,
+                        color = ContentAccentColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    Spacer(modifier = Modifier.width(SmallPadding))
+
+                    IconButton(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape),
+                        onClick = {
+                            isExpanded = !isExpanded
+                        }
+                    ) {
+                        Icon(
                             modifier = Modifier
-                                .width(width),
-                            isSelected = isSelected.invoke(trait),
-                            trait = trait,
-                            processImageIntent = processImageIntent,
-                            onClick = {
-                                processMashupIntent.invoke(
-                                    MashupIntent.OnMashupUpdate(
-                                        MashupTrait(trait = trait, avatarName = nft.name)
-                                    )
-                                )
-                            }
+                                .size(24.dp),
+                            tint = ContentAccentColor,
+                            imageVector = if (!isExpanded) Icons.Default.ArrowCircleDown else Icons.Default.ArrowCircleUp,
+                            contentDescription = null
                         )
+                    }
+                }
+            }
+
+            AnimatedVisibility(isExpanded) {
+                Column(
+                    modifier = Modifier.onPlaced {
+                        processMashupIntent.invoke(
+                            MashupIntent.OnCollectibleExpand(
+                                state = state,
+                                scope = scope,
+                                position = position
+                            )
+                        )
+                    }
+                ) {
+                    Spacer(modifier = Modifier.height(MediumPadding))
+
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.spacedBy(MediumPadding),
+                        horizontalArrangement = Arrangement.spacedBy(11.5.dp),
+                        maxItemsInEachRow = screenType.collectionColumns
+                    ) {
+                        nft.traits?.forEach { trait ->
+                            TraitHolder(
+                                modifier = Modifier
+                                    .width(width),
+                                isSelected = isSelected.invoke(trait),
+                                trait = trait,
+                                processImageIntent = processImageIntent,
+                                onClick = {
+                                    processMashupIntent.invoke(
+                                        MashupIntent.OnMashupUpdate(
+                                            MashupTrait(trait = trait, avatarName = nft.name)
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }

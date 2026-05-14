@@ -10,13 +10,12 @@ import com.mashiverse.mashit.ui.theme.Padding
 fun Configuration.detectScreenType(): ScreenInfo {
     return when {
         this.screenWidthDp < 600 -> ScreenInfo.COMPACT
-        this.screenWidthDp < 840 -> ScreenInfo.MEDIUM
-        else -> ScreenInfo.EXPANDED
+        this.screenWidthDp >= 1200 -> ScreenInfo.EXPANDED
+        else -> ScreenInfo.MEDIUM
     }
 }
 
-fun Configuration.getItemWidthAndHeight(columns: Int, padding: Dp = Padding): Pair<Dp, Dp> {
-    val width = (this.screenWidthDp.dp - 2 * Padding - (columns - 1) * padding) / columns
-    val height = width * 4 / 3
-    return Pair(width, height)
+fun getItemWidth(columns: Int, maxWidth: Dp, padding: Dp = Padding, initialPadding: Dp = 0.dp): Dp {
+    val width = (maxWidth - 2 * Padding - (columns - 1) * padding - 2 * initialPadding) / columns
+    return width
 }

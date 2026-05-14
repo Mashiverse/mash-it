@@ -1,22 +1,25 @@
-package com.mashiverse.mashit.ui.screens.artists.page
+package com.mashiverse.mashit.ui.screens.shop.regular
 
 import android.content.Intent
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
+import com.mashiverse.mashit.data.models.drops.DropDetails
+import com.mashiverse.mashit.data.models.sys.data.ShopDataType
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.image.ImageType
 import com.mashiverse.mashit.data.models.sys.wallet.WalletType
-import com.mashiverse.mashit.data.repos.mashit.ArtistsRepo
+import com.mashiverse.mashit.data.repos.drops.DropsRepo
 import com.mashiverse.mashit.data.repos.mashit.MashitRepo
 import com.mashiverse.mashit.data.repos.sys.DatastoreRepo
 import com.mashiverse.mashit.data.repos.sys.ImageTypeRepo
 import com.mashiverse.mashit.data.repos.sys.Web3Repo
-import com.mashiverse.mashit.data.states.ArtistPageUiState
 import com.mashiverse.mashit.data.states.shop.ShopIntent
+import com.mashiverse.mashit.data.states.shop.ShopUiState
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.data.states.web3.Web3Intent
@@ -26,27 +29,38 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ArtistPageViewModel @Inject constructor(
-    private val imageTypeRepo: ImageTypeRepo,
-    private val artistsRepo: ArtistsRepo,
+class RegularShopViewModel @Inject constructor(
     private val dataStoreRepo: DatastoreRepo,
+    private val mashItRepo: MashitRepo,
+    private val imageTypeRepo: ImageTypeRepo,
     private val web3Repo: Web3Repo,
-    private val mashitRepo: MashitRepo
+    private val dropsRepo: DropsRepo
 ) : ViewModel() {
-
-    var artistPageUiState = mutableStateOf(ArtistPageUiState())
+    var shopUiState = mutableStateOf(ShopUiState())
         private set
 
     val walletFlow = dataStoreRepo.walletFlow
+    val specialDropsFlow = dataStoreRepo.specialDropsFlow
+
+    val specialDrops = mutableStateOf<List<DropDetails>>(emptyList())
 
     init {
         observeWallet()
+        getSpecialDrops()
+    }
+
+    // Drops
+    fun getSpecialDrops() {
+        viewModelScope.launch(Dispatchers.IO) {
+            specialDrops.value = dropsRepo.getSpecialDropsList()
+        }
     }
 
     // Observers
@@ -58,35 +72,14 @@ class ArtistPageViewModel @Inject constructor(
                 val walletType = prefs.walletType
 
                 if (!wallet.isNullOrEmpty()) {
-                    artistPageUiState.value = artistPageUiState.value.copy(
+                    shopUiState.value = shopUiState.value.copy(
                         wallet = wallet,
                         walletType = walletType
                     )
                 } else {
-                    artistPageUiState.value = artistPageUiState.value.copy(wallet = null)
+                    shopUiState.value = shopUiState.value.copy(wallet = null)
                 }
             }
-        }
-    }
-
-
-    fun onInit(alias: String) {
-        fetchItems(alias)
-        fetchArtistPage(alias)
-    }
-
-    private fun fetchItems(alias: String) {
-        artistPageUiState.value = artistPageUiState.value.copy(
-            itemsData = artistsRepo.getListingsPagingData(alias)
-                .cachedIn(viewModelScope)
-        )
-    }
-
-    private fun fetchArtistPage(alias: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            artistPageUiState.value = artistPageUiState.value.copy(
-                pageInfo = artistsRepo.getArtistsPage(alias)
-            )
         }
     }
 
@@ -94,19 +87,59 @@ class ArtistPageViewModel @Inject constructor(
 
     fun processShopIntent(intent: ShopIntent) {
         when (intent) {
+            is ShopIntent.OnDataTypeSelect -> {
+                onDataTypeSelect(
+                    dataType = intent.dataType,
+                    query = intent.query
+                )
+            }
+
+            is ShopIntent.OnCategorySelect -> onCategorySelect()
+
+            is ShopIntent.OnCategoryClose -> onCategoryClose()
+
             is ShopIntent.OnNftSelect -> selectNft(intent.id)
 
             is ShopIntent.OnNftDeselect -> deselectNft()
-
-            else -> {}
         }
     }
+
+    private fun onCategorySelect() {
+        shopUiState.value = shopUiState.value.copy(isCategory = true)
+    }
+
+    private fun onDataTypeSelect(dataType: ShopDataType, query: String) {
+        val itemsData = when (dataType) {
+            ShopDataType.RECENTLY -> mashItRepo.getShopListPagingData()
+                .cachedIn(viewModelScope)
+
+            ShopDataType.SEARCH -> {
+                if (query.isEmpty()) {
+                    flowOf(PagingData.Companion.empty())
+                } else {
+                    mashItRepo
+                        .getSearchListPagingData(q = query)
+                        .cachedIn(viewModelScope)
+                }
+            }
+        }
+
+        shopUiState.value = shopUiState.value.copy(
+            category = dataType,
+            itemsData = itemsData,
+        )
+    }
+
+    private fun onCategoryClose() {
+        shopUiState.value = shopUiState.value.copy(isCategory = false)
+    }
+
 
     private fun selectNft(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                artistPageUiState.value = artistPageUiState.value.copy(
-                    selectedNft = mashitRepo.getShopItem(id),
+                shopUiState.value = shopUiState.value.copy(
+                    selectedNft = mashItRepo.getShopItem(id)
                 )
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch shop item details")
@@ -115,12 +148,13 @@ class ArtistPageViewModel @Inject constructor(
     }
 
     private fun deselectNft() {
-        artistPageUiState.value = artistPageUiState.value.copy(
+        shopUiState.value = shopUiState.value.copy(
             selectedNft = null
         )
     }
 
     // Image Type
+
     fun processImageIntent(intent: ImageIntent) {
         when (intent) {
             is ImageIntent.OnTypeGet -> getImageType(intent.url, intent.onResult)
@@ -129,7 +163,7 @@ class ArtistPageViewModel @Inject constructor(
         }
     }
 
-    private fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
+    fun getImageType(url: String, onResult: (ImageType?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = imageTypeRepo.getImageType(url)?.type
             withContext(Dispatchers.Main) {
@@ -138,7 +172,7 @@ class ArtistPageViewModel @Inject constructor(
         }
     }
 
-    private fun setImageType(url: String, imageType: ImageType) {
+    fun setImageType(url: String, imageType: ImageType) {
         viewModelScope.launch(Dispatchers.IO) {
             val entity = ImageTypeEntity(url, imageType)
             imageTypeRepo.insertImageType(entity)
@@ -149,11 +183,11 @@ class ArtistPageViewModel @Inject constructor(
 
     fun processDialogIntent(intent: DialogIntent) {
         when (intent) {
-            is DialogIntent.OnClear -> artistPageUiState.value =
-                artistPageUiState.value.copy(dialogContent = null)
+            is DialogIntent.OnClear -> shopUiState.value =
+                shopUiState.value.copy(dialogContent = null)
 
-            is DialogIntent.OnChange -> artistPageUiState.value =
-                artistPageUiState.value.copy(dialogContent = intent.content)
+            is DialogIntent.OnChange -> shopUiState.value =
+                shopUiState.value.copy(dialogContent = intent.content)
         }
     }
 
@@ -190,7 +224,7 @@ class ArtistPageViewModel @Inject constructor(
             // 2. Switch to Main to update UI if needed
             withContext(Dispatchers.Main) {
                 if (isPolCurrency) {
-                    artistPageUiState.value = artistPageUiState.value.copy(
+                    shopUiState.value = shopUiState.value.copy(
                         dialogContent = DialogContent(
                             title = "POL Currency",
                             text = "We currently don't support POL minting"
@@ -206,7 +240,7 @@ class ArtistPageViewModel @Inject constructor(
                         price = price
                     )
                 } else {
-                    artistPageUiState.value = artistPageUiState.value.copy(
+                    shopUiState.value = shopUiState.value.copy(
                         dialogContent = DialogContent(
                             title = "Not Authenticated",
                             text = "Please connect your wallet to continue"
@@ -251,9 +285,7 @@ class ArtistPageViewModel @Inject constructor(
                 listingId = listingId,
                 price = price,
                 onDialogTrigger = { dialogContent ->
-                    artistPageUiState.value = artistPageUiState.value.copy(
-                        dialogContent = dialogContent
-                    )
+                    shopUiState.value = shopUiState.value.copy(dialogContent = dialogContent)
                 }
             )
         }
