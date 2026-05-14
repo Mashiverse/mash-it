@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowCircleDown
+import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -47,6 +51,7 @@ import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.TraitShape
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import com.mashiverse.mashit.utils.helpers.sys.getItemWidth
@@ -86,47 +91,63 @@ fun CollectiblePreview(
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
+
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(24))
                     .clickable {
                         isExpanded = !isExpanded
                     }
-                    .background(Secondary),
-                verticalAlignment = Alignment.CenterVertically
+                    .background(Secondary.copy(alpha = 0.33f)),
+                horizontalArrangement = Arrangement.Center
             ) {
-                AsyncImage(
+                Row(
                     modifier = Modifier
-                        .width(24.dp)
-                        .height(32.dp)
-                        .clip(TraitShape),
-                    model = nft.compositeUrl,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.weight(1F))
-
-                Text(
-                    text = nft.name,
-                    fontSize = 14.sp,
-                    color = ContentAccentColor
-                )
-
-                Spacer(modifier = Modifier.weight(1F))
-
-                IconButton(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape),
-                    onClick = {
-                        isExpanded = !isExpanded
-                    }
+                        .widthIn(max = 480.dp)
+                        .clip(RoundedCornerShape(12))
+                        .background(Secondary)
+                        .padding(SmallPadding),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    AsyncImage(
                         modifier = Modifier
-                            .size(24.dp),
-                        tint = ContentAccentColor,
-                        imageVector = if (!isExpanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
+                            .height(48.dp)
+                            .clip(TraitShape),
+                        model = nft.compositeUrl,
                         contentDescription = null
                     )
+
+                    Spacer(modifier = Modifier.width(SmallPadding))
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    Text(
+                        text = nft.name,
+                        fontSize = 14.sp,
+                        color = ContentAccentColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.weight(1F))
+
+                    Spacer(modifier = Modifier.width(SmallPadding))
+
+                    IconButton(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape),
+                        onClick = {
+                            isExpanded = !isExpanded
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(24.dp),
+                            tint = ContentAccentColor,
+                            imageVector = if (!isExpanded) Icons.Default.ArrowCircleDown else Icons.Default.ArrowCircleUp,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
 
