@@ -13,7 +13,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -24,22 +23,22 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-    val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-
-    val client = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .build()
-
     @Provides
     @Singleton
     @Named("AlchemyClient")
-    fun provideAlchemyClient(): Retrofit = Retrofit
-        .Builder()
-        .baseUrl(ALCHEMY_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    fun provideAlchemyClient(): Retrofit {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(3, TimeUnit.MINUTES)
+            .build()
+
+        return Retrofit
+            .Builder()
+            .client(client)
+            .baseUrl(ALCHEMY_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
     @Provides
     fun provideAlchemyApi(@Named("AlchemyClient") retrofit: Retrofit): AlchemyApi =
@@ -48,12 +47,18 @@ object RetrofitModule {
     @Provides
     @Singleton
     @Named("MashItClient")
-    fun provideMashItClient(): Retrofit = Retrofit
-        .Builder()
-        .client(client)
-        .baseUrl(MASHIT_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    fun provideMashItClient(): Retrofit {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(3, TimeUnit.MINUTES)
+            .build()
+
+        return Retrofit.Builder()
+            .client(client)
+            .baseUrl(MASHIT_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
 
     @Provides

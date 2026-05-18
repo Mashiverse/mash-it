@@ -117,12 +117,12 @@ fun Collection(searchQuery: State<String>) {
                 .fillMaxSize()
                 .padding(horizontal = Padding),
         ) {
-            Sorting(onSortChange = { type ->
-                sortType = type
-                scope.launch { lazyGridState.animateScrollToItem(0) }
-            })
-
             if (isReady) {
+                Sorting(onSortChange = { type ->
+                    sortType = type
+                    scope.launch { lazyGridState.animateScrollToItem(0) }
+                })
+
                 MintedTraitGrid(
                     items = sortedNfts,
                     state = lazyGridState,

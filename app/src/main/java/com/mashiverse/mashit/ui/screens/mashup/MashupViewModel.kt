@@ -106,7 +106,7 @@ class MashupViewModel @Inject constructor(
 
                     stackManager.clear()
                     val isNotEmpty = collectionFlow.first().isNotEmpty()
-                    val updateSuccess = collectionRepo.updateOwnedData(prefs.wallet)
+                    val updateSuccess = collectionRepo.updateOwnedData(wallet)
 
                     mashupUiState.value =
                         mashupUiState.value.copy(isCollectionReady = isNotEmpty || updateSuccess)
